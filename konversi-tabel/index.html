@@ -85,7 +85,10 @@ td:first-child{padding:12px 16px}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
 /* ── Check icon ── */
-.check-icon{position:absolute;right:-18px;top:50%;transform:translateY(-50%);font-size:.85rem;display:none}
+.check-icon{position:absolute;right:-18px;top:50%;transform:translateY(-50%);font-size:.85rem;display:none;cursor:default}
+/* ── Simplify hint ── */
+.simplify-hint{position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 4px);background:#fdcb6e;color:#7a5500;font-size:.65rem;font-weight:800;white-space:nowrap;padding:2px 7px;border-radius:6px;display:none;z-index:10}
+.inp-wrap:has(.cell-input.wrong[data-unsimplified]) .simplify-hint{display:block}
 .cell-input.correct ~ .check-icon,
 .cell-input.wrong ~ .check-icon,
 .cell-input.revealed ~ .check-icon{display:block}
@@ -368,9 +371,11 @@ function givenCell(row, col){
 }
 
 function inputCell(id, placeholder){
+  const isFrac=id.startsWith('f_');
   return `<div class="inp-wrap">
     <input class="cell-input" id="${id}" placeholder="${placeholder}" autocomplete="off" spellcheck="false">
     <span class="check-icon" id="${id}_icon"></span>
+    ${isFrac?'<span class="simplify-hint">Simplify! 🔽</span>':''}
   </div>`;
 }
 
@@ -409,6 +414,15 @@ function renderTable(){
         else inp.blur();
       }
     });
+    inp.addEventListener('input', ()=>{
+      // clear wrong state while user is retyping
+      if(inp.classList.contains('wrong')){
+        inp.classList.remove('wrong');
+        delete inp.dataset.unsimplified;
+        const icon=document.getElementById(inp.id+'_icon');
+        if(icon){icon.textContent='';icon.title='';}
+      }
+    });
     inp.addEventListener('blur', ()=>{
       if(!inp.value.trim() || inp.classList.contains('correct')) return;
       const ri=parseInt(inp.id.split('_')[1]);
@@ -424,21 +438,34 @@ function renderTable(){
 function normalize(val){
   return val.trim().replace(/\s+/g,'').toLowerCase().replace('%','');
 }
+function gcd(a,b){return b===0?a:gcd(b,a%b);}
 
 function checkVal(input, correct){
   const v=normalize(input);
   const c=normalize(correct.toString());
-  // numeric comparison (handles 0.60 == 0.6)
-  if(!isNaN(v.replace('/','')) && !isNaN(c.replace('/',''))) {
-    // fraction check
-    if(v.includes('/') && c.includes('/')){
-      const [vn,vd]=v.split('/').map(Number);
-      const [cn,cd]=c.split('/').map(Number);
-      return vn*cd===cn*vd; // cross multiply
-    }
-    if(!v.includes('/') && !c.includes('/')) return Math.abs(parseFloat(v)-parseFloat(c))<0.0001;
+  if(v.includes('/') && c.includes('/')){
+    const [vn,vd]=v.split('/').map(Number);
+    const [cn,cd]=c.split('/').map(Number);
+    if(isNaN(vn)||isNaN(vd)||vd===0) return false;
+    const equivalent=vn*cd===cn*vd;
+    const simplified=gcd(Math.abs(vn),Math.abs(vd))===1;
+    return equivalent && simplified; // must be correct AND already in lowest terms
   }
+  if(!v.includes('/') && !c.includes('/')) return Math.abs(parseFloat(v)-parseFloat(c))<0.0001;
   return v===c;
+}
+
+// Returns true if fraction is equivalent but not simplified
+function isUnsimplified(input, correct){
+  const v=normalize(input);
+  const c=normalize(correct.toString());
+  if(!v.includes('/')||!c.includes('/')) return false;
+  const [vn,vd]=v.split('/').map(Number);
+  const [cn,cd]=c.split('/').map(Number);
+  if(isNaN(vn)||isNaN(vd)||vd===0) return false;
+  const equivalent=vn*cd===cn*vd;
+  const simplified=gcd(Math.abs(vn),Math.abs(vd))===1;
+  return equivalent && !simplified;
 }
 
 // Real-time per-cell check (on blur)
@@ -461,7 +488,13 @@ function checkCell(inp,ri,col){
     inp.classList.remove('correct');
     inp.classList.add('wrong');
     const icon=document.getElementById(inp.id+'_icon');
-    if(icon) icon.textContent='❌';
+    if(isUnsimplified(inp.value, correct)){
+      inp.dataset.unsimplified='1';
+      if(icon){icon.textContent='🔽';icon.title='Simplify!';}
+    } else {
+      delete inp.dataset.unsimplified;
+      if(icon){icon.textContent='❌';icon.title='';}
+    }
   }
 }
 
