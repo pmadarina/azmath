@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversion Table — AzMath</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#eef3ff;min-height:100vh}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 12px rgba(0,0,0,.2);flex-wrap:wrap;gap:10px}
+.header-left h1{font-size:1.1rem;font-weight:900}
+.header-left p{font-size:.73rem;opacity:.85;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:12px}
+.back-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+/* ── Score ring ── */
+.smart-score-ring{position:relative;width:58px;height:58px;flex-shrink:0}
+.smart-score-ring svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.25);stroke-width:5}
+.ring-fill{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:175.9;stroke-dashoffset:175.9;transition:stroke-dashoffset .6s ease}
+.score-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-label span{font-size:1.15rem;font-weight:900;line-height:1}
+.score-label small{font-size:.44rem;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── Stats ── */
+.bar-wrap{background:#fff;border-bottom:1px solid #dce8ff;padding:8px 24px;display:flex;align-items:center;gap:12px}
+.bar-track{flex:1;height:8px;background:#dde6ff;border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,#6c5ce7,#a29bfe);border-radius:6px;transition:width .5s ease;width:0%}
+.bar-pct{font-size:.75rem;color:#6c5ce7;font-weight:700;min-width:28px;text-align:right}
+
+/* ── Main ── */
+.main{max-width:820px;margin:24px auto;padding:0 14px}
+
+/* ── Controls ── */
+.controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.set-info{font-size:.85rem;font-weight:700;color:#6c5ce7}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:9px 20px;border:none;border-radius:10px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-new{background:#fff;color:#6c5ce7;border:2px solid #a29bfe}
+.btn:hover{opacity:.88}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ── Score summary ── */
+.score-row{display:flex;gap:10px;margin-bottom:16px}
+.stat-box{flex:1;background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 8px rgba(108,92,231,.1)}
+.stat-box .val{font-size:1.6rem;font-weight:900;line-height:1}
+.stat-box .lbl{font-size:.66rem;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.val-g{color:#00b894}.val-r{color:#d63031}.val-b{color:#6c5ce7}
+
+/* ── Table ── */
+.table-wrap{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(108,92,231,.12)}
+table{width:100%;border-collapse:collapse}
+thead th{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;padding:14px 10px;font-size:.85rem;font-weight:800;letter-spacing:.3px;text-align:center}
+thead th:first-child{text-align:center;width:130px}
+tbody tr{border-bottom:1px solid #f0eeff}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#faf9ff}
+td{padding:16px 10px;vertical-align:middle;text-align:center}
+td:first-child{padding:12px 16px}
+
+/* ── Diagram cell ── */
+.diag-cell{display:flex;justify-content:center;align-items:center}
+.diag-cell svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.12))}
+
+/* ── Given value ── */
+.given-frac{color:#e17055;font-weight:900;font-size:1.1rem}
+.given-dec{color:#4f8ef7;font-weight:900;font-size:1.15rem}
+.given-pct{color:#6c5ce7;font-weight:900;font-size:1.15rem}
+.frac-display{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1}
+.frac-display .fn{border-bottom:2.5px solid currentColor;padding:1px 6px;font-size:.95em}
+.frac-display .fd{padding:1px 6px;font-size:.95em}
+
+/* ── Input cell ── */
+.inp-wrap{position:relative;display:inline-block}
+.cell-input{width:80px;padding:9px 10px;border:2.5px dashed #c0b6f8;border-radius:10px;font-size:1rem;font-weight:700;text-align:center;color:#1a1a2e;background:#faf9ff;font-family:inherit;outline:none;transition:all .2s}
+.cell-input:focus{border-style:solid;border-color:#6c5ce7;background:#fff;box-shadow:0 0 0 3px rgba(108,92,231,.15)}
+.cell-input.correct{border-style:solid;border-color:#00b894;background:#f0fff8;color:#00634d}
+.cell-input.wrong{border-style:solid;border-color:#d63031;background:#fff5f5;color:#a30000;animation:shake .3s ease}
+.cell-input.revealed{border-style:solid;border-color:#fdcb6e;background:#fffbf0;color:#7a5500}
+.cell-input:disabled{cursor:default}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* ── Check icon ── */
+.check-icon{position:absolute;right:-18px;top:50%;transform:translateY(-50%);font-size:.85rem;display:none}
+.cell-input.correct ~ .check-icon,
+.cell-input.wrong ~ .check-icon,
+.cell-input.revealed ~ .check-icon{display:block}
+
+/* ── Result banner ── */
+.result-banner{background:#fff;border-radius:16px;padding:20px 24px;text-align:center;margin-top:16px;box-shadow:0 4px 20px rgba(108,92,231,.12);display:none;animation:fadeIn .3s ease}
+.result-banner.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-banner .trophy{font-size:2.8rem;margin-bottom:8px}
+.result-banner h3{font-size:1.3rem;font-weight:900;color:#1a1a2e;margin-bottom:4px}
+.result-banner p{color:#666;font-size:.9rem}
+
+/* ── Hint row ── */
+.hint-row{background:#fffbf0;border-top:1px dashed #fdcb6e}
+.hint-row td{padding:8px 16px;font-size:.82rem;color:#7a5500;text-align:left}
+
+/* confetti */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.cp{position:absolute;opacity:0;animation:fall 1.6s ease-in forwards}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+/* ── Scroll hint (mobile only) ── */
+.scroll-hint{display:none;font-size:.75rem;color:#a29bfe;font-weight:700;text-align:center;padding:6px 0 2px;letter-spacing:.3px}
+
+/* ── Mobile ── */
+@media(max-width:600px){
+  .scroll-hint{display:block}
+  .header{padding:10px 14px;gap:6px}
+  .header-left h1{font-size:.95rem}
+  .header-left p{font-size:.68rem}
+  .back-btn{padding:5px 10px;font-size:.7rem}
+  .smart-score-ring{width:46px;height:46px}
+  .smart-score-ring svg{width:46px;height:46px}
+  .score-label span{font-size:.95rem}
+  .bar-wrap{padding:7px 14px}
+  .main{padding:0 10px;margin-top:14px}
+  .controls{gap:8px}
+  .set-info{font-size:.8rem}
+  .btn{padding:8px 16px;font-size:.82rem}
+  .score-row{gap:7px;margin-bottom:12px}
+  .stat-box{padding:8px 4px;border-radius:10px}
+  .stat-box .val{font-size:1.3rem}
+  .stat-box .lbl{font-size:.6rem}
+
+  /* Table: allow horizontal scroll on very small screens */
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px}
+  table{min-width:360px}
+  thead th{padding:10px 5px;font-size:.75rem;letter-spacing:0}
+  thead th:first-child{width:72px}
+  td{padding:10px 5px}
+  td:first-child{padding:8px 6px}
+
+  /* Diagrams: scale down */
+  .diag-cell svg{width:66px !important;height:66px !important}
+
+  /* Inputs: font-size 16px prevents iOS auto-zoom on focus */
+  .cell-input{width:68px;padding:8px 4px;font-size:16px;border-radius:8px}
+  .check-icon{right:-14px;font-size:.75rem}
+
+  /* Given values */
+  .given-frac,.given-dec,.given-pct{font-size:1rem}
+  .frac-display .fn,.frac-display .fd{font-size:.88em}
+
+  .result-banner{padding:16px 16px;border-radius:13px}
+  .result-banner .trophy{font-size:2.2rem}
+  .result-banner h3{font-size:1.1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="confetti-wrap" id="confWrap"></div>
+
+<div class="header">
+  <div class="header-left">
+    <h1>📊 Conversion Table</h1>
+    <p>AzMath · Grade 5 · Fractions, Decimals &amp; Percentages</p>
+  </div>
+  <div class="header-right">
+    <a class="back-btn" href="../">← All Exercises</a>
+    <div class="smart-score-ring">
+      <svg width="58" height="58" viewBox="0 0 58 58">
+        <circle class="ring-bg" cx="29" cy="29" r="24"/>
+        <circle class="ring-fill" id="ringFill" cx="29" cy="29" r="24"/>
+      </svg>
+      <div class="score-label"><span id="ssVal">0</span><small>Score</small></div>
+    </div>
+  </div>
+</div>
+
+<div class="bar-wrap">
+  <span style="font-size:.72rem;color:#888;font-weight:600">SmartScore</span>
+  <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  <span class="bar-pct" id="barPct">0</span>
+</div>
+
+<div class="main">
+  <div class="score-row">
+    <div class="stat-box"><div class="val val-g" id="sCorrect">0</div><div class="lbl">✅ Correct</div></div>
+    <div class="stat-box"><div class="val val-r" id="sWrong">0</div><div class="lbl">❌ Wrong</div></div>
+    <div class="stat-box"><div class="val val-b" id="sTotal">0</div><div class="lbl">📝 Answered</div></div>
+  </div>
+
+  <div class="controls">
+    <span class="set-info" id="setInfo">Set 1 of 4</span>
+    <div class="btn-row">
+      <button class="btn btn-new" id="newBtn" onclick="nextSet()">🔀 New Set</button>
+    </div>
+  </div>
+
+  <div class="scroll-hint" id="scrollHint">👈 Swipe to see all columns</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>🖼 Diagram</th>
+          <th>½ Fraction</th>
+          <th>0. Decimal</th>
+          <th>% Percentage</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="result-banner" id="resultBanner">
+    <div class="trophy" id="resultTrophy">🏆</div>
+    <h3 id="resultTitle"></h3>
+    <p id="resultMsg"></p>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// SVG Diagram generators
+// ─────────────────────────────────────────────────────────────
+function makeGrid(filled, total=100){
+  const cols=10, rows=10, cell=8.5, gap=0.5, ox=3, oy=3;
+  let r='';
+  for(let i=0;i<total;i++){
+    const c=i%cols, rw=Math.floor(i/cols);
+    const x=ox+c*(cell+gap), y=oy+rw*(cell+gap);
+    r+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${cell}" height="${cell}" fill="${i<filled?'#6c5ce7':'#dde6ff'}" rx="1"/>`;
+  }
+  return `<svg viewBox="0 0 100 100" width="84" height="84">${r}</svg>`;
+}
+
+function makePie(parts, filled){
+  const colors=['#e17055','#fdcb6e','#6c5ce7','#a29bfe'];
+  const fillCol='#e17055', bgCol='#dde6ff';
+  const cx=50,cy=50,r=44;
+  let paths='';
+  for(let i=0;i<parts;i++){
+    const a0=-Math.PI/2+i*(2*Math.PI/parts);
+    const a1=a0+(2*Math.PI/parts);
+    const x1=(cx+r*Math.cos(a0)).toFixed(2), y1=(cy+r*Math.sin(a0)).toFixed(2);
+    const x2=(cx+r*Math.cos(a1)).toFixed(2), y2=(cy+r*Math.sin(a1)).toFixed(2);
+    const lg=2*Math.PI/parts>Math.PI?1:0;
+    paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${lg},1 ${x2},${y2} Z" fill="${i<filled?fillCol:bgCol}" stroke="#fff" stroke-width="2.5"/>`;
+  }
+  return `<svg viewBox="0 0 100 100" width="84" height="84">${paths}</svg>`;
+}
+
+function makePolygon(parts, filled){
+  const cx=50,cy=54,r=42;
+  let paths='';
+  for(let i=0;i<parts;i++){
+    const a0=-Math.PI/2+i*(2*Math.PI/parts);
+    const a1=a0+(2*Math.PI/parts);
+    const x1=(cx+r*Math.cos(a0)).toFixed(2), y1=(cy+r*Math.sin(a0)).toFixed(2);
+    const x2=(cx+r*Math.cos(a1)).toFixed(2), y2=(cy+r*Math.sin(a1)).toFixed(2);
+    paths+=`<polygon points="${cx},${cy} ${x1},${y1} ${x2},${y2}" fill="${i<filled?'#f4d03f':'#dde6ff'}" stroke="#fff" stroke-width="2.5"/>`;
+  }
+  return `<svg viewBox="0 0 100 100" width="84" height="84">${paths}</svg>`;
+}
+
+function makeCircles(total, filled){
+  const spacing=90/total, r=spacing*0.38;
+  let circles='';
+  for(let i=0;i<total;i++){
+    const cx=5+spacing*i+spacing/2;
+    circles+=`<circle cx="${cx.toFixed(1)}" cy="50" r="${r.toFixed(1)}" fill="${i<filled?'#6c5ce7':'none'}" stroke="${i<filled?'#6c5ce7':'#aaa'}" stroke-width="2.5"/>`;
+  }
+  return `<svg viewBox="0 0 100 100" width="84" height="84">${circles}</svg>`;
+}
+
+function makeHouse(parts, filled){
+  const bx=13, by=44, bw=74, bh=50;
+  const cw=bw/parts;
+  let svg=`<svg viewBox="0 0 100 100" width="84" height="84">`;
+  svg+=`<polygon points="50,4 ${bx},${by} ${bx+bw},${by}" fill="#b2bec3" stroke="#fff" stroke-width="1.5"/>`;
+  for(let i=0;i<parts;i++){
+    const x=bx+i*cw;
+    svg+=`<rect x="${(x+1).toFixed(1)}" y="${by+1}" width="${(cw-2).toFixed(1)}" height="${bh-2}" fill="${i<filled?'#00b894':'#dde6ff'}" stroke="#fff" stroke-width="1.5" rx="1"/>`;
+  }
+  svg+=`</svg>`;
+  return svg;
+}
+
+function makeBar(parts, filled){
+  const bh=30, by=35, bx=8, bw=84, cw=bw/parts;
+  let svg=`<svg viewBox="0 0 100 100" width="84" height="84">`;
+  for(let i=0;i<parts;i++){
+    const x=bx+i*cw;
+    svg+=`<rect x="${(x+1).toFixed(1)}" y="${by}" width="${(cw-2).toFixed(1)}" height="${bh}" fill="${i<filled?'#4f8ef7':'#dde6ff'}" stroke="#fff" stroke-width="1.5" rx="2"/>`;
+  }
+  svg+=`</svg>`;
+  return svg;
+}
+
+function makeDiagram(row){
+  switch(row.diagram){
+    case 'grid':    return makeGrid(row.filled, row.total||100);
+    case 'pie':     return makePie(row.parts, row.filled);
+    case 'polygon': return makePolygon(row.parts, row.filled);
+    case 'circles': return makeCircles(row.parts, row.filled);
+    case 'house':   return makeHouse(row.parts, row.filled);
+    case 'bar':     return makeBar(row.parts, row.filled);
+    default:        return '';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Question bank — 4 sets × 5 rows
+// ─────────────────────────────────────────────────────────────
+const Sets = [
+  // Set 1
+  [
+    {diagram:'grid',   total:100, filled:60, given:'decimal',   fraction:'3/5',  decimal:'0.6',  percent:'60'},
+    {diagram:'pie',    parts:5,   filled:3,  given:'fraction',  fraction:'3/5',  decimal:'0.6',  percent:'60'},
+    {diagram:'polygon',parts:5,   filled:1,  given:'percent',   fraction:'1/5',  decimal:'0.2',  percent:'20'},
+    {diagram:'circles',parts:5,   filled:4,  given:'decimal',   fraction:'4/5',  decimal:'0.8',  percent:'80'},
+    {diagram:'house',  parts:5,   filled:2,  given:'fraction',  fraction:'2/5',  decimal:'0.4',  percent:'40'},
+  ],
+  // Set 2
+  [
+    {diagram:'grid',   total:100, filled:25, given:'percent',   fraction:'1/4',  decimal:'0.25', percent:'25'},
+    {diagram:'pie',    parts:4,   filled:3,  given:'decimal',   fraction:'3/4',  decimal:'0.75', percent:'75'},
+    {diagram:'polygon',parts:4,   filled:1,  given:'fraction',  fraction:'1/4',  decimal:'0.25', percent:'25'},
+    {diagram:'circles',parts:10,  filled:7,  given:'percent',   fraction:'7/10', decimal:'0.7',  percent:'70'},
+    {diagram:'house',  parts:4,   filled:3,  given:'decimal',   fraction:'3/4',  decimal:'0.75', percent:'75'},
+  ],
+  // Set 3
+  [
+    {diagram:'grid',   total:100, filled:80, given:'fraction',  fraction:'4/5',  decimal:'0.8',  percent:'80'},
+    {diagram:'pie',    parts:10,  filled:3,  given:'decimal',   fraction:'3/10', decimal:'0.3',  percent:'30'},
+    {diagram:'polygon',parts:5,   filled:2,  given:'percent',   fraction:'2/5',  decimal:'0.4',  percent:'40'},
+    {diagram:'circles',parts:4,   filled:1,  given:'fraction',  fraction:'1/4',  decimal:'0.25', percent:'25'},
+    {diagram:'house',  parts:10,  filled:7,  given:'decimal',   fraction:'7/10', decimal:'0.7',  percent:'70'},
+  ],
+  // Set 4
+  [
+    {diagram:'grid',   total:100, filled:50, given:'percent',   fraction:'1/2',  decimal:'0.5',  percent:'50'},
+    {diagram:'pie',    parts:4,   filled:1,  given:'fraction',  fraction:'1/4',  decimal:'0.25', percent:'25'},
+    {diagram:'polygon',parts:10,  filled:9,  given:'decimal',   fraction:'9/10', decimal:'0.9',  percent:'90'},
+    {diagram:'circles',parts:5,   filled:3,  given:'percent',   fraction:'3/5',  decimal:'0.6',  percent:'60'},
+    {diagram:'bar',    parts:4,   filled:3,  given:'fraction',  fraction:'3/4',  decimal:'0.75', percent:'75'},
+  ],
+];
+
+// ─────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────
+let setIdx=0, score=0, totalCorrect=0, totalWrong=0, checked=false;
+
+// ─────────────────────────────────────────────────────────────
+// Render
+// ─────────────────────────────────────────────────────────────
+function fracHTML(f, cls='given-frac'){
+  const [n,d]=f.split('/');
+  if(!d) return `<span class="${cls}">${f}</span>`;
+  return `<span class="${cls} frac-display"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+}
+
+function givenCell(row, col){
+  if(row.given!==col) return null;
+  if(col==='fraction') return fracHTML(row.fraction);
+  if(col==='decimal')  return `<span class="given-dec">${row.decimal}</span>`;
+  if(col==='percent')  return `<span class="given-pct">${row.percent}%</span>`;
+}
+
+function inputCell(id, placeholder){
+  return `<div class="inp-wrap">
+    <input class="cell-input" id="${id}" placeholder="${placeholder}" autocomplete="off" spellcheck="false">
+    <span class="check-icon" id="${id}_icon"></span>
+  </div>`;
+}
+
+function renderTable(){
+  checked=false;
+  const set=Sets[setIdx];
+  document.getElementById('setInfo').textContent=`Set ${setIdx+1} of ${Sets.length}`;
+  document.getElementById('resultBanner').classList.remove('show');
+  checked=false;
+
+  let html='';
+  set.forEach((row,ri)=>{
+    html+=`<tr>`;
+    // Diagram
+    html+=`<td><div class="diag-cell">${makeDiagram(row)}</div></td>`;
+    // Fraction
+    const gfrac=givenCell(row,'fraction');
+    html+=`<td>${gfrac!==null ? gfrac : inputCell(`f_${ri}`,'e.g. 3/5')}</td>`;
+    // Decimal
+    const gdec=givenCell(row,'decimal');
+    html+=`<td>${gdec!==null ? gdec : inputCell(`d_${ri}`,'e.g. 0.6')}</td>`;
+    // Percent
+    const gpct=givenCell(row,'percent');
+    html+=`<td>${gpct!==null ? gpct : inputCell(`p_${ri}`,'e.g. 60%')}</td>`;
+    html+=`</tr>`;
+  });
+  document.getElementById('tableBody').innerHTML=html;
+
+  // Enter key moves to next input + blur → real-time check
+  const inputs=document.querySelectorAll('.cell-input');
+  inputs.forEach((inp,i)=>{
+    inp.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){
+        e.preventDefault();
+        if(i+1<inputs.length) inputs[i+1].focus();
+        else inp.blur();
+      }
+    });
+    inp.addEventListener('blur', ()=>{
+      if(!inp.value.trim() || inp.classList.contains('correct')) return;
+      const ri=parseInt(inp.id.split('_')[1]);
+      const col=inp.id.startsWith('f_')?'fraction':inp.id.startsWith('d_')?'decimal':'percent';
+      checkCell(inp,ri,col);
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// Answer checking
+// ─────────────────────────────────────────────────────────────
+function normalize(val){
+  return val.trim().replace(/\s+/g,'').toLowerCase().replace('%','');
+}
+
+function checkVal(input, correct){
+  const v=normalize(input);
+  const c=normalize(correct.toString());
+  // numeric comparison (handles 0.60 == 0.6)
+  if(!isNaN(v.replace('/','')) && !isNaN(c.replace('/',''))) {
+    // fraction check
+    if(v.includes('/') && c.includes('/')){
+      const [vn,vd]=v.split('/').map(Number);
+      const [cn,cd]=c.split('/').map(Number);
+      return vn*cd===cn*vd; // cross multiply
+    }
+    if(!v.includes('/') && !c.includes('/')) return Math.abs(parseFloat(v)-parseFloat(c))<0.0001;
+  }
+  return v===c;
+}
+
+// Real-time per-cell check (on blur)
+function checkCell(inp,ri,col){
+  const correct=Sets[setIdx][ri][col];
+  const ok=checkVal(inp.value,correct);
+  if(ok){
+    inp.classList.remove('wrong','revealed');
+    inp.classList.add('correct');
+    inp.disabled=true;
+    const icon=document.getElementById(inp.id+'_icon');
+    if(icon) icon.textContent='✅';
+    totalCorrect++;
+    document.getElementById('sCorrect').textContent=totalCorrect;
+    document.getElementById('sTotal').textContent=totalCorrect+totalWrong;
+    score=Math.min(100,score+5);
+    updateScoreUI();
+    checkAllDone();
+  } else {
+    inp.classList.remove('correct');
+    inp.classList.add('wrong');
+    const icon=document.getElementById(inp.id+'_icon');
+    if(icon) icon.textContent='❌';
+  }
+}
+
+function checkAllDone(){
+  if(checked) return;
+  const inputs=document.querySelectorAll('.cell-input');
+  const allDone=[...inputs].every(i=>i.classList.contains('correct'));
+  if(!allDone) return;
+  checked=true;
+  const banner=document.getElementById('resultBanner');
+  document.getElementById('resultTrophy').textContent='🏆';
+  document.getElementById('resultTitle').textContent='Perfect!';
+  document.getElementById('resultMsg').textContent='All correct! Amazing work 🎉';
+  banner.classList.add('show');
+  confetti();
+}
+
+
+function nextSet(){
+  setIdx=(setIdx+1)%Sets.length;
+  renderTable();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────────────────────
+// Score UI
+// ─────────────────────────────────────────────────────────────
+function updateScoreUI(){
+  document.getElementById('ssVal').textContent=score;
+  document.getElementById('barFill').style.width=score+'%';
+  document.getElementById('barPct').textContent=score;
+  // circumference = 2π×24 ≈ 150.8
+  document.getElementById('ringFill').style.strokeDashoffset=150.8*(1-score/100);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Confetti
+// ─────────────────────────────────────────────────────────────
+function confetti(){
+  const wrap=document.getElementById('confWrap');
+  const cols=['#6c5ce7','#a29bfe','#00b894','#fdcb6e','#e17055','#fd79a8'];
+  for(let i=0;i<70;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');
+      p.className='cp';
+      p.style.cssText=`left:${Math.random()*100}vw;top:-20px;width:${6+Math.random()*9}px;height:${6+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${1.2+Math.random()*.9}s;animation-delay:${Math.random()*.5}s`;
+      wrap.appendChild(p);
+      setTimeout(()=>p.remove(),2500);
+    },i*16);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────────────────────
+renderTable();
+</script>
+</body>
+</html>

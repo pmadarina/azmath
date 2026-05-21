@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzMath — Math Practice</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── Hero header ── */
+.hero{background:linear-gradient(135deg,#4f8ef7 0%,#6c5ce7 60%,#a29bfe 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px}
+.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px}
+.hero p{font-size:1rem;opacity:.85;max-width:360px;margin:0 auto;line-height:1.6}
+
+/* ── Cards ── */
+.main{max-width:700px;margin:-44px auto 0;padding:0 20px 60px;width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.card{background:#fff;border-radius:24px;padding:32px 26px 26px;box-shadow:0 8px 32px rgba(79,142,247,.13);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
+.card.blue::after{background:#4f8ef7}
+.card.purple::after{background:#6c5ce7}
+.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(79,142,247,.22)}
+
+.card-accent{height:5px;border-radius:3px;margin-bottom:22px}
+.card.blue .card-accent{background:linear-gradient(90deg,#4f8ef7,#74b9ff)}
+.card.purple .card-accent{background:linear-gradient(90deg,#6c5ce7,#a29bfe)}
+
+.card-icon{font-size:2.6rem;margin-bottom:14px;display:block}
+.card h3{font-size:1.1rem;font-weight:900;color:#1a1a2e;margin-bottom:8px;letter-spacing:-.3px}
+.card p{font-size:.84rem;color:#666;line-height:1.6;margin-bottom:16px}
+
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 11px;border-radius:12px;letter-spacing:.3px}
+.card.blue .pill{background:#eef3ff;color:#4f8ef7}
+.card.purple .pill{background:#f0eeff;color:#6c5ce7}
+
+.card-arrow{position:absolute;top:28px;right:24px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
+.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
+
+/* ── Footer ── */
+.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
+.footer span{color:#a29bfe;font-weight:700}
+
+/* ── Mobile ── */
+@media(max-width:520px){
+  .hero{padding:40px 18px 72px}
+  .hero h1{font-size:2.4rem;letter-spacing:-1.5px}
+  .hero p{font-size:.88rem}
+  .hero-badge{font-size:.68rem;padding:4px 13px}
+  .main{padding:0 14px 40px}
+  .grid{gap:13px}
+  .card{padding:24px 20px 20px}
+  .card-icon{font-size:2.2rem;margin-bottom:10px}
+  .card h3{font-size:1rem}
+  .card p{font-size:.8rem}
+  .pill{font-size:.65rem;padding:3px 9px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Grade 5 · Mathematics</div>
+  <h1>📐 AzMath</h1>
+  <p>Pick an exercise and start practising fractions, decimals & percentages!</p>
+</div>
+
+<div class="main">
+  <div class="grid">
+
+    <a class="card blue" href="latihan-pecahan/index.html">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🎯</span>
+      <h3>MCQ Practice</h3>
+      <p>Multiple-choice questions on fractions, decimals & percentages with step-by-step hints.</p>
+      <div class="pill-row">
+        <span class="pill">17 topics</span>
+        <span class="pill">Adaptive</span>
+        <span class="pill">Hints</span>
+      </div>
+    </a>
+
+    <a class="card purple" href="konversi-tabel/index.html">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">📊</span>
+      <h3>Conversion Table</h3>
+      <p>Fill in the missing fraction, decimal or percentage — with visual diagrams to help.</p>
+      <div class="pill-row">
+        <span class="pill">Diagrams</span>
+        <span class="pill">Fill-in</span>
+        <span class="pill">Real-time</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<div class="footer">AzMath · Built with ❤️ for <span>young mathematicians</span></div>
+
+</body>
+</html>
