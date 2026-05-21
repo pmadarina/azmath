@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fractions, Decimals & Percentages Practice</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#eef3ff;min-height:100vh}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 12px rgba(0,0,0,.2);gap:12px;flex-wrap:wrap}
+.header-left h1{font-size:1.15rem;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.header-left p{font-size:.75rem;opacity:.85;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:12px}
+.lang-toggle{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;letter-spacing:.5px;transition:background .15s;white-space:nowrap}
+.lang-toggle:hover{background:rgba(255,255,255,.28)}
+.smart-score-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.smart-score-ring svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.25);stroke-width:5}
+.ring-fill{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:188.5;stroke-dashoffset:188.5;transition:stroke-dashoffset .6s ease}
+.score-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-label span{font-size:1.3rem;font-weight:900;line-height:1}
+.score-label small{font-size:.48rem;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── Score bar ── */
+.bar-wrap{background:#fff;border-bottom:1px solid #dce8ff;padding:9px 24px;display:flex;align-items:center;gap:12px}
+.bar-track{flex:1;height:10px;background:#dde6ff;border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,#4f8ef7,#6c5ce7);border-radius:6px;transition:width .55s ease;width:0%}
+.bar-pct{font-size:.78rem;color:#6c5ce7;font-weight:700;min-width:28px;text-align:right}
+
+/* ── Stats row ── */
+.stats-row{display:flex;gap:10px;margin-bottom:16px}
+.stat-box{flex:1;background:#fff;border-radius:14px;padding:12px 8px;text-align:center;box-shadow:0 1px 8px rgba(79,142,247,.1)}
+.stat-box .val{font-size:1.75rem;font-weight:900;line-height:1}
+.stat-box .lbl{font-size:.68rem;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.val-g{color:#00b894}.val-r{color:#d63031}.val-b{color:#4f8ef7}
+
+/* ── Main ── */
+.main{max-width:780px;margin:24px auto;padding:0 14px}
+
+/* ── Section divider ── */
+.section-banner{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border-radius:14px;padding:14px 20px;margin-bottom:14px;font-weight:800;font-size:.95rem;letter-spacing:.3px}
+
+/* ── Progress dots ── */
+.prog-dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:50%;background:#cdd8ff;transition:all .3s}
+.dot.done{background:#00b894}.dot.wrong-dot{background:#d63031}.dot.cur{background:#4f8ef7;box-shadow:0 0 0 3px rgba(79,142,247,.3)}
+
+/* ── Question card ── */
+.qcard{background:#fff;border-radius:20px;padding:28px 28px;box-shadow:0 4px 20px rgba(79,142,247,.12);animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-tag{display:inline-block;background:#eef3ff;color:#4f8ef7;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px}
+.section-tag{background:#f0eeff;color:#6c5ce7}
+.q-text{font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:6px;line-height:1.55}
+.math-big{font-size:1.7rem;margin:12px 0 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1}
+.frac .n{border-bottom:2.5px solid currentColor;padding:1px 5px;font-size:.82em}
+.frac .d{padding:1px 5px;font-size:.82em}
+
+/* ── Word problem box ── */
+.word-box{background:#f8faff;border-radius:13px;padding:18px 20px;margin:12px 0 20px;border-left:4px solid #4f8ef7;font-size:.97rem;line-height:1.85;color:#1a1a2e}
+.word-box strong{color:#4f8ef7}
+.price-card{display:block;background:#1e1e2e;color:#fff;border-radius:12px;padding:14px 18px;margin:12px 0;font-size:.88rem;line-height:2}
+.price-card .menu-title{font-weight:900;color:#fdcb6e;font-size:.95rem;text-align:center;margin-bottom:4px;letter-spacing:1px}
+.price-row{display:flex;justify-content:space-between;gap:28px}
+.price-row .price{color:#00b894;font-weight:800}
+
+/* ── Options ── */
+.options{display:grid;gap:10px;margin-bottom:4px}
+.opt{display:flex;align-items:center;gap:13px;padding:12px 16px;border:2.5px solid #dce8ff;border-radius:13px;background:#fff;cursor:pointer;font-size:1rem;text-align:left;transition:all .15s;color:#1a1a2e;font-family:inherit}
+.opt:hover:not(:disabled){border-color:#4f8ef7;background:#f4f7ff}
+.opt-lbl{min-width:31px;height:31px;border-radius:50%;background:#eef3ff;color:#4f8ef7;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.84rem;transition:all .2s}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:#00b894;background:#f0fff8}
+.opt.correct .opt-lbl{background:#00b894;color:#fff}
+.opt.wrong{border-color:#d63031;background:#fff5f5}
+.opt.wrong .opt-lbl{background:#d63031;color:#fff}
+
+/* ── Feedback ── */
+.feedback{margin-top:16px;padding:15px 18px;border-radius:13px;font-size:.9rem;line-height:1.65;display:none;animation:fadeIn .3s ease}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fff8;border:2px solid #00b894;color:#00634d}
+.feedback.wrong{background:#fff5f5;border:2px solid #d63031;color:#6b1010}
+.feedback.hint{background:#fffbf0;border:2px solid #fdcb6e;color:#7a5500}
+.steps{margin-top:10px}
+.step{display:flex;gap:9px;margin-bottom:6px;font-size:.88rem;align-items:flex-start}
+.step-num{background:#4f8ef7;color:#fff;min-width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.step-num.orange{background:#fdcb6e;color:#6b4c00}
+.concept-box{margin-top:10px;padding:9px 13px;background:rgba(0,0,0,.04);border-radius:9px;font-size:.82rem}
+
+/* ── Buttons ── */
+.hint-btn{margin-top:12px;padding:7px 18px;background:transparent;color:#6c5ce7;border:2px solid #6c5ce7;border-radius:9px;font-size:.84rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit}
+.hint-btn:hover{background:#f4f0ff}
+.hint-btn:disabled{opacity:.55;cursor:default}
+.next-btn{margin-top:16px;padding:11px 30px;background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;display:none;font-family:inherit;box-shadow:0 3px 12px rgba(79,142,247,.35)}
+.next-btn:hover{opacity:.9}
+.next-btn.show{display:inline-block}
+
+/* ── Streak badge ── */
+.streak{display:inline-flex;align-items:center;gap:5px;background:#fff9ec;border:1.5px solid #fdcb6e;color:#7a5500;padding:4px 11px;border-radius:20px;font-size:.8rem;font-weight:700;margin-left:8px}
+
+/* ── Weak area badge ── */
+.weak-badge{display:inline-flex;align-items:center;gap:6px;background:#fff0f0;border:1.5px solid #d63031;color:#d63031;padding:5px 13px;border-radius:20px;font-size:.78rem;font-weight:800;margin-bottom:10px;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+
+/* ── Weakness report ── */
+.weak-report{background:#fff5f5;border:2px solid #ffcdd2;border-radius:14px;padding:16px 18px;margin:16px 0}
+.weak-report h3{font-size:.9rem;font-weight:800;color:#d63031;margin-bottom:12px}
+.weak-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.weak-row .topic-name{font-size:.85rem;font-weight:600;color:#333;flex:1}
+.weak-bar-wrap{width:100px;height:8px;background:#fce4e4;border-radius:4px;overflow:hidden;flex-shrink:0}
+.weak-bar-fill{height:100%;background:#d63031;border-radius:4px}
+.weak-pct{font-size:.78rem;font-weight:800;color:#d63031;min-width:32px;text-align:right}
+.strong-row .topic-name{color:#00634d}
+.strong-row .weak-bar-fill{background:#00b894}
+.strong-row .weak-pct{color:#00634d}
+
+/* ── Adaptive practice button ── */
+.practice-btn{padding:12px 28px;background:linear-gradient(135deg,#d63031,#e17055);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(214,48,49,.35);margin-right:10px}
+.practice-btn:hover{opacity:.9}
+.round-badge{display:inline-block;background:#eef3ff;color:#4f8ef7;font-size:.75rem;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:8px;border:1.5px solid #c5d5f8}
+
+/* ── Completion ── */
+.completion{text-align:center;padding:44px 24px}
+.trophy{font-size:4.5rem;margin-bottom:14px;animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.completion h2{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#4f8ef7,#6c5ce7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.completion p{color:#666;font-size:1rem;margin-bottom:22px}
+.restart-btn{padding:13px 40px;background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;border:none;border-radius:13px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(79,142,247,.4)}
+.restart-btn:hover{opacity:.9}
+
+/* ── Confetti ── */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.cp{position:absolute;opacity:0;animation:fall 1.6s ease-in forwards}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="confetti-wrap" id="confWrap"></div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <h1 id="hTitle">Fractions, Decimals &amp; Percentages</h1>
+    <p id="hSub">Grade 5 &bull; Mathematics &bull; Interactive Practice</p>
+  </div>
+  <div class="header-right">
+    <button class="lang-toggle" onclick="toggleLang()" id="langBtn">🌐 Bahasa Indonesia</button>
+    <div class="smart-score-ring" title="SmartScore">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle class="ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="ring-fill" id="ringFill" cx="32" cy="32" r="28"/>
+      </svg>
+      <div class="score-label"><span id="ssVal">0</span><small>Score</small></div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress bar -->
+<div class="bar-wrap">
+  <span style="font-size:.75rem;color:#888;font-weight:600" id="barLbl">SmartScore</span>
+  <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  <span class="bar-pct" id="barPct">0</span>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="stats-row">
+    <div class="stat-box"><div class="val val-g" id="sCorrect">0</div><div class="lbl" id="lCorrect">✅ Correct</div></div>
+    <div class="stat-box"><div class="val val-r" id="sWrong">0</div><div class="lbl" id="lWrong">❌ Wrong</div></div>
+    <div class="stat-box"><div class="val val-b" id="sTotal">0</div><div class="lbl" id="lTotal">📝 Answered</div></div>
+  </div>
+  <div class="prog-dots" id="progDots"></div>
+  <div id="qArea"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+function frac(n,d){return`<span class="frac"><span class="n">${n}</span><span class="d">${d}</span></span>`}
+function mixed(w,n,d){return`${w}${frac(n,d)}`}
+
+// ─────────────────────────────────────────────────────────────
+// Language
+// ─────────────────────────────────────────────────────────────
+let lang='en';
+function t(obj){ return typeof obj==='string'?obj:(obj[lang]||obj.en) }
+function toggleLang(){
+  lang = lang==='en'?'id':'en';
+  document.getElementById('langBtn').textContent = lang==='en'?'🌐 Bahasa Indonesia':'🌐 English';
+  document.getElementById('hTitle').textContent = lang==='en'?'Fractions, Decimals & Percentages':'Pecahan, Desimal & Persen';
+  document.getElementById('hSub').textContent = lang==='en'?'Grade 5 • Mathematics • Interactive Practice':'Kelas 5 • Matematika • Latihan Interaktif';
+  document.getElementById('lCorrect').textContent = lang==='en'?'✅ Correct':'✅ Benar';
+  document.getElementById('lWrong').textContent = lang==='en'?'❌ Wrong':'❌ Salah';
+  document.getElementById('lTotal').textContent = lang==='en'?'📝 Answered':'📝 Dijawab';
+  render(); // re-render current question in new language
+}
+
+// ─────────────────────────────────────────────────────────────
+// Question Bank — 3 variants per topic
+// ─────────────────────────────────────────────────────────────
+const Bank = {
+
+  // ── Part 1 ────────────────────────────────────────────────
+  itm:[
+    { text:{en:'Convert the improper fraction to a mixed number:',id:'Ubah pecahan biasa berikut menjadi pecahan campuran:'},
+      math:frac(11,4)+' = ?',
+      opts:[{l:'A',v:mixed(2,1,4)},{l:'B',v:mixed(2,3,4)},{l:'C',v:mixed(3,1,4)},{l:'D',v:mixed(3,3,4)}], ans:'B',
+      steps:{en:[`Divide: <b>11 ÷ 4</b>`,`Quotient = <b>2</b>, remainder = <b>3</b>`,`So: ${frac(11,4)} = ${mixed(2,3,4)}`],
+             id:[`Bagi: <b>11 ÷ 4</b>`,`Hasil bagi = <b>2</b>, sisa = <b>3</b>`,`Jadi: ${frac(11,4)} = ${mixed(2,3,4)}`]},
+      concept:{en:`Divide numerator ÷ denominator. Quotient = whole, remainder = new numerator, denominator stays.`,
+               id:`Bagi pembilang ÷ penyebut. Hasil = bulat, sisa = pembilang baru, penyebut tetap.`} },
+    { text:{en:'Convert the improper fraction to a mixed number:',id:'Ubah pecahan biasa berikut menjadi pecahan campuran:'},
+      math:frac(7,2)+' = ?',
+      opts:[{l:'A',v:mixed(3,1,2)},{l:'B',v:mixed(2,1,2)},{l:'C',v:mixed(4,1,2)},{l:'D',v:mixed(3,3,2)}], ans:'A',
+      steps:{en:[`Divide: <b>7 ÷ 2</b>`,`Quotient = <b>3</b>, remainder = <b>1</b>`,`So: ${frac(7,2)} = ${mixed(3,1,2)}`],
+             id:[`Bagi: <b>7 ÷ 2</b>`,`Hasil bagi = <b>3</b>, sisa = <b>1</b>`,`Jadi: ${frac(7,2)} = ${mixed(3,1,2)}`]},
+      concept:{en:`Divide numerator ÷ denominator. Quotient = whole, remainder = new numerator.`,
+               id:`Bagi pembilang ÷ penyebut. Hasil = bulat, sisa = pembilang baru.`} },
+    { text:{en:'Convert the improper fraction to a mixed number:',id:'Ubah pecahan biasa berikut menjadi pecahan campuran:'},
+      math:frac(13,5)+' = ?',
+      opts:[{l:'A',v:mixed(3,1,5)},{l:'B',v:mixed(2,4,5)},{l:'C',v:mixed(2,3,5)},{l:'D',v:mixed(3,3,5)}], ans:'C',
+      steps:{en:[`Divide: <b>13 ÷ 5</b>`,`Quotient = <b>2</b>, remainder = <b>3</b>`,`So: ${frac(13,5)} = ${mixed(2,3,5)}`],
+             id:[`Bagi: <b>13 ÷ 5</b>`,`Hasil bagi = <b>2</b>, sisa = <b>3</b>`,`Jadi: ${frac(13,5)} = ${mixed(2,3,5)}`]},
+      concept:{en:`Divide numerator ÷ denominator. Quotient = whole, remainder = new numerator.`,
+               id:`Bagi pembilang ÷ penyebut. Hasil = bulat, sisa = pembilang baru.`} },
+  ],
+
+  mti:[
+    { text:{en:'Convert the mixed number to an improper fraction:',id:'Ubah pecahan campuran berikut menjadi pecahan biasa:'},
+      math:mixed(3,2,5)+' = ?',
+      opts:[{l:'A',v:frac(13,5)},{l:'B',v:frac(17,5)},{l:'C',v:frac(12,5)},{l:'D',v:frac(15,5)}], ans:'B',
+      steps:{en:[`Multiply: <b>3 × 5 = 15</b>`,`Add numerator: <b>15 + 2 = 17</b>`,`So: ${mixed(3,2,5)} = ${frac(17,5)}`],
+             id:[`Kalikan: <b>3 × 5 = 15</b>`,`Tambah pembilang: <b>15 + 2 = 17</b>`,`Jadi: ${mixed(3,2,5)} = ${frac(17,5)}`]},
+      concept:{en:`(whole × denominator) + numerator, keep the denominator.`,id:`(bulat × penyebut) + pembilang, penyebut tetap.`} },
+    { text:{en:'Convert the mixed number to an improper fraction:',id:'Ubah pecahan campuran berikut menjadi pecahan biasa:'},
+      math:mixed(2,3,4)+' = ?',
+      opts:[{l:'A',v:frac(9,4)},{l:'B',v:frac(11,4)},{l:'C',v:frac(10,4)},{l:'D',v:frac(8,4)}], ans:'B',
+      steps:{en:[`Multiply: <b>2 × 4 = 8</b>`,`Add numerator: <b>8 + 3 = 11</b>`,`So: ${mixed(2,3,4)} = ${frac(11,4)}`],
+             id:[`Kalikan: <b>2 × 4 = 8</b>`,`Tambah pembilang: <b>8 + 3 = 11</b>`,`Jadi: ${mixed(2,3,4)} = ${frac(11,4)}`]},
+      concept:{en:`(whole × denominator) + numerator, keep the denominator.`,id:`(bulat × penyebut) + pembilang, penyebut tetap.`} },
+    { text:{en:'Convert the mixed number to an improper fraction:',id:'Ubah pecahan campuran berikut menjadi pecahan biasa:'},
+      math:mixed(4,1,3)+' = ?',
+      opts:[{l:'A',v:frac(14,3)},{l:'B',v:frac(12,3)},{l:'C',v:frac(13,3)},{l:'D',v:frac(15,3)}], ans:'C',
+      steps:{en:[`Multiply: <b>4 × 3 = 12</b>`,`Add numerator: <b>12 + 1 = 13</b>`,`So: ${mixed(4,1,3)} = ${frac(13,3)}`],
+             id:[`Kalikan: <b>4 × 3 = 12</b>`,`Tambah pembilang: <b>12 + 1 = 13</b>`,`Jadi: ${mixed(4,1,3)} = ${frac(13,3)}`]},
+      concept:{en:`(whole × denominator) + numerator, keep the denominator.`,id:`(bulat × penyebut) + pembilang, penyebut tetap.`} },
+  ],
+
+  ftd:[
+    { text:{en:'Convert the fraction to a decimal:',id:'Ubah pecahan berikut menjadi desimal:'},
+      math:frac(4,5)+' = …',
+      opts:[{l:'A',v:'0.25'},{l:'B',v:'0.60'},{l:'C',v:'0.80'},{l:'D',v:'0.90'}], ans:'C',
+      steps:{en:[`Divide: <b>4 ÷ 5 = 0.8</b>`,`Or: ${frac(4,5)} = ${frac(8,10)} = <b>0.80</b>`],
+             id:[`Bagi: <b>4 ÷ 5 = 0.8</b>`,`Atau: ${frac(4,5)} = ${frac(8,10)} = <b>0.80</b>`]},
+      concept:{en:`Multiply to make denominator 10 or 100, then read as decimal.`,id:`Samakan penyebut ke 10 atau 100, lalu baca sebagai desimal.`} },
+    { text:{en:'Convert the fraction to a decimal:',id:'Ubah pecahan berikut menjadi desimal:'},
+      math:frac(3,4)+' = …',
+      opts:[{l:'A',v:'0.34'},{l:'B',v:'0.60'},{l:'C',v:'0.75'},{l:'D',v:'0.80'}], ans:'C',
+      steps:{en:[`Divide: <b>3 ÷ 4 = 0.75</b>`,`Or: ${frac(3,4)} × ${frac(25,25)} = ${frac(75,100)} = <b>0.75</b>`],
+             id:[`Bagi: <b>3 ÷ 4 = 0.75</b>`,`Atau: ${frac(3,4)} × ${frac(25,25)} = ${frac(75,100)} = <b>0.75</b>`]},
+      concept:{en:`Multiply to make denominator 100: ¾ × 25/25 = 75/100 = 0.75`,id:`Samakan penyebut ke 100: ¾ × 25/25 = 75/100 = 0.75`} },
+    { text:{en:'Convert the fraction to a decimal:',id:'Ubah pecahan berikut menjadi desimal:'},
+      math:frac(1,4)+' = …',
+      opts:[{l:'A',v:'0.14'},{l:'B',v:'0.25'},{l:'C',v:'0.40'},{l:'D',v:'0.50'}], ans:'B',
+      steps:{en:[`Divide: <b>1 ÷ 4 = 0.25</b>`,`Or: ${frac(1,4)} × ${frac(25,25)} = ${frac(25,100)} = <b>0.25</b>`],
+             id:[`Bagi: <b>1 ÷ 4 = 0.25</b>`,`Atau: ${frac(1,4)} × ${frac(25,25)} = ${frac(25,100)} = <b>0.25</b>`]},
+      concept:{en:`Multiply to make denominator 100: ¼ × 25/25 = 25/100 = 0.25`,id:`Samakan penyebut ke 100: ¼ × 25/25 = 25/100 = 0.25`} },
+  ],
+
+  cmp:[
+    { text:{en:'Fill in the blank with >, <, or =',id:'Isi titik-titik dengan >, <, atau ='},
+      math:'65% &nbsp;&nbsp;_____&nbsp;&nbsp; 0.7',
+      opts:[{l:'A',v:'&gt;&nbsp; (greater than)'},{l:'B',v:'&lt;&nbsp; (less than)'},{l:'C',v:'=&nbsp; (equal to)'},{l:'D',v:{en:'Cannot be determined',id:'Tidak dapat ditentukan'}}], ans:'B',
+      steps:{en:[`Convert 65% → decimal: <b>0.65</b>`,`Compare 0.65 vs 0.70 → 6 < 7`,`So: <b>65% &lt; 0.7</b>`],
+             id:[`Ubah 65% → desimal: <b>0.65</b>`,`Bandingkan 0.65 vs 0.70 → 6 < 7`,`Jadi: <b>65% &lt; 0.7</b>`]},
+      concept:{en:`Convert to the same format first, then compare digit by digit.`,id:`Samakan format dulu, lalu bandingkan digit per digit.`} },
+    { text:{en:'Fill in the blank with >, <, or =',id:'Isi titik-titik dengan >, <, atau ='},
+      math:'0.45 &nbsp;&nbsp;_____&nbsp;&nbsp; '+frac(2,5),
+      opts:[{l:'A',v:'&gt;&nbsp; (greater than)'},{l:'B',v:'&lt;&nbsp; (less than)'},{l:'C',v:'=&nbsp; (equal to)'},{l:'D',v:{en:'Cannot be determined',id:'Tidak dapat ditentukan'}}], ans:'A',
+      steps:{en:[`Convert ${frac(2,5)} → decimal: <b>0.40</b>`,`Compare 0.45 vs 0.40 → 5 > 0`,`So: <b>0.45 &gt; ${frac(2,5)}</b>`],
+             id:[`Ubah ${frac(2,5)} → desimal: <b>0.40</b>`,`Bandingkan 0.45 vs 0.40 → 5 > 0`,`Jadi: <b>0.45 &gt; ${frac(2,5)}</b>`]},
+      concept:{en:`Convert all to decimals first, then compare.`,id:`Ubah semua ke desimal dulu, lalu bandingkan.`} },
+    { text:{en:'Fill in the blank with >, <, or =',id:'Isi titik-titik dengan >, <, atau ='},
+      math:frac(3,4)+' &nbsp;&nbsp;_____&nbsp;&nbsp; 70%',
+      opts:[{l:'A',v:'&gt;&nbsp; (greater than)'},{l:'B',v:'&lt;&nbsp; (less than)'},{l:'C',v:'=&nbsp; (equal to)'},{l:'D',v:{en:'Cannot be determined',id:'Tidak dapat ditentukan'}}], ans:'A',
+      steps:{en:[`Convert ${frac(3,4)} → %: <b>75%</b>`,`Compare 75% vs 70% → 75 > 70`,`So: <b>${frac(3,4)} &gt; 70%</b>`],
+             id:[`Ubah ${frac(3,4)} → %: <b>75%</b>`,`Bandingkan 75% vs 70% → 75 > 70`,`Jadi: <b>${frac(3,4)} &gt; 70%</b>`]},
+      concept:{en:`Convert to the same format first, then compare.`,id:`Samakan format dulu, lalu bandingkan.`} },
+  ],
+
+  fadd:[
+    { text:{en:'What is the sum of the fractions?',id:'Berapakah hasil penjumlahan pecahan berikut?'},
+      math:frac(3,8)+' + '+frac(1,4)+' = …',
+      opts:[{l:'A',v:frac(3,8)},{l:'B',v:frac(5,8)},{l:'C',v:frac(7,8)},{l:'D',v:'1'}], ans:'B',
+      steps:{en:[`LCM of 8 and 4 = <b>8</b>`,`${frac(1,4)} × 2 → ${frac(2,8)}`,`${frac(3,8)} + ${frac(2,8)} = <b>${frac(5,8)}</b>`],
+             id:[`KPK dari 8 dan 4 = <b>8</b>`,`${frac(1,4)} × 2 → ${frac(2,8)}`,`${frac(3,8)} + ${frac(2,8)} = <b>${frac(5,8)}</b>`]},
+      concept:{en:`Find LCM first, then only add numerators. Never add denominators!`,id:`Samakan penyebut (KPK) dulu, lalu jumlahkan pembilang saja!`} },
+    { text:{en:'What is the sum of the fractions?',id:'Berapakah hasil penjumlahan pecahan berikut?'},
+      math:frac(1,3)+' + '+frac(1,6)+' = …',
+      opts:[{l:'A',v:frac(1,3)},{l:'B',v:frac(1,2)},{l:'C',v:frac(2,9)},{l:'D',v:frac(2,6)}], ans:'B',
+      steps:{en:[`LCM of 3 and 6 = <b>6</b>`,`${frac(1,3)} × 2 → ${frac(2,6)}`,`${frac(2,6)} + ${frac(1,6)} = ${frac(3,6)} = <b>${frac(1,2)}</b>`],
+             id:[`KPK dari 3 dan 6 = <b>6</b>`,`${frac(1,3)} × 2 → ${frac(2,6)}`,`${frac(2,6)} + ${frac(1,6)} = ${frac(3,6)} = <b>${frac(1,2)}</b>`]},
+      concept:{en:`Find LCM, add numerators, then simplify the result.`,id:`Samakan penyebut, jumlahkan pembilang, lalu sederhanakan.`} },
+    { text:{en:'What is the sum of the fractions?',id:'Berapakah hasil penjumlahan pecahan berikut?'},
+      math:frac(3,4)+' + '+frac(1,8)+' = …',
+      opts:[{l:'A',v:frac(5,8)},{l:'B',v:frac(3,4)},{l:'C',v:frac(7,8)},{l:'D',v:'1'}], ans:'C',
+      steps:{en:[`LCM of 4 and 8 = <b>8</b>`,`${frac(3,4)} × 2 → ${frac(6,8)}`,`${frac(6,8)} + ${frac(1,8)} = <b>${frac(7,8)}</b>`],
+             id:[`KPK dari 4 dan 8 = <b>8</b>`,`${frac(3,4)} × 2 → ${frac(6,8)}`,`${frac(6,8)} + ${frac(1,8)} = <b>${frac(7,8)}</b>`]},
+      concept:{en:`Find LCM first, then only add numerators.`,id:`Samakan penyebut dulu, lalu jumlahkan pembilang saja.`} },
+  ],
+
+  fmul:[
+    { text:{en:'What is the product of the fraction and the whole number?',id:'Berapakah hasil perkalian pecahan berikut?'},
+      math:frac(1,10)+' × 6 = …',
+      opts:[{l:'A',v:frac(3,5)},{l:'B',v:frac(5,10)},{l:'C',v:frac(7,10)},{l:'D',v:frac(2,3)}], ans:'A',
+      steps:{en:[`Multiply: ${frac('1×6','10')} = ${frac(6,10)}`,`Simplify ÷2: <b>${frac(3,5)}</b>`],
+             id:[`Kalikan: ${frac('1×6','10')} = ${frac(6,10)}`,`Sederhanakan ÷2: <b>${frac(3,5)}</b>`]},
+      concept:{en:`Multiply numerator × number, keep denominator, then simplify.`,id:`Kalikan pembilang × bilangan, penyebut tetap, lalu sederhanakan.`} },
+    { text:{en:'What is the product of the fraction and the whole number?',id:'Berapakah hasil perkalian pecahan berikut?'},
+      math:frac(2,3)+' × 9 = …',
+      opts:[{l:'A',v:'4'},{l:'B',v:'5'},{l:'C',v:'6'},{l:'D',v:'8'}], ans:'C',
+      steps:{en:[`Multiply: ${frac('2×9','3')} = ${frac(18,3)}`,`Simplify ÷3: <b>6</b>`],
+             id:[`Kalikan: ${frac('2×9','3')} = ${frac(18,3)}`,`Sederhanakan ÷3: <b>6</b>`]},
+      concept:{en:`Multiply numerator × number, keep denominator, then simplify.`,id:`Kalikan pembilang × bilangan, penyebut tetap, lalu sederhanakan.`} },
+    { text:{en:'What is the product of the fraction and the whole number?',id:'Berapakah hasil perkalian pecahan berikut?'},
+      math:frac(3,4)+' × 8 = …',
+      opts:[{l:'A',v:'4'},{l:'B',v:'5'},{l:'C',v:'6'},{l:'D',v:'7'}], ans:'C',
+      steps:{en:[`Multiply: ${frac('3×8','4')} = ${frac(24,4)}`,`Simplify ÷4: <b>6</b>`],
+             id:[`Kalikan: ${frac('3×8','4')} = ${frac(24,4)}`,`Sederhanakan ÷4: <b>6</b>`]},
+      concept:{en:`Multiply numerator × number, keep denominator, then simplify.`,id:`Kalikan pembilang × bilangan, penyebut tetap, lalu sederhanakan.`} },
+  ],
+
+  // ── Part 2 ────────────────────────────────────────────────
+  dtf:[
+    { text:{en:'A grid has 60 out of 100 squares shaded. What fraction (simplest form) represents the shaded part?',id:'Sebuah grid memiliki 60 dari 100 kotak yang diarsir. Pecahan apa (paling sederhana) yang mewakili bagian yang diarsir?'},
+      math:'0.60 → fraction?',
+      opts:[{l:'A',v:frac(1,5)},{l:'B',v:frac(6,10)},{l:'C',v:frac(3,5)},{l:'D',v:frac(2,4)}], ans:'C',
+      steps:{en:[`0.60 = ${frac(60,100)}`,`Simplify ÷20: <b>${frac(3,5)}</b>`],
+             id:[`0.60 = ${frac(60,100)}`,`Sederhanakan ÷20: <b>${frac(3,5)}</b>`]},
+      concept:{en:`Decimal → Fraction: write over 10 or 100, then simplify.`,id:`Desimal → Pecahan: tulis per 10 atau 100, lalu sederhanakan.`} },
+    { text:{en:'Convert the decimal to a fraction in its simplest form:',id:'Ubah desimal berikut menjadi pecahan dalam bentuk paling sederhana:'},
+      math:'0.75 → fraction?',
+      opts:[{l:'A',v:frac(7,5)},{l:'B',v:frac(3,4)},{l:'C',v:frac(7,10)},{l:'D',v:frac(4,5)}], ans:'B',
+      steps:{en:[`0.75 = ${frac(75,100)}`,`Simplify ÷25: <b>${frac(3,4)}</b>`],
+             id:[`0.75 = ${frac(75,100)}`,`Sederhanakan ÷25: <b>${frac(3,4)}</b>`]},
+      concept:{en:`Decimal → Fraction: write over 100, simplify by GCF.`,id:`Desimal → Pecahan: tulis per 100, sederhanakan dengan FPB.`} },
+    { text:{en:'Convert the decimal to a fraction in its simplest form:',id:'Ubah desimal berikut menjadi pecahan dalam bentuk paling sederhana:'},
+      math:'0.25 → fraction?',
+      opts:[{l:'A',v:frac(1,4)},{l:'B',v:frac(2,5)},{l:'C',v:frac(1,5)},{l:'D',v:frac(25,10)}], ans:'A',
+      steps:{en:[`0.25 = ${frac(25,100)}`,`Simplify ÷25: <b>${frac(1,4)}</b>`],
+             id:[`0.25 = ${frac(25,100)}`,`Sederhanakan ÷25: <b>${frac(1,4)}</b>`]},
+      concept:{en:`Decimal → Fraction: write over 100, then simplify.`,id:`Desimal → Pecahan: tulis per 100, lalu sederhanakan.`} },
+  ],
+
+  ftp:[
+    { text:{en:'What is 3/5 expressed as a percentage?',id:'Berapa persen nilai dari 3/5?'},
+      math:frac(3,5)+' = …%',
+      opts:[{l:'A',v:'40%'},{l:'B',v:'60%'},{l:'C',v:'35%'},{l:'D',v:'75%'}], ans:'B',
+      steps:{en:[`Fraction → %: multiply by 100`,`${frac(3,5)} × 100 = <b>60%</b>`],
+             id:[`Pecahan → %: kalikan dengan 100`,`${frac(3,5)} × 100 = <b>60%</b>`]},
+      concept:{en:`Fraction → %: (numerator ÷ denominator) × 100`,id:`Pecahan → %: (pembilang ÷ penyebut) × 100`} },
+    { text:{en:'What is 3/4 expressed as a percentage?',id:'Berapa persen nilai dari 3/4?'},
+      math:frac(3,4)+' = …%',
+      opts:[{l:'A',v:'34%'},{l:'B',v:'60%'},{l:'C',v:'70%'},{l:'D',v:'75%'}], ans:'D',
+      steps:{en:[`Fraction → %: multiply by 100`,`${frac(3,4)} × 100 = <b>75%</b>`],
+             id:[`Pecahan → %: kalikan dengan 100`,`${frac(3,4)} × 100 = <b>75%</b>`]},
+      concept:{en:`Fraction → %: (numerator ÷ denominator) × 100`,id:`Pecahan → %: (pembilang ÷ penyebut) × 100`} },
+    { text:{en:'What is 7/10 expressed as a percentage?',id:'Berapa persen nilai dari 7/10?'},
+      math:frac(7,10)+' = …%',
+      opts:[{l:'A',v:'17%'},{l:'B',v:'50%'},{l:'C',v:'70%'},{l:'D',v:'80%'}], ans:'C',
+      steps:{en:[`Fraction → %: multiply by 100`,`${frac(7,10)} × 100 = <b>70%</b>`],
+             id:[`Pecahan → %: kalikan dengan 100`,`${frac(7,10)} × 100 = <b>70%</b>`]},
+      concept:{en:`Fraction → %: (numerator ÷ denominator) × 100`,id:`Pecahan → %: (pembilang ÷ penyebut) × 100`} },
+  ],
+
+  ptf:[
+    { text:{en:'What is 20% expressed as a fraction in its simplest form?',id:'Berapa nilai 20% dalam bentuk pecahan paling sederhana?'},
+      math:'20% = ?',
+      opts:[{l:'A',v:frac(1,5)},{l:'B',v:frac(2,5)},{l:'C',v:frac(1,4)},{l:'D',v:frac(1,20)}], ans:'A',
+      steps:{en:[`20% = ${frac(20,100)}`,`Simplify ÷20: <b>${frac(1,5)}</b>`],
+             id:[`20% = ${frac(20,100)}`,`Sederhanakan ÷20: <b>${frac(1,5)}</b>`]},
+      concept:{en:`% → Fraction: write over 100, then simplify (divide by GCF).`,id:`% → Pecahan: tulis per 100, lalu sederhanakan (bagi FPB).`} },
+    { text:{en:'What is 75% expressed as a fraction in its simplest form?',id:'Berapa nilai 75% dalam bentuk pecahan paling sederhana?'},
+      math:'75% = ?',
+      opts:[{l:'A',v:frac(7,5)},{l:'B',v:frac(3,4)},{l:'C',v:frac(3,5)},{l:'D',v:frac(7,10)}], ans:'B',
+      steps:{en:[`75% = ${frac(75,100)}`,`Simplify ÷25: <b>${frac(3,4)}</b>`],
+             id:[`75% = ${frac(75,100)}`,`Sederhanakan ÷25: <b>${frac(3,4)}</b>`]},
+      concept:{en:`% → Fraction: write over 100, then simplify.`,id:`% → Pecahan: tulis per 100, lalu sederhanakan.`} },
+    { text:{en:'What is 40% expressed as a fraction in its simplest form?',id:'Berapa nilai 40% dalam bentuk pecahan paling sederhana?'},
+      math:'40% = ?',
+      opts:[{l:'A',v:frac(4,10)},{l:'B',v:frac(1,4)},{l:'C',v:frac(2,5)},{l:'D',v:frac(2,4)}], ans:'C',
+      steps:{en:[`40% = ${frac(40,100)}`,`Simplify ÷20: <b>${frac(2,5)}</b>`],
+             id:[`40% = ${frac(40,100)}`,`Sederhanakan ÷20: <b>${frac(2,5)}</b>`]},
+      concept:{en:`% → Fraction: write over 100, then simplify.`,id:`% → Pecahan: tulis per 100, lalu sederhanakan.`} },
+  ],
+
+  dtp:[
+    { text:{en:'4 out of 5 circles are filled. What percentage are filled?',id:'4 dari 5 lingkaran terisi. Berapa persennya?'},
+      math:'0.8 = …%',
+      opts:[{l:'A',v:'40%'},{l:'B',v:'75%'},{l:'C',v:'80%'},{l:'D',v:'8%'}], ans:'C',
+      steps:{en:[`Decimal → %: multiply by 100`,`0.8 × 100 = <b>80%</b>`],
+             id:[`Desimal → %: kalikan dengan 100`,`0.8 × 100 = <b>80%</b>`]},
+      concept:{en:`Decimal → %: move decimal 2 places right, add % sign.`,id:`Desimal → %: geser titik desimal 2 ke kanan, tambahkan %.`} },
+    { text:{en:'A student scored 0.35 on a quiz. What is this as a percentage?',id:'Seorang siswa mendapat nilai 0.35 pada kuis. Berapa persen nilainya?'},
+      math:'0.35 = …%',
+      opts:[{l:'A',v:'3.5%'},{l:'B',v:'35%'},{l:'C',v:'53%'},{l:'D',v:'350%'}], ans:'B',
+      steps:{en:[`Decimal → %: multiply by 100`,`0.35 × 100 = <b>35%</b>`],
+             id:[`Desimal → %: kalikan dengan 100`,`0.35 × 100 = <b>35%</b>`]},
+      concept:{en:`Decimal → %: move decimal 2 places right.`,id:`Desimal → %: geser titik desimal 2 ke kanan.`} },
+    { text:{en:'A jar is 0.15 full. What percentage is filled?',id:'Sebuah toples terisi 0.15. Berapa persen isinya?'},
+      math:'0.15 = …%',
+      opts:[{l:'A',v:'1.5%'},{l:'B',v:'51%'},{l:'C',v:'15%'},{l:'D',v:'150%'}], ans:'C',
+      steps:{en:[`Decimal → %: multiply by 100`,`0.15 × 100 = <b>15%</b>`],
+             id:[`Desimal → %: kalikan dengan 100`,`0.15 × 100 = <b>15%</b>`]},
+      concept:{en:`Decimal → %: move decimal 2 places right.`,id:`Desimal → %: geser titik desimal 2 ke kanan.`} },
+  ],
+
+  ftd2:[
+    { text:{en:'A house has 2 out of 5 windows painted. What is this as a decimal?',id:'Sebuah rumah memiliki 2 dari 5 jendela yang dicat. Berapa nilai desimalnya?'},
+      math:frac(2,5)+' = …',
+      opts:[{l:'A',v:'0.25'},{l:'B',v:'0.4'},{l:'C',v:'0.5'},{l:'D',v:'0.6'}], ans:'B',
+      steps:{en:[`Divide: 2 ÷ 5 = <b>0.4</b>`,`Or: ${frac(2,5)} × ${frac(2,2)} = ${frac(4,10)} = <b>0.4</b>`],
+             id:[`Bagi: 2 ÷ 5 = <b>0.4</b>`,`Atau: ${frac(2,5)} × ${frac(2,2)} = ${frac(4,10)} = <b>0.4</b>`]},
+      concept:{en:`Fraction → Decimal: divide numerator by denominator.`,id:`Pecahan → Desimal: bagi pembilang dengan penyebut.`} },
+    { text:{en:'9 out of 10 students passed an exam. What is this as a decimal?',id:'9 dari 10 siswa lulus ujian. Berapa nilai desimalnya?'},
+      math:frac(9,10)+' = …',
+      opts:[{l:'A',v:'0.19'},{l:'B',v:'0.90'},{l:'C',v:'0.09'},{l:'D',v:'9.0'}], ans:'B',
+      steps:{en:[`Divide: 9 ÷ 10 = <b>0.9</b>`,`Or: denominator is already 10 → <b>0.9</b>`],
+             id:[`Bagi: 9 ÷ 10 = <b>0.9</b>`,`Atau: penyebut sudah 10 → <b>0.9</b>`]},
+      concept:{en:`Fraction → Decimal: divide numerator by denominator.`,id:`Pecahan → Desimal: bagi pembilang dengan penyebut.`} },
+    { text:{en:'7 out of 20 books on a shelf are picture books. What is this as a decimal?',id:'7 dari 20 buku di rak adalah buku bergambar. Berapa desimalnya?'},
+      math:frac(7,20)+' = …',
+      opts:[{l:'A',v:'0.72'},{l:'B',v:'0.14'},{l:'C',v:'0.35'},{l:'D',v:'0.57'}], ans:'C',
+      steps:{en:[`Divide: 7 ÷ 20 = <b>0.35</b>`,`Or: ${frac(7,20)} × ${frac(5,5)} = ${frac(35,100)} = <b>0.35</b>`],
+             id:[`Bagi: 7 ÷ 20 = <b>0.35</b>`,`Atau: ${frac(7,20)} × ${frac(5,5)} = ${frac(35,100)} = <b>0.35</b>`]},
+      concept:{en:`Multiply to make denominator 100 if possible.`,id:`Kalikan agar penyebut jadi 100 jika memungkinkan.`} },
+  ],
+
+  // ── Part 3 ────────────────────────────────────────────────
+  word_length:[
+    { text:{en:`Fatimah had some ribbon. She cut it into <strong>3 pieces</strong>: the first was <strong>0.8 m</strong>, the second was <strong>¼ m</strong>, and the last was <strong>20%</strong> of the original length. How long was the ribbon at first?`,
+            id:`Fatimah memiliki pita. Ia memotongnya menjadi <strong>3 bagian</strong>: bagian pertama <strong>0.8 m</strong>, bagian kedua <strong>¼ m</strong>, dan bagian terakhir <strong>20%</strong> dari panjang awal. Berapa panjang pita awal?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'1.05 m'},{l:'B',v:'1.25 m'},{l:'C',v:'1.3125 m'},{l:'D',v:'1.5 m'}], ans:'C',
+      steps:{en:[`Let total = <b>T</b>`,`0.8 + 0.25 + 0.2T = T`,`1.05 = 0.8T`,`T = 1.05 ÷ 0.8 = <b>1.3125 m</b>`],
+             id:[`Misalkan panjang awal = <b>T</b>`,`0.8 + 0.25 + 0.2T = T`,`1.05 = 0.8T`,`T = 1.05 ÷ 0.8 = <b>1.3125 m</b>`]},
+      concept:{en:`Set up an equation: (known pieces) + (% × T) = T, then solve for T.`,id:`Buat persamaan: (potongan diketahui) + (% × T) = T, lalu selesaikan.`} },
+    { text:{en:`Budi has a rope. He cuts it into <strong>3 pieces</strong>: the first is <strong>1.2 m</strong>, the second is <strong>⅕ of the total length</strong>, and the last is <strong>30%</strong> of the total length. How long is the rope?`,
+            id:`Budi memiliki tali. Ia memotongnya menjadi <strong>3 bagian</strong>: bagian pertama <strong>1.2 m</strong>, bagian kedua <strong>⅕ dari panjang awal</strong>, dan bagian terakhir <strong>30%</strong> dari panjang awal. Berapa panjang tali seluruhnya?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'2.0 m'},{l:'B',v:'2.4 m'},{l:'C',v:'2.8 m'},{l:'D',v:'3.0 m'}], ans:'B',
+      steps:{en:[`Let total = <b>T</b>`,`1.2 + 0.2T + 0.3T = T`,`1.2 = 0.5T`,`T = 1.2 ÷ 0.5 = <b>2.4 m</b>`],
+             id:[`Misalkan panjang awal = <b>T</b>`,`1.2 + 0.2T + 0.3T = T`,`1.2 = 0.5T`,`T = 1.2 ÷ 0.5 = <b>2.4 m</b>`]},
+      concept:{en:`Set up an equation: (known piece) + (fractions of T) = T.`,id:`Buat persamaan: (potongan diketahui) + (pecahan × T) = T.`} },
+    { text:{en:`Rina has some ribbon. She cuts it into <strong>3 pieces</strong>: the first is <strong>0.9 m</strong>, the second is <strong>¼ of the total length</strong>, and the last is <strong>15%</strong> of the total length. What is the total length?`,
+            id:`Rina memiliki pita. Ia memotongnya menjadi <strong>3 bagian</strong>: bagian pertama <strong>0.9 m</strong>, bagian kedua <strong>¼ dari panjang awal</strong>, dan bagian terakhir <strong>15%</strong> dari panjang awal. Berapa panjang pita seluruhnya?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'1.25 m'},{l:'B',v:'1.5 m'},{l:'C',v:'1.75 m'},{l:'D',v:'2.0 m'}], ans:'B',
+      steps:{en:[`Let total = <b>T</b>`,`0.9 + 0.25T + 0.15T = T`,`0.9 = 0.6T`,`T = 0.9 ÷ 0.6 = <b>1.5 m</b>`],
+             id:[`Misalkan panjang awal = <b>T</b>`,`0.9 + 0.25T + 0.15T = T`,`0.9 = 0.6T`,`T = 0.9 ÷ 0.6 = <b>1.5 m</b>`]},
+      concept:{en:`Set up an equation: (known piece) + (fractions of T) = T.`,id:`Buat persamaan: (potongan diketahui) + (pecahan × T) = T.`} },
+  ],
+
+  word_mul:[
+    { text:{en:`A baker makes <strong>60 chocolate cupcakes</strong>. Each cupcake needs <strong>⅙ piece of butter</strong>. How many pieces of butter are needed in total?`,
+            id:`Seorang baker membuat <strong>60 cupcake coklat</strong>. Setiap cupcake membutuhkan <strong>⅙ potong mentega</strong>. Berapa banyak mentega yang dibutuhkan seluruhnya?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'10 pieces'},{l:'B',v:'6 pieces'},{l:'C',v:'12 pieces'},{l:'D',v:'360 pieces'}], ans:'A',
+      steps:{en:[`Total = 60 × ${frac(1,6)}`,`= 60 ÷ 6 = <b>10 pieces</b>`],
+             id:[`Total = 60 × ${frac(1,6)}`,`= 60 ÷ 6 = <b>10 potong</b>`]},
+      concept:{en:`Multiplying by a unit fraction: 60 × ⅙ = 60 ÷ 6.`,id:`Mengalikan dengan pecahan: 60 × ⅙ = 60 ÷ 6.`} },
+    { text:{en:`There are <strong>120 students</strong> in a school hall. <strong>¼ of them</strong> received awards. How many students received awards?`,
+            id:`Ada <strong>120 siswa</strong> di aula sekolah. <strong>¼ dari mereka</strong> mendapat penghargaan. Berapa banyak siswa yang mendapat penghargaan?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'20 students'},{l:'B',v:'30 students'},{l:'C',v:'40 students'},{l:'D',v:'60 students'}], ans:'B',
+      steps:{en:[`Total = 120 × ${frac(1,4)}`,`= 120 ÷ 4 = <b>30 students</b>`],
+             id:[`Total = 120 × ${frac(1,4)}`,`= 120 ÷ 4 = <b>30 siswa</b>`]},
+      concept:{en:`Fraction of a quantity: multiply total by the fraction.`,id:`Pecahan dari jumlah: kalikan total dengan pecahannya.`} },
+    { text:{en:`A toy store has <strong>200 toys</strong>. <strong>⅖ of them</strong> are red. How many toys are red?`,
+            id:`Sebuah toko mainan memiliki <strong>200 mainan</strong>. <strong>⅖ dari mainan tersebut</strong> berwarna merah. Berapa banyak mainan yang berwarna merah?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'40 toys'},{l:'B',v:'60 toys'},{l:'C',v:'80 toys'},{l:'D',v:'100 toys'}], ans:'C',
+      steps:{en:[`Total = 200 × ${frac(2,5)}`,`= 200 ÷ 5 × 2 = 40 × 2 = <b>80 toys</b>`],
+             id:[`Total = 200 × ${frac(2,5)}`,`= 200 ÷ 5 × 2 = 40 × 2 = <b>80 mainan</b>`]},
+      concept:{en:`Fraction of a quantity: divide by denominator, then multiply by numerator.`,id:`Pecahan dari jumlah: bagi dengan penyebut, lalu kalikan pembilang.`} },
+  ],
+
+  word_div:[
+    { text:{en:`Mrs Sarah spent <strong>3/5</strong> of her monthly money on groceries. She shared the <strong>remaining money equally</strong> among her <strong>4 children</strong>. What fraction of the total money did each child receive?`,
+            id:`Bu Sarah menghabiskan <strong>3/5</strong> uangnya untuk belanja. Sisa uangnya dibagi <strong>rata kepada 4 anaknya</strong>. Berapa bagian dari total uang yang diterima setiap anak?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:frac(2,5)},{l:'B',v:frac(1,4)},{l:'C',v:frac(1,10)},{l:'D',v:frac(1,15)}], ans:'C',
+      steps:{en:[`Remaining = 1 − ${frac(3,5)} = <b>${frac(2,5)}</b>`,`Each child = ${frac(2,5)} ÷ 4 = ${frac(2,5)} × ${frac(1,4)} = <b>${frac(1,10)}</b>`],
+             id:[`Sisa = 1 − ${frac(3,5)} = <b>${frac(2,5)}</b>`,`Tiap anak = ${frac(2,5)} ÷ 4 = ${frac(2,5)} × ${frac(1,4)} = <b>${frac(1,10)}</b>`]},
+      concept:{en:`Dividing a fraction by a whole number: flip and multiply.`,id:`Membagi pecahan dengan bilangan bulat: balik lalu kalikan.`} },
+    { text:{en:`Mr David spent <strong>2/3</strong> of his salary on rent. He divided the <strong>remaining salary equally</strong> into <strong>3 savings goals</strong>. What fraction of his total salary went to each goal?`,
+            id:`Pak David menghabiskan <strong>2/3</strong> gajinya untuk sewa rumah. Sisa gajinya dibagi <strong>rata menjadi 3 tujuan tabungan</strong>. Berapa bagian dari total gaji untuk setiap tujuan?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:frac(1,3)},{l:'B',v:frac(1,6)},{l:'C',v:frac(1,9)},{l:'D',v:frac(2,9)}], ans:'C',
+      steps:{en:[`Remaining = 1 − ${frac(2,3)} = <b>${frac(1,3)}</b>`,`Each goal = ${frac(1,3)} ÷ 3 = ${frac(1,3)} × ${frac(1,3)} = <b>${frac(1,9)}</b>`],
+             id:[`Sisa = 1 − ${frac(2,3)} = <b>${frac(1,3)}</b>`,`Tiap tujuan = ${frac(1,3)} ÷ 3 = ${frac(1,3)} × ${frac(1,3)} = <b>${frac(1,9)}</b>`]},
+      concept:{en:`Dividing a fraction by a whole number: flip and multiply.`,id:`Membagi pecahan dengan bilangan bulat: balik lalu kalikan.`} },
+    { text:{en:`Ibu Rina saves <strong>3/8</strong> of her salary. She shares the <strong>remaining money equally</strong> among <strong>5 family needs</strong>. What fraction of her salary goes to each need?`,
+            id:`Ibu Rina menabung <strong>3/8</strong> gajinya. Sisa gajinya dibagi <strong>rata untuk 5 kebutuhan keluarga</strong>. Berapa bagian dari total gaji untuk setiap kebutuhan?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:frac(1,5)},{l:'B',v:frac(5,8)},{l:'C',v:frac(1,8)},{l:'D',v:frac(3,40)}], ans:'C',
+      steps:{en:[`Remaining = 1 − ${frac(3,8)} = <b>${frac(5,8)}</b>`,`Each need = ${frac(5,8)} ÷ 5 = ${frac(5,8)} × ${frac(1,5)} = ${frac(5,40)} = <b>${frac(1,8)}</b>`],
+             id:[`Sisa = 1 − ${frac(3,8)} = <b>${frac(5,8)}</b>`,`Tiap kebutuhan = ${frac(5,8)} ÷ 5 = ${frac(5,8)} × ${frac(1,5)} = <b>${frac(1,8)}</b>`]},
+      concept:{en:`Dividing a fraction by a whole number: flip and multiply.`,id:`Membagi pecahan dengan bilangan bulat: balik lalu kalikan.`} },
+  ],
+
+  word_pricing:[
+    { text:{en:`The picture below shows the price of muffins at a bakery.`,id:`Gambar berikut menunjukkan harga muffin di toko roti.`},
+      extra:`<div class="price-card"><div class="menu-title">🧁 BAKERY MENU</div><div class="price-row"><span>First 4 muffins</span><span class="price">$2.00</span></div><div class="price-row"><span>Every additional muffin</span><span class="price">$0.50</span></div></div><div style="margin-top:10px">Rania has <strong>$10.00</strong>. What is the <strong>greatest number</strong> of muffins she can buy?</div>`,
+      isWord:true, math:null,
+      opts:[{l:'A',v:'16 muffins'},{l:'B',v:'18 muffins'},{l:'C',v:'19 muffins'},{l:'D',v:'20 muffins'}], ans:'D',
+      steps:{en:[`First 4 muffins = $2.00`,`Remaining: $10.00 − $2.00 = <b>$8.00</b>`,`Additional: $8.00 ÷ $0.50 = <b>16 muffins</b>`,`Total: 4 + 16 = <b>20 muffins</b>`],
+             id:[`4 muffin pertama = $2.00`,`Sisa: $10.00 − $2.00 = <b>$8.00</b>`,`Tambahan: $8.00 ÷ $0.50 = <b>16 muffin</b>`,`Total: 4 + 16 = <b>20 muffin</b>`]},
+      concept:{en:`Step 1: pay base price. Step 2: use remaining money for extra items.`,id:`Langkah 1: bayar harga dasar. Langkah 2: gunakan sisa uang untuk item tambahan.`} },
+    { text:{en:`The picture below shows the price of cookies at a bakery.`,id:`Gambar berikut menunjukkan harga cookies di toko roti.`},
+      extra:`<div class="price-card"><div class="menu-title">🍪 BAKERY MENU</div><div class="price-row"><span>First 6 cookies</span><span class="price">$3.00</span></div><div class="price-row"><span>Every additional cookie</span><span class="price">$0.75</span></div></div><div style="margin-top:10px">Hamid has <strong>$12.00</strong>. What is the <strong>greatest number</strong> of cookies he can buy?</div>`,
+      isWord:true, math:null,
+      opts:[{l:'A',v:'12 cookies'},{l:'B',v:'15 cookies'},{l:'C',v:'18 cookies'},{l:'D',v:'20 cookies'}], ans:'C',
+      steps:{en:[`First 6 cookies = $3.00`,`Remaining: $12.00 − $3.00 = <b>$9.00</b>`,`Additional: $9.00 ÷ $0.75 = <b>12 cookies</b>`,`Total: 6 + 12 = <b>18 cookies</b>`],
+             id:[`6 cookies pertama = $3.00`,`Sisa: $12.00 − $3.00 = <b>$9.00</b>`,`Tambahan: $9.00 ÷ $0.75 = <b>12 cookies</b>`,`Total: 6 + 12 = <b>18 cookies</b>`]},
+      concept:{en:`Step 1: pay base price. Step 2: use remaining money for extra items.`,id:`Langkah 1: bayar harga dasar. Langkah 2: gunakan sisa uang untuk item tambahan.`} },
+    { text:{en:`The picture below shows the price of donuts at a bakery.`,id:`Gambar berikut menunjukkan harga donat di toko roti.`},
+      extra:`<div class="price-card"><div class="menu-title">🍩 BAKERY MENU</div><div class="price-row"><span>First 5 donuts</span><span class="price">$4.00</span></div><div class="price-row"><span>Every additional donut</span><span class="price">$0.50</span></div></div><div style="margin-top:10px">Layla has <strong>$14.00</strong>. What is the <strong>greatest number</strong> of donuts she can buy?</div>`,
+      isWord:true, math:null,
+      opts:[{l:'A',v:'20 donuts'},{l:'B',v:'22 donuts'},{l:'C',v:'24 donuts'},{l:'D',v:'25 donuts'}], ans:'D',
+      steps:{en:[`First 5 donuts = $4.00`,`Remaining: $14.00 − $4.00 = <b>$10.00</b>`,`Additional: $10.00 ÷ $0.50 = <b>20 donuts</b>`,`Total: 5 + 20 = <b>25 donuts</b>`],
+             id:[`5 donat pertama = $4.00`,`Sisa: $14.00 − $4.00 = <b>$10.00</b>`,`Tambahan: $10.00 ÷ $0.50 = <b>20 donat</b>`,`Total: 5 + 20 = <b>25 donat</b>`]},
+      concept:{en:`Step 1: pay base price. Step 2: use remaining money for extra items.`,id:`Langkah 1: bayar harga dasar. Langkah 2: gunakan sisa uang untuk item tambahan.`} },
+  ],
+
+  word_mass:[
+    { text:{en:`Ammar is shipping <strong>8 identical boxes</strong>. Each box has a mass of <strong>1.5 kg</strong>. What is the <strong>total mass</strong> of all 8 boxes?`,
+            id:`Ammar mengirimkan <strong>8 kotak identik</strong>. Setiap kotak beratnya <strong>1.5 kg</strong>. Berapakah <strong>total berat</strong> semua 8 kotak?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'9.5 kg'},{l:'B',v:'12 kg'},{l:'C',v:'10.5 kg'},{l:'D',v:'13.5 kg'}], ans:'B',
+      steps:{en:[`Total = 8 × 1.5 = <b>12 kg</b>`], id:[`Total = 8 × 1.5 = <b>12 kg</b>`]},
+      concept:{en:`8 × 1.5 = 8 × 1 + 8 × 0.5 = 8 + 4 = 12`,id:`8 × 1.5 = 8 × 1 + 8 × 0.5 = 8 + 4 = 12`} },
+    { text:{en:`A courier delivers <strong>6 identical parcels</strong>. Each parcel has a mass of <strong>2.5 kg</strong>. What is the <strong>total mass</strong> of all 6 parcels?`,
+            id:`Seorang kurir mengantarkan <strong>6 paket identik</strong>. Setiap paket beratnya <strong>2.5 kg</strong>. Berapakah <strong>total berat</strong> semua 6 paket?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'12.5 kg'},{l:'B',v:'13 kg'},{l:'C',v:'14 kg'},{l:'D',v:'15 kg'}], ans:'D',
+      steps:{en:[`Total = 6 × 2.5`,`= 6 × 2 + 6 × 0.5 = 12 + 3 = <b>15 kg</b>`],
+             id:[`Total = 6 × 2.5`,`= 6 × 2 + 6 × 0.5 = 12 + 3 = <b>15 kg</b>`]},
+      concept:{en:`6 × 2.5 = 6 × 2 + 6 × 0.5 = 12 + 3 = 15`,id:`6 × 2.5 = 6 × 2 + 6 × 0.5 = 12 + 3 = 15`} },
+    { text:{en:`A warehouse packs <strong>9 identical crates</strong>. Each crate has a mass of <strong>3.5 kg</strong>. What is the <strong>total mass</strong> of all 9 crates?`,
+            id:`Sebuah gudang mengemas <strong>9 peti identik</strong>. Setiap peti beratnya <strong>3.5 kg</strong>. Berapakah <strong>total berat</strong> semua 9 peti?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'27 kg'},{l:'B',v:'28.5 kg'},{l:'C',v:'31.5 kg'},{l:'D',v:'33 kg'}], ans:'C',
+      steps:{en:[`Total = 9 × 3.5`,`= 9 × 3 + 9 × 0.5 = 27 + 4.5 = <b>31.5 kg</b>`],
+             id:[`Total = 9 × 3.5`,`= 9 × 3 + 9 × 0.5 = 27 + 4.5 = <b>31.5 kg</b>`]},
+      concept:{en:`9 × 3.5 = 9 × 3 + 9 × 0.5 = 27 + 4.5 = 31.5`,id:`9 × 3.5 = 9 × 3 + 9 × 0.5 = 27 + 4.5 = 31.5`} },
+  ],
+
+  word_cost:[
+    { text:{en:`Ammar ships <strong>8 boxes</strong>, each weighing <strong>1.5 kg</strong>. The shipping cost is <strong>$3.00 per kg</strong>. What is the <strong>total shipping fee</strong>?`,
+            id:`Ammar mengirim <strong>8 kotak</strong>, masing-masing <strong>1.5 kg</strong>. Biaya pengiriman <strong>$3.00 per kg</strong>. Berapa <strong>total biaya pengiriman</strong>?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'$24'},{l:'B',v:'$30'},{l:'C',v:'$36'},{l:'D',v:'$48'}], ans:'C',
+      steps:{en:[`Total mass = 8 × 1.5 = <b>12 kg</b>`,`Fee = 12 × $3.00 = <b>$36</b>`],
+             id:[`Total berat = 8 × 1.5 = <b>12 kg</b>`,`Biaya = 12 × $3.00 = <b>$36</b>`]},
+      concept:{en:`Two steps: find total mass, then multiply by the rate.`,id:`Dua langkah: cari total berat, lalu kalikan dengan tarif.`} },
+    { text:{en:`A courier delivers <strong>6 parcels</strong>, each weighing <strong>2.5 kg</strong>. The shipping cost is <strong>$4.00 per kg</strong>. What is the <strong>total shipping fee</strong>?`,
+            id:`Seorang kurir mengantarkan <strong>6 paket</strong>, masing-masing <strong>2.5 kg</strong>. Biaya pengiriman <strong>$4.00 per kg</strong>. Berapa <strong>total biaya pengiriman</strong>?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'$45'},{l:'B',v:'$50'},{l:'C',v:'$55'},{l:'D',v:'$60'}], ans:'D',
+      steps:{en:[`Total mass = 6 × 2.5 = <b>15 kg</b>`,`Fee = 15 × $4.00 = <b>$60</b>`],
+             id:[`Total berat = 6 × 2.5 = <b>15 kg</b>`,`Biaya = 15 × $4.00 = <b>$60</b>`]},
+      concept:{en:`Two steps: find total mass, then multiply by the rate.`,id:`Dua langkah: cari total berat, lalu kalikan dengan tarif.`} },
+    { text:{en:`A store ships <strong>5 crates</strong>, each weighing <strong>3.5 kg</strong>. The shipping cost is <strong>$2.00 per kg</strong>. What is the <strong>total shipping fee</strong>?`,
+            id:`Sebuah toko mengirim <strong>5 peti</strong>, masing-masing <strong>3.5 kg</strong>. Biaya pengiriman <strong>$2.00 per kg</strong>. Berapa <strong>total biaya pengiriman</strong>?`},
+      isWord:true, math:null,
+      opts:[{l:'A',v:'$28'},{l:'B',v:'$30'},{l:'C',v:'$35'},{l:'D',v:'$40'}], ans:'C',
+      steps:{en:[`Total mass = 5 × 3.5 = <b>17.5 kg</b>`,`Fee = 17.5 × $2.00 = <b>$35</b>`],
+             id:[`Total berat = 5 × 3.5 = <b>17.5 kg</b>`,`Biaya = 17.5 × $2.00 = <b>$35</b>`]},
+      concept:{en:`Two steps: find total mass, then multiply by the rate.`,id:`Dua langkah: cari total berat, lalu kalikan dengan tarif.`} },
+  ],
+};
+
+const Parts=[
+  { section:{en:'Part 1 — Fractions & Decimals',id:'Bagian 1 — Pecahan & Desimal'},
+    topics:['itm','mti','ftd','cmp','fadd','fmul'] },
+  { section:{en:'Part 2 — Conversions',id:'Bagian 2 — Konversi'},
+    topics:['dtf','ftp','ptf','dtp','ftd2'] },
+  { section:{en:'Part 3 — Word Problems',id:'Bagian 3 — Soal Cerita'},
+    topics:['word_length','word_mul','word_div','word_pricing','word_mass','word_cost'] },
+];
+
+// ─────────────────────────────────────────────────────────────
+// Topic names (for adaptive report)
+// ─────────────────────────────────────────────────────────────
+const topicNames={
+  itm:{ en:'Improper → Mixed Number',    id:'Pecahan Biasa → Campuran' },
+  mti:{ en:'Mixed Number → Improper',    id:'Pecahan Campuran → Biasa' },
+  ftd:{ en:'Fraction → Decimal',         id:'Pecahan → Desimal' },
+  cmp:{ en:'Comparing Values',           id:'Membandingkan Nilai' },
+  fadd:{ en:'Adding Fractions',          id:'Penjumlahan Pecahan' },
+  fmul:{ en:'Multiplying Fractions',     id:'Perkalian Pecahan' },
+  dtf:{ en:'Decimal → Fraction',         id:'Desimal → Pecahan' },
+  ftp:{ en:'Fraction → Percentage',      id:'Pecahan → Persen' },
+  ptf:{ en:'Percentage → Fraction',      id:'Persen → Pecahan' },
+  dtp:{ en:'Decimal → Percentage',       id:'Desimal → Persen' },
+  ftd2:{ en:'Fraction → Decimal (II)',   id:'Pecahan → Desimal (II)' },
+  word_length:{ en:'Word: Length Problems',   id:'Cerita: Masalah Panjang' },
+  word_mul:{ en:'Word: Fraction × Whole',     id:'Cerita: Pecahan × Bulat' },
+  word_div:{ en:'Word: Sharing Fractions',    id:'Cerita: Membagi Pecahan' },
+  word_pricing:{ en:'Word: Pricing Problems', id:'Cerita: Masalah Harga' },
+  word_mass:{ en:'Word: Mass Problems',       id:'Cerita: Masalah Berat' },
+  word_cost:{ en:'Word: Shipping Cost',       id:'Cerita: Biaya Pengiriman' },
+};
+
+// ─────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────
+const topicStats={};
+Object.keys(topicNames).forEach(k=>topicStats[k]={wrong:0,correct:0});
+
+let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false;
+let round=1, isAdaptive=false;
+let queue=[];
+let results=[];
+
+// ─────────────────────────────────────────────────────────────
+// SmartScore
+// ─────────────────────────────────────────────────────────────
+function applyScore(ok){
+  const topic=queue[cur].topic;
+  if(ok){
+    streak++;
+    topicStats[topic].correct++;
+    const bonus=streak>=3?2:0;
+    const gain=Math.max(4,Math.round((100-score)*0.2))+bonus;
+    score=Math.min(100,score+gain);
+    nCorrect++;
+  } else {
+    streak=0;
+    topicStats[topic].wrong++;
+    const loss=Math.max(3,Math.round(score*0.13));
+    score=Math.max(0,score-loss);
+    nWrong++;
+  }
+  document.getElementById('ssVal').textContent=score;
+  document.getElementById('barFill').style.width=score+'%';
+  document.getElementById('barPct').textContent=score;
+  document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+  document.getElementById('sCorrect').textContent=nCorrect;
+  document.getElementById('sWrong').textContent=nWrong;
+  document.getElementById('sTotal').textContent=nCorrect+nWrong;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Progress dots
+// ─────────────────────────────────────────────────────────────
+function renderDots(){
+  const c=document.getElementById('progDots');
+  c.innerHTML='';
+  queue.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(results[i]==='correct'?' done':results[i]==='wrong'?' wrong-dot':i===cur?' cur':'');
+    c.appendChild(d);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// Main render
+// ─────────────────────────────────────────────────────────────
+function render(){
+  if(cur>=queue.length){renderDone();return}
+  answered=false;
+  hintUsed=false;
+  renderDots();
+  renderMCQ(queue[cur]);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Render MCQ
+// ─────────────────────────────────────────────────────────────
+function renderMCQ(q){
+  const sectionHtml = q.section
+    ? `<div class="section-banner">📚 ${t(q.section)}</div>`
+    : '';
+
+  const mathHtml = q.math
+    ? `<div class="math-big">${q.math}</div>`
+    : '';
+
+  const extraHtml = q.extra || '';
+
+  const wordWrap = q.isWord
+    ? `<div class="word-box">${t(q.text)}${extraHtml}</div>`
+    : `<div class="q-text">${t(q.text)}</div>${mathHtml}`;
+
+  const optsHtml = q.opts.map(o=>`
+    <button class="opt" data-l="${o.l}" onclick="pick('${o.l}')">
+      <span class="opt-lbl">${o.l}</span>
+      <span>${typeof o.v==='string'?o.v:t(o.v)}</span>
+    </button>`).join('');
+
+  const hintLabel = lang==='en'?'💡 Show Hint':'💡 Minta Petunjuk';
+  const nextLabel = lang==='en'?'Next Question →':'Soal Berikutnya →';
+
+  const stats=topicStats[q.topic]||{wrong:0,correct:0};
+  const attempts=stats.wrong+stats.correct;
+  const errRate=attempts>0?stats.wrong/attempts:0;
+  const isWeakRepeat=q._isRepeat&&errRate>0.4;
+  const weakBadge=isWeakRepeat
+    ?`<div class="weak-badge">🔁 ${lang==='en'?'Weak area — keep practising!':'Area lemah — terus berlatih!'}</div>`:'';
+
+  const roundBadge=round>1
+    ?`<div class="round-badge">🔄 ${lang==='en'?`Round ${round} · Adaptive Practice`:`Putaran ${round} · Latihan Adaptif`}</div>`:'';
+
+  document.getElementById('qArea').innerHTML=`
+    ${sectionHtml}
+    <div class="qcard">
+      ${roundBadge}${weakBadge}
+      <span class="q-tag ${q.section?'section-tag':''}">${t(q.tag)}</span>
+      ${wordWrap}
+      <div class="options">${optsHtml}</div>
+      <button class="hint-btn" id="hintBtn" onclick="showHint()">${hintLabel}</button>
+      <div class="feedback" id="fb"></div>
+      <button class="next-btn" id="nxtBtn" onclick="next()">${nextLabel}</button>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Pick answer
+// ─────────────────────────────────────────────────────────────
+function pick(l){
+  if(answered) return;
+  answered=true;
+  const q=queue[cur];
+  const ok=l===q.ans;
+  if(!hintUsed) applyScore(ok);
+  results[cur]=ok?'correct':'wrong';
+  renderDots();
+
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    const bl=b.getAttribute('data-l');
+    if(bl===q.ans) b.classList.add('correct');
+    else if(bl===l&&!ok) b.classList.add('wrong');
+  });
+
+  const fb=document.getElementById('fb');
+  const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptBox=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
+
+  if(ok){
+    const sm=streak>=3?`<span class="streak">🔥 ${streak}${lang==='en'?' in a row!':' Berturut-turut!'}</span>`:'';
+    fb.className='feedback show correct';
+    fb.innerHTML=`<strong>${lang==='en'?'✅ Correct! Well done!':'✅ Benar! Keren!'} ${sm}</strong>${conceptBox}`;
+    confetti();
+  } else {
+    const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
+    fb.className='feedback show wrong';
+    fb.innerHTML=`<strong>${lang==='en'?'❌ Not quite.':'❌ Belum tepat.'} ${topicLabel}</strong>
+      <div class="steps" style="margin-top:10px">${stHtml}</div>${conceptBox}`;
+  }
+  document.getElementById('hintBtn').style.display='none';
+  document.getElementById('nxtBtn').classList.add('show');
+}
+
+// ─────────────────────────────────────────────────────────────
+// Hint
+// ─────────────────────────────────────────────────────────────
+function showHint(){
+  hintUsed=true;
+  const hintBtn=document.getElementById('hintBtn');
+  hintBtn.textContent=lang==='en'?'💡 Hint shown — question not scored':'💡 Petunjuk aktif — soal ini tidak dinilai';
+  hintBtn.disabled=true;
+  const q=queue[cur];
+  const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num orange">${i+1}</div><div>${s}</div></div>`).join('');
+  const fb=document.getElementById('fb');
+  fb.className='feedback show hint';
+  fb.innerHTML=`<strong>💡 ${lang==='en'?'Step-by-step hint:':'Petunjuk Langkah demi Langkah:'}</strong>
+    <div class="steps" style="margin-top:10px">${stHtml}</div>
+    <div style="margin-top:8px;font-size:.79rem;opacity:.75">⚠️ ${lang==='en'?'This question won\'t affect your SmartScore since you used a hint.':'Soal ini tidak dihitung ke SmartScore karena kamu melihat petunjuk.'}</div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation
+// ─────────────────────────────────────────────────────────────
+function next(){
+  cur++;
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────────────────────
+// Queue builders
+// ─────────────────────────────────────────────────────────────
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function buildInitialQueue(){
+  let qNum=1;
+  return Parts.flatMap(part=>{
+    const picked=part.topics.map(topic=>{
+      const variants=Bank[topic];
+      const q={...variants[Math.floor(Math.random()*variants.length)]};
+      q.topic=topic;
+      delete q.section;
+      return q;
+    });
+    shuffle(picked);
+    picked[0].section=part.section;
+    picked.forEach(q=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
+    return picked;
+  });
+}
+
+function buildAdaptiveQueue(){
+  let qNum=1;
+  const newQueue=[];
+  Parts.forEach(part=>{
+    const partQs=[];
+    part.topics.forEach(topic=>{
+      const s=topicStats[topic]||{wrong:0,correct:0};
+      const att=s.wrong+s.correct;
+      const err=att>0?s.wrong/att:0;
+      const copies=err>0.66?3:err>0.33?2:1;
+      const variants=Bank[topic];
+      for(let i=0;i<copies;i++){
+        const q={...variants[Math.floor(Math.random()*variants.length)]};
+        q.topic=topic;
+        q._isRepeat=i>0;
+        delete q.section;
+        partQs.push(q);
+      }
+    });
+    shuffle(partQs);
+    if(partQs.length) partQs[0].section=part.section;
+    newQueue.push(...partQs);
+  });
+  newQueue.forEach((q,i)=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
+  const scored=Object.keys(topicStats).map(topic=>{
+    const s=topicStats[topic];
+    const att=s.wrong+s.correct;
+    return{topic,errorRate:att>0?s.wrong/att:0,attempts:att};
+  }).filter(x=>x.attempts>0).sort((a,b)=>b.errorRate-a.errorRate);
+  return{queue:newQueue,scored};
+}
+
+// ─────────────────────────────────────────────────────────────
+// Completion
+// ─────────────────────────────────────────────────────────────
+function renderDone(){
+  document.getElementById('progDots').innerHTML='';
+  const total=nCorrect+nWrong;
+  const acc=total>0?Math.round(nCorrect/total*100):0;
+  let trophy='📚',msg={en:'Keep studying — you can do it!',id:'Terus belajar ya, kamu pasti bisa!'};
+  if(score>=80){trophy='🏆';msg={en:'Amazing! You\'ve mastered this topic!',id:'Luar biasa! Kamu sudah menguasai materi ini!'};}
+  else if(score>=50){trophy='⭐';msg={en:'Good job! Keep practising!',id:'Bagus! Terus semangat berlatih ya!'};}
+  else if(score>=30){trophy='💪';msg={en:'Getting there! A bit more practice!',id:'Hampir! Sedikit lagi berlatih!'};}
+
+  const topicScores=Object.keys(topicStats)
+    .map(tp=>({tp,s:topicStats[tp],att:topicStats[tp].wrong+topicStats[tp].correct}))
+    .filter(x=>x.att>0)
+    .sort((a,b)=>(b.s.wrong/b.att)-(a.s.wrong/a.att));
+
+  const hasWeakness=topicScores.some(x=>x.s.wrong/x.att>0.33);
+
+  const weakRowsHtml=topicScores.map(({tp,s,att})=>{
+    const errPct=Math.round(s.wrong/att*100);
+    const isWeak=errPct>33;
+    return`<div class="weak-row${isWeak?'':' strong-row'}">
+      <span class="topic-name">${isWeak?'⚠️':'✅'} ${t(topicNames[tp])}</span>
+      <div class="weak-bar-wrap"><div class="weak-bar-fill" style="width:${errPct}%"></div></div>
+      <span class="weak-pct">${errPct}% ${lang==='en'?'wrong':'salah'}</span>
+    </div>`;
+  }).join('');
+
+  const weakReport=topicScores.length>0?`
+    <div class="weak-report">
+      <h3>📊 ${lang==='en'?'Performance by Topic':'Performa per Topik'}</h3>
+      ${weakRowsHtml}
+    </div>`:'';
+
+  const adaptiveBtn=hasWeakness?`
+    <button class="practice-btn" onclick="startAdaptive()">
+      🎯 ${lang==='en'?'Practice Weak Areas':'Latih Area Lemah'}
+    </button>`:'';
+
+  document.getElementById('qArea').innerHTML=`
+  <div class="qcard completion">
+    <div class="trophy">${trophy}</div>
+    <h2>SmartScore: ${score}</h2>
+    <p>${t(msg)}</p>
+    <div class="stats-row" style="max-width:360px;margin:0 auto 16px">
+      <div class="stat-box"><div class="val val-g">${nCorrect}</div><div class="lbl">${lang==='en'?'Correct':'Benar'}</div></div>
+      <div class="stat-box"><div class="val val-r">${nWrong}</div><div class="lbl">${lang==='en'?'Wrong':'Salah'}</div></div>
+      <div class="stat-box"><div class="val val-b">${acc}%</div><div class="lbl">${lang==='en'?'Accuracy':'Akurasi'}</div></div>
+    </div>
+    ${weakReport}
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+      ${adaptiveBtn}
+      <button class="restart-btn" onclick="restart()">🔄 ${lang==='en'?'Start Over':'Mulai Ulang'}</button>
+    </div>
+  </div>`;
+  if(score>=70) confetti();
+}
+
+function startAdaptive(){
+  const {queue:newQ}=buildAdaptiveQueue();
+  queue=newQ;
+  cur=0;
+  results=new Array(queue.length).fill(null);
+  nCorrect=0;nWrong=0;streak=0;answered=false;
+  round++;
+  ['sCorrect','sWrong','sTotal'].forEach(id=>document.getElementById(id).textContent='0');
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restart(){
+  Object.keys(topicStats).forEach(k=>{ topicStats[k]={wrong:0,correct:0}; });
+  score=0;nCorrect=0;nWrong=0;cur=0;streak=0;round=1;isAdaptive=false;
+  queue=buildInitialQueue();
+  results=new Array(queue.length).fill(null);
+  answered=false;
+  ['ssVal','sCorrect','sWrong','sTotal','barPct'].forEach(id=>document.getElementById(id).textContent='0');
+  document.getElementById('barFill').style.width='0%';
+  document.getElementById('ringFill').style.strokeDashoffset='175.9';
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────
+// Confetti
+// ─────────────────────────────────────────────────────────────
+function confetti(){
+  const wrap=document.getElementById('confWrap');
+  const cols=['#4f8ef7','#6c5ce7','#00b894','#fdcb6e','#d63031','#fd79a8','#00cec9'];
+  for(let i=0;i<65;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');
+      p.className='cp';
+      p.style.cssText=`left:${Math.random()*100}vw;top:-20px;width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s`;
+      wrap.appendChild(p);
+      setTimeout(()=>p.remove(),2500);
+    },i*18);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────────────────────
+queue=buildInitialQueue();
+results=new Array(queue.length).fill(null);
+render();
+</script>
+</body>
+</html>
