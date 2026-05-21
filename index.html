@@ -38,6 +38,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:1
 .pill{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 11px;border-radius:12px;letter-spacing:.3px}
 .card.blue .pill{background:#eef3ff;color:#4f8ef7}
 .card.purple .pill{background:#f0eeff;color:#6c5ce7}
+.card.teal::after{background:#00b894}
+.card.teal .card-accent{background:linear-gradient(90deg,#00b894,#55efc4)}
+.card.teal .pill{background:#e8fff8;color:#00b894}
+.card.orange::after{background:#e17055}
+.card.orange .card-accent{background:linear-gradient(90deg,#e17055,#fdcb6e)}
+.card.orange .pill{background:#fff5f0;color:#e17055}
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:20px}
 
 .card-arrow{position:absolute;top:28px;right:24px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
 .card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
@@ -67,26 +74,72 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:1
 <div class="hero">
   <div class="hero-badge">Grade 5 · Mathematics</div>
   <h1>📐 AzMath</h1>
-  <p>Pick an exercise and start practising fractions, decimals & percentages!</p>
+  <p>4 chapters of MCQ practice + a conversion fill-in table. Pick a chapter and start!</p>
 </div>
 
 <div class="main">
+
+  <div class="section-label">📝 MCQ Practice</div>
   <div class="grid">
 
-    <a class="card blue" href="latihan-pecahan/index.html">
+    <a class="card blue" href="latihan-pecahan/?ch=1">
       <span class="card-arrow">→</span>
       <div class="card-accent"></div>
-      <span class="card-icon">🎯</span>
-      <h3>MCQ Practice</h3>
-      <p>Multiple-choice questions on fractions, decimals & percentages with step-by-step hints.</p>
+      <span class="card-icon">🔢</span>
+      <h3>Ch 1 · Fractions</h3>
+      <p>Improper &amp; mixed numbers, adding, multiplying and dividing fractions.</p>
       <div class="pill-row">
-        <span class="pill">17 topics</span>
-        <span class="pill">Adaptive</span>
-        <span class="pill">Hints</span>
+        <span class="pill">5 topics</span>
+        <span class="pill">5.NF</span>
+        <span class="pill">MCQ ✓</span>
       </div>
     </a>
 
-    <a class="card purple" href="konversi-tabel/index.html">
+    <a class="card purple" href="latihan-pecahan/?ch=2">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🔄</span>
+      <h3>Ch 2 · Conversions</h3>
+      <p>Convert and compare fractions, decimals &amp; percentages across all formats.</p>
+      <div class="pill-row">
+        <span class="pill">8 topics</span>
+        <span class="pill">5.NBT</span>
+        <span class="pill">MCQ ✓</span>
+      </div>
+    </a>
+
+    <a class="card teal" href="latihan-pecahan/?ch=3">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🔣</span>
+      <h3>Ch 3 · Decimals</h3>
+      <p>Add, subtract and multiply decimal numbers with step-by-step solutions.</p>
+      <div class="pill-row">
+        <span class="pill">3 topics</span>
+        <span class="pill">5.NBT.B</span>
+        <span class="pill">MCQ ✓</span>
+      </div>
+    </a>
+
+    <a class="card orange" href="latihan-pecahan/?ch=4">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">📝</span>
+      <h3>Ch 4 · Word Problems</h3>
+      <p>Real-world problems: lengths, mass, cost, pricing &amp; sharing fractions.</p>
+      <div class="pill-row">
+        <span class="pill">6 topics</span>
+        <span class="pill">5.NF.A</span>
+        <span class="pill">MCQ ✓</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">📊 Fill-in Practice</div>
+  <div class="grid">
+
+    <a class="card purple" href="konversi-tabel/">
       <span class="card-arrow">→</span>
       <div class="card-accent"></div>
       <span class="card-icon">📊</span>
@@ -100,6 +153,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:1
     </a>
 
   </div>
+
 </div>
 
 <div class="footer">AzMath · Built with ❤️ for <span>young mathematicians</span></div>

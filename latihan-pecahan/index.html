@@ -231,11 +231,22 @@ function mixed(w,n,d){return`${w}${frac(n,d)}`}
 // ─────────────────────────────────────────────────────────────
 let lang='en';
 function t(obj){ return typeof obj==='string'?obj:(obj[lang]||obj.en) }
+function updateChapterHeader(){
+  const ch=parseInt(new URLSearchParams(window.location.search).get('ch'))||0;
+  const part=ch?Parts.find(p=>p.ch===ch):null;
+  if(part){
+    document.getElementById('hTitle').textContent=lang==='en'?part.section.en:part.section.id;
+    document.getElementById('hSub').textContent=lang==='en'?'Grade 5 · Mathematics · MCQ Practice':'Kelas 5 · Matematika · Latihan MCQ';
+  } else {
+    document.getElementById('hTitle').textContent=lang==='en'?'Fractions, Decimals & Percentages':'Pecahan, Desimal & Persen';
+    document.getElementById('hSub').textContent=lang==='en'?'Grade 5 • Mathematics • Interactive Practice':'Kelas 5 • Matematika • Latihan Interaktif';
+  }
+}
+
 function toggleLang(){
   lang = lang==='en'?'id':'en';
   document.getElementById('langBtn').textContent = lang==='en'?'🌐 Bahasa Indonesia':'🌐 English';
-  document.getElementById('hTitle').textContent = lang==='en'?'Fractions, Decimals & Percentages':'Pecahan, Desimal & Persen';
-  document.getElementById('hSub').textContent = lang==='en'?'Grade 5 • Mathematics • Interactive Practice':'Kelas 5 • Matematika • Latihan Interaktif';
+  updateChapterHeader();
   document.getElementById('lCorrect').textContent = lang==='en'?'✅ Correct':'✅ Benar';
   document.getElementById('lWrong').textContent = lang==='en'?'❌ Wrong':'❌ Salah';
   document.getElementById('lTotal').textContent = lang==='en'?'📝 Answered':'📝 Dijawab';
@@ -566,14 +577,102 @@ const Generators={
              id:[`Total berat = ${sc.n} × ${sc.kg} = <b>${sc.mass} kg</b>`,`Biaya = ${sc.mass} × $${sc.rate} = <b>$${sc.fee}</b>`]},
       concept:{en:'Two steps: find total mass, then multiply by the rate.',id:'Dua langkah: cari total berat, lalu kalikan dengan tarif.'}};
   },
+
+  // ── Chapter 1 extra ─────────────────────────────────────────
+  fdiv:()=>{
+    const d=pickA([2,3,4,5,6,8,10]);
+    const n=ri(1,d-1);
+    const whole=pickA([2,3,4,5]);
+    const[sn,sd]=sfrac(n,d*whole);
+    const cor=sd===1?String(sn):frac(sn,sd);
+    const w1=frac(n*whole,d);
+    const w2=sd===1?frac(n,d*whole+1):frac(sn,sd+1);
+    const w3=frac(n,d);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'What is the result?',id:'Berapakah hasilnya?'},
+      math:`${frac(n,d)} ÷ ${whole}`,opts,ans,
+      steps:{en:[`Dividing by ${whole} means multiplying by ${frac(1,whole)}`,`${frac(n,d)} × ${frac(1,whole)} = ${frac(n,d*whole)}`,sn!==n||sd!==d*whole?`Simplify: <b>${cor}</b>`:`Answer: <b>${cor}</b>`],
+             id:[`Membagi dengan ${whole} = mengalikan dengan ${frac(1,whole)}`,`${frac(n,d)} × ${frac(1,whole)} = ${frac(n,d*whole)}`,sn!==n||sd!==d*whole?`Sederhanakan: <b>${cor}</b>`:`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'To divide a fraction by a whole number, multiply by its reciprocal.',id:'Membagi pecahan dengan bilangan bulat = kalikan dengan kebalikannya.'}};
+  },
+
+  // ── Chapter 2 extra ─────────────────────────────────────────
+  ord:()=>{
+    const vals=[[0.75,'¾',75],[0.5,'½',50],[0.25,'¼',25],[0.4,'2/5',40],[0.6,'3/5',60],[0.8,'4/5',80],[0.2,'1/5',20],[0.3,'3/10',30],[0.7,'7/10',70],[0.1,'1/10',10]];
+    const types=['frac','dec','pct'];
+    const pool=shuffA([...vals]).slice(0,3);
+    const items=pool.map(([v,s,p])=>{const tp=pickA(types);return{v,label:tp==='frac'?s:tp==='dec'?String(v):`${p}%`};});
+    const sorted=[...items].sort((x,y)=>y.v-x.v);
+    const[a,b,c]=sorted;
+    const cor=`${a.label}, ${b.label}, ${c.label}`;
+    const w1=`${c.label}, ${b.label}, ${a.label}`;
+    const w2=`${a.label}, ${c.label}, ${b.label}`;
+    const w3=`${b.label}, ${a.label}, ${c.label}`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'Which shows these values arranged from greatest to least?',id:'Manakah urutan nilai-nilai berikut dari terbesar ke terkecil?'},
+      math:items.map(x=>x.label).join(' &nbsp;,&nbsp; '),opts,ans,
+      steps:{en:[`Convert to decimals: ${items.map(x=>`${x.label} = ${x.v}`).join(', ')}`,`Greatest to least: <b>${cor}</b>`],
+             id:[`Ubah ke desimal: ${items.map(x=>`${x.label} = ${x.v}`).join(', ')}`,`Terbesar ke terkecil: <b>${cor}</b>`]},
+      concept:{en:'Convert all to decimals to compare, then arrange greatest to least.',id:'Ubah semua ke desimal untuk dibandingkan, lalu urutkan dari terbesar ke terkecil.'}};
+  },
+
+  // ── Chapter 3 ────────────────────────────────────────────────
+  dadd:()=>{
+    const pairs=[[1.2,0.8],[2.5,1.3],[0.7,0.6],[3.4,1.5],[0.35,0.45],[1.75,0.25],[2.4,0.75],[0.65,0.35],[4.2,0.8],[1.5,2.5],[0.8,0.9],[3.5,0.75],[0.45,0.55],[2.25,0.75],[1.8,1.4]];
+    const[a,b]=pickA(pairs);
+    const cor=+(a+b).toFixed(4);
+    const w1=+(cor+0.1).toFixed(2);
+    const w2=+(cor-0.1>0?cor-0.1:cor+0.2).toFixed(2);
+    const w3=+Math.abs(a-b).toFixed(4);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:'What is the sum?',id:'Berapakah hasil penjumlahannya?'},
+      math:`<b>${a} + ${b}</b>`,opts,ans,
+      steps:{en:[`Line up decimal points`,`${a} + ${b} = <b>${cor}</b>`],
+             id:[`Sejajarkan titik desimal`,`${a} + ${b} = <b>${cor}</b>`]},
+      concept:{en:'Line up decimal points, then add digit by digit.',id:'Sejajarkan titik desimal, lalu jumlahkan digit per digit.'}};
+  },
+
+  dsub:()=>{
+    const pairs=[[2.0,0.7],[3.5,1.2],[5.0,2.4],[4.2,1.5],[3.0,0.8],[2.75,0.25],[6.5,2.5],[10.0,3.4],[7.0,2.75],[5.5,1.25],[4.8,0.9],[8.0,3.5],[3.25,1.75],[9.0,4.6],[6.4,2.8]];
+    const[a,b]=pickA(pairs);
+    const cor=+(a-b).toFixed(4);
+    const w1=+(cor+0.1).toFixed(2);
+    const w2=+(cor-0.1>0?cor-0.1:cor+0.2).toFixed(2);
+    const w3=+(a+b).toFixed(4);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:'What is the difference?',id:'Berapakah selisihnya?'},
+      math:`<b>${a} − ${b}</b>`,opts,ans,
+      steps:{en:[`Line up decimal points`,`${a} − ${b} = <b>${cor}</b>`],
+             id:[`Sejajarkan titik desimal`,`${a} − ${b} = <b>${cor}</b>`]},
+      concept:{en:'Line up decimal points and subtract, borrowing if needed.',id:'Sejajarkan titik desimal lalu kurangkan, pinjam jika perlu.'}};
+  },
+
+  dmul:()=>{
+    const pairs=[[0.2,3],[0.3,4],[0.5,6],[0.4,5],[0.25,4],[0.75,8],[1.5,4],[2.5,6],[0.8,5],[1.25,8],[0.6,5],[3.5,4],[0.15,6],[0.45,4],[1.2,5],[2.4,3]];
+    const[a,b]=pickA(pairs);
+    const cor=+(a*b).toFixed(4);
+    const w1=+(cor+a).toFixed(4);
+    const w2=+(cor-a>0?cor-a:cor+b).toFixed(4);
+    const w3=+(a+b).toFixed(2);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const dp=(String(a).split('.')[1]||'').length;
+    const aInt=Math.round(a*Math.pow(10,dp));
+    return{text:{en:'What is the product?',id:'Berapakah hasil perkaliannya?'},
+      math:`<b>${a} × ${b}</b>`,opts,ans,
+      steps:{en:[`Ignore decimal: <b>${aInt} × ${b} = ${aInt*b}</b>`,`Place ${dp} decimal place(s): <b>${cor}</b>`],
+             id:[`Abaikan desimal: <b>${aInt} × ${b} = ${aInt*b}</b>`,`Tempatkan ${dp} angka desimal: <b>${cor}</b>`]},
+      concept:{en:'Multiply as whole numbers, then place the decimal point.',id:'Kalikan sebagai bilangan bulat, lalu letakkan titik desimal.'}};
+  },
 };
 
 const Parts=[
-  { section:{en:'Part 1 — Fractions & Decimals',id:'Bagian 1 — Pecahan & Desimal'},
-    topics:['itm','mti','ftd','cmp','fadd','fmul'] },
-  { section:{en:'Part 2 — Conversions',id:'Bagian 2 — Konversi'},
-    topics:['dtf','ftp','ptf','dtp','ftd2'] },
-  { section:{en:'Part 3 — Word Problems',id:'Bagian 3 — Soal Cerita'},
+  { ch:1, section:{en:'Chapter 1 — Fractions',id:'Bab 1 — Pecahan'},
+    topics:['itm','mti','fadd','fmul','fdiv'] },
+  { ch:2, section:{en:'Chapter 2 — Conversions & Comparing',id:'Bab 2 — Konversi & Perbandingan'},
+    topics:['ftd','ftd2','dtf','ftp','ptf','dtp','cmp','ord'] },
+  { ch:3, section:{en:'Chapter 3 — Decimals',id:'Bab 3 — Desimal'},
+    topics:['dadd','dsub','dmul'] },
+  { ch:4, section:{en:'Chapter 4 — Word Problems',id:'Bab 4 — Soal Cerita'},
     topics:['word_length','word_mul','word_div','word_pricing','word_mass','word_cost'] },
 ];
 
@@ -598,6 +697,11 @@ const topicNames={
   word_pricing:{ en:'Word: Pricing Problems', id:'Cerita: Masalah Harga' },
   word_mass:{ en:'Word: Mass Problems',       id:'Cerita: Masalah Berat' },
   word_cost:{ en:'Word: Shipping Cost',       id:'Cerita: Biaya Pengiriman' },
+  fdiv:{ en:'Dividing Fractions',            id:'Pembagian Pecahan' },
+  ord:{ en:'Ordering Values',                id:'Mengurutkan Nilai' },
+  dadd:{ en:'Adding Decimals',               id:'Penjumlahan Desimal' },
+  dsub:{ en:'Subtracting Decimals',          id:'Pengurangan Desimal' },
+  dmul:{ en:'Multiplying Decimals',          id:'Perkalian Desimal' },
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -795,9 +899,14 @@ function shuffle(arr){
   return arr;
 }
 
+function getActiveParts(){
+  const ch=parseInt(new URLSearchParams(window.location.search).get('ch'))||0;
+  return ch?Parts.filter(p=>p.ch===ch):Parts;
+}
+
 function buildInitialQueue(){
   let qNum=1;
-  return Parts.flatMap(part=>{
+  return getActiveParts().flatMap(part=>{
     const picked=part.topics.map(topic=>{
       const q=Generators[topic]();
       q.topic=topic;
@@ -813,7 +922,7 @@ function buildInitialQueue(){
 function buildAdaptiveQueue(){
   let qNum=1;
   const newQueue=[];
-  Parts.forEach(part=>{
+  getActiveParts().forEach(part=>{
     const partQs=[];
     part.topics.forEach(topic=>{
       const s=topicStats[topic]||{wrong:0,correct:0};
@@ -945,6 +1054,7 @@ function confetti(){
 // ─────────────────────────────────────────────────────────────
 queue=buildInitialQueue();
 results=new Array(queue.length).fill(null);
+updateChapterHeader();
 render();
 </script>
 </body>
