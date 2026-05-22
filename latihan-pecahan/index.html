@@ -760,7 +760,7 @@ function renderDots(){
 // Main render
 // ─────────────────────────────────────────────────────────────
 function render(){
-  if(cur>=queue.length){renderDone();return}
+  if(cur>=queue.length||score>=100){renderDone();return}
   answered=false;
   hintUsed=false;
   renderDots();
