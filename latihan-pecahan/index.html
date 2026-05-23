@@ -96,6 +96,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#eef3ff;min-height:1
 .next-btn{margin-top:16px;padding:11px 30px;background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;display:none;font-family:inherit;box-shadow:0 3px 12px rgba(79,142,247,.35)}
 .next-btn:hover{opacity:.9}
 .next-btn.show{display:inline-block}
+.opt.selected{border-color:#6c5ce7;background:#f4f0ff}
+.opt.selected .opt-lbl{background:#6c5ce7;color:#fff}
+.submit-btn{margin-top:12px;padding:11px 30px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;display:none;font-family:inherit;box-shadow:0 3px 12px rgba(108,92,231,.35)}
+.submit-btn:hover{opacity:.9}
+.submit-btn.show{display:inline-block}
 
 /* ── Streak badge ── */
 .streak{display:inline-flex;align-items:center;gap:5px;background:#fff9ec;border:1.5px solid #fdcb6e;color:#7a5500;padding:4px 11px;border-radius:20px;font-size:.8rem;font-weight:700;margin-left:8px}
@@ -717,7 +722,7 @@ Object.keys(topicNames).forEach(k=>topicStats[k]={wrong:0,correct:0});
 
 const isExam=new URLSearchParams(window.location.search).has('exam');
 
-let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false;
+let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false,selectedAnswer=null;
 let round=1, isAdaptive=false;
 let queue=[];
 let results=[];
@@ -770,6 +775,7 @@ function render(){
   if(cur>=queue.length){renderDone();return}
   answered=false;
   hintUsed=false;
+  selectedAnswer=null;
   renderDots();
   renderMCQ(queue[cur]);
 }
@@ -818,7 +824,9 @@ function renderMCQ(q){
       <span class="q-tag ${q.section?'section-tag':''}">${t(q.tag)}</span>
       ${wordWrap}
       <div class="options">${optsHtml}</div>
-      ${isExam?'':`<button class="hint-btn" id="hintBtn" onclick="showHint()">${hintLabel}</button>`}
+      ${isExam
+        ? `<button class="submit-btn" id="submitBtn" onclick="submitAnswer()">${lang==='en'?'Submit →':'Kirim →'}</button>`
+        : `<button class="hint-btn" id="hintBtn" onclick="showHint()">${hintLabel}</button>`}
       <div class="feedback" id="fb"></div>
       <button class="next-btn" id="nxtBtn" onclick="next()">${nextLabel}</button>
     </div>`;
@@ -829,6 +837,18 @@ function renderMCQ(q){
 // ─────────────────────────────────────────────────────────────
 function pick(l){
   if(answered) return;
+
+  // ── Exam mode: select only, wait for Submit ────────────────────
+  if(isExam){
+    selectedAnswer=l;
+    document.querySelectorAll('.opt').forEach(b=>{
+      b.classList.toggle('selected', b.getAttribute('data-l')===l);
+    });
+    document.getElementById('submitBtn').classList.add('show');
+    return;
+  }
+
+  // ── Practice mode: immediate submission ───────────────────────
   answered=true;
   const q=queue[cur];
   const ok=l===q.ans;
@@ -845,23 +865,6 @@ function pick(l){
 
   const fb=document.getElementById('fb');
   const hintBtn=document.getElementById('hintBtn');
-
-  // ── Exam mode: minimal feedback, auto-advance ──────────────────
-  if(isExam){
-    if(ok){
-      fb.className='feedback show correct';
-      fb.innerHTML=`<strong>✅ ${lang==='en'?'Correct!':'Benar!'}</strong>`;
-      if(streak>=3) confetti();
-    } else {
-      const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
-      fb.className='feedback show wrong';
-      fb.innerHTML=`<strong>❌ ${lang==='en'?'Incorrect.':'Salah.'} ${topicLabel}</strong>`;
-    }
-    setTimeout(()=>next(), 1200);
-    return;
-  }
-
-  // ── Practice mode: full feedback + manual Next ─────────────────
   const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
   const conceptBox=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
 
@@ -885,6 +888,43 @@ function pick(l){
   }
   if(hintBtn) hintBtn.style.display='none';
   document.getElementById('nxtBtn').classList.add('show');
+}
+
+// ─────────────────────────────────────────────────────────────
+// Submit (exam mode only)
+// ─────────────────────────────────────────────────────────────
+function submitAnswer(){
+  if(!selectedAnswer||answered) return;
+  answered=true;
+  const l=selectedAnswer;
+  const q=queue[cur];
+  const ok=l===q.ans;
+  applyScore(ok);
+  results[cur]=ok?'correct':'wrong';
+  renderDots();
+
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    b.classList.remove('selected');
+    const bl=b.getAttribute('data-l');
+    if(bl===q.ans) b.classList.add('correct');
+    else if(bl===l&&!ok) b.classList.add('wrong');
+  });
+  document.getElementById('submitBtn').classList.remove('show');
+
+  if(ok){
+    if(streak>=3) confetti();
+    setTimeout(()=>next(), 500);
+  } else {
+    const fb=document.getElementById('fb');
+    const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+    const conceptBox=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
+    const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
+    fb.className='feedback show wrong';
+    fb.innerHTML=`<strong>❌ ${lang==='en'?'Incorrect.':'Salah.'} ${topicLabel}</strong>
+      <div class="steps" style="margin-top:10px">${stHtml}</div>${conceptBox}`;
+    document.getElementById('nxtBtn').classList.add('show');
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
