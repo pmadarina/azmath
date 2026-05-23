@@ -232,6 +232,11 @@ function mixed(w,n,d){return`${w}${frac(n,d)}`}
 let lang='en';
 function t(obj){ return typeof obj==='string'?obj:(obj[lang]||obj.en) }
 function updateChapterHeader(){
+  if(isExam){
+    document.getElementById('hTitle').textContent=lang==='en'?'Full Exam':'Ujian Lengkap';
+    document.getElementById('hSub').textContent=lang==='en'?'All Chapters · Grade 5 · Mathematics · No Hints':'Semua Bab · Kelas 5 · Matematika · Tanpa Petunjuk';
+    return;
+  }
   const ch=parseInt(new URLSearchParams(window.location.search).get('ch'))||0;
   const part=ch?Parts.find(p=>p.ch===ch):null;
   if(part){
@@ -710,6 +715,8 @@ const topicNames={
 const topicStats={};
 Object.keys(topicNames).forEach(k=>topicStats[k]={wrong:0,correct:0});
 
+const isExam=new URLSearchParams(window.location.search).has('exam');
+
 let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false;
 let round=1, isAdaptive=false;
 let queue=[];
@@ -811,7 +818,7 @@ function renderMCQ(q){
       <span class="q-tag ${q.section?'section-tag':''}">${t(q.tag)}</span>
       ${wordWrap}
       <div class="options">${optsHtml}</div>
-      <button class="hint-btn" id="hintBtn" onclick="showHint()">${hintLabel}</button>
+      ${isExam?'':`<button class="hint-btn" id="hintBtn" onclick="showHint()">${hintLabel}</button>`}
       <div class="feedback" id="fb"></div>
       <button class="next-btn" id="nxtBtn" onclick="next()">${nextLabel}</button>
     </div>`;
@@ -913,7 +920,7 @@ function getActiveParts(){
 
 function buildInitialQueue(){
   let qNum=1;
-  return getActiveParts().flatMap(part=>{
+  const result=getActiveParts().flatMap(part=>{
     const picked=part.topics.map(topic=>{
       const q=Generators[topic]();
       q.topic=topic;
@@ -924,6 +931,11 @@ function buildInitialQueue(){
     picked.forEach(q=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
     return picked;
   });
+  if(isExam){
+    const tot=result.length;
+    result.forEach((q,i)=>{ q.tag={en:`Q${i+1} of ${tot}`,id:`S${i+1} dari ${tot}`}; });
+  }
+  return result;
 }
 
 function buildAdaptiveQueue(){
@@ -964,10 +976,17 @@ function renderDone(){
   const total=nCorrect+nWrong;
   const acc=total>0?Math.round(nCorrect/total*100):0;
   let trophy='📚',msg={en:'Keep studying — you can do it!',id:'Terus belajar ya, kamu pasti bisa!'};
-  if(score>=100){trophy='🏆';msg={en:'Perfect Score! You\'ve fully mastered this chapter!',id:'Sempurna! Kamu sudah menguasai bab ini sepenuhnya!'};}
-  else if(score>=80){trophy='🏆';msg={en:'Amazing! You\'ve mastered this topic!',id:'Luar biasa! Kamu sudah menguasai materi ini!'};}
-  else if(score>=50){trophy='⭐';msg={en:'Good job! Keep practising!',id:'Bagus! Terus semangat berlatih ya!'};}
-  else if(score>=30){trophy='💪';msg={en:'Getting there! A bit more practice!',id:'Hampir! Sedikit lagi berlatih!'};}
+  if(isExam){
+    if(acc>=90){trophy='🏆';msg={en:'Outstanding! Excellent exam result!',id:'Luar biasa! Hasil ujian yang sangat baik!'};}
+    else if(acc>=70){trophy='⭐';msg={en:'Good result! Keep studying!',id:'Hasil bagus! Terus belajar ya!'};}
+    else if(acc>=50){trophy='💪';msg={en:'Fair result — more practice needed!',id:'Lumayan — perlu lebih banyak latihan!'};}
+    else{trophy='📚';msg={en:'Keep studying — you\'ll get there!',id:'Terus semangat belajar!'};}
+  } else {
+    if(score>=100){trophy='🏆';msg={en:'Perfect Score! You\'ve fully mastered this chapter!',id:'Sempurna! Kamu sudah menguasai bab ini sepenuhnya!'};}
+    else if(score>=80){trophy='🏆';msg={en:'Amazing! You\'ve mastered this topic!',id:'Luar biasa! Kamu sudah menguasai materi ini!'};}
+    else if(score>=50){trophy='⭐';msg={en:'Good job! Keep practising!',id:'Bagus! Terus semangat berlatih ya!'};}
+    else if(score>=30){trophy='💪';msg={en:'Getting there! A bit more practice!',id:'Hampir! Sedikit lagi berlatih!'};}
+  }
 
   const topicScores=Object.keys(topicStats)
     .map(tp=>({tp,s:topicStats[tp],att:topicStats[tp].wrong+topicStats[tp].correct}))
@@ -992,7 +1011,7 @@ function renderDone(){
       ${weakRowsHtml}
     </div>`:'';
 
-  const adaptiveBtn=hasWeakness?`
+  const adaptiveBtn=(!isExam && hasWeakness)?`
     <button class="practice-btn" onclick="startAdaptive()">
       🎯 ${lang==='en'?'Practice Weak Areas':'Latih Area Lemah'}
     </button>`:'';
@@ -1000,7 +1019,7 @@ function renderDone(){
   document.getElementById('qArea').innerHTML=`
   <div class="qcard completion">
     <div class="trophy">${trophy}</div>
-    <h2>SmartScore: ${score}</h2>
+    <h2>${isExam?(lang==='en'?'Exam Complete!':'Ujian Selesai!'):'SmartScore: '+score}</h2>
     <p>${t(msg)}</p>
     <div class="stats-row" style="max-width:360px;margin:0 auto 16px">
       <div class="stat-box"><div class="val val-g">${nCorrect}</div><div class="lbl">${lang==='en'?'Correct':'Benar'}</div></div>
