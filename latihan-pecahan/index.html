@@ -735,21 +735,28 @@ function applyScore(ok){
   if(ok){
     streak++;
     topicStats[topic].correct++;
-    const bonus=streak>=3?2:0;
-    const gain=Math.max(4,Math.round((100-score)*0.2))+bonus;
-    score=Math.min(100,score+gain);
     nCorrect++;
+    if(!isExam){
+      const bonus=streak>=3?2:0;
+      const gain=Math.max(4,Math.round((100-score)*0.2))+bonus;
+      score=Math.min(100,score+gain);
+    }
   } else {
     streak=0;
     topicStats[topic].wrong++;
-    const loss=Math.max(3,Math.round(score*0.13));
-    score=Math.max(0,score-loss);
     nWrong++;
+    if(!isExam){
+      const loss=Math.max(3,Math.round(score*0.13));
+      score=Math.max(0,score-loss);
+    }
   }
-  document.getElementById('ssVal').textContent=score;
-  document.getElementById('barFill').style.width=score+'%';
-  document.getElementById('barPct').textContent=score;
-  document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+  // In exam mode, score stays at 0 until all questions done
+  if(!isExam){
+    document.getElementById('ssVal').textContent=score;
+    document.getElementById('barFill').style.width=score+'%';
+    document.getElementById('barPct').textContent=score;
+    document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+  }
   document.getElementById('sCorrect').textContent=nCorrect;
   document.getElementById('sWrong').textContent=nWrong;
   document.getElementById('sTotal').textContent=nCorrect+nWrong;
@@ -1033,6 +1040,14 @@ function renderDone(){
   document.getElementById('progDots').innerHTML='';
   const total=nCorrect+nWrong;
   const acc=total>0?Math.round(nCorrect/total*100):0;
+  // Exam: final score = accuracy over all questions, revealed only now
+  if(isExam){
+    score=acc;
+    document.getElementById('ssVal').textContent=score;
+    document.getElementById('barFill').style.width=score+'%';
+    document.getElementById('barPct').textContent=score;
+    document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+  }
   let trophy='📚',msg={en:'Keep studying — you can do it!',id:'Terus belajar ya, kamu pasti bisa!'};
   if(isExam){
     if(acc>=90){trophy='🏆';msg={en:'Outstanding! Excellent exam result!',id:'Luar biasa! Hasil ujian yang sangat baik!'};}
