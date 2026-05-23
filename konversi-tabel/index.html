@@ -135,7 +135,7 @@ td:first-child{padding:12px 16px}
 
   /* Table: allow horizontal scroll on very small screens */
   .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px}
-  table{min-width:360px}
+  table{min-width:460px}
   thead th{padding:10px 5px;font-size:.75rem;letter-spacing:0}
   thead th:first-child{width:72px}
   td{padding:10px 5px}
@@ -208,6 +208,7 @@ td:first-child{padding:12px 16px}
           <th>½ Fraction</th>
           <th>0. Decimal</th>
           <th>% Percentage</th>
+          <th>n/100 Hundredths</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -400,6 +401,8 @@ function renderTable(){
     // Percent
     const gpct=givenCell(row,'percent');
     html+=`<td>${gpct!==null ? gpct : inputCell(`p_${ri}`,'e.g. 60%')}</td>`;
+    // Hundredths (always input — answer is {percent}/100)
+    html+=`<td>${inputCell(`h_${ri}`,'e.g. 60/100')}</td>`;
     html+=`</tr>`;
   });
   document.getElementById('tableBody').innerHTML=html;
@@ -426,7 +429,7 @@ function renderTable(){
     inp.addEventListener('blur', ()=>{
       if(!inp.value.trim() || inp.classList.contains('correct')) return;
       const ri=parseInt(inp.id.split('_')[1]);
-      const col=inp.id.startsWith('f_')?'fraction':inp.id.startsWith('d_')?'decimal':'percent';
+      const col=inp.id.startsWith('f_')?'fraction':inp.id.startsWith('d_')?'decimal':inp.id.startsWith('h_')?'hundred':'percent';
       checkCell(inp,ri,col);
     });
   });
@@ -470,8 +473,20 @@ function isUnsimplified(input, correct){
 
 // Real-time per-cell check (on blur)
 function checkCell(inp,ri,col){
-  const correct=Sets[setIdx][ri][col];
-  const ok=checkVal(inp.value,correct);
+  let ok, correct;
+
+  if(col==='hundred'){
+    // Must be exactly {percent}/100 — denominator MUST be 100
+    const v=normalize(inp.value);
+    const pct=parseInt(Sets[setIdx][ri].percent);
+    const parts=v.includes('/')?v.split('/').map(Number):[];
+    ok = parts.length===2 && parts[0]===pct && parts[1]===100;
+    correct=`${pct}/100`;
+  } else {
+    correct=Sets[setIdx][ri][col];
+    ok=checkVal(inp.value,correct);
+  }
+
   if(ok){
     inp.classList.remove('wrong','revealed');
     inp.classList.add('correct');
@@ -488,7 +503,8 @@ function checkCell(inp,ri,col){
     inp.classList.remove('correct');
     inp.classList.add('wrong');
     const icon=document.getElementById(inp.id+'_icon');
-    if(isUnsimplified(inp.value, correct)){
+    // Simplify hint only for regular fraction column
+    if(col==='fraction' && isUnsimplified(inp.value, correct)){
       inp.dataset.unsimplified='1';
       if(icon){icon.textContent='🔽';icon.title='Simplify!';}
     } else {
