@@ -843,6 +843,13 @@ function pick(l){
   if(ok){
     const sm=streak>=3?`<span class="streak">🔥 ${streak}${lang==='en'?' in a row!':' Berturut-turut!'}</span>`:'';
     fb.className='feedback show correct';
+    if(score>=100){
+      fb.innerHTML=`<strong>🏆 ${lang==='en'?'Perfect Score! Chapter mastered!':'Sempurna! Bab ini sudah dikuasai!'}</strong>${conceptBox}`;
+      confetti();
+      document.getElementById('hintBtn').style.display='none';
+      setTimeout(()=>{window.scrollTo({top:0,behavior:'smooth'});renderDone();},1600);
+      return;
+    }
     fb.innerHTML=`<strong>${lang==='en'?'✅ Correct! Well done!':'✅ Benar! Keren!'} ${sm}</strong>${conceptBox}`;
     confetti();
   } else {
@@ -957,7 +964,8 @@ function renderDone(){
   const total=nCorrect+nWrong;
   const acc=total>0?Math.round(nCorrect/total*100):0;
   let trophy='📚',msg={en:'Keep studying — you can do it!',id:'Terus belajar ya, kamu pasti bisa!'};
-  if(score>=80){trophy='🏆';msg={en:'Amazing! You\'ve mastered this topic!',id:'Luar biasa! Kamu sudah menguasai materi ini!'};}
+  if(score>=100){trophy='🏆';msg={en:'Perfect Score! You\'ve fully mastered this chapter!',id:'Sempurna! Kamu sudah menguasai bab ini sepenuhnya!'};}
+  else if(score>=80){trophy='🏆';msg={en:'Amazing! You\'ve mastered this topic!',id:'Luar biasa! Kamu sudah menguasai materi ini!'};}
   else if(score>=50){trophy='⭐';msg={en:'Good job! Keep practising!',id:'Bagus! Terus semangat berlatih ya!'};}
   else if(score>=30){trophy='💪';msg={en:'Getting there! A bit more practice!',id:'Hampir! Sedikit lagi berlatih!'};}
 
