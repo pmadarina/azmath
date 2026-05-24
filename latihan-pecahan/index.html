@@ -475,138 +475,144 @@ const Generators={
   },
 
   // ── Part 3 — Word Problems ───────────────────────────────────
-  word_length:(()=>{const _arr=[
-    {text:{en:`Fatimah had some ribbon. She cut it into <strong>3 pieces</strong>: the first was <strong>0.8 m</strong>, the second was <strong>¼ m</strong>, and the last was <strong>20%</strong> of the original length. How long was the ribbon at first?`,id:`Fatimah memiliki pita. Ia memotongnya menjadi <strong>3 bagian</strong>: bagian pertama <strong>0.8 m</strong>, kedua <strong>¼ m</strong>, terakhir <strong>20%</strong> dari panjang awal. Berapa panjang pita awal?`},
-     isWord:true,math:null,opts:[{l:'A',v:'1.05 m'},{l:'B',v:'1.25 m'},{l:'C',v:'1.3125 m'},{l:'D',v:'1.5 m'}],ans:'C',
-     steps:{en:[`Let total = <b>T</b>`,`0.8 + 0.25 + 0.2T = T`,`1.05 = 0.8T`,`T = 1.05 ÷ 0.8 = <b>1.3125 m</b>`],id:[`Misalkan = <b>T</b>`,`0.8 + 0.25 + 0.2T = T`,`1.05 = 0.8T`,`T = <b>1.3125 m</b>`]},
-     concept:{en:'Set up equation: (known pieces) + (fraction × T) = T.',id:'Buat persamaan: (bagian diketahui) + (pecahan × T) = T.'}},
-    {text:{en:`Budi has a rope. He cuts it into <strong>3 pieces</strong>: the first is <strong>1.2 m</strong>, the second is <strong>⅕ of the total</strong>, and the last is <strong>30%</strong> of the total. How long is the rope?`,id:`Budi memiliki tali. Ia memotongnya: bagian pertama <strong>1.2 m</strong>, kedua <strong>⅕ dari panjang total</strong>, terakhir <strong>30%</strong> dari total. Berapa panjang tali?`},
-     isWord:true,math:null,opts:[{l:'A',v:'2.0 m'},{l:'B',v:'2.4 m'},{l:'C',v:'2.8 m'},{l:'D',v:'3.0 m'}],ans:'B',
-     steps:{en:[`Let T = total`,`1.2 + 0.2T + 0.3T = T`,`1.2 = 0.5T`,`T = <b>2.4 m</b>`],id:[`Misalkan T = panjang total`,`1.2 + 0.2T + 0.3T = T`,`1.2 = 0.5T`,`T = <b>2.4 m</b>`]},
-     concept:{en:'Set up equation: (known) + (fractions of T) = T.',id:'Buat persamaan: (diketahui) + (pecahan × T) = T.'}},
-    {text:{en:`Rina has some ribbon. She cuts it: first piece is <strong>0.9 m</strong>, second is <strong>¼ of the total</strong>, last is <strong>15%</strong> of the total. What is the total length?`,id:`Rina memiliki pita. Potongan pertama <strong>0.9 m</strong>, kedua <strong>¼ dari total</strong>, terakhir <strong>15%</strong> dari total. Berapa panjang pita seluruhnya?`},
-     isWord:true,math:null,opts:[{l:'A',v:'1.25 m'},{l:'B',v:'1.5 m'},{l:'C',v:'1.75 m'},{l:'D',v:'2.0 m'}],ans:'B',
-     steps:{en:[`0.9 + 0.25T + 0.15T = T`,`0.9 = 0.6T`,`T = <b>1.5 m</b>`],id:[`0.9 + 0.25T + 0.15T = T`,`0.9 = 0.6T`,`T = <b>1.5 m</b>`]},
-     concept:{en:'Set up equation: (known) + (fractions of T) = T.',id:'Buat persamaan: (diketahui) + (pecahan × T) = T.'}},
-    {text:{en:`Amir has a piece of wire. He cuts it: <strong>0.6 m</strong> for the first part, <strong>⅓ of the total</strong> for the second, and <strong>10%</strong> of the total for the last. Find the total length.`,id:`Amir memiliki kawat. Potongan pertama <strong>0.6 m</strong>, kedua <strong>⅓ dari total</strong>, terakhir <strong>10%</strong> dari total. Temukan panjang total.`},
-     isWord:true,math:null,opts:[{l:'A',v:'1.0 m'},{l:'B',v:'1.05 m'},{l:'C',v:'1.08 m'},{l:'D',v:'1.1 m'}],ans:'C',
-     steps:{en:[`0.6 + T/3 + 0.1T = T`,`0.6 = T − T/3 − 0.1T = 0.567T`,`T ≈ <b>1.08 m</b>`,`Check: 0.6 + 0.36 + 0.108 ≈ 1.068 ✓`],id:[`0.6 + T/3 + 0.1T = T`,`0.6 = 0.567T`,`T ≈ <b>1.08 m</b>`]},
-     concept:{en:'Set up equation: (known) + (fractions of T) = T.',id:'Buat persamaan: (diketahui) + (pecahan × T) = T.'}},
-    {text:{en:`Sara has string totalling some length. She uses <strong>0.5 m</strong> for crafts, gives <strong>2/5 of the total</strong> to her sister, and <strong>25%</strong> remains. What was the total length?`,id:`Sara memiliki benang. Ia menggunakan <strong>0.5 m</strong> untuk kerajinan, memberikan <strong>2/5 dari total</strong> ke adiknya, dan <strong>25%</strong> tersisa. Berapa panjang total benang?`},
-     isWord:true,math:null,opts:[{l:'A',v:'1.4 m'},{l:'B',v:'1.5 m'},{l:'C',v:'2.0 m'},{l:'D',v:'2.5 m'}],ans:'C',
-     steps:{en:[`0.5 + 0.4T + 0.25T = T`,`0.5 = 0.35T`,`T = 0.5 ÷ 0.35 ≈ <b>1.43 m</b>... (use 2.0 m check: 0.5+0.8+0.5=1.8≠2)`],id:[`0.5 + 0.4T + 0.25T = T`,`0.5 = 0.35T → T ≈ <b>1.43 m</b>`]},
-     concept:{en:'Set up equation: (known) + (fractions of T) = T.',id:'Buat persamaan: (diketahui) + (pecahan × T) = T.'}},
-  ];return ()=>pickFreshWord(_arr,'word_length');})(),
-
-  word_mul:(()=>{const _arr=[
-      {total:60,n:1,d:6,unit:{en:'pieces',id:'potong'},item:{en:'butter',id:'mentega'},ctx:{en:'A baker makes <strong>60 chocolate cupcakes</strong>. Each cupcake needs <strong>⅙ piece of butter</strong>. How many pieces of butter are needed?',id:'Seorang baker membuat <strong>60 cupcake</klat>. Setiap cupcake membutuhkan <strong>⅙ potong mentega</strong>. Berapa banyak mentega yang dibutuhkan?'}},
-      {total:120,n:1,d:4,unit:{en:'students',id:'siswa'},item:{en:'awards',id:'penghargaan'},ctx:{en:'There are <strong>120 students</strong> in the hall. <strong>¼ of them</strong> received awards. How many students received awards?',id:'Ada <strong>120 siswa</strong> di aula. <strong>¼ dari mereka</strong> mendapat penghargaan. Berapa banyak siswa yang mendapat penghargaan?'}},
-      {total:200,n:2,d:5,unit:{en:'toys',id:'mainan'},item:{en:'red toys',id:'mainan merah'},ctx:{en:'A store has <strong>200 toys</strong>. <strong>⅖ of them</strong> are red. How many are red?',id:'Sebuah toko memiliki <strong>200 mainan</strong>. <strong>⅖ dari mainan</strong> berwarna merah. Berapa banyak yang merah?'}},
-      {total:80,n:3,d:4,unit:{en:'books',id:'buku'},item:{en:'fiction books',id:'buku fiksi'},ctx:{en:'A library has <strong>80 books</strong>. <strong>¾ of them</strong> are fiction. How many fiction books are there?',id:'Perpustakaan memiliki <strong>80 buku</strong>. <strong>¾ di antaranya</strong> adalah fiksi. Berapa buku fiksi?'}},
-      {total:150,n:2,d:3,unit:{en:'passengers',id:'penumpang'},item:{en:'seated',id:'duduk'},ctx:{en:'A bus has <strong>150 passengers</strong>. <strong>⅔ of them</strong> are seated. How many are seated?',id:'Sebuah bus memiliki <strong>150 penumpang</strong>. <strong>⅔ di antaranya</strong> duduk. Berapa yang duduk?'}},
-      {total:300,n:3,d:5,unit:{en:'plants',id:'tanaman'},item:{en:'flowering',id:'berbunga'},ctx:{en:'A garden has <strong>300 plants</strong>. <strong>3/5 of them</strong> are flowering. How many are flowering?',id:'Sebuah taman memiliki <strong>300 tanaman</strong>. <strong>3/5-nya</strong> sedang berbunga. Berapa yang berbunga?'}},
+  word_length:()=>{
+    // precomputed combos: all give clean T and known values
+    const combos=[
+      {T:2.0,f1n:1,f1d:4,f2:25},{T:2.0,f1n:1,f1d:5,f2:30},
+      {T:2.0,f1n:2,f1d:5,f2:20},{T:2.0,f1n:1,f1d:4,f2:15},
+      {T:1.5,f1n:1,f1d:5,f2:30},{T:1.5,f1n:1,f1d:4,f2:25},
+      {T:1.2,f1n:1,f1d:5,f2:30},{T:2.4,f1n:1,f1d:4,f2:25},
+      {T:3.0,f1n:1,f1d:4,f2:25},{T:3.0,f1n:2,f1d:5,f2:20},
+      {T:4.0,f1n:1,f1d:4,f2:25},{T:2.0,f1n:3,f1d:10,f2:20},
+      {T:3.0,f1n:3,f1d:10,f2:20},{T:3.0,f1n:1,f1d:4,f2:15},
+      {T:4.0,f1n:2,f1d:5,f2:20},{T:1.5,f1n:3,f1d:10,f2:20},
     ];
-  return ()=>{
-    const sc=pickFreshWord(_arr,'word_mul');
-    const ans=sc.total*sc.n/sc.d;
-    const cor=`${ans} ${sc.unit.en}`;
-    const corId=`${ans} ${sc.unit.id}`;
-    const w1=`${ans+sc.total/sc.d} ${sc.unit.en}`;
-    const w2=`${ans-sc.total/sc.d>0?ans-sc.total/sc.d:ans+10} ${sc.unit.en}`;
-    const w3=`${sc.total/sc.d} ${sc.unit.en}`;
+    const {T,f1n,f1d,f2}=pickA(combos);
+    const f1dec=f1n/f1d;
+    const known=+((T*(1-f1dec-f2/100)).toFixed(2));
+    const names=[{en:'Fatimah',id:'Fatimah'},{en:'Budi',id:'Budi'},{en:'Rina',id:'Rina'},{en:'Amir',id:'Amir'},{en:'Sara',id:'Sara'},{en:'Hana',id:'Hana'},{en:'Layla',id:'Layla'}];
+    const items=[{en:'ribbon',id:'pita'},{en:'rope',id:'tali'},{en:'wire',id:'kawat'},{en:'string',id:'benang'},{en:'strip of cloth',id:'kain'}];
+    const nm=pickA(names); const it=pickA(items);
+    const w1=+(T+0.2).toFixed(1); const w2=+(T-0.2>0?T-0.2:T+0.4).toFixed(1); const w3=+(T+0.5).toFixed(1);
+    const{opts,ans}=mkOpts(String(T),[String(w1),String(w2),String(w3)]);
+    // remap opt labels to show "m" unit
+    opts.forEach(o=>{o.v=o.v+' m';});
+    return{text:{en:`${nm.en} has a piece of ${it.en}. The first part is <strong>${known} m</strong>, the second is <strong>${frac(f1n,f1d)} of the total</strong>, and the last is <strong>${f2}%</strong> of the total. What is the total length?`,
+                 id:`${nm.id} memiliki ${it.id}. Bagian pertama <strong>${known} m</strong>, kedua <strong>${frac(f1n,f1d)} dari total</strong>, terakhir <strong>${f2}%</strong> dari total. Berapa panjang seluruhnya?`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Let T = total`,`${known} + ${f1dec}T + ${f2/100}T = T`,`${known} = T × ${+(1-f1dec-f2/100).toFixed(3)}`,`T = <b>${T} m</b>`],
+             id:[`Misalkan T = total`,`${known} + ${f1dec}T + ${f2/100}T = T`,`${known} = T × ${+(1-f1dec-f2/100).toFixed(3)}`,`T = <b>${T} m</b>`]},
+      concept:{en:'Set up equation: (known piece) + (fractions of T) = T.',id:'Buat persamaan: (bagian diketahui) + (pecahan × T) = T.'}};
+  },
+
+  word_mul:()=>{
+    const d=pickA([2,3,4,5,6,8,10]);
+    const n=ri(1,d-1);
+    const total=d*ri(3,12);
+    const ans=total*n/d;
+    const ctxs=[
+      {item:{en:'students',id:'siswa'},q:{en:`There are <strong>${total} students</strong> in the school. <strong>${frac(n,d)}</strong> of them passed the exam. How many students passed?`,id:`Ada <strong>${total} siswa</strong> di sekolah. <strong>${frac(n,d)}</strong>-nya lulus ujian. Berapa yang lulus?`}},
+      {item:{en:'books',id:'buku'},q:{en:`A library has <strong>${total} books</strong>. <strong>${frac(n,d)}</strong> of them are fiction. How many fiction books are there?`,id:`Perpustakaan memiliki <strong>${total} buku</strong>. <strong>${frac(n,d)}</strong>-nya fiksi. Berapa buku fiksi?`}},
+      {item:{en:'marbles',id:'kelereng'},q:{en:`A bag contains <strong>${total} marbles</strong>. <strong>${frac(n,d)}</strong> of them are red. How many are red?`,id:`Sebuah kantong berisi <strong>${total} kelereng</strong>. <strong>${frac(n,d)}</strong>-nya merah. Berapa yang merah?`}},
+      {item:{en:'seats',id:'kursi'},q:{en:`A bus has <strong>${total} seats</strong>. <strong>${frac(n,d)}</strong> of the seats are occupied. How many seats are occupied?`,id:`Sebuah bus memiliki <strong>${total} kursi</strong>. <strong>${frac(n,d)}</strong>-nya terisi. Berapa kursi yang terisi?`}},
+      {item:{en:'plants',id:'tanaman'},q:{en:`A garden has <strong>${total} plants</strong>. <strong>${frac(n,d)}</strong> of them are flowering. How many are flowering?`,id:`Sebuah taman memiliki <strong>${total} tanaman</strong>. <strong>${frac(n,d)}</strong>-nya berbunga. Berapa yang berbunga?`}},
+    ];
+    const ctx=pickA(ctxs);
+    const cor=`${ans} ${ctx.item.en}`;
+    const w1=`${ans+total/d} ${ctx.item.en}`;
+    const w2=`${ans>total/d?ans-total/d:ans+total/d*2} ${ctx.item.en}`;
+    const w3=`${total-ans} ${ctx.item.en}`;
     const{opts,ans:ansL}=mkOpts(cor,[w1,w2,w3]);
-    return{text:{en:sc.ctx.en,id:sc.ctx.id},
-      isWord:true,math:null,opts,ans:ansL,
-      steps:{en:[`Total = ${sc.total} × ${frac(sc.n,sc.d)}`,`= ${sc.total} ÷ ${sc.d} × ${sc.n} = <b>${ans} ${sc.unit.en}</b>`],
-             id:[`Total = ${sc.total} × ${frac(sc.n,sc.d)}`,`= ${sc.total} ÷ ${sc.d} × ${sc.n} = <b>${ans} ${sc.unit.id}</b>`]},
+    return{text:{en:ctx.q.en,id:ctx.q.id},isWord:true,math:null,opts,ans:ansL,
+      steps:{en:[`${total} × ${frac(n,d)} = ${total} ÷ ${d} × ${n} = <b>${ans} ${ctx.item.en}</b>`],
+             id:[`${total} × ${frac(n,d)} = ${total} ÷ ${d} × ${n} = <b>${ans} ${ctx.item.id}</b>`]},
       concept:{en:'Fraction of a quantity: divide by denominator, multiply by numerator.',id:'Pecahan dari jumlah: bagi dengan penyebut, kalikan dengan pembilang.'}};
-  };})(),
+  },
 
-  word_div:(()=>{const _arr=[
-    {text:{en:`Mrs Sarah spent <strong>3/5</strong> of her monthly money on groceries. She shared the <strong>remaining money equally</strong> among her <strong>4 children</strong>. What fraction did each child receive?`,id:`Bu Sarah menghabiskan <strong>3/5</strong> uangnya untuk belanja. Sisa dibagi <strong>rata kepada 4 anaknya</strong>. Berapa bagian yang diterima setiap anak?`},
-     isWord:true,math:null,opts:[{l:'A',v:frac(2,5)},{l:'B',v:frac(1,4)},{l:'C',v:frac(1,10)},{l:'D',v:frac(1,15)}],ans:'C',
-     steps:{en:[`Remaining = 1 − ${frac(3,5)} = <b>${frac(2,5)}</b>`,`Each child = ${frac(2,5)} ÷ 4 = <b>${frac(1,10)}</b>`],id:[`Sisa = 1 − ${frac(3,5)} = <b>${frac(2,5)}</b>`,`Tiap anak = ${frac(2,5)} ÷ 4 = <b>${frac(1,10)}</b>`]},
-     concept:{en:'Dividing a fraction by a whole: flip and multiply.',id:'Membagi pecahan dengan bilangan bulat: balik lalu kalikan.'}},
-    {text:{en:`Mr David spent <strong>2/3</strong> of his salary on rent. He divided the <strong>remaining salary equally</strong> into <strong>3 savings goals</strong>. What fraction went to each goal?`,id:`Pak David menghabiskan <strong>2/3</strong> gajinya untuk sewa. Sisa dibagi <strong>rata menjadi 3 tujuan tabungan</strong>. Berapa bagian untuk setiap tujuan?`},
-     isWord:true,math:null,opts:[{l:'A',v:frac(1,3)},{l:'B',v:frac(1,6)},{l:'C',v:frac(1,9)},{l:'D',v:frac(2,9)}],ans:'C',
-     steps:{en:[`Remaining = 1 − ${frac(2,3)} = <b>${frac(1,3)}</b>`,`Each goal = ${frac(1,3)} ÷ 3 = <b>${frac(1,9)}</b>`],id:[`Sisa = 1 − ${frac(2,3)} = <b>${frac(1,3)}</b>`,`Tiap tujuan = ${frac(1,3)} ÷ 3 = <b>${frac(1,9)}</b>`]},
-     concept:{en:'Dividing a fraction by a whole: flip and multiply.',id:'Membagi pecahan dengan bilangan bulat: balik lalu kalikan.'}},
-    {text:{en:`Ibu Rina saves <strong>3/8</strong> of her salary. She shares the <strong>remaining money equally</strong> among <strong>5 family needs</strong>. What fraction goes to each need?`,id:`Ibu Rina menabung <strong>3/8</strong> gajinya. Sisa dibagi <strong>rata untuk 5 kebutuhan keluarga</strong>. Berapa bagian untuk setiap kebutuhan?`},
-     isWord:true,math:null,opts:[{l:'A',v:frac(1,5)},{l:'B',v:frac(5,8)},{l:'C',v:frac(1,8)},{l:'D',v:frac(3,40)}],ans:'C',
-     steps:{en:[`Remaining = 1 − ${frac(3,8)} = <b>${frac(5,8)}</b>`,`Each = ${frac(5,8)} ÷ 5 = <b>${frac(1,8)}</b>`],id:[`Sisa = 1 − ${frac(3,8)} = <b>${frac(5,8)}</b>`,`Tiap kebutuhan = ${frac(5,8)} ÷ 5 = <b>${frac(1,8)}</b>`]},
-     concept:{en:'Dividing a fraction by a whole: flip and multiply.',id:'Membagi pecahan dengan bilangan bulat: balik lalu kalikan.'}},
-    {text:{en:`Ali spent <strong>1/4</strong> of his pocket money on snacks. He split the <strong>rest equally</strong> between <strong>2 activities</strong>. What fraction of his total money goes to each activity?`,id:`Ali menghabiskan <strong>1/4</strong> uang sakunya untuk jajan. Sisa dibagi <strong>rata untuk 2 kegiatan</strong>. Berapa bagian dari total uang untuk setiap kegiatan?`},
-     isWord:true,math:null,opts:[{l:'A',v:frac(1,2)},{l:'B',v:frac(3,4)},{l:'C',v:frac(3,8)},{l:'D',v:frac(1,4)}],ans:'C',
-     steps:{en:[`Remaining = 1 − ${frac(1,4)} = <b>${frac(3,4)}</b>`,`Each activity = ${frac(3,4)} ÷ 2 = <b>${frac(3,8)}</b>`],id:[`Sisa = ${frac(3,4)}`,`Tiap kegiatan = ${frac(3,4)} ÷ 2 = <b>${frac(3,8)}</b>`]},
-     concept:{en:'Dividing a fraction by a whole: flip and multiply.',id:'Membagi pecahan dengan bilangan bulat: balik lalu kalikan.'}},
-    {text:{en:`Nina donates <strong>2/5</strong> of her allowance to charity. She divides the <strong>remaining allowance equally</strong> into <strong>3 spending categories</strong>. What fraction goes to each category?`,id:`Nina menyumbangkan <strong>2/5</strong> uang sakunya ke amal. Sisa dibagi <strong>rata ke 3 kategori pengeluaran</strong>. Berapa bagian untuk setiap kategori?`},
-     isWord:true,math:null,opts:[{l:'A',v:frac(3,5)},{l:'B',v:frac(2,15)},{l:'C',v:frac(1,5)},{l:'D',v:frac(1,3)}],ans:'C',
-     steps:{en:[`Remaining = 1 − ${frac(2,5)} = <b>${frac(3,5)}</b>`,`Each = ${frac(3,5)} ÷ 3 = <b>${frac(1,5)}</b>`],id:[`Sisa = ${frac(3,5)}`,`Tiap kategori = ${frac(3,5)} ÷ 3 = <b>${frac(1,5)}</b>`]},
-     concept:{en:'Dividing a fraction by a whole: flip and multiply.',id:'Membagi pecahan dengan bilangan bulat: balik lalu kalikan.'}},
-  ];return ()=>pickFreshWord(_arr,'word_div');})(),
+  word_div:()=>{
+    const d=pickA([3,4,5,6,8,10]);
+    const n=ri(1,d-2);
+    const divisor=ri(2,5);
+    const remN=d-n;
+    const[sn,sd]=sfrac(remN,d*divisor);
+    const cor=frac(sn,sd);
+    const w1=frac(remN,d);
+    const w2=frac(sn+1,sd);
+    const w3=frac(n,d*divisor);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    const names=[{en:'Sarah',id:'Sarah'},{en:'David',id:'David'},{en:'Rina',id:'Rina'},{en:'Ali',id:'Ali'},{en:'Nina',id:'Nina'},{en:'Budi',id:'Budi'},{en:'Hana',id:'Hana'},{en:'Omar',id:'Omar'}];
+    const spentOn=[{en:'groceries',id:'belanja'},{en:'rent',id:'sewa rumah'},{en:'food',id:'makanan'},{en:'bills',id:'tagihan'},{en:'transport',id:'transportasi'}];
+    const divideAmong=[{en:'children',id:'anak'},{en:'savings goals',id:'tujuan tabungan'},{en:'family members',id:'anggota keluarga'},{en:'spending categories',id:'kategori pengeluaran'},{en:'friends',id:'teman'}];
+    const nm=pickA(names); const sp=pickA(spentOn); const da=pickA(divideAmong);
+    return{text:{en:`${nm.en} spent <strong>${frac(n,d)}</strong> of their money on ${sp.en}. They divided the <strong>remaining money equally</strong> among <strong>${divisor} ${da.en}</strong>. What fraction did each receive?`,
+                 id:`${nm.id} menghabiskan <strong>${frac(n,d)}</strong> uangnya untuk ${sp.id}. Sisa dibagi <strong>rata kepada ${divisor} ${da.id}</strong>. Berapa bagian masing-masing?`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Remaining = 1 − ${frac(n,d)} = <b>${frac(remN,d)}</b>`,`Each = ${frac(remN,d)} ÷ ${divisor} = <b>${cor}</b>`],
+             id:[`Sisa = 1 − ${frac(n,d)} = <b>${frac(remN,d)}</b>`,`Tiap bagian = ${frac(remN,d)} ÷ ${divisor} = <b>${cor}</b>`]},
+      concept:{en:'Dividing a fraction by a whole: multiply by its reciprocal.',id:'Membagi pecahan dengan bilangan bulat: kalikan dengan kebalikannya.'}};
+  },
 
-  word_pricing:(()=>{const _arr=[
-    {text:{en:`The picture below shows the price of muffins at a bakery.`,id:`Gambar berikut menunjukkan harga muffin di toko roti.`},
-     extra:`<div class="price-card"><div style="font-weight:800;margin-bottom:8px">🧁 BAKERY MENU</div><div style="display:flex;justify-content:space-between"><span>First 4 muffins</span><span>$2.00</span></div><div style="display:flex;justify-content:space-between"><span>Every additional muffin</span><span>$0.50</span></div></div><div style="margin-top:10px">Rania has <strong>$10.00</strong>. What is the <strong>greatest number</strong> of muffins she can buy?</div>`,
-     isWord:true,math:null,opts:[{l:'A',v:'16 muffins'},{l:'B',v:'18 muffins'},{l:'C',v:'19 muffins'},{l:'D',v:'20 muffins'}],ans:'D',
-     steps:{en:[`First 4 = $2.00`,`Remaining: $10 − $2 = <b>$8.00</b>`,`Additional: $8 ÷ $0.50 = <b>16</b>`,`Total: 4 + 16 = <b>20 muffins</b>`],id:[`4 pertama = $2.00`,`Sisa: $10 − $2 = <b>$8.00</b>`,`Tambahan: $8 ÷ $0.50 = <b>16</b>`,`Total: 4 + 16 = <b>20 muffin</b>`]},
-     concept:{en:'Pay base price first, then use remaining for extra items.',id:'Bayar harga dasar dulu, sisa uang untuk item tambahan.'}},
-    {text:{en:`The picture below shows the price of cookies at a bakery.`,id:`Gambar berikut menunjukkan harga cookies di toko roti.`},
-     extra:`<div class="price-card"><div style="font-weight:800;margin-bottom:8px">🍪 BAKERY MENU</div><div style="display:flex;justify-content:space-between"><span>First 6 cookies</span><span>$3.00</span></div><div style="display:flex;justify-content:space-between"><span>Every additional cookie</span><span>$0.75</span></div></div><div style="margin-top:10px">Hamid has <strong>$12.00</strong>. What is the <strong>greatest number</strong> of cookies he can buy?</div>`,
-     isWord:true,math:null,opts:[{l:'A',v:'12 cookies'},{l:'B',v:'15 cookies'},{l:'C',v:'18 cookies'},{l:'D',v:'20 cookies'}],ans:'C',
-     steps:{en:[`First 6 = $3.00`,`Remaining: $12 − $3 = <b>$9.00</b>`,`Additional: $9 ÷ $0.75 = <b>12</b>`,`Total: 6 + 12 = <b>18 cookies</b>`],id:[`6 pertama = $3.00`,`Sisa: $12 − $3 = <b>$9.00</b>`,`Tambahan: $9 ÷ $0.75 = <b>12</b>`,`Total: 6 + 12 = <b>18 cookies</b>`]},
-     concept:{en:'Pay base price first, then use remaining for extra items.',id:'Bayar harga dasar dulu, sisa uang untuk item tambahan.'}},
-    {text:{en:`The picture below shows the price of donuts at a bakery.`,id:`Gambar berikut menunjukkan harga donat di toko roti.`},
-     extra:`<div class="price-card"><div style="font-weight:800;margin-bottom:8px">🍩 BAKERY MENU</div><div style="display:flex;justify-content:space-between"><span>First 5 donuts</span><span>$4.00</span></div><div style="display:flex;justify-content:space-between"><span>Every additional donut</span><span>$0.50</span></div></div><div style="margin-top:10px">Layla has <strong>$14.00</strong>. What is the <strong>greatest number</strong> of donuts she can buy?</div>`,
-     isWord:true,math:null,opts:[{l:'A',v:'20 donuts'},{l:'B',v:'22 donuts'},{l:'C',v:'24 donuts'},{l:'D',v:'25 donuts'}],ans:'D',
-     steps:{en:[`First 5 = $4.00`,`Remaining: $14 − $4 = <b>$10.00</b>`,`Additional: $10 ÷ $0.50 = <b>20</b>`,`Total: 5 + 20 = <b>25 donuts</b>`],id:[`5 pertama = $4.00`,`Sisa: $14 − $4 = <b>$10.00</b>`,`Tambahan: $10 ÷ $0.50 = <b>20</b>`,`Total: 5 + 20 = <b>25 donat</b>`]},
-     concept:{en:'Pay base price first, then use remaining for extra items.',id:'Bayar harga dasar dulu, sisa uang untuk item tambahan.'}},
-    {text:{en:`The picture below shows the price of sandwiches at a café.`,id:`Gambar berikut menunjukkan harga sandwich di kafe.`},
-     extra:`<div class="price-card"><div style="font-weight:800;margin-bottom:8px">🥪 CAFÉ MENU</div><div style="display:flex;justify-content:space-between"><span>First 3 sandwiches</span><span>$6.00</span></div><div style="display:flex;justify-content:space-between"><span>Every additional sandwich</span><span>$1.50</span></div></div><div style="margin-top:10px">Omar has <strong>$15.00</strong>. What is the <strong>greatest number</strong> of sandwiches he can buy?</div>`,
-     isWord:true,math:null,opts:[{l:'A',v:'6 sandwiches'},{l:'B',v:'7 sandwiches'},{l:'C',v:'8 sandwiches'},{l:'D',v:'9 sandwiches'}],ans:'D',
-     steps:{en:[`First 3 = $6.00`,`Remaining: $15 − $6 = <b>$9.00</b>`,`Additional: $9 ÷ $1.50 = <b>6</b>`,`Total: 3 + 6 = <b>9 sandwiches</b>`],id:[`3 pertama = $6.00`,`Sisa: $15 − $6 = <b>$9.00</b>`,`Tambahan: $9 ÷ $1.50 = <b>6</b>`,`Total: 3 + 6 = <b>9 sandwich</b>`]},
-     concept:{en:'Pay base price first, then use remaining for extra items.',id:'Bayar harga dasar dulu, sisa uang untuk item tambahan.'}},
-  ];return ()=>pickFreshWord(_arr,'word_pricing');})(),
+  word_pricing:()=>{
+    const addPrices=[0.25,0.50,0.75,1.00,1.50];
+    const addP=pickA(addPrices);
+    const baseCount=ri(3,8);
+    const extra=ri(5,16);
+    const baseP=pickA([2,3,4,5,6]);
+    const budget=+(baseP+extra*addP).toFixed(2);
+    const total=baseCount+extra;
+    const foods=[{en:'muffins',id:'muffin',emoji:'🧁'},{en:'cookies',id:'cookies',emoji:'🍪'},{en:'donuts',id:'donat',emoji:'🍩'},{en:'cupcakes',id:'cupcake',emoji:'🧁'},{en:'sandwiches',id:'sandwich',emoji:'🥪'},{en:'bagels',id:'bagel',emoji:'🥯'}];
+    const food=pickA(foods);
+    const singular=food.en.replace(/s$/,'');
+    const cor=`${total} ${food.en}`;
+    const w1=`${extra} ${food.en}`;
+    const w2=`${total+ri(1,3)} ${food.en}`;
+    const w3=`${total-ri(1,3)} ${food.en}`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'The picture below shows the prices at the bakery.',id:'Gambar berikut menunjukkan harga di toko roti.'},
+      extra:`<div class="price-card"><div style="font-weight:800;margin-bottom:8px">${food.emoji} BAKERY MENU</div><div style="display:flex;justify-content:space-between"><span>First ${baseCount} ${food.en}</span><span>$${baseP.toFixed(2)}</span></div><div style="display:flex;justify-content:space-between"><span>Every additional ${singular}</span><span>$${addP.toFixed(2)}</span></div></div><div style="margin-top:10px">A customer has <strong>$${budget.toFixed(2)}</strong>. What is the <strong>greatest number</strong> of ${food.en} they can buy?</div>`,
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`First ${baseCount} = $${baseP.toFixed(2)}`,`Remaining: $${budget.toFixed(2)} − $${baseP.toFixed(2)} = <b>$${(extra*addP).toFixed(2)}</b>`,`Additional: $${(extra*addP).toFixed(2)} ÷ $${addP.toFixed(2)} = <b>${extra}</b>`,`Total: ${baseCount} + ${extra} = <b>${total} ${food.en}</b>`],
+             id:[`${baseCount} pertama = $${baseP.toFixed(2)}`,`Sisa: $${budget.toFixed(2)} − $${baseP.toFixed(2)} = <b>$${(extra*addP).toFixed(2)}</b>`,`Tambahan: ÷ $${addP.toFixed(2)} = <b>${extra}</b>`,`Total: ${baseCount} + ${extra} = <b>${total} ${food.en}</b>`]},
+      concept:{en:'Pay the base price first, then use the remaining money for extra items.',id:'Bayar harga dasar dulu, sisa uang untuk item tambahan.'}};
+  },
 
-  word_mass:(()=>{const _arr=[
-      {n:8,kg:1.5,total:12},{n:6,kg:2.5,total:15},{n:9,kg:3.5,total:31.5},
-      {n:4,kg:2.5,total:10},{n:7,kg:1.5,total:10.5},{n:5,kg:4.0,total:20},
-      {n:6,kg:3.5,total:21},{n:8,kg:2.5,total:20},{n:4,kg:3.5,total:14},
-      {n:10,kg:1.5,total:15},{n:12,kg:2.5,total:30},{n:5,kg:2.5,total:12.5},
-  ];
-  return ()=>{
-    const sc=pickFreshWord(_arr,'word_mass');
+  word_mass:()=>{
+    const n=ri(3,15);
+    const kg=pickA([0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0]);
+    const total=+(n*kg).toFixed(1);
+    const items=pickA([{en:'boxes',id:'kotak'},{en:'parcels',id:'paket'},{en:'crates',id:'peti'},{en:'bags',id:'kantong'},{en:'sacks',id:'karung'}]);
+    const singular=items.en.replace(/es$/,'').replace(/s$/,'');
+    const cor=`${total} kg`;
+    const w1=`${+(total+kg).toFixed(1)} kg`;
+    const w2=`${total-kg>0?+(total-kg).toFixed(1):+(total+2*kg).toFixed(1)} kg`;
+    const w3=`${+(n+kg).toFixed(1)} kg`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:`A courier delivers <strong>${n} identical ${items.en}</strong>. Each ${singular} has a mass of <strong>${kg} kg</strong>. What is the <strong>total mass</strong>?`,
+                 id:`Seorang kurir mengantarkan <strong>${n} ${items.id} identik</strong>. Setiap ${items.id} beratnya <strong>${kg} kg</strong>. Berapakah <strong>total berat</strong>?`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Total = ${n} × ${kg} = <b>${total} kg</b>`],id:[`Total = ${n} × ${kg} = <b>${total} kg</b>`]},
+      concept:{en:'Multiply: number of items × mass per item.',id:'Kalikan: jumlah barang × berat per barang.'}};
+  },
+
+  word_cost:()=>{
+    const n=ri(3,12);
+    const kg=pickA([0.5,1.0,1.5,2.0,2.5,3.0]);
+    const rate=pickA([2,3,4,5]);
+    const mass=+(n*kg).toFixed(1);
+    const fee=Math.round(mass*rate);
     const items=pickA([{en:'boxes',id:'kotak'},{en:'parcels',id:'paket'},{en:'crates',id:'peti'},{en:'bags',id:'kantong'}]);
-    const cor=`${sc.total} kg`;
-    const w1=`${sc.total+sc.kg} kg`;const w2=`${sc.total-sc.kg>0?sc.total-sc.kg:sc.total+sc.n} kg`;const w3=`${sc.n+sc.kg} kg`;
+    const cor=`$${fee}`;
+    const w1=`$${fee+rate*n}`;
+    const w2=`$${fee-rate>0?fee-rate:fee+rate*2}`;
+    const w3=`$${Math.round(n+kg*rate)}`;
     const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
-    return{text:{en:`A courier delivers <strong>${sc.n} identical ${items.en}</strong>. Each ${items.en.slice(0,-1)} has a mass of <strong>${sc.kg} kg</strong>. What is the <strong>total mass</strong>?`,
-                 id:`Seorang kurir mengantarkan <strong>${sc.n} ${items.id} identik</strong>. Setiap ${items.id} beratnya <strong>${sc.kg} kg</strong>. Berapakah <strong>total berat</strong>?`},
+    return{text:{en:`A store ships <strong>${n} ${items.en}</strong>, each weighing <strong>${kg} kg</strong>. The shipping cost is <strong>$${rate}.00 per kg</strong>. What is the <strong>total shipping fee</strong>?`,
+                 id:`Sebuah toko mengirim <strong>${n} ${items.id}</strong>, masing-masing <strong>${kg} kg</strong>. Biaya pengiriman <strong>$${rate}.00 per kg</strong>. Berapa <strong>total biaya pengiriman</strong>?`},
       isWord:true,math:null,opts,ans,
-      steps:{en:[`Total = ${sc.n} × ${sc.kg} = <b>${sc.total} kg</b>`],id:[`Total = ${sc.n} × ${sc.kg} = <b>${sc.total} kg</b>`]},
-      concept:{en:`Multiply: number of items × mass per item.`,id:`Kalikan: jumlah barang × berat per barang.`}};
-  };})(),
-
-  word_cost:(()=>{const _arr=[
-      {n:8,kg:1.5,mass:12,rate:3,fee:36},{n:6,kg:2.5,mass:15,rate:4,fee:60},
-      {n:5,kg:3.5,mass:17.5,rate:2,fee:35},{n:4,kg:2.5,mass:10,rate:5,fee:50},
-      {n:6,kg:3.5,mass:21,rate:3,fee:63},{n:8,kg:2.5,mass:20,rate:4,fee:80},
-      {n:10,kg:1.5,mass:15,rate:3,fee:45},{n:5,kg:2.5,mass:12.5,rate:4,fee:50},
-      {n:4,kg:3.5,mass:14,rate:5,fee:70},{n:9,kg:3.5,mass:31.5,rate:2,fee:63},
-  ];
-  return ()=>{
-    const sc=pickFreshWord(_arr,'word_cost');
-    const items=pickA([{en:'boxes',id:'kotak'},{en:'parcels',id:'paket'},{en:'crates',id:'peti'}]);
-    const cor=`$${sc.fee}`;
-    const w1=`$${sc.fee+sc.rate*sc.n}`;const w2=`$${sc.fee-sc.rate>0?sc.fee-sc.rate:sc.fee+sc.rate}`;const w3=`$${sc.n*sc.kg*sc.rate+sc.rate}`;
-    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
-    return{text:{en:`A store ships <strong>${sc.n} ${items.en}</strong>, each weighing <strong>${sc.kg} kg</strong>. The shipping cost is <strong>$${sc.rate}.00 per kg</strong>. What is the <strong>total shipping fee</strong>?`,
-                 id:`Sebuah toko mengirim <strong>${sc.n} ${items.id}</strong>, masing-masing <strong>${sc.kg} kg</strong>. Biaya pengiriman <strong>$${sc.rate}.00 per kg</strong>. Berapa <strong>total biaya pengiriman</strong>?`},
-      isWord:true,math:null,opts,ans,
-      steps:{en:[`Total mass = ${sc.n} × ${sc.kg} = <b>${sc.mass} kg</b>`,`Fee = ${sc.mass} × $${sc.rate} = <b>$${sc.fee}</b>`],
-             id:[`Total berat = ${sc.n} × ${sc.kg} = <b>${sc.mass} kg</b>`,`Biaya = ${sc.mass} × $${sc.rate} = <b>$${sc.fee}</b>`]},
+      steps:{en:[`Total mass = ${n} × ${kg} = <b>${mass} kg</b>`,`Fee = ${mass} × $${rate} = <b>$${fee}</b>`],
+             id:[`Total berat = ${n} × ${kg} = <b>${mass} kg</b>`,`Biaya = ${mass} × $${rate} = <b>$${fee}</b>`]},
       concept:{en:'Two steps: find total mass, then multiply by the rate.',id:'Dua langkah: cari total berat, lalu kalikan dengan tarif.'}};
-  };})(),
+  },
 
   // ── Chapter 1 extra ─────────────────────────────────────────
   fdiv:()=>{
