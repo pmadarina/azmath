@@ -1199,53 +1199,59 @@ const Generators={
   },
 
   data_pictogram:()=>{
-    // Waffle/pictogram chart: most popular, least popular, or how many more X than Y
+    // Pictogram chart with emoji symbols and a key (each symbol = N units)
     const vv=pickA([0,1,2]);
     const sets=[
-      {cats:['Vanilla','Mint','Chocolate','Strawberry'],ctx:'favourite ice cream flavours',subj:'children'},
-      {cats:['Football','Basketball','Tennis','Badminton'],ctx:'favourite sports',subj:'students'},
-      {cats:['Science','Maths','English','Art'],ctx:'favourite subjects',subj:'students'},
-      {cats:['Cats','Dogs','Birds','Fish'],ctx:'favourite pets',subj:'families'},
-      {cats:['Pizza','Burger','Pasta','Sushi'],ctx:'favourite foods',subj:'students'},
-      {cats:['Red','Blue','Green','Yellow'],ctx:'favourite colours',subj:'children'},
+      {cats:['Vanilla','Mint','Chocolate','Strawberry'],ctx:'favourite ice cream flavours',subj:'children',sym:'🍦'},
+      {cats:['Football','Basketball','Tennis','Badminton'],ctx:'favourite sports',subj:'students',sym:'⚽'},
+      {cats:['Science','Maths','English','Art'],ctx:'favourite subjects',subj:'students',sym:'📚'},
+      {cats:['Cats','Dogs','Birds','Fish'],ctx:'favourite pets',subj:'families',sym:'🐾'},
+      {cats:['Pizza','Burger','Pasta','Sushi'],ctx:'favourite foods',subj:'students',sym:'🍴'},
+      {cats:['Red','Blue','Green','Yellow'],ctx:'favourite colours',subj:'children',sym:'⭐'},
     ];
     const s=pickA(sets);const n=s.cats.length;
+    const key=pickA([2,5,10]);
+    // symbol counts: max=6-10, min=1-3, others=3-5 (all ×key gives the real frequency)
     const maxI=ri(0,n-1);
     const minI=(()=>{let i;do{i=ri(0,n-1);}while(i===maxI);return i;})();
-    const freqs=s.cats.map((_,i)=>i===maxI?ri(9,15):i===minI?ri(1,4):ri(5,8));
-    const sortedIdx=[...Array(n).keys()].sort((a,b)=>freqs[b]-freqs[a]);
-    const tbl=`<table class="freq-table"><tr>${s.cats.map(c=>`<th>${c}</th>`).join('')}</tr><tr>${freqs.map(f=>`<td>${f}</td>`).join('')}</tr></table>`;
+    const syms=s.cats.map((_,i)=>i===maxI?ri(6,10):i===minI?ri(1,3):ri(3,5));
+    const freqs=syms.map(x=>x*key);
+    const sortedIdx=[...Array(n).keys()].sort((a,b)=>syms[b]-syms[a]);
+    // Build visual pictogram table: each row = category + repeated emoji
+    const rows=s.cats.map((cat,i)=>`<tr><td class="row-head">${cat}</td><td style="letter-spacing:3px;font-size:1.15rem;line-height:1.7">${s.sym.repeat(syms[i])}</td></tr>`).join('');
+    const tbl=`<table class="freq-table"><tr class="total-row"><td class="row-head" style="font-weight:900">Key:</td><td style="font-weight:700">${s.sym} = ${key} ${s.subj}</td></tr>${rows}</table>`;
     if(vv===0){
       const cor=s.cats[maxI];
       const{opts,ans}=mkOpts(cor,[s.cats[minI],s.cats[sortedIdx[1]],s.cats[sortedIdx[2]]]);
-      return{text:{en:`The diagram shows ${s.ctx} for a group of ${s.subj}. Which is the most popular?`,
-                   id:`Diagram menunjukkan ${s.ctx} untuk sekelompok ${s.subj}. Mana yang paling populer?`},
+      return{text:{en:`The pictogram shows ${s.ctx}. Which is the most popular?`,
+                   id:`Piktogram menunjukkan ${s.ctx}. Mana yang paling populer?`},
         isWord:true,math:tbl,opts,ans,
-        steps:{en:[`Highest count: ${freqs[maxI]} → <b>${cor}</b>`],
-               id:[`Jumlah tertinggi: ${freqs[maxI]} → <b>${cor}</b>`]},
-        concept:{en:'The most popular category has the highest count.',
-                 id:'Kategori paling populer memiliki jumlah tertinggi.'}};
+        steps:{en:[`Count symbols: ${s.cats[maxI]} has the most (${syms[maxI]} ${s.sym})`,`${syms[maxI]} × ${key} = ${freqs[maxI]} — the highest → <b>${cor}</b>`],
+               id:[`Hitung simbol: ${s.cats[maxI]} paling banyak (${syms[maxI]} ${s.sym})`,`${syms[maxI]} × ${key} = ${freqs[maxI]} — tertinggi → <b>${cor}</b>`]},
+        concept:{en:`Each ${s.sym} = ${key} ${s.subj}. Most symbols = most popular.`,
+                 id:`Setiap ${s.sym} = ${key} ${s.subj}. Simbol terbanyak = paling populer.`}};
     }else if(vv===1){
       const cor=s.cats[minI];
       const{opts,ans}=mkOpts(cor,[s.cats[maxI],s.cats[sortedIdx[1]],s.cats[sortedIdx[n-2]]]);
-      return{text:{en:`The diagram shows ${s.ctx} for a group of ${s.subj}. Which is the least popular?`,
-                   id:`Diagram menunjukkan ${s.ctx} untuk sekelompok ${s.subj}. Mana yang paling tidak populer?`},
+      return{text:{en:`The pictogram shows ${s.ctx}. Which is the least popular?`,
+                   id:`Piktogram menunjukkan ${s.ctx}. Mana yang paling tidak populer?`},
         isWord:true,math:tbl,opts,ans,
-        steps:{en:[`Lowest count: ${freqs[minI]} → <b>${cor}</b>`],
-               id:[`Jumlah terendah: ${freqs[minI]} → <b>${cor}</b>`]},
-        concept:{en:'The least popular category has the lowest count.',
-                 id:'Kategori paling tidak populer memiliki jumlah terendah.'}};
+        steps:{en:[`Count symbols: ${s.cats[minI]} has the fewest (${syms[minI]} ${s.sym})`,`${syms[minI]} × ${key} = ${freqs[minI]} — the lowest → <b>${cor}</b>`],
+               id:[`Hitung simbol: ${s.cats[minI]} paling sedikit (${syms[minI]} ${s.sym})`,`${syms[minI]} × ${key} = ${freqs[minI]} — terendah → <b>${cor}</b>`]},
+        concept:{en:`Each ${s.sym} = ${key} ${s.subj}. Fewest symbols = least popular.`,
+                 id:`Setiap ${s.sym} = ${key} ${s.subj}. Simbol paling sedikit = paling tidak populer.`}};
     }else{
-      const diff=freqs[maxI]-freqs[minI];
+      const diff=(syms[maxI]-syms[minI])*key;
       const cor=String(diff);
-      const{opts,ans}=mkOpts(cor,[String(freqs[maxI]),String(freqs[minI]),String(diff+ri(1,4))]);
-      return{text:{en:`The diagram shows ${s.ctx}. How many more ${s.subj} prefer ${s.cats[maxI]} than ${s.cats[minI]}?`,
-                   id:`Diagram menunjukkan ${s.ctx}. Berapa lebih banyak ${s.subj} yang menyukai ${s.cats[maxI]} daripada ${s.cats[minI]}?`},
+      const w2=(syms[maxI]-syms[minI]+ri(1,2))*key;
+      const{opts,ans}=mkOpts(cor,[String(freqs[maxI]),String(freqs[minI]),String(w2)]);
+      return{text:{en:`The pictogram shows ${s.ctx}. How many more ${s.subj} prefer ${s.cats[maxI]} than ${s.cats[minI]}?`,
+                   id:`Piktogram menunjukkan ${s.ctx}. Berapa lebih banyak ${s.subj} yang menyukai ${s.cats[maxI]} daripada ${s.cats[minI]}?`},
         isWord:true,math:tbl,opts,ans,
-        steps:{en:[`${s.cats[maxI]}: ${freqs[maxI]}`,`${s.cats[minI]}: ${freqs[minI]}`,`Difference = ${freqs[maxI]} − ${freqs[minI]} = <b>${diff}</b>`],
-               id:[`${s.cats[maxI]}: ${freqs[maxI]}`,`${s.cats[minI]}: ${freqs[minI]}`,`Selisih = ${freqs[maxI]} − ${freqs[minI]} = <b>${diff}</b>`]},
-        concept:{en:'Find the count for each category, then subtract.',
-                 id:'Cari jumlah tiap kategori, lalu kurangkan.'}};
+        steps:{en:[`${s.cats[maxI]}: ${syms[maxI]} ${s.sym} × ${key} = ${freqs[maxI]}`,`${s.cats[minI]}: ${syms[minI]} ${s.sym} × ${key} = ${freqs[minI]}`,`Difference = ${freqs[maxI]} − ${freqs[minI]} = <b>${diff}</b>`],
+               id:[`${s.cats[maxI]}: ${syms[maxI]} ${s.sym} × ${key} = ${freqs[maxI]}`,`${s.cats[minI]}: ${syms[minI]} ${s.sym} × ${key} = ${freqs[minI]}`,`Selisih = ${freqs[maxI]} − ${freqs[minI]} = <b>${diff}</b>`]},
+        concept:{en:`Each ${s.sym} = ${key}. Multiply symbols × key, then subtract.`,
+                 id:`Setiap ${s.sym} = ${key}. Kalikan simbol × kunci, lalu kurangkan.`}};
     }
   },
 
