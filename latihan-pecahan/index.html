@@ -1084,8 +1084,8 @@ const Generators={
   },
 
   data_venn:()=>{
-    // Venn diagram: two overlapping sets
-    // All configs: Aonly=A-both, Bonly=t-neither-A, B=Bonly+both (all ≥0 verified)
+    // SVG Venn diagram: 3 values shown, find the missing 4th
+    // Safe configs: all 4 cells (Aonly,both,Bonly,neither) are distinct values
     const configs=[
       {t:50,both:10,A:22,neither:7},
       {t:40,both:8,A:18,neither:4},
@@ -1094,66 +1094,51 @@ const Generators={
       {t:100,both:20,A:45,neither:5},
       {t:30,both:6,A:14,neither:4},
       {t:50,both:5,A:20,neither:10},
-      {t:40,both:10,A:15,neither:5},
       {t:60,both:15,A:28,neither:7},
-      {t:100,both:25,A:40,neither:15},
     ];
     const cfg=pickA(configs);
     const{t,both,A,neither}=cfg;
-    const Aonly=A-both;const Bonly=t-neither-A;const B=Bonly+both;
+    const Aonly=A-both;const Bonly=t-neither-A;
     const nm=pickA([
-      {sA:'ordered waffles',sB:'ordered pancakes',ctx:'customers',tot:'customers at a café'},
-      {sA:'play football',sB:'play basketball',ctx:'students',tot:'students'},
-      {sA:'have cats',sB:'have dogs',ctx:'families',tot:'families'},
-      {sA:'like maths',sB:'like science',ctx:'students',tot:'students'},
-      {sA:'take the bus',sB:'take the train',ctx:'commuters',tot:'commuters'},
-      {sA:'read fiction',sB:'read non-fiction',ctx:'members',tot:'library members'},
+      {la:'Waffles',lb:'Pancakes',tot:'customers at a café'},
+      {la:'Football',lb:'Basketball',tot:'students'},
+      {la:'Cats',lb:'Dogs',tot:'families'},
+      {la:'Maths',lb:'Science',tot:'students'},
+      {la:'Bus',lb:'Train',tot:'commuters'},
+      {la:'Fiction',lb:'Non-fiction',tot:'library members'},
     ]);
-    const vv=pickA([0,1,2,3]);
-    const base=`There are ${t} ${nm.tot}. ${A} ${nm.ctx} ${nm.sA}. ${neither} did neither. ${both} did both.`;
-    const baseId=`Ada ${t} ${nm.tot}. ${A} ${nm.ctx} ${nm.sA}. ${neither} tidak keduanya. ${both} keduanya.`;
-    if(vv===0){
-      const qEn=`How many ${nm.ctx} ${nm.sA} but NOT ${nm.sB}?`;
-      const qId=`Berapa ${nm.ctx} yang ${nm.sA} tapi TIDAK ${nm.sB}?`;
-      const cor=String(Aonly);
-      const{opts,ans}=mkOpts(cor,[String(A),String(both),String(neither)]);
-      return{text:{en:`${base} ${qEn}`,id:`${baseId} ${qId}`},isWord:true,math:null,opts,ans,
-        steps:{en:[`${nm.sA} total: ${A}, Both: ${both}`,`${nm.sA} only = ${A} − ${both} = <b>${Aonly}</b>`],
-               id:[`Total ${nm.sA}: ${A}, Keduanya: ${both}`,`Hanya ${nm.sA} = ${A} − ${both} = <b>${Aonly}</b>`]},
-        concept:{en:'A only = A total − Both.',id:'Hanya A = Total A − Keduanya.'}};
-    }else if(vv===1){
-      const qEn=`How many ${nm.ctx} ${nm.sB} but NOT ${nm.sA}?`;
-      const qId=`Berapa ${nm.ctx} yang ${nm.sB} tapi TIDAK ${nm.sA}?`;
-      const cor=String(Bonly);
-      const{opts,ans}=mkOpts(cor,[String(B),String(both),String(neither)]);
-      return{text:{en:`${base} ${qEn}`,id:`${baseId} ${qId}`},isWord:true,math:null,opts,ans,
-        steps:{en:[`In circles: ${t}−${neither}=${t-neither}`,`${nm.sA} total: ${A}`,`${nm.sB} only = ${t-neither}−${A} = <b>${Bonly}</b>`],
-               id:[`Dalam lingkaran: ${t}−${neither}=${t-neither}`,`Total ${nm.sA}: ${A}`,`Hanya ${nm.sB} = ${t-neither}−${A} = <b>${Bonly}</b>`]},
-        concept:{en:'B only = Total − Neither − A total.',id:'Hanya B = Total − Tidak keduanya − Total A.'}};
-    }else if(vv===2){
-      const qEn=`How many ${nm.ctx} ${nm.sB} in total (including those who also ${nm.sA})?`;
-      const qId=`Berapa total ${nm.ctx} yang ${nm.sB} (termasuk yang juga ${nm.sA})?`;
-      const cor=String(B);
-      const{opts,ans}=mkOpts(cor,[String(Bonly),String(t-neither),String(A)]);
-      return{text:{en:`${base} ${qEn}`,id:`${baseId} ${qId}`},isWord:true,math:null,opts,ans,
-        steps:{en:[`${nm.sB} only = ${t}−${neither}−${A}=${Bonly}`,`${nm.sB} total = ${Bonly}+${both} = <b>${B}</b>`],
-               id:[`Hanya ${nm.sB} = ${t}−${neither}−${A}=${Bonly}`,`Total ${nm.sB} = ${Bonly}+${both} = <b>${B}</b>`]},
-        concept:{en:'B total = B only + Both.',id:'Total B = Hanya B + Keduanya.'}};
-    }else{
-      // Give A-only, B-only, Both → find Neither
-      const inC=Aonly+both+Bonly;
-      const setupEn=`There are ${t} ${nm.tot}. ${Aonly} only ${nm.sA}. ${Bonly} only ${nm.sB}. ${both} did both.`;
-      const setupId=`Ada ${t} ${nm.tot}. ${Aonly} hanya ${nm.sA}. ${Bonly} hanya ${nm.sB}. ${both} keduanya.`;
-      const qEn=`How many ${nm.ctx} did neither?`;
-      const qId=`Berapa ${nm.ctx} yang tidak keduanya?`;
-      const cor=String(neither);
-      const w2=neither>4?String(neither-ri(1,3)):String(neither+ri(2,4));
-      const{opts,ans}=mkOpts(cor,[String(neither+ri(3,7)),w2,String(both)]);
-      return{text:{en:`${setupEn} ${qEn}`,id:`${setupId} ${qId}`},isWord:true,math:null,opts,ans,
-        steps:{en:[`Total in circles: ${Aonly}+${both}+${Bonly}=${inC}`,`Neither = ${t}−${inC} = <b>${neither}</b>`],
-               id:[`Total dalam lingkaran: ${Aonly}+${both}+${Bonly}=${inC}`,`Tidak keduanya = ${t}−${inC} = <b>${neither}</b>`]},
-        concept:{en:'Neither = Total − (A only + Both + B only).',id:'Tidak keduanya = Total − (Hanya A + Keduanya + Hanya B).'}};
-    }
+    // cells: [Aonly, both, Bonly, neither]
+    const cells=[Aonly,both,Bonly,neither];
+    const ti=pickA([0,1,2,3]);
+    const cor=String(cells[ti]);
+    const kv=cells.filter((_,i)=>i!==ti);
+    const knownSum=kv.reduce((s,v)=>s+v,0);
+    const{opts,ans}=mkOpts(cor,[String(kv[0]),String(kv[1]),String(kv[2])]);
+    // SVG helpers
+    const dv=(i)=>i===ti?'?':String(cells[i]);
+    const fc=(i)=>i===ti?'#d63031':'#1a1a2e';
+    const fs=(i)=>i===ti?19:15;
+    const W=310,H=168;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">
+<rect x="4" y="4" width="302" height="155" fill="#fafbff" stroke="#dce8ff" stroke-width="1.5" rx="7"/>
+<circle cx="120" cy="90" r="56" fill="#eef3ff" fill-opacity="0.75" stroke="#4f8ef7" stroke-width="2.5"/>
+<circle cx="190" cy="90" r="56" fill="#f0eeff" fill-opacity="0.75" stroke="#6c5ce7" stroke-width="2.5"/>
+<text x="97" y="42" text-anchor="middle" font-size="12" font-weight="900" fill="#4f8ef7">${nm.la}</text>
+<text x="213" y="42" text-anchor="middle" font-size="12" font-weight="900" fill="#6c5ce7">${nm.lb}</text>
+<text x="84" y="95" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
+<text x="155" y="95" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
+<text x="226" y="95" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
+<text x="278" y="34" text-anchor="middle" font-size="9" fill="#bbb">neither</text>
+<text x="278" y="52" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
+<text x="155" y="156" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
+</svg>`;
+    return{text:{en:`There are ${t} ${nm.tot}. Complete the Venn diagram. What is the missing value?`,
+                 id:`Ada ${t} ${nm.tot}. Lengkapi diagram Venn. Berapa nilai yang hilang?`},
+      isWord:true,math:svg,opts,ans,
+      steps:{en:[`Known values: ${kv.join(' + ')} = ${knownSum}`,`Missing = ${t} − ${knownSum} = <b>${cor}</b>`],
+             id:[`Nilai yang diketahui: ${kv.join(' + ')} = ${knownSum}`,`Yang hilang = ${t} − ${knownSum} = <b>${cor}</b>`]},
+      concept:{en:'A only + Both + B only + Neither = Total.',
+               id:'Hanya A + Keduanya + Hanya B + Tidak keduanya = Total.'}};
   },
 
   data_pct:()=>{
@@ -1284,12 +1269,36 @@ const Generators={
     const cor=String(cells[ti]);
     const kv=cells.filter((_,i)=>i!==ti);
     const knownSum=kv.reduce((s,v)=>s+v,0);
-    const cv=(i)=>i===ti?`<td class="missing">?</td>`:`<td>${cells[i]}</td>`;
-    const tbl=`<table class="freq-table"><tr><th class="row-head"></th><th>${nm.sA}</th><th>Not ${nm.sA}</th></tr><tr><td class="row-head">${nm.sB}</td>${cv(0)}${cv(2)}</tr><tr><td class="row-head">Not ${nm.sB}</td>${cv(1)}${cv(3)}</tr><tr class="total-row"><td class="row-head">Total</td><td colspan="2">${t}</td></tr></table>`;
     const{opts,ans}=mkOpts(cor,[String(kv[0]),String(kv[1]),String(kv[2])]);
+    // SVG Carroll diagram: 2×2 grid with row/column headers
+    const dv=(i)=>i===ti?'?':String(cells[i]);
+    const fc=(i)=>i===ti?'#d63031':'#1a1a2e';
+    const fs=(i)=>i===ti?20:16;
+    // Layout: headerCol=90, each data col=96, headerRow=38, each data row=54
+    const hC=90,dC=96,hR=38,dR=54;
+    const W=hC+dC*2+2,H=hR+dR*2+30;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="${hR}" width="${hC}" height="${dR}" fill="#f4f0ff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="0" y="${hR+dR}" width="${hC}" height="${dR}" fill="#f4f0ff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="${hC}" y="0" width="${dC}" height="${hR}" fill="#eef3ff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="${hC+dC}" y="0" width="${dC}" height="${hR}" fill="#eef3ff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="${hC}" y="${hR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="${hC+dC}" y="${hR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="${hC}" y="${hR+dR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
+<rect x="${hC+dC}" y="${hR+dR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
+<text x="${hC+dC/2}" y="${hR/2+5}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">${nm.sA}</text>
+<text x="${hC+dC+dC/2}" y="${hR/2+5}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">Not ${nm.sA}</text>
+<text x="${hC/2}" y="${hR+dR/2+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">${nm.sB}</text>
+<text x="${hC/2}" y="${hR+dR+dR/2+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">Not ${nm.sB}</text>
+<text x="${hC+dC/2}" y="${hR+dR/2+6}" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
+<text x="${hC+dC+dC/2}" y="${hR+dR/2+6}" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
+<text x="${hC+dC/2}" y="${hR+dR+dR/2+6}" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
+<text x="${hC+dC+dC/2}" y="${hR+dR+dR/2+6}" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
+<text x="${(W)/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
+</svg>`;
     return{text:{en:`There are ${t} ${nm.tot}. Complete the Carroll diagram. What is the missing value?`,
                  id:`Ada ${t} ${nm.tot}. Lengkapi diagram Carroll. Berapa nilai yang hilang?`},
-      isWord:true,math:tbl,opts,ans,
+      isWord:true,math:svg,opts,ans,
       steps:{en:[`Known cells: ${kv.join(' + ')} = ${knownSum}`,`Missing = ${t} − ${knownSum} = <b>${cor}</b>`],
              id:[`Sel yang diketahui: ${kv.join(' + ')} = ${knownSum}`,`Yang hilang = ${t} − ${knownSum} = <b>${cor}</b>`]},
       concept:{en:'Carroll diagram: all 4 cells must add up to the total.',
