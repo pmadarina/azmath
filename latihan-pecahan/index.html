@@ -1684,7 +1684,7 @@ function pick(l){
       setTimeout(()=>{window.scrollTo({top:0,behavior:'smooth'});renderDone();},1600);
       return;
     }
-    fb.innerHTML=`<strong>${lang==='en'?'✅ Correct! Well done!':'✅ Benar! Keren!'} ${sm}</strong>${conceptBox}`;
+    fb.innerHTML=`<strong>${lang==='en'?'✅ Correct! Well done!':'✅ Benar! Keren!'} ${sm}</strong><div class="steps" style="margin-top:10px">${stHtml}</div>${conceptBox}`;
     confetti();
   } else {
     const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
@@ -1718,17 +1718,19 @@ function submitAnswer(){
   });
   document.getElementById('submitBtn').classList.remove('show');
 
+  const fb2=document.getElementById('fb');
+  const stHtml2=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptBox2=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
   if(ok){
     if(streak>=3) confetti();
-    setTimeout(()=>next(), 500);
+    fb2.className='feedback show correct';
+    fb2.innerHTML=`<strong>${lang==='en'?'✅ Correct!':'✅ Benar!'}</strong><div class="steps" style="margin-top:10px">${stHtml2}</div>${conceptBox2}`;
+    setTimeout(()=>next(), 1800);
   } else {
-    const fb=document.getElementById('fb');
-    const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
-    const conceptBox=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
     const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
-    fb.className='feedback show wrong';
-    fb.innerHTML=`<strong>❌ ${lang==='en'?'Incorrect.':'Salah.'} ${topicLabel}</strong>
-      <div class="steps" style="margin-top:10px">${stHtml}</div>${conceptBox}`;
+    fb2.className='feedback show wrong';
+    fb2.innerHTML=`<strong>❌ ${lang==='en'?'Incorrect.':'Salah.'} ${topicLabel}</strong>
+      <div class="steps" style="margin-top:10px">${stHtml2}</div>${conceptBox2}`;
     document.getElementById('nxtBtn').classList.add('show');
   }
 }
@@ -1783,7 +1785,7 @@ function getActiveParts(){
 }
 
 function buildInitialQueue(){
-  _usedVals.clear();
+  // Keep _usedVals persistent across restarts so conversion values don't repeat within a session
   Object.keys(_usedWordIdx).forEach(k=>_usedWordIdx[k].clear());
   let qNum=1;
   const result=getActiveParts().flatMap(part=>{
@@ -1806,7 +1808,7 @@ function buildInitialQueue(){
 }
 
 function buildAdaptiveQueue(){
-  _usedVals.clear();
+  // Keep _usedVals persistent across restarts so conversion values don't repeat within a session
   Object.keys(_usedWordIdx).forEach(k=>_usedWordIdx[k].clear());
   let qNum=1;
   const newQueue=[];
