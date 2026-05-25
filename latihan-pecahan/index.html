@@ -1118,19 +1118,20 @@ const Generators={
     const dv=(i)=>i===ti?'?':String(cells[i]);
     const fc=(i)=>i===ti?'#d63031':'#1a1a2e';
     const fs=(i)=>i===ti?19:15;
-    const W=310,H=168;
+    // Layout: labels at top (y=22), circles below (cy=100,r=52→top=48), neither bottom-right
+    const W=310,H=178;
     const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">
-<rect x="4" y="4" width="302" height="155" fill="#fafbff" stroke="#dce8ff" stroke-width="1.5" rx="7"/>
-<circle cx="120" cy="90" r="56" fill="#eef3ff" fill-opacity="0.75" stroke="#4f8ef7" stroke-width="2.5"/>
-<circle cx="190" cy="90" r="56" fill="#f0eeff" fill-opacity="0.75" stroke="#6c5ce7" stroke-width="2.5"/>
-<text x="97" y="42" text-anchor="middle" font-size="12" font-weight="900" fill="#4f8ef7">${nm.la}</text>
-<text x="213" y="42" text-anchor="middle" font-size="12" font-weight="900" fill="#6c5ce7">${nm.lb}</text>
-<text x="84" y="95" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
-<text x="155" y="95" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
-<text x="226" y="95" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
-<text x="278" y="34" text-anchor="middle" font-size="9" fill="#bbb">neither</text>
-<text x="278" y="52" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
-<text x="155" y="156" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
+<rect x="4" y="30" width="302" height="138" fill="#fafbff" stroke="#dce8ff" stroke-width="1.5" rx="7"/>
+<circle cx="115" cy="100" r="52" fill="#eef3ff" fill-opacity="0.8" stroke="#4f8ef7" stroke-width="2.5"/>
+<circle cx="195" cy="100" r="52" fill="#f0eeff" fill-opacity="0.8" stroke="#6c5ce7" stroke-width="2.5"/>
+<text x="100" y="20" text-anchor="middle" font-size="12" font-weight="900" fill="#4f8ef7">${nm.la}</text>
+<text x="210" y="20" text-anchor="middle" font-size="12" font-weight="900" fill="#6c5ce7">${nm.lb}</text>
+<text x="81" y="105" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
+<text x="155" y="105" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
+<text x="229" y="105" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
+<text x="272" y="148" text-anchor="middle" font-size="9" fill="#aaa">neither</text>
+<text x="272" y="163" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
+<text x="155" y="174" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
 </svg>`;
     return{text:{en:`There are ${t} ${nm.tot}. Complete the Venn diagram. What is the missing value?`,
                  id:`Ada ${t} ${nm.tot}. Lengkapi diagram Venn. Berapa nilai yang hilang?`},
