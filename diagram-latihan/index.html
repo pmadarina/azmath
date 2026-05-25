@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagram Practice — AzMath</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:100vh;display:flex;flex-direction:column}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#4f8ef7 0%,#6c5ce7 60%,#a29bfe 100%);color:#fff;padding:48px 24px 72px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:18px;position:relative}
+.hero h1{font-size:2.6rem;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-bottom:10px;position:relative}
+.hero p{font-size:.95rem;opacity:.85;max-width:380px;margin:0 auto;line-height:1.6;position:relative}
+.back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+/* Main */
+.main{max-width:700px;margin:-44px auto 0;padding:0 20px 60px;width:100%}
+
+/* Tabs */
+.tab-bar{background:#fff;border-radius:18px;padding:6px;display:flex;gap:6px;margin-bottom:20px;box-shadow:0 4px 20px rgba(79,142,247,.12)}
+.tab-btn{flex:1;padding:10px 6px;border:none;border-radius:13px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:inherit;color:#888;background:transparent;transition:all .18s}
+.tab-btn.active{background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;box-shadow:0 3px 12px rgba(79,142,247,.35)}
+.tab-btn:hover:not(.active){background:#f0f4ff;color:#4f8ef7}
+
+/* Question card */
+.q-card{background:#fff;border-radius:24px;padding:28px 24px 24px;box-shadow:0 8px 32px rgba(79,142,247,.13)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Data table */
+.data-table{width:100%;border-collapse:collapse;margin-bottom:18px;border-radius:12px;overflow:hidden;font-size:.88rem}
+.data-table thead th{background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;padding:10px 14px;font-weight:800;text-align:center}
+.data-table tbody td{padding:9px 14px;text-align:center;border-bottom:1px solid #eef3ff;font-weight:700}
+.data-table tbody tr:last-child td{border-bottom:none}
+.data-table tbody tr:nth-child(odd){background:#fafcff}
+
+/* Buttons */
+.action-row{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+.submit-btn{background:linear-gradient(135deg,#4f8ef7,#6c5ce7);color:#fff;border:none;border-radius:24px;padding:11px 28px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;box-shadow:0 4px 14px rgba(79,142,247,.35)}
+.submit-btn:hover{opacity:.88}
+.new-btn{background:#fff;color:#4f8ef7;border:2px solid #4f8ef7;border-radius:24px;padding:11px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .15s}
+.new-btn:hover{background:#f0f4ff}
+
+/* Feedback */
+.feedback{border-radius:14px;padding:14px 18px;margin-top:14px;font-size:.88rem;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fff8;border:1.5px solid #00b894;color:#00634d}
+.feedback.wrong{background:#fff5f5;border:1.5px solid #d63031;color:#a30000}
+.feedback strong{font-weight:900}
+
+/* Scenario text */
+.scenario{font-size:.9rem;color:#555;margin-bottom:14px;line-height:1.6}
+.scenario strong{color:#1a1a2e}
+
+/* Bar chart interactive */
+.bar-svg-wrap{position:relative;display:inline-block}
+.bar-svg-wrap svg{display:block}
+.bar-click-area{position:absolute;cursor:crosshair}
+
+/* Waffle */
+.waffle-layout{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.waffle-legend{display:flex;flex-direction:column;gap:8px;min-width:140px}
+.legend-item{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all .15s;font-size:.83rem;font-weight:700}
+.legend-item.selected{border-color:#4f8ef7;background:#eef3ff;box-shadow:0 2px 8px rgba(79,142,247,.2)}
+.legend-swatch{width:22px;height:22px;border-radius:5px;flex-shrink:0;border:1.5px solid rgba(0,0,0,.12)}
+.waffle-grid{display:grid;grid-template-columns:repeat(5,34px);grid-template-rows:repeat(5,34px);gap:3px}
+.waffle-cell{width:34px;height:34px;border-radius:5px;border:1.5px solid rgba(0,0,0,.1);cursor:pointer;transition:transform .08s;background:#f0f0f0}
+.waffle-cell:hover{transform:scale(1.1)}
+
+/* Venn input overlay */
+.venn-wrap{position:relative;display:inline-block}
+.venn-input{position:absolute;width:46px;height:28px;border:2px dashed #6c5ce7;border-radius:8px;text-align:center;font-size:.9rem;font-weight:800;font-family:inherit;background:#faf9ff;color:#1a1a2e;outline:none;padding:2px}
+.venn-input:focus{border-style:solid;border-color:#4f8ef7;background:#fff;box-shadow:0 0 0 3px rgba(79,142,247,.2)}
+
+/* Carroll input */
+.carroll-input{width:52px;height:34px;border:2px dashed #6c5ce7;border-radius:8px;text-align:center;font-size:.9rem;font-weight:800;font-family:inherit;background:#faf9ff;color:#1a1a2e;outline:none;padding:2px}
+.carroll-input:focus{border-style:solid;border-color:#4f8ef7;background:#fff;box-shadow:0 0 0 3px rgba(79,142,247,.2)}
+
+/* Section label */
+.section-lbl{font-size:.75rem;font-weight:800;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+
+/* Footer */
+.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
+.footer span{color:#a29bfe;font-weight:700}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .3s ease}
+
+@media(max-width:520px){
+  .hero{padding:36px 18px 60px}
+  .hero h1{font-size:2rem}
+  .main{padding:0 14px 40px}
+  .q-card{padding:20px 16px 18px}
+  .tab-btn{font-size:.72rem;padding:9px 4px}
+  .waffle-layout{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back-btn" href="../">← All Exercises</a>
+  <div class="hero-badge">Grade 5 · Mathematics</div>
+  <h1>📐 Diagram Practice</h1>
+  <p>Build, colour, and complete diagrams to sharpen your data skills.</p>
+</div>
+
+<div class="main">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(0)">📊 Bar Chart</button>
+    <button class="tab-btn" onclick="switchTab(1)">🧇 Waffle</button>
+    <button class="tab-btn" onclick="switchTab(2)">⭕ Venn</button>
+    <button class="tab-btn" onclick="switchTab(3)">⊞ Carroll</button>
+  </div>
+
+  <!-- Tab 0: Bar Chart -->
+  <div class="tab-panel active" id="panel-0">
+    <div class="q-card">
+      <div class="section-lbl">Bar Chart Builder</div>
+      <p class="scenario" id="bar-scenario"></p>
+      <table class="data-table" id="bar-table"></table>
+      <p style="font-size:.8rem;color:#888;margin-bottom:10px">Click inside each bar row to set the bar length. Bars snap to the nearest even number (0–10).</p>
+      <div id="bar-chart-wrap"></div>
+      <div class="action-row">
+        <button class="submit-btn" onclick="checkBar()">Check Answer</button>
+        <button class="new-btn" onclick="newBar()">New Question</button>
+      </div>
+      <div class="feedback" id="bar-feedback"></div>
+    </div>
+  </div>
+
+  <!-- Tab 1: Waffle -->
+  <div class="tab-panel" id="panel-1">
+    <div class="q-card">
+      <div class="section-lbl">Waffle Chart</div>
+      <p class="scenario" id="waffle-scenario"></p>
+      <p style="font-size:.8rem;color:#888;margin-bottom:14px">Select a category below, then click squares to paint them.</p>
+      <div class="waffle-layout">
+        <div class="waffle-legend" id="waffle-legend"></div>
+        <div class="waffle-grid" id="waffle-grid"></div>
+      </div>
+      <div class="action-row">
+        <button class="submit-btn" onclick="checkWaffle()">Check Answer</button>
+        <button class="new-btn" onclick="newWaffle()">New Question</button>
+      </div>
+      <div class="feedback" id="waffle-feedback"></div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Venn -->
+  <div class="tab-panel" id="panel-2">
+    <div class="q-card">
+      <div class="section-lbl">Venn Diagram</div>
+      <p class="scenario" id="venn-scenario"></p>
+      <div id="venn-wrap"></div>
+      <div class="action-row">
+        <button class="submit-btn" onclick="checkVenn()">Check Answer</button>
+        <button class="new-btn" onclick="newVenn()">New Question</button>
+      </div>
+      <div class="feedback" id="venn-feedback"></div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Carroll -->
+  <div class="tab-panel" id="panel-3">
+    <div class="q-card">
+      <div class="section-lbl">Carroll Diagram</div>
+      <p class="scenario" id="carroll-scenario"></p>
+      <div id="carroll-wrap"></div>
+      <div class="action-row">
+        <button class="submit-btn" onclick="checkCarroll()">Check Answer</button>
+        <button class="new-btn" onclick="newCarroll()">New Question</button>
+      </div>
+      <div class="feedback" id="carroll-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">AzMath · Grade 5 · <span>Diagram Practice</span></div>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// ── Shared data ───────────────────────────────────────────────────
+const CAT_SETS = [
+  {title:'Favourite Sports',   cats:['Football','Basketball','Tennis','Badminton']},
+  {title:'Favourite Subjects', cats:['Science','Maths','English','Art']},
+  {title:'Favourite Pets',     cats:['Cats','Dogs','Birds','Fish']},
+  {title:'Favourite Colours',  cats:['Red','Blue','Green','Yellow']},
+  {title:'Favourite Ice Cream',cats:['Vanilla','Mint','Chocolate','Strawberry']},
+];
+
+const WAFFLE_CONFIGS = [[10,7,5,3],[11,6,5,3],[11,7,5,2],[10,8,5,2],[10,7,6,2],[9,8,5,3],[9,7,6,3],[8,7,6,4]];
+
+const VENN_CONFIGS = [
+  {t:50, both:10, A:22, neither:7,  aOnly:12, bOnly:21},
+  {t:40, both:8,  A:18, neither:4,  aOnly:10, bOnly:18},
+  {t:60, both:12, A:25, neither:5,  aOnly:13, bOnly:30},
+  {t:80, both:15, A:35, neither:10, aOnly:20, bOnly:30},
+  {t:100,both:20, A:45, neither:5,  aOnly:25, bOnly:35},
+  {t:30, both:6,  A:14, neither:4,  aOnly:8,  bOnly:12},
+  {t:50, both:5,  A:20, neither:10, aOnly:15, bOnly:25},
+  {t:60, both:15, A:28, neither:7,  aOnly:13, bOnly:25},
+];
+const VENN_SCENARIOS = [
+  ['Waffles','Pancakes'],['Football','Basketball'],['Cats','Dogs'],
+  ['Maths','Science'],['Bus','Train'],['Fiction','Non-fiction'],
+];
+
+const WAFFLE_COLORS = ['#4f8ef7','#6c5ce7','#fdcb6e','#00b894'];
+
+// ════════════════════════════════════════════════════════════════
+// TAB 0 — Bar Chart
+// ════════════════════════════════════════════════════════════════
+let barData = null;
+
+// SVG layout constants
+const BAR = { W:300, leftM:92, rightM:12, maxScale:10, barH:22, topM:26, rowH:30 };
+
+function newBar(){
+  const cs = pick(CAT_SETS);
+  const vals = shuffle([2,4,6,8,10]).slice(0,4);
+  barData = { title: cs.title, cats: cs.cats, vals, userVals: [0,0,0,0] };
+  renderBar();
+  document.getElementById('bar-feedback').className='feedback';
+}
+
+function renderBar(){
+  const {title, cats, vals} = barData;
+
+  // Data table
+  let th='<thead><tr><th>Category</th><th>Value</th></tr></thead><tbody>';
+  cats.forEach((c,i)=>{ th+=`<tr><td>${c}</td><td>${vals[i]}</td></tr>`; });
+  th+='</tbody>';
+  document.getElementById('bar-table').innerHTML=th;
+
+  document.getElementById('bar-scenario').innerHTML=`<strong>${title}</strong> — Build the bar chart by clicking inside each bar row.`;
+
+  renderBarChart();
+}
+
+function renderBarChart(){
+  const {cats, userVals} = barData;
+  const nRows = cats.length;
+  const H = BAR.topM + nRows * BAR.rowH + 14;
+  const chartW = BAR.W - BAR.leftM - BAR.rightM;
+  const scaleX = chartW / BAR.maxScale;
+
+  // Build SVG
+  let svg = `<svg id="barSvg" width="${BAR.W}" height="${H}" viewBox="0 0 ${BAR.W} ${H}" style="display:block">`;
+  svg += `<defs><linearGradient id="bgrad" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient></defs>`;
+
+  // Gridlines & tick labels
+  for(let g=0;g<=BAR.maxScale;g+=2){
+    const x = BAR.leftM + g * scaleX;
+    svg += `<line x1="${x}" y1="${BAR.topM-8}" x2="${x}" y2="${H-10}" stroke="${g===0?'#bbb':'#dde6ff'}" stroke-width="${g===0?1.5:1}"/>`;
+    svg += `<text x="${x}" y="${BAR.topM-12}" text-anchor="middle" font-size="9" fill="#999">${g}</text>`;
+  }
+
+  // Bars + labels
+  cats.forEach((cat, i)=>{
+    const y = BAR.topM + i * BAR.rowH;
+    const barW = Math.max(userVals[i] * scaleX, 0);
+    const state = barData.states ? barData.states[i] : null;
+    const fill = state==='correct' ? '#00b894' : state==='wrong' ? '#d63031' : 'url(#bgrad)';
+
+    // Category label
+    svg += `<text x="${BAR.leftM-6}" y="${y + BAR.barH/2 + 4}" text-anchor="end" font-size="11" font-weight="700" fill="#444">${cat}</text>`;
+
+    // Click zone (full row height)
+    svg += `<rect class="bar-zone" data-i="${i}" x="${BAR.leftM}" y="${y}" width="${chartW}" height="${BAR.barH+4}" fill="rgba(0,0,0,0)" style="cursor:crosshair"/>`;
+
+    // Bar
+    if(barW>0){
+      svg += `<rect x="${BAR.leftM}" y="${y+1}" width="${barW}" height="${BAR.barH}" fill="${fill}" rx="4"/>`;
+    }
+    // Value label
+    if(userVals[i]>0){
+      svg += `<text x="${BAR.leftM + barW + 4}" y="${y + BAR.barH/2 + 4}" font-size="11" font-weight="800" fill="${fill==='url(#bgrad)' ? '#4f8ef7' : fill}">${userVals[i]}</text>`;
+    }
+    // Correct label when wrong
+    if(state==='wrong'){
+      svg += `<text x="${BAR.leftM + barData.vals[i]*scaleX + 4}" y="${y + BAR.barH/2 - 6}" font-size="9" fill="#888">✓${barData.vals[i]}</text>`;
+    }
+  });
+
+  svg += '</svg>';
+
+  const wrap = document.getElementById('bar-chart-wrap');
+  wrap.innerHTML = svg;
+
+  // Add click listeners
+  wrap.querySelectorAll('.bar-zone').forEach(zone=>{
+    zone.addEventListener('click', e=>{
+      if(barData.states) return; // already checked
+      const rect = zone.getBoundingClientRect();
+      const relX = e.clientX - rect.left;
+      const rawVal = (relX / (chartW)) * BAR.maxScale;
+      const snapped = Math.round(rawVal / 2) * 2;
+      const clamped = Math.max(0, Math.min(BAR.maxScale, snapped));
+      const idx = parseInt(zone.dataset.i);
+      barData.userVals[idx] = clamped;
+      renderBarChart();
+    });
+  });
+}
+
+function checkBar(){
+  const {vals, userVals} = barData;
+  barData.states = vals.map((v,i)=> userVals[i]===v ? 'correct' : 'wrong');
+  renderBarChart();
+  const allOk = barData.states.every(s=>s==='correct');
+  const fb = document.getElementById('bar-feedback');
+  if(allOk){
+    fb.className='feedback correct show';
+    fb.innerHTML='<strong>Correct!</strong> All bars match the data table. Well done! 🎉';
+  } else {
+    const wrong = barData.states.map((s,i)=>s==='wrong' ? `${barData.cats[i]} (you: ${userVals[i]}, correct: ${vals[i]})` : null).filter(Boolean);
+    fb.className='feedback wrong show';
+    fb.innerHTML=`<strong>Not quite.</strong> Incorrect bars: ${wrong.join(', ')}. Red bars show your answer; the tick marks show the correct values.`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// TAB 1 — Waffle
+// ════════════════════════════════════════════════════════════════
+let waffleData = null;
+let waffleSelected = 0; // selected category index (0-3)
+
+function newWaffle(){
+  const cs = pick(CAT_SETS);
+  const counts = pick(WAFFLE_CONFIGS);
+  // grid state: 0=empty, 1-4=category index+1
+  waffleData = {
+    title: cs.title,
+    cats: cs.cats,
+    counts,
+    grid: new Array(25).fill(0),
+  };
+  waffleSelected = 0;
+  renderWaffle();
+  document.getElementById('waffle-feedback').className='feedback';
+}
+
+function renderWaffle(){
+  const {title, cats, counts} = waffleData;
+
+  document.getElementById('waffle-scenario').innerHTML=
+    `<strong>${title}</strong> — Paint exactly the right number of squares for each category so the waffle chart matches the table.`;
+
+  // Legend
+  const legend = document.getElementById('waffle-legend');
+  legend.innerHTML = cats.map((c,i)=>`
+    <div class="legend-item${waffleSelected===i?' selected':''}" onclick="selectWaffleColor(${i})">
+      <div class="legend-swatch" style="background:${WAFFLE_COLORS[i]}"></div>
+      <span>${c}: <strong>${counts[i]}</strong></span>
+    </div>`).join('');
+
+  // Grid
+  const grid = document.getElementById('waffle-grid');
+  grid.innerHTML = waffleData.grid.map((v,idx)=>{
+    const bg = v===0 ? '#e8ecf5' : WAFFLE_COLORS[v-1];
+    return `<button class="waffle-cell" data-idx="${idx}" style="background:${bg}" onclick="paintCell(${idx})"></button>`;
+  }).join('');
+}
+
+function selectWaffleColor(i){
+  waffleSelected = i;
+  renderWaffle();
+}
+
+function paintCell(idx){
+  waffleData.grid[idx] = waffleSelected + 1;
+  // Update just this cell's color without full re-render for speed
+  const btn = document.querySelector(`.waffle-cell[data-idx="${idx}"]`);
+  if(btn) btn.style.background = WAFFLE_COLORS[waffleSelected];
+}
+
+function checkWaffle(){
+  const {cats, counts, grid} = waffleData;
+  const tally = [0,0,0,0];
+  grid.forEach(v=>{ if(v>0) tally[v-1]++; });
+  const fb = document.getElementById('waffle-feedback');
+  const allOk = counts.every((c,i)=>tally[i]===c);
+  if(allOk){
+    fb.className='feedback correct show';
+    fb.innerHTML='<strong>Correct!</strong> Your waffle chart matches the data perfectly! 🧇';
+  } else {
+    const lines = cats.map((c,i)=>`${c}: you painted ${tally[i]}, correct is ${counts[i]}`).join('<br>');
+    fb.className='feedback wrong show';
+    fb.innerHTML=`<strong>Not quite.</strong><br>${lines}`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// TAB 2 — Venn
+// ════════════════════════════════════════════════════════════════
+let vennData = null;
+
+// Which region is missing? 0=aOnly, 1=both, 2=bOnly, 3=neither
+function newVenn(){
+  const cfg = pick(VENN_CONFIGS);
+  const sc = pick(VENN_SCENARIOS);
+  const missingIdx = Math.floor(Math.random()*4);
+  const regions = ['aOnly','both','bOnly','neither'];
+  vennData = { cfg, sc, missingKey: regions[missingIdx] };
+  renderVenn();
+  document.getElementById('venn-feedback').className='feedback';
+}
+
+function renderVenn(){
+  const {cfg, sc, missingKey} = vennData;
+  const vals = {
+    aOnly: cfg.aOnly,
+    both:  cfg.both,
+    bOnly: cfg.bOnly,
+    neither: cfg.neither,
+  };
+
+  // Positions for each region label in SVG
+  const pos = {
+    aOnly:   {x:81,  y:105},
+    both:    {x:155, y:105},
+    bOnly:   {x:229, y:105},
+    neither: {x:272, y:153},
+  };
+
+  function regionEl(key){
+    if(key === missingKey){
+      // input box, absolute-positioned over SVG
+      return `<foreignObject x="${pos[key].x - 23}" y="${pos[key].y - 18}" width="46" height="28">
+        <input xmlns="http://www.w3.org/1999/xhtml" id="venn-inp" class="venn-input" type="number" min="0" placeholder="?" style="width:100%;height:100%"/>
+      </foreignObject>`;
+    }
+    return `<text x="${pos[key].x}" y="${pos[key].y}" text-anchor="middle" font-size="15" font-weight="800" fill="#1a1a2e">${vals[key]}</text>`;
+  }
+
+  const svg = `<svg width="310" height="185" viewBox="0 0 310 185" style="display:block;max-width:100%">
+    <rect x="4" y="30" width="302" height="140" fill="#f8f9ff" stroke="#c0c8e8" stroke-width="1.5" rx="6"/>
+    <circle cx="115" cy="100" r="52" fill="#eef3ff" stroke="#4f8ef7" stroke-width="2" opacity="0.85"/>
+    <circle cx="195" cy="100" r="52" fill="#f0eeff" stroke="#6c5ce7" stroke-width="2" opacity="0.85"/>
+    <text x="100" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#4f8ef7">${sc[0]}</text>
+    <text x="210" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#6c5ce7">${sc[1]}</text>
+    ${regionEl('aOnly')}
+    ${regionEl('both')}
+    ${regionEl('bOnly')}
+    ${regionEl('neither')}
+    <text x="155" y="178" text-anchor="middle" font-size="10" fill="#888">Total: ${cfg.t}</text>
+  </svg>`;
+
+  document.getElementById('venn-wrap').innerHTML = svg;
+
+  const regionNames = {aOnly:`only ${sc[0]}`, both:'both', bOnly:`only ${sc[1]}`, neither:'neither'};
+  document.getElementById('venn-scenario').innerHTML=
+    `A survey of <strong>${cfg.t}</strong> people asked about <strong>${sc[0]}</strong> and <strong>${sc[1]}</strong>.<br>
+     The "?" region is <em>${regionNames[missingKey]}</em>. Type the missing number.`;
+
+  // Enter key on input triggers check
+  const inp = document.getElementById('venn-inp');
+  if(inp) inp.addEventListener('keydown', e=>{ if(e.key==='Enter') checkVenn(); });
+}
+
+function checkVenn(){
+  const {cfg, sc, missingKey} = vennData;
+  const vals = { aOnly: cfg.aOnly, both: cfg.both, bOnly: cfg.bOnly, neither: cfg.neither };
+  const correct = vals[missingKey];
+  const inp = document.getElementById('venn-inp');
+  const userVal = inp ? parseInt(inp.value) : NaN;
+  const fb = document.getElementById('venn-feedback');
+  const regionNames = {aOnly:`only ${sc[0]}`, both:'both', bOnly:`only ${sc[1]}`, neither:'neither'};
+
+  if(userVal === correct){
+    fb.className='feedback correct show';
+    fb.innerHTML=`<strong>Correct!</strong> ${regionNames[missingKey]} = ${correct} ✅<br>
+      <small>Check: ${cfg.aOnly} + ${cfg.both} + ${cfg.bOnly} + ${cfg.neither} = ${cfg.t}</small>`;
+  } else {
+    fb.className='feedback wrong show';
+    fb.innerHTML=`<strong>Not quite.</strong> The correct answer is <strong>${correct}</strong>.<br>
+      <small>${cfg.aOnly} (only ${sc[0]}) + ${cfg.both} (both) + ${cfg.bOnly} (only ${sc[1]}) + ${cfg.neither} (neither) = ${cfg.t}</small>`;
+    if(inp){ inp.classList.add('shake'); setTimeout(()=>inp.classList.remove('shake'),300); }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// TAB 3 — Carroll
+// ════════════════════════════════════════════════════════════════
+let carrollData = null;
+
+function newCarroll(){
+  const cfg = pick(VENN_CONFIGS);
+  const sc = pick(VENN_SCENARIOS);
+  // cells: TL=aOnly, TR=bOnly, BL=neither (not A, not B), BR=both
+  // missing cell = one of 4 cells
+  const missingIdx = Math.floor(Math.random()*4);
+  // Carroll: rows=A/notA, cols=B/notB
+  // TL=A&B=both, TR=A&notB=aOnly, BL=notA&B=bOnly, BR=notA&notB=neither
+  carrollData = { cfg, sc, missingIdx };
+  renderCarroll();
+  document.getElementById('carroll-feedback').className='feedback';
+}
+
+function renderCarroll(){
+  const {cfg, sc, missingIdx} = carrollData;
+  // cells order: TL=both, TR=aOnly, BL=bOnly, BR=neither
+  const cells = [cfg.both, cfg.aOnly, cfg.bOnly, cfg.neither];
+  const cellLabels = [`${sc[0]} &amp; ${sc[1]}`, `${sc[0]} only`, `${sc[1]} only`, 'Neither'];
+
+  function cellContent(i){
+    if(i === missingIdx){
+      return `<foreignObject x="0" y="0" width="92" height="44">
+        <input xmlns="http://www.w3.org/1999/xhtml" id="carroll-inp" class="carroll-input" type="number" min="0" placeholder="?" style="margin:5px auto;display:block"/>
+      </foreignObject>`;
+    }
+    return `<text x="46" y="27" text-anchor="middle" font-size="15" font-weight="800" fill="#1a1a2e">${cells[i]}</text>`;
+  }
+
+  // Layout: 2×2 grid
+  // col headers: sc[1] present | sc[1] absent  (x=137, x=229)
+  // row headers: sc[0] present (y=86), sc[0] absent (y=140)
+  const svg = `<svg width="320" height="180" viewBox="0 0 320 180" style="display:block;max-width:100%">
+    <!-- header cells -->
+    <rect x="92" y="30" width="92" height="42" fill="#f4f0ff" rx="4"/>
+    <rect x="184" y="30" width="92" height="42" fill="#f4f0ff" rx="4"/>
+    <rect x="0" y="72" width="92" height="48" fill="#eef3ff" rx="4"/>
+    <rect x="0" y="120" width="92" height="48" fill="#eef3ff" rx="4"/>
+    <!-- data cells -->
+    <rect x="92" y="72" width="92" height="48" fill="#fff" stroke="#dde6ff" stroke-width="1.5"/>
+    <rect x="184" y="72" width="92" height="48" fill="#fff" stroke="#dde6ff" stroke-width="1.5"/>
+    <rect x="92" y="120" width="92" height="48" fill="#fff" stroke="#dde6ff" stroke-width="1.5"/>
+    <rect x="184" y="120" width="92" height="48" fill="#fff" stroke="#dde6ff" stroke-width="1.5"/>
+    <!-- col header text -->
+    <text x="138" y="48" text-anchor="middle" font-size="11" font-weight="800" fill="#4f8ef7">${sc[1]}</text>
+    <text x="138" y="62" text-anchor="middle" font-size="9" fill="#6c8">present</text>
+    <text x="230" y="48" text-anchor="middle" font-size="11" font-weight="800" fill="#4f8ef7">${sc[1]}</text>
+    <text x="230" y="62" text-anchor="middle" font-size="9" fill="#e17055">absent</text>
+    <!-- row header text -->
+    <text x="46" y="92" text-anchor="middle" font-size="11" font-weight="800" fill="#6c5ce7">${sc[0]}</text>
+    <text x="46" y="106" text-anchor="middle" font-size="9" fill="#6c8">present</text>
+    <text x="46" y="140" text-anchor="middle" font-size="11" font-weight="800" fill="#6c5ce7">${sc[0]}</text>
+    <text x="46" y="154" text-anchor="middle" font-size="9" fill="#e17055">absent</text>
+    <!-- data: TL=both(0), TR=aOnly(1), BL=bOnly(2), BR=neither(3) -->
+    <g transform="translate(92,72)">${cellContent(0)}</g>
+    <g transform="translate(184,72)">${cellContent(1)}</g>
+    <g transform="translate(92,120)">${cellContent(2)}</g>
+    <g transform="translate(184,120)">${cellContent(3)}</g>
+    <!-- total -->
+    <text x="160" y="175" text-anchor="middle" font-size="10" fill="#888">Total: ${cfg.t}</text>
+  </svg>`;
+
+  document.getElementById('carroll-wrap').innerHTML = svg;
+
+  const missingLabel = ['both','only '+sc[0],'only '+sc[1],'neither'][missingIdx];
+  document.getElementById('carroll-scenario').innerHTML=
+    `A survey of <strong>${cfg.t}</strong> people asked about <strong>${sc[0]}</strong> and <strong>${sc[1]}</strong>.<br>
+     The "?" cell is <em>${missingLabel}</em>. Type the missing number.`;
+
+  const inp = document.getElementById('carroll-inp');
+  if(inp) inp.addEventListener('keydown', e=>{ if(e.key==='Enter') checkCarroll(); });
+}
+
+function checkCarroll(){
+  const {cfg, sc, missingIdx} = carrollData;
+  const cells = [cfg.both, cfg.aOnly, cfg.bOnly, cfg.neither];
+  const correct = cells[missingIdx];
+  const inp = document.getElementById('carroll-inp');
+  const userVal = inp ? parseInt(inp.value) : NaN;
+  const fb = document.getElementById('carroll-feedback');
+  const labels = ['both','only '+sc[0],'only '+sc[1],'neither'];
+
+  if(userVal === correct){
+    fb.className='feedback correct show';
+    fb.innerHTML=`<strong>Correct!</strong> ${labels[missingIdx]} = ${correct} ✅<br>
+      <small>both(${cfg.both}) + only ${sc[0]}(${cfg.aOnly}) + only ${sc[1]}(${cfg.bOnly}) + neither(${cfg.neither}) = ${cfg.t}</small>`;
+  } else {
+    fb.className='feedback wrong show';
+    fb.innerHTML=`<strong>Not quite.</strong> The correct answer is <strong>${correct}</strong>.<br>
+      <small>both(${cfg.both}) + only ${sc[0]}(${cfg.aOnly}) + only ${sc[1]}(${cfg.bOnly}) + neither(${cfg.neither}) = ${cfg.t}</small>`;
+    if(inp){ inp.classList.add('shake'); setTimeout(()=>inp.classList.remove('shake'),300); }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// Tab switching
+// ════════════════════════════════════════════════════════════════
+function switchTab(idx){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+newBar();
+newWaffle();
+newVenn();
+newCarroll();
+</script>
+</body>
+</html>
