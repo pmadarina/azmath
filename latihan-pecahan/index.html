@@ -126,6 +126,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#eef3ff;min-height:1
 .practice-btn:hover{opacity:.9}
 .round-badge{display:inline-block;background:#eef3ff;color:#4f8ef7;font-size:.75rem;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:8px;border:1.5px solid #c5d5f8}
 
+/* ── Data tables (Ch8) ── */
+.freq-table{border-collapse:separate;border-spacing:0;font-size:.88rem;font-family:inherit;border-radius:12px;overflow:hidden;border:1.5px solid #dce8ff;margin:14px 0 4px;width:auto}
+.freq-table th{background:#eef3ff;color:#4f8ef7;font-weight:800;padding:7px 18px;text-align:center;border-bottom:1.5px solid #dce8ff;font-size:.82rem;letter-spacing:.3px;white-space:nowrap}
+.freq-table th.row-head{text-align:left;background:#f4f0ff;color:#6c5ce7}
+.freq-table td{padding:7px 18px;text-align:center;color:#1a1a2e;border-bottom:1px solid #eef3ff;font-weight:600;background:#fff;white-space:nowrap}
+.freq-table td.row-head{text-align:left;background:#f8faff;color:#333;font-weight:700;border-right:1.5px solid #dce8ff}
+.freq-table tr:last-child td,.freq-table tr:last-child th{border-bottom:none}
+.freq-table td.missing{color:#d63031;font-weight:900;font-size:1.1rem}
+.freq-table tr.total-row td,.freq-table tr.total-row th{background:#f0eeff;color:#6c5ce7;font-weight:800;border-top:1.5px solid #dce8ff}
+
 /* ── Completion ── */
 .completion{text-align:center;padding:44px 24px}
 .trophy{font-size:4.5rem;margin-bottom:14px;animation:bounce .6s ease}
@@ -1010,14 +1020,11 @@ const Generators={
     const cor=String(m);
     const w1=String(m+5);const w2=String(m-5>0?m-5:m+10);const w3=String(knownSum);
     const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
-    const td='border:1px solid #ccc;padding:5px 14px';
-    const th='border:1px solid #ccc;padding:5px 14px;background:#f0f0f0;font-weight:600';
     const rows=gN.map((n,i)=>{
-      const freq=i<nG-1?`<td style="${td};text-align:center">${k[i]}</td>`
-                       :`<td style="${td};text-align:center;color:#e17055;font-weight:700">?</td>`;
-      return`<tr><td style="${td}">${n}</td>${freq}</tr>`;
+      const freq=i<nG-1?`<td>${k[i]}</td>`:`<td class="missing">?</td>`;
+      return`<tr><td class="row-head">${n}</td>${freq}</tr>`;
     }).join('');
-    const tblHtml=`<table style="border-collapse:collapse;font-size:0.9rem;margin-top:6px"><tr><th style="${th}">Group</th><th style="${th}">Frequency</th></tr>${rows}<tr><td style="${th}">Total</td><td style="${td};text-align:center">${t}</td></tr></table>`;
+    const tblHtml=`<table class="freq-table"><tr><th class="row-head">Group</th><th>Frequency</th></tr>${rows}<tr class="total-row"><td class="row-head">Total</td><td>${t}</td></tr></table>`;
     return{text:{en:`A survey records ${t} people. Find the missing frequency.`,
                  id:`Survei mencatat ${t} orang. Temukan frekuensi yang hilang.`},
       isWord:true,math:tblHtml,opts,ans,
@@ -1040,9 +1047,7 @@ const Generators={
       {subj:'students',item:'number of siblings'},
     ];
     const ctx=pickA(ctxs);
-    const td2='border:1px solid #ccc;padding:5px 13px;text-align:center';
-    const th2='border:1px solid #ccc;padding:5px 13px;background:#f0f0f0;font-weight:600;text-align:center';
-    const mkFreqTbl=(label,vs,fs)=>`<table style="border-collapse:collapse;font-size:0.9rem;margin-top:6px"><tr><th style="${th2};text-align:left">${label}</th>${vs.map(v=>`<th style="${th2}">${v}</th>`).join('')}</tr><tr><th style="${th2};text-align:left">Frequency</th>${fs.map(f=>`<td style="${td2}">${f}</td>`).join('')}</tr></table>`;
+    const mkFreqTbl=(label,vs,fs)=>`<table class="freq-table"><tr><th class="row-head">${label}</th>${vs.map(v=>`<th>${v}</th>`).join('')}</tr><tr><td class="row-head">Frequency</td>${fs.map(f=>`<td>${f}</td>`).join('')}</tr></table>`;
     if(vv===0){
       // Find mode: one clear highest frequency
       const modeIdx=ri(0,nVals-1);
