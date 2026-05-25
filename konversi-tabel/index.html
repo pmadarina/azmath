@@ -394,15 +394,15 @@ function renderTable(){
     html+=`<td><div class="diag-cell">${makeDiagram(row)}</div></td>`;
     // Fraction
     const gfrac=givenCell(row,'fraction');
-    html+=`<td>${gfrac!==null ? gfrac : inputCell(`f_${ri}`,'e.g. 3/5')}</td>`;
+    html+=`<td>${gfrac!==null ? gfrac : inputCell(`f_${ri}`,'a/b')}</td>`;
     // Decimal
     const gdec=givenCell(row,'decimal');
-    html+=`<td>${gdec!==null ? gdec : inputCell(`d_${ri}`,'e.g. 0.6')}</td>`;
+    html+=`<td>${gdec!==null ? gdec : inputCell(`d_${ri}`,'0.__')}</td>`;
     // Percent
     const gpct=givenCell(row,'percent');
-    html+=`<td>${gpct!==null ? gpct : inputCell(`p_${ri}`,'e.g. 60%')}</td>`;
+    html+=`<td>${gpct!==null ? gpct : inputCell(`p_${ri}`,'__%')}</td>`;
     // Hundredths (always input — answer is {percent}/100)
-    html+=`<td>${inputCell(`h_${ri}`,'e.g. 60/100')}</td>`;
+    html+=`<td>${inputCell(`h_${ri}`,'__/100')}</td>`;
     html+=`</tr>`;
   });
   document.getElementById('tableBody').innerHTML=html;
