@@ -1117,21 +1117,21 @@ const Generators={
     // SVG helpers
     const dv=(i)=>i===ti?'?':String(cells[i]);
     const fc=(i)=>i===ti?'#d63031':'#1a1a2e';
-    const fs=(i)=>i===ti?19:15;
-    // Layout: labels at top (y=22), circles below (cy=100,r=52→top=48), neither bottom-right
-    const W=310,H=178;
-    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">
-<rect x="4" y="30" width="302" height="138" fill="#fafbff" stroke="#dce8ff" stroke-width="1.5" rx="7"/>
-<circle cx="115" cy="100" r="52" fill="#eef3ff" fill-opacity="0.8" stroke="#4f8ef7" stroke-width="2.5"/>
-<circle cx="195" cy="100" r="52" fill="#f0eeff" fill-opacity="0.8" stroke="#6c5ce7" stroke-width="2.5"/>
-<text x="100" y="20" text-anchor="middle" font-size="12" font-weight="900" fill="#4f8ef7">${nm.la}</text>
-<text x="210" y="20" text-anchor="middle" font-size="12" font-weight="900" fill="#6c5ce7">${nm.lb}</text>
-<text x="81" y="105" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
-<text x="155" y="105" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
-<text x="229" y="105" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
-<text x="272" y="148" text-anchor="middle" font-size="9" fill="#aaa">neither</text>
-<text x="272" y="163" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
-<text x="155" y="174" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
+    const fs=(i)=>i===ti?28:22;
+    // Layout (scaled ~1.45×): labels at top (y=30), circles cy=148 r=75, neither bottom-right
+    const W=450,H=258;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="6" y="44" width="438" height="200" fill="#fafbff" stroke="#dce8ff" stroke-width="1.8" rx="10"/>
+<circle cx="167" cy="148" r="75" fill="#eef3ff" fill-opacity="0.8" stroke="#4f8ef7" stroke-width="3"/>
+<circle cx="283" cy="148" r="75" fill="#f0eeff" fill-opacity="0.8" stroke="#6c5ce7" stroke-width="3"/>
+<text x="145" y="30" text-anchor="middle" font-size="17" font-weight="900" fill="#4f8ef7">${nm.la}</text>
+<text x="305" y="30" text-anchor="middle" font-size="17" font-weight="900" fill="#6c5ce7">${nm.lb}</text>
+<text x="118" y="155" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
+<text x="225" y="155" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
+<text x="332" y="155" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
+<text x="395" y="215" text-anchor="middle" font-size="12" fill="#aaa">neither</text>
+<text x="395" y="237" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
+<text x="225" y="254" text-anchor="middle" font-size="13" fill="#aaa">Total: ${t}</text>
 </svg>`;
     return{text:{en:`There are ${t} ${nm.tot}. Complete the Venn diagram. What is the missing value?`,
                  id:`Ada ${t} ${nm.tot}. Lengkapi diagram Venn. Berapa nilai yang hilang?`},
