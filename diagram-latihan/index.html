@@ -60,6 +60,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:1
 .bar-svg-wrap{position:relative;display:inline-block}
 .bar-svg-wrap svg{display:block}
 .bar-click-area{position:absolute;cursor:crosshair}
+.bar-hint{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#eef3ff,#f4f0ff);border:1.5px dashed #6c5ce7;border-radius:12px;padding:10px 14px;font-size:.83rem;color:#4a3fad;font-weight:700;margin-bottom:12px}
+.bar-hint .pulse{display:inline-block;width:10px;height:10px;border-radius:50%;background:#6c5ce7;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.4}}
+#bar-chart-wrap svg{max-width:100%;height:auto}
 
 /* Waffle */
 .waffle-layout{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
@@ -123,7 +127,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:1
       <div class="section-lbl">Bar Chart Builder</div>
       <p class="scenario" id="bar-scenario"></p>
       <table class="data-table" id="bar-table"></table>
-      <p style="font-size:.8rem;color:#888;margin-bottom:10px">Click inside each bar row to set the bar length. Bars snap to the nearest even number (0–10).</p>
+      <div class="bar-hint"><span class="pulse"></span><span>👉 Click &amp; drag inside a bar row to draw the bar — it snaps to the nearest even number (0–10).</span></div>
       <div id="bar-chart-wrap"></div>
       <div class="action-row">
         <button class="submit-btn" onclick="checkBar()">Check Answer</button>
@@ -221,7 +225,7 @@ const WAFFLE_COLORS = ['#4f8ef7','#6c5ce7','#fdcb6e','#00b894'];
 let barData = null;
 
 // SVG layout constants
-const BAR = { W:300, leftM:92, rightM:12, maxScale:10, barH:22, topM:26, rowH:30 };
+const BAR = { W:560, leftM:130, rightM:24, maxScale:10, barH:34, topM:38, rowH:48 };
 
 function newBar(){
   const cs = pick(CAT_SETS);
@@ -248,19 +252,22 @@ function renderBar(){
 function renderBarChart(){
   const {cats, userVals} = barData;
   const nRows = cats.length;
-  const H = BAR.topM + nRows * BAR.rowH + 14;
+  const H = BAR.topM + nRows * BAR.rowH + 22;
   const chartW = BAR.W - BAR.leftM - BAR.rightM;
   const scaleX = chartW / BAR.maxScale;
 
   // Build SVG
   let svg = `<svg id="barSvg" width="${BAR.W}" height="${H}" viewBox="0 0 ${BAR.W} ${H}" style="display:block">`;
-  svg += `<defs><linearGradient id="bgrad" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient></defs>`;
+  svg += `<defs>
+    <linearGradient id="bgrad" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient>
+    <linearGradient id="bghover" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="#4f8ef7" stop-opacity=".25"/><stop offset="100%" stop-color="#6c5ce7" stop-opacity=".25"/></linearGradient>
+  </defs>`;
 
   // Gridlines & tick labels
   for(let g=0;g<=BAR.maxScale;g+=2){
     const x = BAR.leftM + g * scaleX;
-    svg += `<line x1="${x}" y1="${BAR.topM-8}" x2="${x}" y2="${H-10}" stroke="${g===0?'#bbb':'#dde6ff'}" stroke-width="${g===0?1.5:1}"/>`;
-    svg += `<text x="${x}" y="${BAR.topM-12}" text-anchor="middle" font-size="9" fill="#999">${g}</text>`;
+    svg += `<line x1="${x}" y1="${BAR.topM-10}" x2="${x}" y2="${H-14}" stroke="${g===0?'#aaa':'#dde6ff'}" stroke-width="${g===0?1.5:1}"/>`;
+    svg += `<text x="${x}" y="${BAR.topM-14}" text-anchor="middle" font-size="12" font-weight="700" fill="#888">${g}</text>`;
   }
 
   // Bars + labels
@@ -270,44 +277,108 @@ function renderBarChart(){
     const state = barData.states ? barData.states[i] : null;
     const fill = state==='correct' ? '#00b894' : state==='wrong' ? '#d63031' : 'url(#bgrad)';
 
-    // Category label
-    svg += `<text x="${BAR.leftM-6}" y="${y + BAR.barH/2 + 4}" text-anchor="end" font-size="11" font-weight="700" fill="#444">${cat}</text>`;
+    // Empty-row hint background (dotted track) before any value is set
+    if(userVals[i]===0 && !state){
+      svg += `<rect x="${BAR.leftM}" y="${y+2}" width="${chartW}" height="${BAR.barH}" fill="#f5f7ff" stroke="#c8d4f5" stroke-width="1.2" stroke-dasharray="4 3" rx="6"/>`;
+    }
 
-    // Click zone (full row height)
-    svg += `<rect class="bar-zone" data-i="${i}" x="${BAR.leftM}" y="${y}" width="${chartW}" height="${BAR.barH+4}" fill="rgba(0,0,0,0)" style="cursor:crosshair"/>`;
+    // Category label
+    svg += `<text x="${BAR.leftM-10}" y="${y + BAR.barH/2 + 5}" text-anchor="end" font-size="14" font-weight="800" fill="#333">${cat}</text>`;
 
     // Bar
     if(barW>0){
-      svg += `<rect x="${BAR.leftM}" y="${y+1}" width="${barW}" height="${BAR.barH}" fill="${fill}" rx="4"/>`;
+      svg += `<rect x="${BAR.leftM}" y="${y+2}" width="${barW}" height="${BAR.barH}" fill="${fill}" rx="6"/>`;
     }
+    // Hover preview rect (hidden initially, controlled via JS)
+    svg += `<rect class="bar-hover" data-i="${i}" x="${BAR.leftM}" y="${y+2}" width="0" height="${BAR.barH}" fill="url(#bghover)" stroke="#6c5ce7" stroke-width="1.5" stroke-dasharray="5 3" rx="6" pointer-events="none" opacity="0"/>`;
+    // Hover value tooltip
+    svg += `<text class="bar-hover-val" data-i="${i}" x="0" y="${y + BAR.barH/2 + 5}" font-size="13" font-weight="900" fill="#6c5ce7" pointer-events="none" opacity="0">0</text>`;
+
     // Value label
     if(userVals[i]>0){
-      svg += `<text x="${BAR.leftM + barW + 4}" y="${y + BAR.barH/2 + 4}" font-size="11" font-weight="800" fill="${fill==='url(#bgrad)' ? '#4f8ef7' : fill}">${userVals[i]}</text>`;
+      const labelColor = fill==='url(#bgrad)' ? '#4f8ef7' : fill;
+      svg += `<text x="${BAR.leftM + barW + 6}" y="${y + BAR.barH/2 + 5}" font-size="14" font-weight="900" fill="${labelColor}">${userVals[i]}</text>`;
     }
     // Correct label when wrong
     if(state==='wrong'){
-      svg += `<text x="${BAR.leftM + barData.vals[i]*scaleX + 4}" y="${y + BAR.barH/2 - 6}" font-size="9" fill="#888">✓${barData.vals[i]}</text>`;
+      svg += `<text x="${BAR.leftM + barData.vals[i]*scaleX + 6}" y="${y + BAR.barH/2 - 10}" font-size="11" font-weight="700" fill="#00b894">✓${barData.vals[i]}</text>`;
     }
+
+    // Click zone (full row height) — placed on top to receive events
+    svg += `<rect class="bar-zone" data-i="${i}" x="${BAR.leftM}" y="${y}" width="${chartW}" height="${BAR.barH+4}" fill="rgba(0,0,0,0)" style="cursor:crosshair"><title>Click or drag to set the bar length</title></rect>`;
   });
 
   svg += '</svg>';
 
   const wrap = document.getElementById('bar-chart-wrap');
   wrap.innerHTML = svg;
+  wrap.style.maxWidth = '100%';
+  wrap.style.overflowX = 'auto';
 
-  // Add click listeners
+  // Compute snapped value from event
+  function snapVal(zone, e){
+    const rect = zone.getBoundingClientRect();
+    const relX = (e.clientX - rect.left) * (chartW / rect.width); // adjust for CSS scaling
+    const rawVal = (relX / chartW) * BAR.maxScale;
+    const snapped = Math.round(rawVal / 2) * 2;
+    return Math.max(0, Math.min(BAR.maxScale, snapped));
+  }
+
+  let isDragging = false;
+  // Add interaction listeners
   wrap.querySelectorAll('.bar-zone').forEach(zone=>{
-    zone.addEventListener('click', e=>{
-      if(barData.states) return; // already checked
-      const rect = zone.getBoundingClientRect();
-      const relX = e.clientX - rect.left;
-      const rawVal = (relX / (chartW)) * BAR.maxScale;
-      const snapped = Math.round(rawVal / 2) * 2;
-      const clamped = Math.max(0, Math.min(BAR.maxScale, snapped));
-      const idx = parseInt(zone.dataset.i);
-      barData.userVals[idx] = clamped;
+    const idx = parseInt(zone.dataset.i);
+    const hoverRect = wrap.querySelector(`.bar-hover[data-i="${idx}"]`);
+    const hoverLbl = wrap.querySelector(`.bar-hover-val[data-i="${idx}"]`);
+
+    zone.addEventListener('mousemove', e=>{
+      if(barData.states) return;
+      const v = snapVal(zone, e);
+      if(hoverRect){
+        hoverRect.setAttribute('width', String(v*scaleX));
+        hoverRect.setAttribute('opacity', v>0 ? '1' : '0');
+      }
+      if(hoverLbl){
+        hoverLbl.setAttribute('x', String(BAR.leftM + v*scaleX + 6));
+        hoverLbl.textContent = v;
+        hoverLbl.setAttribute('opacity', v>0 && userVals[idx]===0 ? '0.9' : '0');
+      }
+      if(isDragging){
+        barData.userVals[idx] = v;
+        renderBarChart();
+      }
+    });
+    zone.addEventListener('mouseleave', ()=>{
+      if(hoverRect) hoverRect.setAttribute('opacity','0');
+      if(hoverLbl) hoverLbl.setAttribute('opacity','0');
+    });
+    zone.addEventListener('mousedown', e=>{
+      if(barData.states) return;
+      isDragging = true;
+      barData.userVals[idx] = snapVal(zone, e);
       renderBarChart();
     });
+  });
+  // End drag anywhere
+  const stopDrag = ()=>{ isDragging = false; };
+  window.addEventListener('mouseup', stopDrag, {once:true});
+
+  // Touch support
+  wrap.querySelectorAll('.bar-zone').forEach(zone=>{
+    const idx = parseInt(zone.dataset.i);
+    const handleTouch = e=>{
+      if(barData.states) return;
+      const t = e.touches[0]; if(!t) return;
+      const rect = zone.getBoundingClientRect();
+      const relX = (t.clientX - rect.left) * (chartW / rect.width);
+      const rawVal = (relX / chartW) * BAR.maxScale;
+      const snapped = Math.max(0, Math.min(BAR.maxScale, Math.round(rawVal/2)*2));
+      barData.userVals[idx] = snapped;
+      renderBarChart();
+      e.preventDefault();
+    };
+    zone.addEventListener('touchstart', handleTouch, {passive:false});
+    zone.addEventListener('touchmove', handleTouch, {passive:false});
   });
 }
 
