@@ -1008,12 +1008,19 @@ const Generators={
     ];
     const gs=pickA(gSets);const nG=k.length+1;const gN=gs.slice(0,nG);
     const cor=String(m);
-    const kParts=gN.slice(0,-1).map((n,i)=>`${n}: ${k[i]}`).join(', ');
     const w1=String(m+5);const w2=String(m-5>0?m-5:m+10);const w3=String(knownSum);
     const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
-    return{text:{en:`In a survey of ${t} people: ${kParts}. How many are in the ${gN[nG-1]} group?`,
-                 id:`Dalam survei ${t} orang: ${kParts}. Berapa orang di kelompok ${gN[nG-1]}?`},
-      isWord:true,math:null,opts,ans,
+    const td='border:1px solid #ccc;padding:5px 14px';
+    const th='border:1px solid #ccc;padding:5px 14px;background:#f0f0f0;font-weight:600';
+    const rows=gN.map((n,i)=>{
+      const freq=i<nG-1?`<td style="${td};text-align:center">${k[i]}</td>`
+                       :`<td style="${td};text-align:center;color:#e17055;font-weight:700">?</td>`;
+      return`<tr><td style="${td}">${n}</td>${freq}</tr>`;
+    }).join('');
+    const tblHtml=`<table style="border-collapse:collapse;font-size:0.9rem;margin-top:6px"><tr><th style="${th}">Group</th><th style="${th}">Frequency</th></tr>${rows}<tr><td style="${th}">Total</td><td style="${td};text-align:center">${t}</td></tr></table>`;
+    return{text:{en:`A survey records ${t} people. Find the missing frequency.`,
+                 id:`Survei mencatat ${t} orang. Temukan frekuensi yang hilang.`},
+      isWord:true,math:tblHtml,opts,ans,
       steps:{en:[`Known: ${k.join(' + ')} = ${knownSum}`,`${gN[nG-1]} = ${t} − ${knownSum} = <b>${m}</b>`],
              id:[`Diketahui: ${k.join(' + ')} = ${knownSum}`,`${gN[nG-1]} = ${t} − ${knownSum} = <b>${m}</b>`]},
       concept:{en:'Missing frequency = total − sum of all known frequencies.',
@@ -1033,20 +1040,22 @@ const Generators={
       {subj:'students',item:'number of siblings'},
     ];
     const ctx=pickA(ctxs);
+    const td2='border:1px solid #ccc;padding:5px 13px;text-align:center';
+    const th2='border:1px solid #ccc;padding:5px 13px;background:#f0f0f0;font-weight:600;text-align:center';
+    const mkFreqTbl=(label,vs,fs)=>`<table style="border-collapse:collapse;font-size:0.9rem;margin-top:6px"><tr><th style="${th2};text-align:left">${label}</th>${vs.map(v=>`<th style="${th2}">${v}</th>`).join('')}</tr><tr><th style="${th2};text-align:left">Frequency</th>${fs.map(f=>`<td style="${td2}">${f}</td>`).join('')}</tr></table>`;
     if(vv===0){
       // Find mode: one clear highest frequency
       const modeIdx=ri(0,nVals-1);
       const freqs=vals.map((_,i)=>i===modeIdx?ri(8,15):ri(1,6));
       const modeVal=vals[modeIdx];const modeFreq=freqs[modeIdx];
-      const tbl=vals.map((v,i)=>`${v}:${freqs[i]}`).join(', ');
       const cor=String(modeVal);
       const sorted=[...vals].sort((a,b)=>freqs[b-1]-freqs[a-1]);
       const w1=String(sorted[1]);const w2=String(modeFreq);
       const w3=String(modeVal===nVals?modeVal-1:modeVal+1);
       const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
-      return{text:{en:`The table shows ${ctx.item} for ${ctx.subj}. (${tbl}). What is the mode?`,
-                   id:`Tabel menunjukkan ${ctx.item} untuk ${ctx.subj}. (${tbl}). Berapa modusnya?`},
-        isWord:true,math:null,opts,ans,
+      return{text:{en:`The table shows ${ctx.item} for ${ctx.subj}. What is the mode?`,
+                   id:`Tabel menunjukkan ${ctx.item} untuk ${ctx.subj}. Berapa modusnya?`},
+        isWord:true,math:mkFreqTbl(ctx.item,vals,freqs),opts,ans,
         steps:{en:[`Highest frequency: ${modeFreq} (value ${modeVal})`,`Mode = <b>${modeVal}</b>`],
                id:[`Frekuensi tertinggi: ${modeFreq} (nilai ${modeVal})`,`Modus = <b>${modeVal}</b>`]},
         concept:{en:'The mode is the data value with the highest frequency.',
@@ -1055,14 +1064,13 @@ const Generators={
       // Find total (sum all frequencies)
       const freqs=vals.map(()=>ri(2,12));
       const total=freqs.reduce((s,v)=>s+v,0);
-      const tbl=vals.map((v,i)=>`${v}:${freqs[i]}`).join(', ');
       const cor=String(total);
       const w1=String(total+ri(2,6));const w2=String(total-ri(2,6));
       const w3=String(freqs[0]+freqs[nVals-1]); // only first+last (incomplete sum trap)
       const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
-      return{text:{en:`The table shows ${ctx.item} for ${ctx.subj}. (${tbl}). How many ${ctx.subj} were surveyed in total?`,
-                   id:`Tabel menunjukkan ${ctx.item} untuk ${ctx.subj}. (${tbl}). Berapa total ${ctx.subj} yang disurvei?`},
-        isWord:true,math:null,opts,ans,
+      return{text:{en:`The table shows ${ctx.item} for ${ctx.subj}. How many ${ctx.subj} were surveyed in total?`,
+                   id:`Tabel menunjukkan ${ctx.item} untuk ${ctx.subj}. Berapa total ${ctx.subj} yang disurvei?`},
+        isWord:true,math:mkFreqTbl(ctx.item,vals,freqs),opts,ans,
         steps:{en:[`Add all: ${freqs.join(' + ')} = <b>${total}</b>`],
                id:[`Jumlahkan semua: ${freqs.join(' + ')} = <b>${total}</b>`]},
         concept:{en:'Total surveyed = sum of all frequencies.',
