@@ -1295,6 +1295,75 @@ const Generators={
       concept:{en:'Carroll diagram: all 4 cells must add up to the total.',
                id:'Diagram Carroll: semua 4 sel harus berjumlah sama dengan total.'}};
   },
+
+  data_bar:()=>{
+    // Horizontal bar chart (SVG): read a value / most+least popular / total
+    const vv=pickA([0,1,2]);
+    const datasets=[
+      {title:'Favourite Sports',cats:['Football','Basketball','Tennis','Badminton'],subj:'students'},
+      {title:'Favourite Subjects',cats:['Science','Maths','English','Art'],subj:'students'},
+      {title:'Favourite Pets',cats:['Cats','Dogs','Birds','Fish'],subj:'families'},
+      {title:'Favourite Colours',cats:['Red','Blue','Green','Yellow'],subj:'children'},
+      {title:'Favourite Ice Cream',cats:['Vanilla','Mint','Chocolate','Strawberry'],subj:'children'},
+      {title:'Favourite Foods',cats:['Pizza','Burger','Pasta','Sushi'],subj:'students'},
+    ];
+    const d=pickA(datasets);const n=d.cats.length;
+    // 4 distinct values from {2,4,6,8,10} so bars align exactly with gridlines
+    const vals=shuffA([2,4,6,8,10]).slice(0,n);
+    const maxScale=10;
+    // SVG layout
+    const W=300,leftM=92,rightM=12,barH=20,topM=26,rowH=30;
+    const barAreaW=W-leftM-rightM;
+    const H=topM+n*rowH+34;
+    // gridlines at 0,2,4,6,8,10
+    const gxs=[0,2,4,6,8,10].map(v=>leftM+v*(barAreaW/maxScale));
+    const gridLines=gxs.map(x=>`<line x1="${x.toFixed(1)}" y1="${topM-2}" x2="${x.toFixed(1)}" y2="${topM+n*rowH-2}" stroke="#dce8ff" stroke-width="1"/>`).join('');
+    const axisLabels=gxs.map((x,i)=>`<text x="${x.toFixed(1)}" y="${topM+n*rowH+14}" text-anchor="middle" font-size="10" fill="#888">${i*2}</text>`).join('');
+    const axisLine=`<line x1="${leftM}" y1="${topM+n*rowH-2}" x2="${W-rightM}" y2="${topM+n*rowH-2}" stroke="#aaa" stroke-width="1.5"/>`;
+    const bars=d.cats.map((cat,i)=>{
+      const bW=((vals[i]/maxScale)*barAreaW).toFixed(1);
+      const y=topM+i*rowH;
+      return `<text x="${leftM-6}" y="${y+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#333">${cat}</text>`
+        +`<rect x="${leftM}" y="${y}" width="${bW}" height="${barH}" fill="url(#bg)" rx="3"/>`;
+    }).join('');
+    const title=`<text x="${W/2}" y="17" text-anchor="middle" font-size="12" font-weight="900" fill="#1a1a2e">${d.title}</text>`;
+    const grad=`<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient></defs>`;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">${grad}${title}${gridLines}${bars}${axisLine}${axisLabels}</svg>`;
+    if(vv===0){
+      // Read a specific bar's value
+      const ti=ri(0,n-1);const cor=String(vals[ti]);
+      const others=vals.filter((_,i)=>i!==ti).map(String);
+      const{opts,ans}=mkOpts(cor,others);
+      return{text:{en:`The bar chart shows ${d.title.toLowerCase()}. How many ${d.subj} chose <b>${d.cats[ti]}</b>?`,
+                   id:`Diagram batang menunjukkan ${d.title.toLowerCase()}. Berapa ${d.subj} yang memilih <b>${d.cats[ti]}</b>?`},
+        isWord:true,math:svg,opts,ans,
+        steps:{en:[`Find the bar for "${d.cats[ti]}"`,`Bar ends at → <b>${vals[ti]}</b>`],
+               id:[`Cari batang "${d.cats[ti]}"`,`Batang berakhir di → <b>${vals[ti]}</b>`]},
+        concept:{en:'Read where the bar ends on the axis.',id:'Baca di mana batang berakhir pada sumbu.'}};
+    }else if(vv===1){
+      const maxI=vals.indexOf(Math.max(...vals));const minI=vals.indexOf(Math.min(...vals));
+      const isMax=pickA([true,false]);const ti=isMax?maxI:minI;
+      const cor=d.cats[ti];
+      const{opts,ans}=mkOpts(cor,d.cats.filter((_,i)=>i!==ti));
+      const qw=isMax?{en:'most popular',id:'paling populer'}:{en:'least popular',id:'paling tidak populer'};
+      const sw=isMax?{en:'longest',id:'terpanjang'}:{en:'shortest',id:'terpendek'};
+      return{text:{en:`The bar chart shows ${d.title.toLowerCase()}. Which is the ${qw.en}?`,
+                   id:`Diagram batang menunjukkan ${d.title.toLowerCase()}. Mana yang ${qw.id}?`},
+        isWord:true,math:svg,opts,ans,
+        steps:{en:[`${sw.en.charAt(0).toUpperCase()+sw.en.slice(1)} bar: ${d.cats[ti]} (${vals[ti]}) → <b>${cor}</b>`],
+               id:[`Batang ${sw.id}: ${d.cats[ti]} (${vals[ti]}) → <b>${cor}</b>`]},
+        concept:{en:`The ${qw.en} has the ${sw.en} bar.`,id:`Yang ${qw.id} memiliki batang ${sw.id}.`}};
+    }else{
+      const total=vals.reduce((s,v)=>s+v,0);const cor=String(total);
+      const{opts,ans}=mkOpts(cor,[String(total+2),String(total-2),String(total+4)]);
+      return{text:{en:`The bar chart shows ${d.title.toLowerCase()}. What is the total number of ${d.subj} surveyed?`,
+                   id:`Diagram batang menunjukkan ${d.title.toLowerCase()}. Berapa total ${d.subj} yang disurvei?`},
+        isWord:true,math:svg,opts,ans,
+        steps:{en:[`Add all bars: ${vals.join(' + ')} = <b>${total}</b>`],
+               id:[`Jumlahkan semua: ${vals.join(' + ')} = <b>${total}</b>`]},
+        concept:{en:'Total = add up all bar values.',id:'Total = jumlahkan semua nilai batang.'}};
+    }
+  },
 };
 
 const Parts=[
@@ -1313,7 +1382,7 @@ const Parts=[
   { ch:7, section:{en:'Chapter 7 — Proportion',id:'Bab 7 — Proporsi'},
     topics:['prop_basic','prop_complement','prop_pct'] },
   { ch:8, section:{en:'Chapter 8 — Data & Statistics',id:'Bab 8 — Data & Statistik'},
-    topics:['data_freq','data_pct','data_pictogram','data_mode','data_venn','data_carroll'] },
+    topics:['data_freq','data_pct','data_pictogram','data_bar','data_mode','data_venn','data_carroll'] },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -1357,6 +1426,7 @@ const topicNames={
   data_venn:{ en:'Venn Diagram',                   id:'Diagram Venn' },
   data_pct:{ en:'Frequency Table — Percentages',   id:'Tabel Frekuensi — Persen' },
   data_pictogram:{ en:'Pictogram / Waffle Chart',  id:'Piktogram / Diagram Wafer' },
+  data_bar:{ en:'Bar Chart Reading',               id:'Membaca Diagram Batang' },
   data_carroll:{ en:'Carroll Diagram',             id:'Diagram Carroll' },
 };
 
