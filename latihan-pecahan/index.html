@@ -1373,6 +1373,75 @@ const Generators={
         concept:{en:'Total = add up all bar values.',id:'Total = jumlahkan semua nilai batang.'}};
     }
   },
+
+  data_waffle:()=>{
+    // Waffle chart: 5×5=25 grid of patterned squares, read count/most/least
+    const vv=pickA([0,1,2]);
+    const sets=[
+      {cats:['Vanilla','Mint','Chocolate','Strawberry'],ctx:'favourite ice cream flavours',subj:'children'},
+      {cats:['Football','Basketball','Tennis','Badminton'],ctx:'favourite sports',subj:'students'},
+      {cats:['Cats','Dogs','Birds','Fish'],ctx:'favourite pets',subj:'families'},
+      {cats:['Red','Blue','Green','Yellow'],ctx:'favourite colours',subj:'children'},
+      {cats:['Pizza','Burger','Pasta','Sushi'],ctx:'favourite foods',subj:'students'},
+    ];
+    const s=pickA(sets);const n=s.cats.length;
+    // Safe configs: 4 distinct values summing to 25 (verified)
+    const cfgs=[[10,7,5,3],[11,6,5,3],[11,7,5,2],[10,8,5,2],[10,7,6,2],[9,8,5,3],[9,7,6,3],[8,7,6,4],[12,6,4,3],[11,8,4,2],[10,8,4,3],[12,7,4,2]];
+    const counts=shuffA(pickA(cfgs));
+    const maxI=counts.indexOf(Math.max(...counts));
+    const minI=counts.indexOf(Math.min(...counts));
+    const sortedIdx=[...Array(n).keys()].sort((a,b)=>counts[b]-counts[a]);
+    // Build flat squares array (cat index per square)
+    const squares=[];counts.forEach((cnt,ci)=>{for(let j=0;j<cnt;j++)squares.push(ci);});
+    // SVG with SVG patterns matching worksheet style
+    const sz=22,gap=2,cols=5,rows=5;
+    const gridW=cols*(sz+gap)-gap,gridH=rows*(sz+gap)-gap;
+    const legX=gridW+20,W=legX+120,H=Math.max(gridH,n*32+8);
+    const defs=`<defs>
+<pattern id="wf_diag" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#333" stroke-width="2.2"/></pattern>
+<pattern id="wf_cross" patternUnits="userSpaceOnUse" width="6" height="6"><line x1="0" y1="3" x2="6" y2="3" stroke="#666" stroke-width="1.5"/><line x1="3" y1="0" x2="3" y2="6" stroke="#666" stroke-width="1.5"/></pattern>
+</defs>`;
+    const fills=['url(#wf_diag)','#fff','#bbb','url(#wf_cross)'];
+    const strokes=['#555','#bbb','#999','#777'];
+    const gridRects=squares.map((ci,idx)=>{
+      const x=(idx%cols)*(sz+gap),y=Math.floor(idx/cols)*(sz+gap);
+      return `<rect x="${x}" y="${y}" width="${sz}" height="${sz}" fill="${fills[ci]}" stroke="${strokes[ci]}" stroke-width="1"/>`;
+    }).join('');
+    const legItems=s.cats.map((cat,ci)=>{
+      const ly=ci*32+4;
+      return `<rect x="${legX}" y="${ly}" width="20" height="20" fill="${fills[ci]}" stroke="${strokes[ci]}" stroke-width="1"/><text x="${legX+26}" y="${ly+14}" font-size="12" font-weight="700" fill="#333">${cat}</text>`;
+    }).join('');
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">${defs}${gridRects}${legItems}</svg>`;
+    if(vv===0){
+      const cor=s.cats[maxI];
+      const{opts,ans}=mkOpts(cor,[s.cats[minI],s.cats[sortedIdx[1]],s.cats[sortedIdx[2]]]);
+      return{text:{en:`The waffle chart shows ${s.ctx}. Which is the most popular?`,
+                   id:`Diagram wafer menunjukkan ${s.ctx}. Mana yang paling populer?`},
+        isWord:true,math:svg,opts,ans,
+        steps:{en:[`Count squares per category — ${s.cats[maxI]} has the most: ${counts[maxI]} → <b>${cor}</b>`],
+               id:[`Hitung kotak tiap kategori — ${s.cats[maxI]} terbanyak: ${counts[maxI]} → <b>${cor}</b>`]},
+        concept:{en:'Most squares = most popular.',id:'Kotak terbanyak = paling populer.'}};
+    }else if(vv===1){
+      const cor=s.cats[minI];
+      const{opts,ans}=mkOpts(cor,[s.cats[maxI],s.cats[sortedIdx[1]],s.cats[sortedIdx[n-2]]]);
+      return{text:{en:`The waffle chart shows ${s.ctx}. Which is the least popular?`,
+                   id:`Diagram wafer menunjukkan ${s.ctx}. Mana yang paling tidak populer?`},
+        isWord:true,math:svg,opts,ans,
+        steps:{en:[`Count squares — ${s.cats[minI]} has fewest: ${counts[minI]} → <b>${cor}</b>`],
+               id:[`Hitung kotak — ${s.cats[minI]} paling sedikit: ${counts[minI]} → <b>${cor}</b>`]},
+        concept:{en:'Fewest squares = least popular.',id:'Kotak paling sedikit = paling tidak populer.'}};
+    }else{
+      const ti=ri(0,n-1);const cor=String(counts[ti]);
+      const{opts,ans}=mkOpts(cor,counts.filter((_,i)=>i!==ti).map(String));
+      return{text:{en:`The waffle chart shows ${s.ctx}. How many squares represent <b>${s.cats[ti]}</b>?`,
+                   id:`Diagram wafer menunjukkan ${s.ctx}. Berapa kotak yang mewakili <b>${s.cats[ti]}</b>?`},
+        isWord:true,math:svg,opts,ans,
+        steps:{en:[`Count the squares for ${s.cats[ti]}: <b>${counts[ti]}</b>`],
+               id:[`Hitung kotak untuk ${s.cats[ti]}: <b>${counts[ti]}</b>`]},
+        concept:{en:'Count all squares of that pattern in the waffle chart.',
+                 id:'Hitung semua kotak dengan pola tersebut dalam diagram wafer.'}};
+    }
+  },
 };
 
 const Parts=[
@@ -1390,8 +1459,12 @@ const Parts=[
     topics:['numlaws_add','numlaws_mul','bodmas'] },
   { ch:7, section:{en:'Chapter 7 — Proportion',id:'Bab 7 — Proporsi'},
     topics:['prop_basic','prop_complement','prop_pct'] },
-  { ch:8, section:{en:'Chapter 8 — Data & Statistics',id:'Bab 8 — Data & Statistik'},
-    topics:['data_freq','data_pct','data_pictogram','data_bar','data_mode','data_venn','data_carroll'] },
+  { ch:8, section:{en:'Chapter 8 — Frequency & Averages',id:'Bab 8 — Frekuensi & Rata-Rata'},
+    topics:['data_freq','data_pct','data_mode'] },
+  { ch:9, section:{en:'Chapter 9 — Charts & Graphs',id:'Bab 9 — Grafik & Diagram'},
+    topics:['data_bar','data_pictogram','data_waffle'] },
+  { ch:10, section:{en:'Chapter 10 — Venn & Carroll Diagrams',id:'Bab 10 — Diagram Venn & Carroll'},
+    topics:['data_venn','data_carroll'] },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -1434,8 +1507,9 @@ const topicNames={
   data_mode:{ en:'Mode & Total from Data',         id:'Modus & Total dari Data' },
   data_venn:{ en:'Venn Diagram',                   id:'Diagram Venn' },
   data_pct:{ en:'Frequency Table — Percentages',   id:'Tabel Frekuensi — Persen' },
-  data_pictogram:{ en:'Pictogram / Waffle Chart',  id:'Piktogram / Diagram Wafer' },
+  data_pictogram:{ en:'Pictogram Chart',            id:'Diagram Piktogram' },
   data_bar:{ en:'Bar Chart Reading',               id:'Membaca Diagram Batang' },
+  data_waffle:{ en:'Waffle Chart',                 id:'Diagram Wafer' },
   data_carroll:{ en:'Carroll Diagram',             id:'Diagram Carroll' },
 };
 
