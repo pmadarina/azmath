@@ -1274,10 +1274,14 @@ const Generators={
     // SVG Carroll diagram: 2×2 grid with row/column headers
     const dv=(i)=>i===ti?'?':String(cells[i]);
     const fc=(i)=>i===ti?'#d63031':'#1a1a2e';
-    const fs=(i)=>i===ti?20:16;
-    // Layout: headerCol=90, each data col=96, headerRow=38, each data row=54
-    const hC=90,dC=96,hR=38,dR=54;
+    const fs=(i)=>i===ti?22:17;
+    // Layout: headerCol=108, each data col=114, headerRow=50, each data row=58
+    const hC=108,dC=114,hR=50,dR=58;
     const W=hC+dC*2+2,H=hR+dR*2+30;
+    // helper: split label at last space for 2-line rendering
+    const sp=(s)=>{const i=s.lastIndexOf(' ');return i<0?[s,'']:[s.slice(0,i),s.slice(i+1)];};
+    const colLabel=(x,s)=>{const[a,b]=sp(s);return `<text x="${x}" y="${hR/2-5}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">${a}</text><text x="${x}" y="${hR/2+8}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">${b}</text>`;};
+    const rowLabel=(x,y,s)=>{const[a,b]=sp(s);return `<text x="${x}" y="${y-6}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">${a}</text><text x="${x}" y="${y+7}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">${b}</text>`;};
     const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">
 <rect x="0" y="${hR}" width="${hC}" height="${dR}" fill="#f4f0ff" stroke="#dce8ff" stroke-width="1"/>
 <rect x="0" y="${hR+dR}" width="${hC}" height="${dR}" fill="#f4f0ff" stroke="#dce8ff" stroke-width="1"/>
@@ -1287,15 +1291,15 @@ const Generators={
 <rect x="${hC+dC}" y="${hR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
 <rect x="${hC}" y="${hR+dR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
 <rect x="${hC+dC}" y="${hR+dR}" width="${dC}" height="${dR}" fill="#fff" stroke="#dce8ff" stroke-width="1"/>
-<text x="${hC+dC/2}" y="${hR/2+5}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">${nm.sA}</text>
-<text x="${hC+dC+dC/2}" y="${hR/2+5}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">Not ${nm.sA}</text>
-<text x="${hC/2}" y="${hR+dR/2+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">${nm.sB}</text>
-<text x="${hC/2}" y="${hR+dR+dR/2+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">Not ${nm.sB}</text>
-<text x="${hC+dC/2}" y="${hR+dR/2+6}" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
-<text x="${hC+dC+dC/2}" y="${hR+dR/2+6}" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
-<text x="${hC+dC/2}" y="${hR+dR+dR/2+6}" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
-<text x="${hC+dC+dC/2}" y="${hR+dR+dR/2+6}" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
-<text x="${(W)/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
+${colLabel(hC+dC/2,nm.sA)}
+${colLabel(hC+dC+dC/2,'Not '+nm.sA)}
+${rowLabel(hC/2,hR+dR/2,nm.sB)}
+${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
+<text x="${hC+dC/2}" y="${hR+dR/2+7}" text-anchor="middle" font-size="${fs(0)}" font-weight="900" fill="${fc(0)}">${dv(0)}</text>
+<text x="${hC+dC+dC/2}" y="${hR+dR/2+7}" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
+<text x="${hC+dC/2}" y="${hR+dR+dR/2+7}" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
+<text x="${hC+dC+dC/2}" y="${hR+dR+dR/2+7}" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
+<text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
 </svg>`;
     return{text:{en:`There are ${t} ${nm.tot}. Complete the Carroll diagram. What is the missing value?`,
                  id:`Ada ${t} ${nm.tot}. Lengkapi diagram Carroll. Berapa nilai yang hilang?`},
@@ -1322,21 +1326,21 @@ const Generators={
     const vals=shuffA([2,4,6,8,10]).slice(0,n);
     const maxScale=10;
     // SVG layout
-    const W=300,leftM=92,rightM=12,barH=20,topM=26,rowH=30;
+    const W=380,leftM=108,rightM=16,barH=26,topM=30,rowH=38;
     const barAreaW=W-leftM-rightM;
-    const H=topM+n*rowH+34;
+    const H=topM+n*rowH+38;
     // gridlines at 0,2,4,6,8,10
     const gxs=[0,2,4,6,8,10].map(v=>leftM+v*(barAreaW/maxScale));
     const gridLines=gxs.map(x=>`<line x1="${x.toFixed(1)}" y1="${topM-2}" x2="${x.toFixed(1)}" y2="${topM+n*rowH-2}" stroke="#dce8ff" stroke-width="1"/>`).join('');
-    const axisLabels=gxs.map((x,i)=>`<text x="${x.toFixed(1)}" y="${topM+n*rowH+14}" text-anchor="middle" font-size="10" fill="#888">${i*2}</text>`).join('');
+    const axisLabels=gxs.map((x,i)=>`<text x="${x.toFixed(1)}" y="${topM+n*rowH+16}" text-anchor="middle" font-size="11" fill="#888">${i*2}</text>`).join('');
     const axisLine=`<line x1="${leftM}" y1="${topM+n*rowH-2}" x2="${W-rightM}" y2="${topM+n*rowH-2}" stroke="#aaa" stroke-width="1.5"/>`;
     const bars=d.cats.map((cat,i)=>{
       const bW=((vals[i]/maxScale)*barAreaW).toFixed(1);
       const y=topM+i*rowH;
-      return `<text x="${leftM-6}" y="${y+barH/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#333">${cat}</text>`
-        +`<rect x="${leftM}" y="${y}" width="${bW}" height="${barH}" fill="url(#bg)" rx="3"/>`;
+      return `<text x="${leftM-7}" y="${y+barH/2+5}" text-anchor="end" font-size="12" font-weight="700" fill="#333">${cat}</text>`
+        +`<rect x="${leftM}" y="${y}" width="${bW}" height="${barH}" fill="url(#bg)" rx="4"/>`;
     }).join('');
-    const title=`<text x="${W/2}" y="17" text-anchor="middle" font-size="12" font-weight="900" fill="#1a1a2e">${d.title}</text>`;
+    const title=`<text x="${W/2}" y="19" text-anchor="middle" font-size="13" font-weight="900" fill="#1a1a2e">${d.title}</text>`;
     const grad=`<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient></defs>`;
     const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">${grad}${title}${gridLines}${bars}${axisLine}${axisLabels}</svg>`;
     if(vv===0){
