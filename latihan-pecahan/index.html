@@ -1300,7 +1300,7 @@ function renderMCQ(q){
   const extraHtml = q.extra || '';
 
   const wordWrap = q.isWord
-    ? `<div class="word-box">${t(q.text)}${extraHtml}</div>`
+    ? `<div class="word-box">${t(q.text)}${extraHtml}</div>${mathHtml}`
     : `<div class="q-text">${t(q.text)}</div>${mathHtml}`;
 
   const optsHtml = q.opts.map(o=>`
