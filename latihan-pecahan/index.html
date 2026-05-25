@@ -876,6 +876,116 @@ const Generators={
       steps:{en:stepEn,id:stepId},
       concept:{en:'BODMAS: Brackets → Orders → Divide/Multiply → Add/Subtract (left to right).',id:'BODMAS: Kurung → Pangkat → Bagi/Kali → Tambah/Kurang (kiri ke kanan).'}};
   },
+
+  // ── Chapter 7 ───────────────────────────────────────────────
+  prop_basic:()=>{
+    // "X out of Y → proportion as simplified fraction"
+    const setups=[
+      {t:12,p:4},{t:12,p:3},{t:12,p:8},{t:12,p:9},
+      {t:15,p:5},{t:15,p:10},{t:15,p:6},{t:15,p:3},
+      {t:20,p:4},{t:20,p:5},{t:20,p:8},{t:20,p:15},
+      {t:24,p:6},{t:24,p:8},{t:24,p:16},{t:24,p:18},
+      {t:25,p:5},{t:25,p:10},{t:25,p:15},{t:25,p:20},
+      {t:30,p:6},{t:30,p:10},{t:30,p:12},{t:30,p:18},
+      {t:36,p:9},{t:36,p:12},{t:36,p:24},{t:36,p:27},
+    ];
+    const{t,p}=pickA(setups);
+    function gcdB(a,b){return b===0?a:gcdB(b,a%b);}
+    const g=gcdB(p,t);const sn=p/g;const sd=t/g;
+    const cor=`${sn}/${sd}`;
+    const nouns=[
+      {w:'marbles',k:'red marbles'},{w:'fruits',k:'apples'},
+      {w:'students',k:'girls'},{w:'flowers',k:'roses'},
+      {w:'cards',k:'red cards'},{w:'books',k:'science books'},
+      {w:'stickers',k:'star stickers'},{w:'animals',k:'cats'},
+      {w:'sweets',k:'lemon sweets'},{w:'balls',k:'blue balls'},
+    ];
+    const ctx=pickA(nouns);
+    // wrong: unsimplified (if g>1), complement, wrong denominator
+    const compG=gcdB(t-p,t);const compN=(t-p)/compG;const compD=t/compG;
+    const w1=g>1?`${p}/${t}`:`${sn+1}/${sd}`;
+    const w2=`${compN}/${compD}`;
+    const w3=`${sn}/${sd+1}`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    const simpStep=g>1?[`Simplify: ${p}/${t} = <b>${cor}</b>`]:[];
+    return{text:{en:`There are ${t} ${ctx.w}. ${p} of them are ${ctx.k}. What is the proportion of ${ctx.k}?`,
+                 id:`Ada ${t} ${ctx.w}. ${p} di antaranya adalah ${ctx.k}. Berapa proporsi ${ctx.k}?`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Part = ${p}, Whole = ${t}`,`Proportion = ${p}/${t}`,...simpStep],
+             id:[`Bagian = ${p}, Keseluruhan = ${t}`,`Proporsi = ${p}/${t}`,...simpStep]},
+      concept:{en:'Proportion = part ÷ whole. Always simplify the fraction.',
+               id:'Proporsi = bagian ÷ keseluruhan. Sederhanakan pecahan jika bisa.'}};
+  },
+
+  prop_complement:()=>{
+    // "n/d on A → rest = (d-n)/d on B"
+    const fracs=[
+      {n:1,d:4,A:'theory',B:'practical',ctx:'piano lesson'},
+      {n:1,d:3,A:'warm-up',B:'main workout',ctx:'exercise session'},
+      {n:2,d:5,A:'reading',B:'writing',ctx:'English lesson'},
+      {n:1,d:5,A:'revision',B:'new topics',ctx:'math lesson'},
+      {n:3,d:8,A:'stretching',B:'training',ctx:'sports session'},
+      {n:2,d:7,A:'theory',B:'hands-on work',ctx:'science lesson'},
+      {n:1,d:6,A:'instructions',B:'activities',ctx:'art class'},
+      {n:3,d:5,A:'indoor games',B:'outdoor play',ctx:'free session'},
+      {n:2,d:9,A:'warm-up',B:'main practice',ctx:'music lesson'},
+      {n:1,d:8,A:'revision',B:'new content',ctx:'lesson'},
+      {n:2,d:3,A:'group work',B:'individual tasks',ctx:'project session'},
+      {n:3,d:7,A:'theory',B:'experiments',ctx:'science session'},
+    ];
+    const f=pickA(fracs);
+    const{n,d,A,B,ctx}=f;
+    const restN=d-n;
+    function gcdC(a,b){return b===0?a:gcdC(b,a%b);}
+    const g=gcdC(restN,d);const sn=restN/g;const sd=d/g;
+    const cor=`${sn}/${sd}`;
+    const w1=`${n}/${d}`;           // given proportion (common mistake)
+    const w2=`${restN+1}/${d+1}`;   // both off by 1
+    const w3=`${restN}/${d+1}`;     // wrong denominator
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    const simpStep=g>1?[`Simplify: ${restN}/${d} = <b>${cor}</b>`]:[];
+    return{text:{en:`${n}/${d} of a ${ctx} is spent on ${A}. What proportion is spent on ${B}?`,
+                 id:`${n}/${d} dari ${ctx} digunakan untuk ${A}. Berapa proporsi yang digunakan untuk ${B}?`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Proportion on ${A} = ${n}/${d}`,`Proportion on ${B} = 1 − ${n}/${d} = ${restN}/${d}`,...simpStep],
+             id:[`Proporsi untuk ${A} = ${n}/${d}`,`Proporsi untuk ${B} = 1 − ${n}/${d} = ${restN}/${d}`,...simpStep]},
+      concept:{en:'The whole = 1. Proportion of remainder = 1 − given proportion.',
+               id:'Keseluruhan = 1. Proporsi sisanya = 1 − proporsi yang diketahui.'}};
+  },
+
+  prop_pct:()=>{
+    // "X out of Y → proportion as percentage"
+    const setups=[
+      {t:25,p:5},{t:25,p:10},{t:25,p:15},{t:25,p:20},
+      {t:50,p:10},{t:50,p:15},{t:50,p:25},{t:50,p:30},{t:50,p:35},
+      {t:20,p:4},{t:20,p:5},{t:20,p:8},{t:20,p:10},{t:20,p:12},
+      {t:10,p:3},{t:10,p:4},{t:10,p:7},{t:10,p:8},
+      {t:40,p:8},{t:40,p:10},{t:40,p:16},{t:40,p:24},
+      {t:100,p:24},{t:100,p:36},{t:100,p:45},{t:100,p:72},
+    ];
+    const{t,p}=pickA(setups);
+    const pct=Math.round(p/t*100);
+    const cor=`${pct}%`;
+    const nouns=[
+      {w:'students',k:'girls'},{w:'students',k:'boys'},
+      {w:'marbles',k:'green marbles'},{w:'stickers',k:'star stickers'},
+      {w:'animals',k:'cats'},{w:'flowers',k:'red flowers'},
+      {w:'books',k:'science books'},{w:'members',k:'female members'},
+      {w:'cards',k:'blue cards'},{w:'sweets',k:'mint sweets'},
+    ];
+    const ctx=pickA(nouns);
+    const w1=`${100-pct}%`;
+    const w2=`${pct+5}%`;
+    const w3=`${pct-5>0?pct-5:pct+10}%`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:`There are ${t} ${ctx.w}. ${p} of them are ${ctx.k}. What is the proportion of ${ctx.k} as a percentage?`,
+                 id:`Ada ${t} ${ctx.w}. ${p} di antaranya adalah ${ctx.k}. Berapa proporsi ${ctx.k} dalam persen?`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Proportion = ${p}/${t}`,`= ${p} ÷ ${t} × 100% = <b>${pct}%</b>`],
+             id:[`Proporsi = ${p}/${t}`,`= ${p} ÷ ${t} × 100% = <b>${pct}%</b>`]},
+      concept:{en:'Proportion as percentage = (part ÷ whole) × 100%.',
+               id:'Proporsi dalam persen = (bagian ÷ keseluruhan) × 100%.'}};
+  },
 };
 
 const Parts=[
@@ -891,6 +1001,8 @@ const Parts=[
     topics:['est','mul10','longmul','divrem'] },
   { ch:6, section:{en:'Chapter 6 — Number Laws & Order of Operations',id:'Bab 6 — Hukum Bilangan & Urutan Operasi'},
     topics:['numlaws_add','numlaws_mul','bodmas'] },
+  { ch:7, section:{en:'Chapter 7 — Proportion',id:'Bab 7 — Proporsi'},
+    topics:['prop_basic','prop_complement','prop_pct'] },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -926,6 +1038,9 @@ const topicNames={
   numlaws_add:{ en:'Number Laws — Addition',  id:'Hukum Bilangan — Penjumlahan' },
   numlaws_mul:{ en:'Number Laws — Multiplication', id:'Hukum Bilangan — Perkalian' },
   bodmas:{ en:'Order of Operations (BODMAS)', id:'Urutan Operasi (BODMAS)' },
+  prop_basic:{ en:'Proportion as Fraction',       id:'Proporsi sebagai Pecahan' },
+  prop_complement:{ en:'Proportion — Complement', id:'Proporsi — Pelengkap' },
+  prop_pct:{ en:'Proportion as Percentage',       id:'Proporsi sebagai Persen' },
 };
 
 // ─────────────────────────────────────────────────────────────
