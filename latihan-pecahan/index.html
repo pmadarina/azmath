@@ -1155,6 +1155,140 @@ const Generators={
         concept:{en:'Neither = Total − (A only + Both + B only).',id:'Tidak keduanya = Total − (Hanya A + Keduanya + Hanya B).'}};
     }
   },
+
+  data_pct:()=>{
+    // Frequency table with % column: find missing % from freq, OR missing freq from %
+    const vv=pickA([0,1]);
+    const setups=[
+      {t:300,g:'Malaysian',f:75,p:25},{t:300,g:'Singaporean',f:60,p:20},
+      {t:300,g:'Indonesian',f:15,p:5},{t:200,g:'Football',f:50,p:25},
+      {t:200,g:'Basketball',f:80,p:40},{t:200,g:'Tennis',f:30,p:15},
+      {t:400,g:'Science',f:100,p:25},{t:400,g:'Maths',f:80,p:20},
+      {t:500,g:'Year 5',f:150,p:30},{t:500,g:'Year 6',f:100,p:20},
+      {t:100,g:'Cats',f:35,p:35},{t:100,g:'Dogs',f:40,p:40},
+      {t:1000,g:'Female',f:400,p:40},{t:1000,g:'Male',f:600,p:60},
+      {t:200,g:'Vanilla',f:50,p:25},{t:200,g:'Chocolate',f:80,p:40},
+    ];
+    const s=pickA(setups);const{t,g,f,p}=s;
+    const tblF=`<table class="freq-table"><tr><th class="row-head">Group</th><th>Frequency</th><th>Percentage</th></tr><tr><td class="row-head">${g}</td><td>${f}</td><td class="missing">?</td></tr><tr class="total-row"><td class="row-head">Total</td><td>${t}</td><td>100%</td></tr></table>`;
+    const tblP=`<table class="freq-table"><tr><th class="row-head">Group</th><th>Frequency</th><th>Percentage</th></tr><tr><td class="row-head">${g}</td><td class="missing">?</td><td>${p}%</td></tr><tr class="total-row"><td class="row-head">Total</td><td>${t}</td><td>100%</td></tr></table>`;
+    if(vv===0){
+      const cor=`${p}%`;
+      const w3p=100-p!==p?100-p:p+10;
+      const{opts,ans}=mkOpts(cor,[`${p+5}%`,`${p-5>0?p-5:p+10}%`,`${w3p}%`]);
+      return{text:{en:`Complete the frequency table. What percentage is the ${g} group?`,
+                   id:`Lengkapi tabel frekuensi. Berapa persen kelompok ${g}?`},
+        isWord:true,math:tblF,opts,ans,
+        steps:{en:[`Percentage = ${f} ÷ ${t} × 100%`,`= <b>${p}%</b>`],
+               id:[`Persen = ${f} ÷ ${t} × 100%`,`= <b>${p}%</b>`]},
+        concept:{en:'Percentage = (frequency ÷ total) × 100%.',
+                 id:'Persen = (frekuensi ÷ total) × 100%.'}};
+    }else{
+      const cor=String(f);
+      const step=Math.round(t/10);
+      const w3f=t-f!==f?t-f:f+step;
+      const{opts,ans}=mkOpts(cor,[String(f+step),String(f-step>0?f-step:f+step*2),String(w3f)]);
+      return{text:{en:`Complete the frequency table. How many are in the ${g} group?`,
+                   id:`Lengkapi tabel frekuensi. Berapa orang di kelompok ${g}?`},
+        isWord:true,math:tblP,opts,ans,
+        steps:{en:[`${p}% of ${t} = ${p}/100 × ${t}`,`= <b>${f}</b>`],
+               id:[`${p}% dari ${t} = ${p}/100 × ${t}`,`= <b>${f}</b>`]},
+        concept:{en:'Frequency = (percentage ÷ 100) × total.',
+                 id:'Frekuensi = (persen ÷ 100) × total.'}};
+    }
+  },
+
+  data_pictogram:()=>{
+    // Waffle/pictogram chart: most popular, least popular, or how many more X than Y
+    const vv=pickA([0,1,2]);
+    const sets=[
+      {cats:['Vanilla','Mint','Chocolate','Strawberry'],ctx:'favourite ice cream flavours',subj:'children'},
+      {cats:['Football','Basketball','Tennis','Badminton'],ctx:'favourite sports',subj:'students'},
+      {cats:['Science','Maths','English','Art'],ctx:'favourite subjects',subj:'students'},
+      {cats:['Cats','Dogs','Birds','Fish'],ctx:'favourite pets',subj:'families'},
+      {cats:['Pizza','Burger','Pasta','Sushi'],ctx:'favourite foods',subj:'students'},
+      {cats:['Red','Blue','Green','Yellow'],ctx:'favourite colours',subj:'children'},
+    ];
+    const s=pickA(sets);const n=s.cats.length;
+    const maxI=ri(0,n-1);
+    const minI=(()=>{let i;do{i=ri(0,n-1);}while(i===maxI);return i;})();
+    const freqs=s.cats.map((_,i)=>i===maxI?ri(9,15):i===minI?ri(1,4):ri(5,8));
+    const sortedIdx=[...Array(n).keys()].sort((a,b)=>freqs[b]-freqs[a]);
+    const tbl=`<table class="freq-table"><tr>${s.cats.map(c=>`<th>${c}</th>`).join('')}</tr><tr>${freqs.map(f=>`<td>${f}</td>`).join('')}</tr></table>`;
+    if(vv===0){
+      const cor=s.cats[maxI];
+      const{opts,ans}=mkOpts(cor,[s.cats[minI],s.cats[sortedIdx[1]],s.cats[sortedIdx[2]]]);
+      return{text:{en:`The diagram shows ${s.ctx} for a group of ${s.subj}. Which is the most popular?`,
+                   id:`Diagram menunjukkan ${s.ctx} untuk sekelompok ${s.subj}. Mana yang paling populer?`},
+        isWord:true,math:tbl,opts,ans,
+        steps:{en:[`Highest count: ${freqs[maxI]} → <b>${cor}</b>`],
+               id:[`Jumlah tertinggi: ${freqs[maxI]} → <b>${cor}</b>`]},
+        concept:{en:'The most popular category has the highest count.',
+                 id:'Kategori paling populer memiliki jumlah tertinggi.'}};
+    }else if(vv===1){
+      const cor=s.cats[minI];
+      const{opts,ans}=mkOpts(cor,[s.cats[maxI],s.cats[sortedIdx[1]],s.cats[sortedIdx[n-2]]]);
+      return{text:{en:`The diagram shows ${s.ctx} for a group of ${s.subj}. Which is the least popular?`,
+                   id:`Diagram menunjukkan ${s.ctx} untuk sekelompok ${s.subj}. Mana yang paling tidak populer?`},
+        isWord:true,math:tbl,opts,ans,
+        steps:{en:[`Lowest count: ${freqs[minI]} → <b>${cor}</b>`],
+               id:[`Jumlah terendah: ${freqs[minI]} → <b>${cor}</b>`]},
+        concept:{en:'The least popular category has the lowest count.',
+                 id:'Kategori paling tidak populer memiliki jumlah terendah.'}};
+    }else{
+      const diff=freqs[maxI]-freqs[minI];
+      const cor=String(diff);
+      const{opts,ans}=mkOpts(cor,[String(freqs[maxI]),String(freqs[minI]),String(diff+ri(1,4))]);
+      return{text:{en:`The diagram shows ${s.ctx}. How many more ${s.subj} prefer ${s.cats[maxI]} than ${s.cats[minI]}?`,
+                   id:`Diagram menunjukkan ${s.ctx}. Berapa lebih banyak ${s.subj} yang menyukai ${s.cats[maxI]} daripada ${s.cats[minI]}?`},
+        isWord:true,math:tbl,opts,ans,
+        steps:{en:[`${s.cats[maxI]}: ${freqs[maxI]}`,`${s.cats[minI]}: ${freqs[minI]}`,`Difference = ${freqs[maxI]} − ${freqs[minI]} = <b>${diff}</b>`],
+               id:[`${s.cats[maxI]}: ${freqs[maxI]}`,`${s.cats[minI]}: ${freqs[minI]}`,`Selisih = ${freqs[maxI]} − ${freqs[minI]} = <b>${diff}</b>`]},
+        concept:{en:'Find the count for each category, then subtract.',
+                 id:'Cari jumlah tiap kategori, lalu kurangkan.'}};
+    }
+  },
+
+  data_carroll:()=>{
+    // Carroll diagram: 2×2 table, 3 cells given → find the missing 4th
+    // Safe configs: all 4 cells (both, Aonly, Bonly, neither) have distinct values
+    const configs=[
+      {t:50,both:10,A:22,neither:7},   // [10,12,21,7]
+      {t:40,both:8,A:18,neither:4},    // [8,10,18,4]
+      {t:60,both:12,A:25,neither:5},   // [12,13,30,5]
+      {t:80,both:15,A:35,neither:10},  // [15,20,35,10]
+      {t:100,both:20,A:45,neither:5},  // [20,25,50,5]
+      {t:30,both:6,A:14,neither:4},    // [6,8,12,4]
+      {t:50,both:5,A:20,neither:10},   // [5,15,20,10]
+      {t:60,both:15,A:28,neither:7},   // [15,13,25,7]
+    ];
+    const cfg=pickA(configs);
+    const{t,both,A,neither}=cfg;
+    const Aonly=A-both;const Bonly=t-neither-A;
+    const nm=pickA([
+      {sA:'ordered waffles',sB:'ordered pancakes',tot:'customers at a café'},
+      {sA:'play football',sB:'play basketball',tot:'students'},
+      {sA:'have cats',sB:'have dogs',tot:'families'},
+      {sA:'like maths',sB:'like science',tot:'students'},
+      {sA:'take the bus',sB:'take the train',tot:'commuters'},
+    ]);
+    // cells[0]=both(sA∩sB), cells[1]=Aonly(sA∩¬sB), cells[2]=Bonly(¬sA∩sB), cells[3]=neither
+    const cells=[both,Aonly,Bonly,neither];
+    const ti=pickA([0,1,2,3]);
+    const cor=String(cells[ti]);
+    const kv=cells.filter((_,i)=>i!==ti);
+    const knownSum=kv.reduce((s,v)=>s+v,0);
+    const cv=(i)=>i===ti?`<td class="missing">?</td>`:`<td>${cells[i]}</td>`;
+    const tbl=`<table class="freq-table"><tr><th class="row-head"></th><th>${nm.sA}</th><th>Not ${nm.sA}</th></tr><tr><td class="row-head">${nm.sB}</td>${cv(0)}${cv(2)}</tr><tr><td class="row-head">Not ${nm.sB}</td>${cv(1)}${cv(3)}</tr><tr class="total-row"><td class="row-head">Total</td><td colspan="2">${t}</td></tr></table>`;
+    const{opts,ans}=mkOpts(cor,[String(kv[0]),String(kv[1]),String(kv[2])]);
+    return{text:{en:`There are ${t} ${nm.tot}. Complete the Carroll diagram. What is the missing value?`,
+                 id:`Ada ${t} ${nm.tot}. Lengkapi diagram Carroll. Berapa nilai yang hilang?`},
+      isWord:true,math:tbl,opts,ans,
+      steps:{en:[`Known cells: ${kv.join(' + ')} = ${knownSum}`,`Missing = ${t} − ${knownSum} = <b>${cor}</b>`],
+             id:[`Sel yang diketahui: ${kv.join(' + ')} = ${knownSum}`,`Yang hilang = ${t} − ${knownSum} = <b>${cor}</b>`]},
+      concept:{en:'Carroll diagram: all 4 cells must add up to the total.',
+               id:'Diagram Carroll: semua 4 sel harus berjumlah sama dengan total.'}};
+  },
 };
 
 const Parts=[
@@ -1173,7 +1307,7 @@ const Parts=[
   { ch:7, section:{en:'Chapter 7 — Proportion',id:'Bab 7 — Proporsi'},
     topics:['prop_basic','prop_complement','prop_pct'] },
   { ch:8, section:{en:'Chapter 8 — Data & Statistics',id:'Bab 8 — Data & Statistik'},
-    topics:['data_freq','data_mode','data_venn'] },
+    topics:['data_freq','data_pct','data_pictogram','data_mode','data_venn','data_carroll'] },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -1215,6 +1349,9 @@ const topicNames={
   data_freq:{ en:'Missing Frequency in Table',    id:'Frekuensi yang Hilang' },
   data_mode:{ en:'Mode & Total from Data',         id:'Modus & Total dari Data' },
   data_venn:{ en:'Venn Diagram',                   id:'Diagram Venn' },
+  data_pct:{ en:'Frequency Table — Percentages',   id:'Tabel Frekuensi — Persen' },
+  data_pictogram:{ en:'Pictogram / Waffle Chart',  id:'Piktogram / Diagram Wafer' },
+  data_carroll:{ en:'Carroll Diagram',             id:'Diagram Carroll' },
 };
 
 // ─────────────────────────────────────────────────────────────
