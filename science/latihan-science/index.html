@@ -43,6 +43,53 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
 .q-badge.tf{background:#fff5e8;color:#e17055}
 .q-badge.fill{background:#f0eeff;color:#6c5ce7}
 .q-badge.essay{background:#e8fff8;color:#00b894}
+.q-badge.fill_bank{background:#fff0f5;color:#d6336c}
+.q-badge.multi_check{background:#e8f4ff;color:#1971c2}
+.q-badge.scenario{background:#fff8e8;color:#b7760a}
+
+/* Word bank chips */
+.bank-wrap{background:#fff8e8;border:1.5px solid #f9ca24;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.bank-title{font-size:.72rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#b7760a;margin-bottom:8px}
+.bank-chips{display:flex;flex-wrap:wrap;gap:6px}
+.bank-chip{background:#fff;border:1.5px solid #f9ca24;color:#7c5e02;padding:6px 12px;border-radius:14px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.bank-chip:hover:not(:disabled){background:#fff3c4;transform:translateY(-1px)}
+.bank-chip:disabled{cursor:not-allowed;opacity:.5}
+.bank-chip.used{background:#e8ecef;border-color:#bbb;color:#999;text-decoration:line-through}
+
+/* Multi-check (checkboxes) */
+.mc-instr{font-size:.85rem;color:#666;font-weight:700;margin-bottom:8px}
+.mc-opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:12px 16px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:12px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit;margin-bottom:8px}
+.mc-opt:hover:not(.locked){border-color:#1971c2;background:#e8f4ff}
+.mc-box{width:24px;height:24px;border-radius:6px;border:2px solid #c0c8d0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;background:#fff}
+.mc-opt.checked .mc-box{background:#1971c2;border-color:#1971c2}
+.mc-opt.checked .mc-box::after{content:'✓'}
+.mc-opt.correct{border-color:#00b894;background:#f0fff8}
+.mc-opt.correct .mc-box{background:#00b894;border-color:#00b894}
+.mc-opt.correct .mc-box::after{content:'✓'}
+.mc-opt.wrong{border-color:#d63031;background:#fff5f5}
+.mc-opt.wrong .mc-box{background:#d63031;border-color:#d63031}
+.mc-opt.wrong .mc-box::after{content:'✗'}
+.mc-opt.missed{border-color:#f9ca24;background:#fffbe8}
+.mc-opt.missed .mc-box{background:#f9ca24;border-color:#f9ca24}
+.mc-opt.missed .mc-box::after{content:'!'}
+.mc-opt.locked{cursor:not-allowed}
+
+/* Scenario */
+.scenario-diagram{display:block;margin:10px auto 14px;max-width:100%;background:#fff;border:1.5px solid #e8ecef;border-radius:12px;padding:8px}
+.scenario-part{background:#fafbff;border-left:4px solid #6366f1;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.scenario-part-label{font-size:.78rem;font-weight:900;color:#6366f1;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.scenario-part-q{font-size:.96rem;line-height:1.5;margin-bottom:10px;font-weight:600}
+.scenario-part .opts{margin-top:6px}
+.scenario-part .opt{padding:10px 14px;font-size:.9rem}
+.scenario-part .fill-row{margin-top:4px}
+.scenario-part .essay-area{min-height:70px}
+.scenario-part-result{margin-top:8px;font-size:.86rem;font-weight:700;padding:6px 10px;border-radius:8px;display:none}
+.scenario-part-result.show{display:inline-block}
+.scenario-part-result.ok{background:#f0fff8;color:#00b894}
+.scenario-part-result.bad{background:#fff5f5;color:#d63031}
+.scenario-check-all{background:linear-gradient(135deg,#00b894,#0ea5e9);color:#fff;border:none;border-radius:14px;padding:12px 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;width:100%;margin-top:6px}
+.scenario-check-all:hover:not(:disabled){opacity:.9}
+.scenario-check-all:disabled{cursor:not-allowed;opacity:.5}
 
 .q-text{font-size:1.05rem;line-height:1.6;background:#f0fff8;border-left:4px solid #00b894;padding:14px 18px;border-radius:8px;margin-bottom:18px}
 .q-text strong{font-weight:800}
@@ -448,6 +495,284 @@ const SOUND_GEN = {
     concept:{en:'Sound needs matter to travel. No matter → no sound.',
              id:'Bunyi memerlukan zat untuk merambat. Tanpa zat → tanpa bunyi.'},
     keys:['particle','medium','matter','vacuum','vibrat','partikel','hampa','zat','getar']}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW MCQs (from photographed Cambridge worksheets / daily test)
+  // ─────────────────────────────────────────────────────────────
+  peter_pitch_string:()=>{
+    const isLow=Math.random()<0.5;
+    const cor = isLow
+      ? {en:'Use a longer and thicker string and pull it less tightly.',
+         id:'Gunakan senar yang lebih panjang dan lebih tebal serta tarik kurang kencang.'}
+      : {en:'Use a shorter and thinner string and pull it tightly.',
+         id:'Gunakan senar yang lebih pendek dan lebih tipis serta tarik dengan kencang.'};
+    const distractors = [
+      {en:'Use a longer and thicker string and pull it tightly.',
+       id:'Gunakan senar yang lebih panjang dan lebih tebal serta tarik dengan kencang.'},
+      {en:'Use a shorter and thinner string and pull it less tightly.',
+       id:'Gunakan senar yang lebih pendek dan lebih tipis serta tarik kurang kencang.'},
+      {en:'Use a longer and thinner string and pull it less tightly.',
+       id:'Gunakan senar yang lebih panjang dan lebih tipis serta tarik kurang kencang.'}];
+    const{opts,ans}=mkOpts(cor,distractors);
+    return{type:'mcq',topic:'pitch_volume',
+      q:{en:`Peter is making a string instrument. He wants one of the strings to have a <b>${isLow?'low':'high'} pitch</b>. What should he do?`,
+         id:`Peter membuat alat musik berdawai. Dia ingin salah satu senarnya bernada <b>${isLow?'rendah':'tinggi'}</b>. Apa yang harus dia lakukan?`},
+      opts,ans,
+      hint:{en:`${isLow?'Low':'High'} pitch comes from ${isLow?'slow':'fast'} vibrations.`,
+            id:`Nada ${isLow?'rendah':'tinggi'} berasal dari getaran ${isLow?'lambat':'cepat'}.`},
+      concept:{en:'Pitch is set by length, thickness, and tightness of a string.',
+               id:'Nada ditentukan oleh panjang, ketebalan, dan ketegangan senar.'},
+      steps:{en:[`Want <b>${isLow?'low':'high'}</b> pitch → ${isLow?'slow':'fast'} vibrations.`,
+                 isLow?'Longer, thicker, less tight → slower vibrations.':'Shorter, thinner, tighter → faster vibrations.'],
+             id:[`Ingin nada <b>${isLow?'rendah':'tinggi'}</b> → getaran ${isLow?'lambat':'cepat'}.`,
+                 isLow?'Lebih panjang, lebih tebal, kurang kencang → getaran lambat.':'Lebih pendek, lebih tipis, lebih kencang → getaran cepat.']}};
+  },
+  vibrations_ears:()=>{
+    const cor={en:'Vibrations',id:'Getaran'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Sounds',id:'Bunyi'},
+      {en:'Sound waves',id:'Gelombang bunyi'},
+      {en:'Electrical signals',id:'Sinyal listrik'}]);
+    return{type:'mcq',topic:'how_sounds_made',
+      q:{en:'__________ are transmitted along parts of our ears.',
+         id:'__________ dirambatkan melalui bagian-bagian telinga kita.'},
+      opts,ans,
+      hint:{en:'What does the eardrum do when sound arrives?',id:'Apa yang dilakukan gendang telinga saat bunyi datang?'},
+      concept:{en:'Sound enters the ear and is passed along as vibrations through the eardrum and tiny bones.',
+               id:'Bunyi masuk ke telinga dan dirambatkan sebagai getaran melalui gendang telinga dan tulang-tulang kecil.'},
+      steps:{en:['The eardrum vibrates.','These <b>vibrations</b> pass along the bones inside the ear.'],
+             id:['Gendang telinga bergetar.','<b>Getaran</b> ini dirambatkan ke tulang-tulang di dalam telinga.']}};
+  },
+  not_related_sound:()=>{
+    const cor={en:'Periscope',id:'Periskop'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Vibrations',id:'Getaran'},
+      {en:'Sound waves',id:'Gelombang bunyi'},
+      {en:'Electrical signals in the brain',id:'Sinyal listrik di otak'}]);
+    return{type:'mcq',topic:'how_sounds_made',
+      q:{en:'Which of the following is <b>NOT</b> related to sound?',
+         id:'Manakah berikut ini yang <b>BUKAN</b> berhubungan dengan bunyi?'},
+      opts,ans,
+      hint:{en:'One of these is used to see, not hear.',id:'Salah satu dari ini untuk melihat, bukan mendengar.'},
+      concept:{en:'A periscope uses mirrors to see — it has nothing to do with sound.',
+               id:'Periskop menggunakan cermin untuk melihat — tidak ada kaitan dengan bunyi.'},
+      steps:{en:['Periscope = device with mirrors for seeing over obstacles.','It is about light, not sound.'],
+             id:['Periskop = alat dengan cermin untuk melihat di balik penghalang.','Berkaitan dengan cahaya, bukan bunyi.']}};
+  },
+  not_affect_loudness:()=>{
+    const cor={en:'Tautness of a string of a harp',id:'Ketegangan senar harpa'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Distance from a radio',id:'Jarak dari radio'},
+      {en:'Amount of energy used to shout',id:'Banyaknya energi saat berteriak'},
+      {en:'Amount of energy used to blow a recorder',id:'Banyaknya energi saat meniup recorder'}]);
+    return{type:'mcq',topic:'pitch_volume',
+      q:{en:'Which of the following does <b>NOT</b> affect the loudness of the sound produced?',
+         id:'Manakah berikut ini yang <b>TIDAK</b> mempengaruhi kenyaringan bunyi yang dihasilkan?'},
+      opts,ans,
+      hint:{en:'Tautness changes pitch — not loudness.',id:'Ketegangan mengubah nada — bukan kenyaringan.'},
+      concept:{en:'Loudness depends on energy and distance. Tautness of a string changes its pitch.',
+               id:'Kenyaringan tergantung pada energi dan jarak. Ketegangan senar mengubah nadanya.'},
+      steps:{en:['More energy → louder.','Closer to source → louder.','Tautness → changes <b>pitch</b>, not loudness.'],
+             id:['Energi lebih besar → lebih nyaring.','Lebih dekat ke sumber → lebih nyaring.','Ketegangan → mengubah <b>nada</b>, bukan kenyaringan.']}};
+  },
+  air_column_instrument:()=>{
+    const cor={en:'Pan flute',id:'Seruling pan (pan flute)'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Trumpet',id:'Terompet'},
+      {en:'Recorder',id:'Recorder'},
+      {en:'Xylophone',id:'Xilofon'}]);
+    return{type:'mcq',topic:'pitch_volume',
+      q:{en:'Which instrument produces sound using <b>air columns of different lengths</b>?',
+         id:'Alat musik mana yang menghasilkan bunyi dengan menggunakan <b>kolom udara dengan panjang berbeda-beda</b>?'},
+      opts,ans,
+      hint:{en:'Look for one with many separate tubes.',id:'Cari yang memiliki banyak tabung terpisah.'},
+      concept:{en:'A pan flute has many tubes of different lengths — each gives a different pitch.',
+               id:'Pan flute memiliki banyak tabung dengan panjang berbeda — tiap tabung memberi nada berbeda.'},
+      steps:{en:['Pan flute = many tubes side by side.','Different lengths → different air-column pitches.'],
+             id:['Pan flute = banyak tabung berdampingan.','Panjang berbeda → nada kolom udara berbeda.']}};
+  },
+  pitch_except:()=>{
+    const cor={en:'colour',id:'warna'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'size',id:'ukuran'},
+      {en:'length',id:'panjang'},
+      {en:'material',id:'bahan'}]);
+    return{type:'mcq',topic:'pitch_volume',
+      q:{en:'The following can affect the pitch of the sounds produced by an instrument, <b>EXCEPT</b> __________.',
+         id:'Berikut dapat mempengaruhi nada bunyi yang dihasilkan alat musik, <b>KECUALI</b> __________.'},
+      opts,ans,
+      hint:{en:'One of these has nothing to do with vibration speed.',id:'Salah satunya tidak ada hubungannya dengan kecepatan getaran.'},
+      concept:{en:'Pitch depends on physical properties (size, length, material). Colour is just appearance.',
+               id:'Nada tergantung pada sifat fisik (ukuran, panjang, bahan). Warna hanya tampilan.'},
+      steps:{en:['Size, length, material → all change how an object vibrates.','<b>Colour</b> does not change vibration → does not change pitch.'],
+             id:['Ukuran, panjang, bahan → semua mengubah cara benda bergetar.','<b>Warna</b> tidak mengubah getaran → tidak mengubah nada.']}};
+  },
+  which_false_sound:()=>{
+    const cor={en:'Vibrations are converted to many sounds by the brain.',
+               id:'Getaran diubah menjadi banyak bunyi oleh otak.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Sound waves travel in the air.',id:'Gelombang bunyi merambat di udara.'},
+      {en:'Vibrations are transmitted along parts of our ears.',id:'Getaran dirambatkan melalui bagian-bagian telinga kita.'},
+      {en:'A vibration of a drum skin causes the air around the drum to vibrate.',
+       id:'Getaran kulit drum menyebabkan udara di sekitar drum ikut bergetar.'}]);
+    return{type:'mcq',topic:'how_sounds_made',
+      q:{en:'Which of the following is <b>FALSE</b>?',id:'Manakah berikut ini yang <b>SALAH</b>?'},
+      opts,ans,
+      hint:{en:'The brain interprets ONE signal as sound — it does not create many sounds from vibrations.',
+            id:'Otak menafsirkan SATU sinyal sebagai bunyi — bukan menciptakan banyak bunyi dari getaran.'},
+      concept:{en:'The brain converts electrical signals from the ear into the sound we hear — not many sounds from one vibration.',
+               id:'Otak mengubah sinyal listrik dari telinga menjadi bunyi yang kita dengar — bukan banyak bunyi dari satu getaran.'},
+      steps:{en:['Vibrations → ear → electrical signals → brain → ONE perceived sound.',
+                 'The "many sounds" wording is incorrect.'],
+             id:['Getaran → telinga → sinyal listrik → otak → SATU bunyi yang dirasakan.',
+                 'Kata "banyak bunyi" tidak tepat.']}};
+  },
+  sound_observations:()=>{
+    const cor={en:'2 and 3 only',id:'2 dan 3 saja'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'1 and 2 only',id:'1 dan 2 saja'},
+      {en:'1 and 3 only',id:'1 dan 3 saja'},
+      {en:'3 and 4 only',id:'3 dan 4 saja'}]);
+    return{type:'mcq',topic:'how_sounds_made',
+      q:{en:'Ali made these observations about sound energy. Which are correct?<br>(1) Sound energy can be created.<br>(2) Sound energy is produced by vibrating objects.<br>(3) Sound energy is a form of energy that can be heard.<br>(4) Sound energy cannot transform into other types of energy.',
+         id:'Ali membuat pengamatan tentang energi bunyi. Manakah yang benar?<br>(1) Energi bunyi dapat diciptakan.<br>(2) Energi bunyi dihasilkan oleh benda yang bergetar.<br>(3) Energi bunyi adalah bentuk energi yang dapat didengar.<br>(4) Energi bunyi tidak dapat berubah menjadi jenis energi lain.'},
+      opts,ans,
+      hint:{en:'Energy cannot be created or destroyed. Energy CAN transform.',
+            id:'Energi tidak dapat diciptakan atau dimusnahkan. Energi DAPAT berubah bentuk.'},
+      concept:{en:'Energy is conserved — only transformed. Sound is made by vibrations and can be heard.',
+               id:'Energi kekal — hanya berubah bentuk. Bunyi dihasilkan getaran dan dapat didengar.'},
+      steps:{en:['(1) FALSE — energy cannot be created.','(2) TRUE — vibrations make sound.',
+                 '(3) TRUE — sound is heard.','(4) FALSE — sound can transform (e.g. into electrical signals).',
+                 'So correct = <b>2 and 3 only</b>.'],
+             id:['(1) SALAH — energi tidak dapat diciptakan.','(2) BENAR — getaran menghasilkan bunyi.',
+                 '(3) BENAR — bunyi dapat didengar.','(4) SALAH — bunyi dapat berubah (misal ke sinyal listrik).',
+                 'Jadi yang benar = <b>2 dan 3 saja</b>.']}};
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW FILL_BANK questions — share the daily-test word bank
+  // ─────────────────────────────────────────────────────────────
+  fb_decibels:()=>({type:'fill_bank',topic:'pitch_volume',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'The volume of sound is measured in __________.',id:'Volume bunyi diukur dalam __________.'},
+    answers:['decibels','decibel','db','desibel'],
+    display:{en:'decibels',id:'desibel'},
+    hint:{en:'Unit symbol is dB.',id:'Lambang satuannya dB.'},
+    concept:{en:'Loudness is measured in decibels (dB).',id:'Kenyaringan diukur dalam desibel (dB).'},
+    steps:{en:['Volume unit = <b>decibels</b>.'],id:['Satuan volume = <b>desibel</b>.']}}),
+  fb_pitch:()=>({type:'fill_bank',topic:'pitch_volume',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'How high or low a sound is, is called its __________.',id:'Tinggi atau rendahnya suatu bunyi disebut __________.'},
+    answers:['pitch','nada'],
+    display:{en:'pitch',id:'nada'},
+    hint:{en:'Not the same as volume.',id:'Berbeda dengan volume.'},
+    concept:{en:'Pitch = how high or low a sound is.',id:'Nada = tinggi rendahnya bunyi.'},
+    steps:{en:['High or low = <b>pitch</b>.'],id:['Tinggi rendah = <b>nada (pitch)</b>.']}}),
+  fb_meter:()=>({type:'fill_bank',topic:'pitch_volume',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'A sound level __________ measures the loudness of a sound.',
+       id:'Sound level __________ mengukur kenyaringan bunyi.'},
+    answers:['meter'],
+    display:{en:'meter',id:'meter'},
+    hint:{en:'"Meter" means a measuring device.',id:'"Meter" berarti alat ukur.'},
+    concept:{en:'A sound level meter measures volume in decibels.',
+             id:'Sound level meter mengukur volume dalam desibel.'},
+    steps:{en:['Sound level <b>meter</b> = measures loudness.'],id:['Sound level <b>meter</b> = mengukur kenyaringan.']}}),
+  fb_blows:()=>({type:'fill_bank',topic:'pitch_volume',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'A clarinet makes a sound when the musician __________ into the mouthpiece.',
+       id:'Klarinet berbunyi ketika pemain __________ ke bagian mulutnya.'},
+    answers:['blows','meniup'],
+    display:{en:'blows',id:'meniup'},
+    hint:{en:'Wind instrument.',id:'Alat tiup.'},
+    concept:{en:'Wind instruments work by blowing air.',id:'Alat tiup bekerja dengan ditiup.'},
+    steps:{en:['Clarinet = wind instrument → <b>blows</b>.'],id:['Klarinet = alat tiup → <b>meniup</b>.']}}),
+  fb_sound:()=>({type:'fill_bank',topic:'how_sounds_made',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'__________ waves travel through the air to our ears.',
+       id:'Gelombang __________ merambat melalui udara ke telinga kita.'},
+    answers:['sound','bunyi'],
+    display:{en:'sound',id:'bunyi'},
+    hint:{en:'What we hear.',id:'Yang kita dengar.'},
+    concept:{en:'Sound waves carry vibrations through air.',id:'Gelombang bunyi membawa getaran melalui udara.'},
+    steps:{en:['<b>Sound</b> waves travel to ear.'],id:['Gelombang <b>bunyi</b> sampai ke telinga.']}}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW SCENARIO (sound travel through materials — cloze)
+  // ─────────────────────────────────────────────────────────────
+  sound_cloze:()=>({type:'scenario',topic:'how_sounds_made',
+    q:{en:'Sound travels through various materials. Complete the sentences using the word bank.',
+       id:'Bunyi merambat melalui berbagai bahan. Lengkapi kalimat menggunakan daftar kata.'},
+    bank:['air','faster','heat','slower','vibrations','water'],
+    parts:[
+      {q:{en:'(a) Sound travels __________ in water than it does in air.',
+          id:'(a) Bunyi merambat __________ di air daripada di udara.'},
+       kind:'fill', answers:['faster','lebih cepat'], display:{en:'faster',id:'lebih cepat'}},
+      {q:{en:'(b) This is because the particles are closer together in __________ than in __________. (Answer: water; air — type "water" here.)',
+          id:'(b) Karena partikel lebih rapat di __________ daripada di __________. (Jawaban: air; udara — ketik "water" di sini.)'},
+       kind:'fill', answers:['water','air (water/air)','water/air','air'], display:{en:'water (then air)',id:'water (kemudian air)'}},
+      {q:{en:'(c) The particles can quickly pass on __________ from one particle to the next.',
+          id:'(c) Partikel dapat dengan cepat meneruskan __________ dari satu partikel ke partikel berikutnya.'},
+       kind:'fill', answers:['vibrations','vibration','getaran'], display:{en:'vibrations',id:'getaran'}},
+    ],
+    hint:{en:'Sound = vibrations passed between particles.',id:'Bunyi = getaran yang dirambatkan antar partikel.'},
+    concept:{en:'Sound travels faster in solids and liquids than in gases because particles are closer together.',
+             id:'Bunyi merambat lebih cepat di zat padat dan cair daripada di gas karena partikel lebih rapat.'}}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW SCENARIO (Hassan rubber band — multi-essay)
+  // ─────────────────────────────────────────────────────────────
+  hassan_rubber_band:()=>({type:'scenario',topic:'how_sounds_made',
+    q:{en:'Hassan plucks a rubber band stretched between his fingers.',
+       id:'Hassan memetik karet gelang yang direntangkan di antara jari-jarinya.'},
+    diagram:`<svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" class="scenario-diagram" style="max-width:280px">
+      <ellipse cx="40" cy="45" rx="14" ry="22" fill="#fce4b4" stroke="#7a5a23" stroke-width="2"/>
+      <ellipse cx="240" cy="45" rx="14" ry="22" fill="#fce4b4" stroke="#7a5a23" stroke-width="2"/>
+      <path d="M52 38 Q140 28 228 38" stroke="#d63031" stroke-width="2.5" fill="none"/>
+      <path d="M52 52 Q140 62 228 52" stroke="#d63031" stroke-width="2.5" fill="none"/>
+      <text x="140" y="82" text-anchor="middle" font-size="11" fill="#666" font-family="sans-serif">rubber band / karet gelang</text>
+    </svg>`,
+    parts:[
+      {q:{en:'(a) How does the rubber band make a sound?',
+          id:'(a) Bagaimana karet gelang menghasilkan bunyi?'},
+       kind:'essay',
+       model:{en:'When plucked, the rubber band <b>vibrates</b> back and forth quickly. These vibrations push the <b>air</b> particles around the band, making them vibrate too.',
+              id:'Saat dipetik, karet gelang <b>bergetar</b> bolak-balik dengan cepat. Getaran ini mendorong partikel <b>udara</b> di sekitarnya sehingga ikut bergetar.'},
+       keys:['vibrat','back','forth','air','getar','udara','bolak']},
+      {q:{en:'(b) Describe how the sound travels through the air to Hassan\'s ear.',
+          id:"(b) Jelaskan bagaimana bunyi merambat melalui udara ke telinga Hassan."},
+       kind:'essay',
+       model:{en:'The vibrating air particles bump into nearby particles, passing the vibration along as a <b>sound wave</b>. The wave travels through the air until it reaches Hassan\'s eardrum, which vibrates and lets him hear the sound.',
+              id:'Partikel udara yang bergetar menabrak partikel di sebelahnya, meneruskan getaran sebagai <b>gelombang bunyi</b>. Gelombang ini merambat melalui udara hingga mencapai gendang telinga Hassan, yang ikut bergetar sehingga ia mendengar bunyi.'},
+       keys:['vibrat','particle','wave','air','ear','partikel','gelombang','udara','telinga','getar']},
+    ],
+    hint:{en:'Mention: vibration → air particles → sound wave → ear.',
+          id:'Sebutkan: getaran → partikel udara → gelombang bunyi → telinga.'},
+    concept:{en:'Sound = vibration passed between particles as a wave.',
+             id:'Bunyi = getaran yang dirambatkan antar partikel sebagai gelombang.'}}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW MULTI_CHECK (tick-two)
+  // ─────────────────────────────────────────────────────────────
+  vibrate_consequences_two:()=>({type:'multi_check',topic:'how_sounds_made',
+    q:{en:'What can happen when an object vibrates? Tick the <b>TWO</b> correct answers.',
+       id:'Apa yang dapat terjadi ketika sebuah benda bergetar? Centang <b>DUA</b> jawaban yang benar.'},
+    opts:[
+      {en:'It can make the air particles around it to vibrate.',
+       id:'Benda itu dapat membuat partikel udara di sekitarnya ikut bergetar.'},
+      {en:'It does not affect the particles around it.',
+       id:'Benda itu tidak mempengaruhi partikel di sekitarnya.'},
+      {en:'The vibration can travel through different types of matter.',
+       id:'Getarannya dapat merambat melalui berbagai jenis zat.'},
+      {en:'The vibration cannot travel through solids.',
+       id:'Getarannya tidak dapat merambat melalui zat padat.'}],
+    correctIdx:[0,2], require:2,
+    hint:{en:'Sound travels via vibrating particles, through solids, liquids, and gases.',
+          id:'Bunyi merambat lewat partikel yang bergetar, melalui zat padat, cair, dan gas.'},
+    concept:{en:'A vibrating object makes nearby particles vibrate, and vibrations travel through all states of matter.',
+             id:'Benda yang bergetar membuat partikel di dekatnya ikut bergetar, dan getarannya dapat merambat melalui semua wujud zat.'},
+    steps:{en:['Vibrating object → moves nearby air/water/solid particles.','Sound travels in solids, liquids and gases.'],
+           id:['Benda bergetar → menggerakkan partikel udara/air/padat di dekatnya.','Bunyi merambat di padat, cair, dan gas.']}}),
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -642,6 +967,214 @@ const MAGNET_GEN = {
     concept:{en:'Only iron, steel, nickel, cobalt are magnetic.',
              id:'Hanya besi, baja, nikel, kobalt yang magnetik.'},
     keys:['iron','steel','nickel','cobalt','aluminium','copper','plastic','wood','besi','baja','nikel','kobalt','aluminium','tembaga','plastik','kayu']}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW MCQ — two magnets with diagram (attract / repel)
+  // ─────────────────────────────────────────────────────────────
+  magnets_attract_repel_scenario:()=>{
+    const pairs=[
+      {left:['N','S'], right:['N','S'], result:'attract', sides:'S–N'},
+      {left:['S','N'], right:['S','N'], result:'attract', sides:'N–S'},
+      {left:['N','S'], right:['S','N'], result:'repel',   sides:'S–S'},
+      {left:['S','N'], right:['N','S'], result:'repel',   sides:'N–N'}];
+    const p=pick(pairs);
+    const cor = p.result==='attract'
+      ? {en:'They will attract each other.',id:'Keduanya akan saling tarik-menarik.'}
+      : {en:'They will repel each other.',id:'Keduanya akan saling tolak-menolak.'};
+    const opp = p.result==='attract'
+      ? {en:'They will repel each other.',id:'Keduanya akan saling tolak-menolak.'}
+      : {en:'They will attract each other.',id:'Keduanya akan saling tarik-menarik.'};
+    const{opts,ans}=mkOpts(cor,[
+      opp,
+      {en:'Nothing will happen.',id:'Tidak terjadi apa-apa.'},
+      {en:'They will spin around.',id:'Keduanya akan berputar.'}]);
+    const mkMagnet = (x, sides) => `
+      <g>
+        <rect x="${x}" y="20" width="40" height="40" fill="#ffd6d6" stroke="#333" stroke-width="1.5"/>
+        <rect x="${x+40}" y="20" width="40" height="40" fill="#d6ecff" stroke="#333" stroke-width="1.5"/>
+        <text x="${x+20}" y="46" text-anchor="middle" font-size="20" font-weight="bold" fill="#c0392b">${sides[0]}</text>
+        <text x="${x+60}" y="46" text-anchor="middle" font-size="20" font-weight="bold" fill="#2c5d8e">${sides[1]}</text>
+      </g>`;
+    const diagram = `<svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" class="scenario-diagram" style="max-width:280px">
+      ${mkMagnet(20, p.left)}
+      ${mkMagnet(180, p.right)}
+    </svg>`;
+    return{type:'mcq',topic:'magnetic_force',
+      q:{en:`Two bar magnets are placed near each other as shown. The facing poles are <b>${p.sides}</b>. What will happen?`,
+         id:`Dua magnet batang didekatkan seperti pada gambar. Kutub yang saling berhadapan adalah <b>${p.sides}</b>. Apa yang akan terjadi?`},
+      diagram,
+      opts,ans,
+      hint:{en:'Like poles repel. Unlike poles attract.',
+            id:'Kutub sejenis tolak-menolak. Kutub tak sejenis tarik-menarik.'},
+      concept:{en:'Like poles (N–N, S–S) repel. Unlike poles (N–S) attract.',
+               id:'Kutub sejenis (N–N, S–S) tolak-menolak. Kutub tak sejenis (N–S) tarik-menarik.'},
+      steps:{en:[`Facing poles: <b>${p.sides}</b>.`, p.result==='attract'?'Unlike poles → <b>attract</b>.':'Like poles → <b>repel</b>.'],
+             id:[`Kutub berhadapan: <b>${p.sides}</b>.`, p.result==='attract'?'Kutub tak sejenis → <b>tarik-menarik</b>.':'Kutub sejenis → <b>tolak-menolak</b>.']}};
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW SCENARIO — Hanif's magnet over objects B and C
+  // ─────────────────────────────────────────────────────────────
+  hanif_magnet:()=>({type:'scenario',topic:'magnets_materials',
+    q:{en:'Hanif held a magnet A above objects B and C, as shown. B and C are made of metal but are <b>NOT</b> magnets. When Hanif released magnet A, it moved towards object C.',
+       id:'Hanif memegang magnet A di atas benda B dan C seperti pada gambar. B dan C terbuat dari logam tetapi <b>BUKAN</b> magnet. Ketika Hanif melepaskan magnet A, magnet itu bergerak ke arah benda C.'},
+    diagram:`<svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" class="scenario-diagram" style="max-width:360px">
+      <!-- BEFORE frame -->
+      <text x="90" y="16" text-anchor="middle" font-size="11" font-weight="bold" fill="#666">BEFORE</text>
+      <line x1="20" y1="30" x2="160" y2="30" stroke="#666" stroke-width="1.5"/>
+      <line x1="90" y1="30" x2="90" y2="80" stroke="#888" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="78" y="80" width="24" height="50" fill="#ffd6d6" stroke="#333" stroke-width="1.5"/>
+      <rect x="78" y="80" width="24" height="25" fill="#d6ecff" stroke="#333" stroke-width="1.5"/>
+      <text x="90" y="98" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c5d8e">S</text>
+      <text x="90" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#c0392b">N</text>
+      <text x="90" y="142" text-anchor="middle" font-size="10" fill="#444">A</text>
+      <rect x="40" y="170" width="38" height="22" fill="#dcdcdc" stroke="#333" stroke-width="1.5"/>
+      <text x="59" y="184" text-anchor="middle" font-size="11" font-weight="bold">B</text>
+      <rect x="105" y="170" width="38" height="22" fill="#dcdcdc" stroke="#333" stroke-width="1.5"/>
+      <text x="124" y="184" text-anchor="middle" font-size="11" font-weight="bold">C</text>
+      <line x1="20" y1="192" x2="160" y2="192" stroke="#666" stroke-width="1.5"/>
+
+      <!-- AFTER frame -->
+      <text x="280" y="16" text-anchor="middle" font-size="11" font-weight="bold" fill="#666">AFTER</text>
+      <line x1="210" y1="30" x2="350" y2="30" stroke="#666" stroke-width="1.5"/>
+      <line x1="280" y1="30" x2="295" y2="90" stroke="#888" stroke-width="1" stroke-dasharray="3,2"/>
+      <g transform="translate(295,90) rotate(15)">
+        <rect x="-12" y="0" width="24" height="50" fill="#ffd6d6" stroke="#333" stroke-width="1.5"/>
+        <rect x="-12" y="0" width="24" height="25" fill="#d6ecff" stroke="#333" stroke-width="1.5"/>
+        <text x="0" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c5d8e">S</text>
+        <text x="0" y="42" text-anchor="middle" font-size="11" font-weight="bold" fill="#c0392b">N</text>
+      </g>
+      <text x="295" y="155" text-anchor="middle" font-size="10" fill="#444">A</text>
+      <path d="M295 150 L312 168" stroke="#00b894" stroke-width="2" marker-end="url(#arrowH)"/>
+      <defs><marker id="arrowH" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#00b894"/></marker></defs>
+      <rect x="230" y="170" width="38" height="22" fill="#dcdcdc" stroke="#333" stroke-width="1.5"/>
+      <text x="249" y="184" text-anchor="middle" font-size="11" font-weight="bold">B</text>
+      <rect x="295" y="170" width="38" height="22" fill="#dcdcdc" stroke="#333" stroke-width="1.5"/>
+      <text x="314" y="184" text-anchor="middle" font-size="11" font-weight="bold">C</text>
+      <line x1="210" y1="192" x2="350" y2="192" stroke="#666" stroke-width="1.5"/>
+    </svg>`,
+    parts:[
+      {q:{en:'(a) What could be a possible reason for the magnet to move towards object C?',
+          id:'(a) Apa kemungkinan alasan magnet bergerak ke arah benda C?'},
+       kind:'mcq',
+       opts:[
+         {en:'Object C is made of a magnetic material like iron.',
+          id:'Benda C terbuat dari bahan magnetik seperti besi.'},
+         {en:'The magnet is heavier than object C.',id:'Magnetnya lebih berat dari benda C.'},
+         {en:'Object C has paint on it.',id:'Benda C dicat.'},
+         {en:'Object B is taller than object C.',id:'Benda B lebih tinggi dari benda C.'}],
+       ans:0},
+      {q:{en:'(b) Suggest a possible metal that object C could be made of.',
+          id:'(b) Sebutkan kemungkinan logam yang menyusun benda C.'},
+       kind:'fill',
+       answers:['iron','steel','nickel','cobalt','besi','baja','nikel','kobalt'],
+       display:{en:'iron / steel / nickel / cobalt',id:'besi / baja / nikel / kobalt'}},
+      {q:{en:'(c) Suggest a possible metal that object B could be made of.',
+          id:'(c) Sebutkan kemungkinan logam yang menyusun benda B.'},
+       kind:'fill',
+       answers:['gold','silver','aluminium','aluminum','copper','tin','brass','zinc','lead','emas','perak','tembaga','timah','seng','kuningan','timbal'],
+       display:{en:'gold / silver / aluminium / copper / …',id:'emas / perak / aluminium / tembaga / …'}},
+    ],
+    hint:{en:'Only iron, steel, nickel, cobalt are attracted to magnets.',
+          id:'Hanya besi, baja, nikel, kobalt yang tertarik oleh magnet.'},
+    concept:{en:'Magnets attract objects that contain iron, nickel or cobalt. Other metals (gold, silver, aluminium, copper) are non-magnetic.',
+             id:'Magnet menarik benda yang mengandung besi, nikel, atau kobalt. Logam lain (emas, perak, aluminium, tembaga) tidak magnetik.'}}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW SCENARIO — Nur vs Leena filings with diagrams
+  // ─────────────────────────────────────────────────────────────
+  nur_leena_filings:()=>{
+    // dots clustered at ends (Nur's correct diagram)
+    const cluster = (cx) => Array.from({length:14},()=>{
+      const side = Math.random()<0.5 ? -1 : 1;
+      const dx = side * (24 + Math.random()*18);
+      const dy = (Math.random()-0.5) * 50;
+      return `<circle cx="${cx+dx}" cy="${50+dy}" r="1.6" fill="#333"/>`;
+    }).join('');
+    // dots evenly distributed (Leena's incorrect)
+    const even = (cx) => Array.from({length:18},()=>{
+      const dx = (Math.random()-0.5) * 90;
+      const dy = (Math.random()-0.5) * 50;
+      return `<circle cx="${cx+dx}" cy="${50+dy}" r="1.6" fill="#333"/>`;
+    }).join('');
+    const diagram = `<svg viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" class="scenario-diagram" style="max-width:360px">
+      <text x="80" y="14" text-anchor="middle" font-size="11" font-weight="bold" fill="#444">Nur's diagram</text>
+      <rect x="40" y="42" width="80" height="16" fill="#ffd6d6" stroke="#333" stroke-width="1.5"/>
+      <rect x="40" y="42" width="40" height="16" fill="#d6ecff" stroke="#333" stroke-width="1.5"/>
+      <text x="60" y="55" text-anchor="middle" font-size="10" font-weight="bold" fill="#2c5d8e">N</text>
+      <text x="100" y="55" text-anchor="middle" font-size="10" font-weight="bold" fill="#c0392b">S</text>
+      ${cluster(80)}
+
+      <text x="280" y="14" text-anchor="middle" font-size="11" font-weight="bold" fill="#444">Leena's diagram</text>
+      <rect x="240" y="42" width="80" height="16" fill="#ffd6d6" stroke="#333" stroke-width="1.5"/>
+      <rect x="240" y="42" width="40" height="16" fill="#d6ecff" stroke="#333" stroke-width="1.5"/>
+      <text x="260" y="55" text-anchor="middle" font-size="10" font-weight="bold" fill="#2c5d8e">N</text>
+      <text x="300" y="55" text-anchor="middle" font-size="10" font-weight="bold" fill="#c0392b">S</text>
+      ${even(280)}
+      <text x="80" y="130" text-anchor="middle" font-size="10" fill="#666">filings clustered at ends</text>
+      <text x="280" y="130" text-anchor="middle" font-size="10" fill="#666">filings spread evenly</text>
+    </svg>`;
+    return {type:'scenario',topic:'magnetic_force',
+      q:{en:'Nur and Leena drew the iron-filing pattern around the same bar magnet differently:',
+         id:'Nur dan Leena menggambar pola serbuk besi di sekitar magnet batang yang sama dengan cara berbeda:'},
+      diagram,
+      parts:[
+        {q:{en:"(a) Whose diagram is correct?",id:'(a) Gambar siapa yang benar?'},
+         kind:'mcq',
+         opts:[{en:"Nur's diagram (filings clustered at the ends).",id:'Gambar Nur (serbuk menumpuk di ujung).'},
+               {en:"Leena's diagram (filings spread evenly).",id:'Gambar Leena (serbuk tersebar merata).'},
+               {en:'Both are correct.',id:'Keduanya benar.'},
+               {en:'Neither is correct.',id:'Keduanya salah.'}],
+         ans:0},
+        {q:{en:'(b) Explain your answer.',id:'(b) Jelaskan jawabanmu.'},
+         kind:'essay',
+         model:{en:'The magnetic force is <b>strongest at the poles</b> (the two ends of the bar magnet). So iron filings are attracted most strongly there and <b>cluster at the ends</b>. In the middle, the force is weaker.',
+                id:'Gaya magnet <b>paling kuat di kutub</b> (kedua ujung magnet batang). Maka serbuk besi paling kuat tertarik di sana dan <b>menumpuk di ujung</b>. Di tengah, gaya lebih lemah.'},
+         keys:['poles','ends','strongest','cluster','kutub','ujung','kuat','menumpuk']},
+      ],
+      hint:{en:'Where is the magnetic field strongest?',id:'Di mana medan magnet paling kuat?'},
+      concept:{en:'Magnetic force is strongest at the poles.',id:'Gaya magnet paling kuat di kutub.'}};
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW FILL_BANK — magnets (shares the bank with sound questions)
+  // ─────────────────────────────────────────────────────────────
+  fb_poles:()=>({type:'fill_bank',topic:'magnetic_force',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'The magnetic force is strongest at the __________ of a magnet.',
+       id:'Gaya magnet paling kuat di __________ magnet.'},
+    answers:['poles','kutub'],
+    display:{en:'poles',id:'kutub'},
+    hint:{en:'Where iron filings cluster.',id:'Tempat serbuk besi menumpuk.'},
+    concept:{en:'Poles = the ends of a magnet.',id:'Kutub = ujung-ujung magnet.'},
+    steps:{en:['Strongest at <b>poles</b>.'],id:['Paling kuat di <b>kutub</b>.']}}),
+  fb_magnetic:()=>({type:'fill_bank',topic:'magnets_materials',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'Magnets attract __________ materials.',id:'Magnet menarik bahan __________.'},
+    answers:['magnetic','magnetik'],
+    display:{en:'magnetic',id:'magnetik'},
+    hint:{en:'Materials with iron, nickel or cobalt.',id:'Bahan yang mengandung besi, nikel, atau kobalt.'},
+    concept:{en:'Magnetic materials contain iron, nickel or cobalt.',
+             id:'Bahan magnetik mengandung besi, nikel, atau kobalt.'},
+    steps:{en:['Attracted by magnets = <b>magnetic</b>.'],id:['Yang tertarik magnet = <b>magnetik</b>.']}}),
+  fb_strengths:()=>({type:'fill_bank',topic:'magnets_materials',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'Magnets have different shapes and sizes. They also have different __________.',
+       id:'Magnet memiliki bentuk dan ukuran berbeda. Magnet juga memiliki __________ yang berbeda.'},
+    answers:['strengths','kekuatan'],
+    display:{en:'strengths',id:'kekuatan'},
+    hint:{en:'Some pull more nails than others.',id:'Ada yang menarik lebih banyak paku daripada yang lain.'},
+    concept:{en:'Magnets vary in strength.',id:'Magnet berbeda-beda kekuatannya.'},
+    steps:{en:['Different <b>strengths</b>.'],id:['<b>Kekuatan</b> berbeda.']}}),
+  fb_distance:()=>({type:'fill_bank',topic:'magnetic_force',
+    bank:['blows','decibels','sound','distance','speed','magnetic','nocturnal','diurnal','pitch','poles','strengths','meter'],
+    q:{en:'Strong magnets have stronger magnetic force and can act over a greater __________.',
+       id:'Magnet yang kuat memiliki gaya lebih besar dan bekerja pada __________ yang lebih jauh.'},
+    answers:['distance','jarak'],
+    display:{en:'distance',id:'jarak'},
+    hint:{en:'How far the force reaches.',id:'Seberapa jauh gaya menjangkau.'},
+    concept:{en:'Stronger magnet reaches further.',id:'Magnet lebih kuat menjangkau lebih jauh.'},
+    steps:{en:['Greater <b>distance</b>.'],id:['<b>Jarak</b> lebih jauh.']}}),
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -1270,9 +1803,9 @@ function buildQueue(chKey){
   const keys = shuf(Object.keys(ch.gen));
   let qs = keys.map(k => ({key:k, gen:ch.gen[k]}));
   if(chKey === 'all'){
-    const typeOrder = {mcq:0, tf:1, fill:2, essay:3};
+    const typeOrder = {mcq:0, multi_check:0, tf:1, fill:2, fill_bank:2, essay:3, scenario:3};
     qs = qs.map(q => ({...q, _t: q.gen().type}));
-    qs.sort((a,b)=>typeOrder[a._t] - typeOrder[b._t]);
+    qs.sort((a,b)=>(typeOrder[a._t]??9) - (typeOrder[b._t]??9));
   }
   queue = qs.map(q => q.gen());
   total = queue.length;
@@ -1289,11 +1822,25 @@ function buildUAS(){
   uasBreakdown = {};
 
   // Build lookup: topic + type -> [genKeys]
+  // Type-aliasing: fill_bank counts as 'fill'; multi_check counts as 'mcq';
+  // scenario counts as 'essay' (multi-part) or 'mcq' if its first part is mcq.
   const byTopicType = {};
+  const typeAliases = (s) => {
+    const out = [s.type];
+    if(s.type === 'fill_bank') out.push('fill');
+    if(s.type === 'multi_check') out.push('mcq');
+    if(s.type === 'scenario'){
+      out.push('essay');
+      if(s.parts && s.parts[0] && s.parts[0].kind === 'mcq') out.push('mcq');
+    }
+    return out;
+  };
   for(const [key,fn] of Object.entries(ALL_GENS)){
     const sample = fn();
-    const k = sample.topic + ':' + sample.type;
-    (byTopicType[k] = byTopicType[k] || []).push(fn);
+    for(const tp of typeAliases(sample)){
+      const k = sample.topic + ':' + tp;
+      (byTopicType[k] = byTopicType[k] || []).push(fn);
+    }
   }
 
   const built = [];
@@ -1325,8 +1872,8 @@ function buildUAS(){
   }
 
   // Order: MCQ → FILL → ESSAY (chapter order preserved within each block)
-  const typeOrder = {mcq:0, fill:1, essay:2, tf:3};
-  built.sort((a,b)=> typeOrder[a.type] - typeOrder[b.type]);
+  const typeOrder = {mcq:0, multi_check:0, fill:1, fill_bank:1, essay:2, scenario:2, tf:3};
+  built.sort((a,b)=> (typeOrder[a.type]??9) - (typeOrder[b.type]??9));
 
   queue = built;
   total = queue.length;
@@ -1362,10 +1909,13 @@ function next(){
 function renderQuestion(){
   const slot = document.getElementById('quizSlot');
   switch(current.type){
-    case 'mcq':   slot.innerHTML = mcqHtml(current); attachMCQ(); break;
-    case 'tf':    slot.innerHTML = tfHtml(current); attachTF(); break;
-    case 'fill':  slot.innerHTML = fillHtml(current); attachFill(); break;
-    case 'essay': slot.innerHTML = essayHtml(current); attachEssay(); break;
+    case 'mcq':         slot.innerHTML = mcqHtml(current); attachMCQ(); break;
+    case 'tf':          slot.innerHTML = tfHtml(current); attachTF(); break;
+    case 'fill':        slot.innerHTML = fillHtml(current); attachFill(); break;
+    case 'essay':       slot.innerHTML = essayHtml(current); attachEssay(); break;
+    case 'fill_bank':   slot.innerHTML = fillBankHtml(current); attachFillBank(); break;
+    case 'multi_check': slot.innerHTML = multiCheckHtml(current); attachMultiCheck(); break;
+    case 'scenario':    slot.innerHTML = scenarioHtml(current); attachScenario(); break;
   }
   attachHint();
 }
@@ -1375,7 +1925,10 @@ function badgeFor(typ){
     mcq:{en:'📝 Multiple Choice',id:'📝 Pilihan Ganda'},
     tf:{en:'✅ True or False',id:'✅ Benar atau Salah'},
     fill:{en:'📋 Fill in the Blank',id:'📋 Isian Singkat'},
-    essay:{en:'📖 Short Answer',id:'📖 Uraian Singkat'}
+    essay:{en:'📖 Short Answer',id:'📖 Uraian Singkat'},
+    fill_bank:{en:'🗂️ Word Bank Fill',id:'🗂️ Isian dengan Daftar Kata'},
+    multi_check:{en:'☑️ Tick Multiple',id:'☑️ Centang Beberapa'},
+    scenario:{en:'🔬 Scenario',id:'🔬 Skenario'}
   };
   return `<span class="q-badge ${typ}">${t(labels[typ])}</span>`;
 }
@@ -1397,7 +1950,8 @@ function feedbackBlock(){
 function mcqHtml(q){
   const letters=['A','B','C','D'];
   const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${t(o)}</span></button>`).join('');
-  return `${badgeFor('mcq')}<div class="q-text">${t(q.q)}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+  const diagram = q.diagram ? (typeof q.diagram === 'string' ? q.diagram : t(q.diagram)) : '';
+  return `${badgeFor('mcq')}<div class="q-text">${t(q.q)}</div>${diagram}<div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
 }
 function attachMCQ(){
   document.querySelectorAll('.opt').forEach(b=>{
@@ -1523,6 +2077,238 @@ function attachEssay(){
   });
 }
 
+// ── FILL_BANK ───────────────────────────────────────────────────
+function fillBankHtml(q){
+  const ph = lang==='en' ? 'Type or click a word…' : 'Ketik atau klik salah satu kata…';
+  const btn = lang==='en' ? 'Check' : 'Periksa';
+  const bankTitle = lang==='en' ? 'Word Bank' : 'Daftar Kata';
+  const chips = (q.bank||[]).map(w=>`<button type="button" class="bank-chip" data-w="${w}">${w}</button>`).join('');
+  return `${badgeFor('fill_bank')}<div class="q-text">${t(q.q)}</div>
+    <div class="bank-wrap">
+      <div class="bank-title">📦 ${bankTitle}</div>
+      <div class="bank-chips">${chips}</div>
+    </div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="${ph}" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">${btn}</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFillBank(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  document.querySelectorAll('.bank-chip').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if(c.disabled) return;
+      inp.value = c.dataset.w;
+      inp.focus();
+    });
+  });
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#00b894' : '#d63031';
+      inp.style.background = ok ? '#f0fff8' : '#fff5f5';
+      document.querySelectorAll('.bank-chip').forEach(c=>c.disabled=true);
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+// ── MULTI_CHECK ─────────────────────────────────────────────────
+function multiCheckHtml(q){
+  const need = q.require || (q.correctIdx||[]).length;
+  const instr = lang==='en'
+    ? `Tick <b>${need}</b> answer${need>1?'s':''}.`
+    : `Centang <b>${need}</b> jawaban.`;
+  const subBtn = lang==='en' ? 'Submit' : 'Kirim';
+  const opts = q.opts.map((o,i)=>`
+    <button type="button" class="mc-opt" data-i="${i}">
+      <span class="mc-box"></span>
+      <span>${t(o)}</span>
+    </button>`).join('');
+  return `${badgeFor('multi_check')}<div class="q-text">${t(q.q)}</div>
+    <div class="mc-instr">${instr}</div>
+    <div>${opts}</div>
+    <button class="scenario-check-all" id="mcSub" style="margin-top:10px">${subBtn}</button>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMultiCheck(){
+  const need = current.require || (current.correctIdx||[]).length;
+  const picked = new Set();
+  document.querySelectorAll('.mc-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.classList.contains('locked')) return;
+      const i = parseInt(b.dataset.i);
+      if(picked.has(i)){ picked.delete(i); b.classList.remove('checked'); }
+      else { picked.add(i); b.classList.add('checked'); }
+    });
+  });
+  document.getElementById('mcSub').addEventListener('click', ()=>{
+    if(picked.size !== need){
+      const fb = document.getElementById('fb');
+      fb.className='fb info show';
+      fb.innerHTML = lang==='en'
+        ? `<strong>Please select exactly ${need} answer${need>1?'s':''}.</strong>`
+        : `<strong>Pilih tepat ${need} jawaban.</strong>`;
+      return;
+    }
+    const correctSet = new Set(current.correctIdx);
+    let allRight = true;
+    for(const c of correctSet) if(!picked.has(c)) allRight = false;
+    for(const p of picked) if(!correctSet.has(p)) allRight = false;
+    checkAnswer(allRight, ()=>{
+      document.querySelectorAll('.mc-opt').forEach(b=>{
+        b.classList.add('locked');
+        const i = parseInt(b.dataset.i);
+        if(correctSet.has(i) && picked.has(i)) b.classList.add('correct');
+        else if(picked.has(i) && !correctSet.has(i)) b.classList.add('wrong');
+        else if(correctSet.has(i) && !picked.has(i)) b.classList.add('missed');
+      });
+      document.getElementById('mcSub').disabled = true;
+    });
+  });
+}
+
+// ── SCENARIO ────────────────────────────────────────────────────
+function scenarioHtml(q){
+  const checkBtn = lang==='en' ? '✓ Check All Answers' : '✓ Periksa Semua Jawaban';
+  const bankTitle = lang==='en' ? 'Word Bank' : 'Daftar Kata';
+  const diagram = q.diagram ? (typeof q.diagram === 'string' ? q.diagram : t(q.diagram)) : '';
+  const bank = q.bank ? `<div class="bank-wrap"><div class="bank-title">📦 ${bankTitle}</div><div class="bank-chips">${q.bank.map(w=>`<button type="button" class="bank-chip" data-w="${w}">${w}</button>`).join('')}</div></div>` : '';
+  const parts = q.parts.map((p,i)=>{
+    const labelLbl = lang==='en' ? `Part ${i+1}` : `Bagian ${i+1}`;
+    let body = '';
+    if(p.kind==='mcq'){
+      const letters=['A','B','C','D'];
+      body = `<div class="opts">${p.opts.map((o,j)=>`<button type="button" class="opt sc-opt" data-part="${i}" data-i="${j}"><span class="opt-letter">${letters[j]}</span><span>${t(o)}</span></button>`).join('')}</div>`;
+    } else if(p.kind==='fill'){
+      const ph = lang==='en' ? 'Type your answer…' : 'Ketik jawabanmu…';
+      body = `<div class="fill-row"><input type="text" class="fill-input sc-fill" data-part="${i}" placeholder="${ph}" autocomplete="off"/></div>`;
+    } else if(p.kind==='essay'){
+      const ph = lang==='en' ? 'Write your answer…' : 'Tulis jawabanmu…';
+      body = `<textarea class="essay-area sc-essay" data-part="${i}" placeholder="${ph}"></textarea>`;
+    }
+    return `<div class="scenario-part" data-part="${i}">
+      <div class="scenario-part-label">${labelLbl}</div>
+      <div class="scenario-part-q">${t(p.q)}</div>
+      ${body}
+      <div class="scenario-part-result" data-part-result="${i}"></div>
+    </div>`;
+  }).join('');
+  return `${badgeFor('scenario')}<div class="q-text">${t(q.q)}</div>${diagram}${bank}
+    ${parts}
+    <button class="scenario-check-all" id="scCheck">${checkBtn}</button>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachScenario(){
+  // Selecting MCQ option highlights it
+  document.querySelectorAll('.sc-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.disabled) return;
+      const part = b.dataset.part;
+      document.querySelectorAll(`.sc-opt[data-part="${part}"]`).forEach(x=>{
+        x.classList.remove('correct','wrong');
+        x.dataset.picked = '0';
+      });
+      b.dataset.picked = '1';
+      b.style.borderColor = '#6366f1';
+      b.style.background = '#eef2ff';
+    });
+  });
+  // Bank chips fill the focused input
+  document.querySelectorAll('.bank-chip').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if(c.disabled) return;
+      const focused = document.activeElement;
+      const last = window._scLastFill;
+      const target = (focused && focused.classList.contains('sc-fill')) ? focused : last;
+      if(target){ target.value = c.dataset.w; target.focus(); }
+    });
+  });
+  document.querySelectorAll('.sc-fill').forEach(f=>{
+    f.addEventListener('focus', ()=>{ window._scLastFill = f; });
+  });
+
+  document.getElementById('scCheck').addEventListener('click', ()=>{
+    const parts = current.parts;
+    let correctCount = 0;
+    parts.forEach((p,i)=>{
+      const resEl = document.querySelector(`[data-part-result="${i}"]`);
+      let ok = false;
+      if(p.kind==='mcq'){
+        const picked = document.querySelector(`.sc-opt[data-part="${i}"][data-picked="1"]`);
+        const pickedIdx = picked ? parseInt(picked.dataset.i) : -1;
+        ok = pickedIdx === p.ans;
+        document.querySelectorAll(`.sc-opt[data-part="${i}"]`).forEach(b=>{
+          b.disabled = true;
+          const j = parseInt(b.dataset.i);
+          b.style.borderColor=''; b.style.background='';
+          if(j === p.ans) b.classList.add('correct');
+          else if(j === pickedIdx) b.classList.add('wrong');
+        });
+      } else if(p.kind==='fill'){
+        const inp = document.querySelector(`.sc-fill[data-part="${i}"]`);
+        const u = norm(inp.value);
+        ok = !!u && p.answers.some(a => norm(a) === u);
+        inp.disabled = true;
+        inp.style.borderColor = ok ? '#00b894' : '#d63031';
+        inp.style.background = ok ? '#f0fff8' : '#fff5f5';
+      } else if(p.kind==='essay'){
+        const area = document.querySelector(`.sc-essay[data-part="${i}"]`);
+        const u = norm(area.value);
+        const hits = (p.keys||[]).filter(k => u.includes(norm(k))).length;
+        const need = Math.max(1, Math.ceil((p.keys||[]).length * 0.4));
+        ok = u.length >= 20 && hits >= need;
+        area.disabled = true;
+        area.style.borderColor = ok ? '#00b894' : '#e17055';
+        area.style.background = ok ? '#f0fff8' : '#fff8f0';
+      }
+      if(ok) correctCount++;
+      resEl.classList.remove('ok','bad'); resEl.classList.add('show', ok?'ok':'bad');
+      if(p.kind==='essay'){
+        resEl.innerHTML = ok
+          ? (lang==='en'?'✓ Good — key ideas covered.':'✓ Bagus — ide kunci tercakup.')
+          : (lang==='en'?'✗ Missing key ideas. Model:':'✗ Belum lengkap. Contoh:') +
+            `<div style="font-weight:600;margin-top:6px;color:#333">${t(p.model)}</div>`;
+      } else if(p.kind==='fill'){
+        resEl.innerHTML = ok
+          ? (lang==='en'?'✓ Correct!':'✓ Benar!')
+          : (lang==='en'?'✗ Expected: ':'✗ Jawaban: ') + `<b>${t(p.display)}</b>`;
+      } else {
+        resEl.innerHTML = ok ? (lang==='en'?'✓ Correct!':'✓ Benar!') : (lang==='en'?'✗ Not quite.':'✗ Belum tepat.');
+      }
+    });
+    document.querySelectorAll('.bank-chip').forEach(c=>c.disabled=true);
+    document.getElementById('scCheck').disabled = true;
+    // Score = majority correct
+    const partTotal = parts.length;
+    const ok = correctCount >= Math.ceil(partTotal * 0.6);
+    const fb = document.getElementById('fb');
+    fb.className = `fb ${ok?'correct':'wrong'} show`;
+    const conceptHtml = current.concept ? `<div class="concept-box">💡 ${t(current.concept)}</div>` : '';
+    const summary = lang==='en'
+      ? `You got <strong>${correctCount} of ${partTotal}</strong> parts correct.`
+      : `Kamu menjawab benar <strong>${correctCount} dari ${partTotal}</strong> bagian.`;
+    fb.innerHTML = `<strong>${ok?(lang==='en'?'✅ Well done!':'✅ Bagus!'):(lang==='en'?'📚 Keep practising.':'📚 Terus berlatih.')}</strong> ${summary}${conceptHtml}`;
+    registerResult(ok);
+    setTimeout(()=>{
+      const nxt = document.createElement('button');
+      nxt.className = 'restart-btn';
+      nxt.style.marginTop = '16px';
+      nxt.style.padding = '10px 24px';
+      nxt.style.fontSize = '.88rem';
+      nxt.textContent = idx+1 >= total ? (lang==='en' ? '🏁 See Results' : '🏁 Lihat Hasil') : (lang==='en' ? 'Next Question →' : 'Soal Berikutnya →');
+      nxt.onclick = ()=>{ idx++; next(); };
+      fb.appendChild(nxt);
+    }, 300);
+  });
+}
+
 function attachHint(){
   const btn = document.getElementById('hintBtn');
   const box = document.getElementById('hintBox');
@@ -1568,7 +2354,8 @@ function checkAnswer(ok, lockFn){
     let correctText = '';
     if(current.type==='mcq') correctText = t(current.opts[current.ans]);
     else if(current.type==='tf') correctText = current.ans ? (lang==='en'?'True':'Benar') : (lang==='en'?'False':'Salah');
-    else if(current.type==='fill') correctText = current.display ? t(current.display) : current.answers[0];
+    else if(current.type==='fill' || current.type==='fill_bank') correctText = current.display ? t(current.display) : current.answers[0];
+    else if(current.type==='multi_check') correctText = current.correctIdx.map(i=>t(current.opts[i])).join(' + ');
     const lbl = lang==='en' ? '❌ Not quite.' : '❌ Belum tepat.';
     const isLbl = lang==='en' ? 'The correct answer is' : 'Jawaban yang benar adalah';
     fb.innerHTML = `<strong>${lbl}</strong> ${isLbl} <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
