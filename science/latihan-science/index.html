@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science Practice — AzScience</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#00b894,#0ea5e9 60%,#6366f1);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.1rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.9;background:rgba(255,255,255,.15);padding:5px 12px;border-radius:16px}
+
+/* Progress bar */
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#e8f5ef;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#00b894,#0ea5e9);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#00b894;min-width:75px;text-align:right}
+
+/* Score chips */
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:720px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #e8ecef;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#00b894;background:#f0fff8}
+.score-chip.correct strong{color:#00b894}
+.score-chip.wrong{border-color:#d63031;background:#fff5f5}
+.score-chip.wrong strong{color:#d63031}
+.score-chip.answered{border-color:#6366f1;background:#eef2ff}
+.score-chip.answered strong{color:#6366f1}
+
+/* Main quiz container */
+.main{max-width:720px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(0,184,148,.13)}
+.q-badge{display:inline-block;background:#eef2ff;color:#6366f1;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#eef3ff;color:#4f8ef7}
+.q-badge.tf{background:#fff5e8;color:#e17055}
+.q-badge.fill{background:#f0eeff;color:#6c5ce7}
+.q-badge.essay{background:#e8fff8;color:#00b894}
+
+.q-text{font-size:1.05rem;line-height:1.6;background:#f0fff8;border-left:4px solid #00b894;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+.q-image{display:block;margin:0 auto 14px;max-width:100%;border-radius:10px}
+
+/* MCQ options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit}
+.opt:hover:not(:disabled){border-color:#00b894;background:#f0fff8}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#eef2ff;color:#6366f1;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#00b894;background:#f0fff8}
+.opt.correct .opt-letter{background:#00b894;color:#fff}
+.opt.wrong{border-color:#d63031;background:#fff5f5}
+.opt.wrong .opt-letter{background:#d63031;color:#fff}
+
+/* True/False */
+.tf-row{display:flex;gap:12px}
+.tf-btn{flex:1;background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:20px 16px;cursor:pointer;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;font-family:inherit;color:inherit}
+.tf-btn:hover:not(:disabled){transform:translateY(-2px);border-color:#00b894}
+.tf-btn.true{color:#00b894}
+.tf-btn.false{color:#d63031}
+.tf-btn:disabled{cursor:not-allowed;opacity:.7}
+.tf-btn.correct{border-color:#00b894;background:#f0fff8}
+.tf-btn.wrong{border-color:#d63031;background:#fff5f5}
+.tf-icon{font-size:1.4rem}
+
+/* Fill-in-blank */
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:inherit;font-size:1rem;font-weight:700;padding:14px 18px;border:2px dashed #6c5ce7;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#4f8ef7;background:#fff;box-shadow:0 0 0 3px rgba(79,142,247,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#00b894,#0ea5e9);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+/* Essay (short answer) */
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #6c5ce7;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none;resize:vertical;min-height:100px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#4f8ef7;background:#fff;box-shadow:0 0 0 3px rgba(79,142,247,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#00b894;color:#00b894}
+.essay-self .got:hover{background:#f0fff8}
+.essay-self .miss{border-color:#e17055;color:#e17055}
+.essay-self .miss:hover{background:#fff5f0}
+
+/* Feedback */
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#f0fff8;border:1.5px solid #00b894;color:#005f48}
+.fb.wrong{background:#fff5f5;border:1.5px solid #d63031;color:#a30000}
+.fb.info{background:#eef2ff;border:1.5px solid #6366f1;color:#3730a3}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#00b894;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fffbe8;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02}
+
+/* Hint button */
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #f9ca24;color:#b7760a;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fffbe8}
+.hint-box{display:none;background:#fffbe8;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02;margin-top:10px}
+.hint-box.show{display:block}
+
+/* Done screen */
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#00b894,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#00b894,#0ea5e9);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(0,184,148,.4)}
+.restart-btn:hover{opacity:.92}
+
+/* Confetti */
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .tf-btn{padding:16px 12px;font-size:1rem}
+  .hdr-title{font-size:.95rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">← All</a>
+  <div class="hdr-title" id="hdrTitle">🔬 Science Practice</div>
+  <div class="hdr-meta" id="hdrMeta">Question 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong>✓ Correct</div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong>✗ Wrong</div>
+  <div class="score-chip answered"><strong id="sDone">0</strong>📝 Answered</div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;};
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.,!?;:'"]/g,'').replace(/\s+/g,' ');
+
+// Build MCQ with shuffled options. Pass correct first, distractors after.
+function mkOpts(correct, distractors){
+  const all=[correct, ...distractors].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4);
+  while(all.length<4) all.push('—');
+  const sh=shuf(all);
+  return {opts:sh, ans:sh.indexOf(correct)};
+}
+
+// ════════════════════════════════════════════════════════════════
+// QUESTION BANK — Generator pattern
+// Each generator returns:
+//   { type:'mcq'|'tf'|'fill'|'essay', q:string, ...typeSpecificFields, hint, concept, steps }
+// ════════════════════════════════════════════════════════════════
+
+const SOUND_GEN = {
+  // ── MCQ ──────────────────────────────────────────────────────
+  vibration_def:()=>{
+    const cor='a back and forth movement';
+    const{opts,ans}=mkOpts(cor,['a circular movement','an upward movement','electrical signals']);
+    return{type:'mcq',q:'Sounds are made when objects vibrate. What is <b>vibration</b>?',opts,ans,
+      hint:'Think about a guitar string when you pluck it — which way does it move?',
+      concept:'Vibration is the rapid back-and-forth (oscillating) motion of an object.',
+      steps:['Vibration = repeated back-and-forth motion.','Examples: a plucked string, a drum skin after being hit, your vocal cords.','So the answer is: <b>a back and forth movement</b>.']};
+  },
+  sound_to_ears:()=>{
+    const cor='Through sound waves';
+    const{opts,ans}=mkOpts(cor,['Through our brain','Through vibrations alone','Through electrical signals']);
+    return{type:'mcq',q:'How does sound reach our ears?',opts,ans,
+      hint:'Vibrations make the air around them move in waves.',
+      concept:'A vibrating object pushes the surrounding particles, creating sound waves that travel to the ear.',
+      steps:['An object vibrates.','This makes the particles of the surrounding medium (air) vibrate too.','The disturbance travels outward as a <b>sound wave</b> until it reaches the eardrum.']};
+  },
+  pitch_strings:()=>{
+    // Vary: ask for low pitch or high pitch, with different string combinations
+    const isLow=Math.random()<0.5;
+    const cor = isLow ? 'By using long and thick strings.' : 'By using short and thin strings.';
+    const others = ['By using long and thin strings.','By using short and thick strings.',
+                    isLow ? 'By using short and thin strings.' : 'By using long and thick strings.'];
+    const{opts,ans}=mkOpts(cor,others);
+    return{type:'mcq',q:`How can a sound of a <b>${isLow?'low':'high'} pitch</b> be produced by a string instrument?`,opts,ans,
+      hint:`${isLow?'Low':'High'} pitch = ${isLow?'slow':'fast'} vibrations. ${isLow?'Heavy and long':'Light and short'} strings vibrate ${isLow?'slowly':'quickly'}.`,
+      concept:'Pitch depends on how fast a string vibrates. Long, thick, loose strings vibrate slowly → low pitch. Short, thin, tight strings vibrate fast → high pitch.',
+      steps:[`We want a <b>${isLow?'low':'high'}</b> pitch.`,`${isLow?'Low':'High'} pitch = ${isLow?'slower':'faster'} vibrations.`,`${isLow?'Long, thick':'Short, thin'} strings vibrate ${isLow?'more slowly':'more quickly'}.`,`So: <b>${cor}</b>`]};
+  },
+  pitch_depends:()=>{
+    const cor='frequency';
+    const{opts,ans}=mkOpts(cor,['amplitude','volume','loudness']);
+    return{type:'mcq',q:'Pitch depends on the ___ of vibrations.',opts,ans,
+      hint:'How many vibrations per second?',
+      concept:'Pitch is determined by frequency — the number of vibrations per second. More vibrations = higher pitch.',
+      steps:['Pitch = how high or low a sound is.','It depends on how many times the object vibrates each second — its <b>frequency</b>.']};
+  },
+  volume_unit:()=>{
+    const cor='decibels (dB)';
+    const{opts,ans}=mkOpts(cor,['hertz (Hz)','newtons (N)','watts (W)']);
+    return{type:'mcq',q:'The volume of sound is measured in ___.',opts,ans,
+      hint:'It is NOT hertz — that\'s for pitch.',
+      concept:'Loudness (volume) is measured in decibels (dB). Pitch (frequency) is measured in hertz (Hz).',
+      steps:['Volume = how loud a sound is.','Loudness is measured in <b>decibels</b> (dB).','Hertz (Hz) measures frequency, not volume.']};
+  },
+  volume_meter:()=>{
+    const cor='sound level meter';
+    const{opts,ans}=mkOpts(cor,['thermometer','barometer','anemometer']);
+    return{type:'mcq',q:'Which instrument measures the volume of a sound?',opts,ans,
+      hint:'It has "sound" in its name.',
+      concept:'A sound level meter (or decibel meter) measures the loudness of sound in decibels.',
+      steps:['Thermometer = temperature.','Barometer = air pressure.','Anemometer = wind speed.','<b>Sound level meter</b> = volume of sound.']};
+  },
+  clarinet:()=>{
+    const cor='blows';
+    const{opts,ans}=mkOpts(cor,['plucks','hits','rubs']);
+    return{type:'mcq',q:'A clarinet makes a sound when the musician ___ into the mouthpiece.',opts,ans,
+      hint:'It is a wind instrument.',
+      concept:'Wind instruments make sound when the player blows air into them, vibrating the air column inside.',
+      steps:['A clarinet is a wind instrument.','You make a sound by <b>blowing</b> air into the mouthpiece, which vibrates a reed and the air inside.']};
+  },
+  // ── TRUE/FALSE ──────────────────────────────────────────────
+  tf_sound_matter:()=>({type:'tf',q:'Sound can travel through different states of matter (solid, liquid, gas).',ans:true,
+    hint:'Tap on a table — can you hear it on the other side?',
+    concept:'Sound needs particles to travel. It can move through solids, liquids and gases — usually fastest through solids.',
+    steps:['Sound travels by vibrating particles.','Solids, liquids and gases all have particles → sound can travel through all three.','It actually travels <b>faster</b> in solids than in air.']}),
+  tf_drum_volume:()=>({type:'tf',q:'The volume of a drum decreases as you hit it harder.',ans:false,
+    hint:'Harder hit = more energy = ?',
+    concept:'Hitting an object harder gives it more energy, making bigger vibrations and a louder sound.',
+    steps:['Hitting harder = more energy passed to the drum.','More energy = bigger vibrations (larger amplitude).','Larger amplitude = <b>louder</b>, not quieter.','So the statement is <b>False</b>.']}),
+  tf_sound_vacuum:()=>({type:'tf',q:'Sound can travel through a vacuum (a space with no air or matter).',ans:false,
+    hint:'No particles, no vibrations to pass along.',
+    concept:'Sound needs a medium (particles) to travel. A vacuum has no particles, so sound cannot travel through it.',
+    steps:['Sound = vibration of particles passed from one to the next.','A vacuum has <b>no particles</b>.','So there is nothing to vibrate → sound cannot travel.','<b>False.</b>']}),
+  tf_pitch_thin:()=>({type:'tf',q:'A short, thin string produces a higher pitch than a long, thick one.',ans:true,
+    hint:'Faster vibration = higher pitch.',
+    concept:'Short and thin strings vibrate faster → higher pitch. Long and thick strings vibrate slower → lower pitch.',
+    steps:['Short, thin strings have less mass and are easier to vibrate quickly.','Quick vibrations = high frequency = <b>high pitch</b>.','So the statement is <b>True</b>.']}),
+  tf_volume_amplitude:()=>({type:'tf',q:'Loud sounds have larger amplitude than quiet sounds.',ans:true,
+    hint:'Amplitude = size of the vibration.',
+    concept:'Amplitude is the size of the vibration. Bigger amplitude means louder sound.',
+    steps:['Amplitude = how big each vibration is.','Bigger vibrations = more energy = <b>louder</b>.','So the statement is <b>True</b>.']}),
+  // ── FILL-IN ─────────────────────────────────────────────────
+  fill_volume_unit:()=>({type:'fill',q:'The volume of sound is measured in __________.',answers:['decibels','decibel','db','dbs','desibel'],display:'decibels (dB)',
+    hint:'Unit symbol is dB.',
+    concept:'Decibels (dB) is the unit for loudness.',
+    steps:['The standard unit for sound volume is the <b>decibel</b> (dB).']}),
+  fill_pitch:()=>({type:'fill',q:'The degree of highness and lowness of a sound is its __________.',answers:['pitch'],display:'pitch',
+    hint:'It\'s NOT volume.',
+    concept:'Pitch describes how high or low a sound is.',
+    steps:['How high or low a sound seems = <b>pitch</b>.']}),
+  fill_volume_meter:()=>({type:'fill',q:'A __________ is an instrument that measures the volume of a sound.',answers:['sound level meter','sound meter','decibel meter','db meter'],display:'sound level meter',
+    hint:'It has "sound" or "decibel" in the name.',
+    concept:'A sound level meter measures loudness in decibels.',
+    steps:['Instrument that measures sound volume = <b>sound level meter</b> (also called a decibel meter).']}),
+  fill_frequency:()=>({type:'fill',q:'Pitch depends on the __________ of vibrations.',answers:['frequency','number','rate','speed'],display:'frequency (number per second)',
+    hint:'How many vibrations per second.',
+    concept:'Frequency = number of vibrations per second. It determines pitch.',
+    steps:['Pitch depends on how fast the object vibrates — its <b>frequency</b> (number of vibrations per second).']}),
+  fill_clarinet:()=>({type:'fill',q:'A clarinet makes a sound when the musician __________ into the mouthpiece.',answers:['blows','blow','blowing'],display:'blows',
+    hint:'It\'s a wind instrument.',
+    concept:'Wind instruments work by blowing air into them.',
+    steps:['A clarinet is a wind instrument. You play it by <b>blowing</b> into the mouthpiece.']}),
+  // ── ESSAY (short answer with model answer) ──────────────────
+  essay_rubber_band:()=>({type:'essay',q:'Ali plucks a rubber band. How does the rubber band make a sound?',
+    model:`When Ali plucks the rubber band, it begins to <b>vibrate</b> back and forth quickly. These vibrations push the air particles around the band, making them vibrate too. The vibrating air particles travel outward as <b>sound waves</b>. When these waves reach Ali's ear, he hears the sound.`,
+    hint:'Mention: vibration → moves air → sound waves → ear.',
+    concept:'Any vibrating object can make a sound by vibrating the air around it.',
+    keys:['vibrat','wave','air','ear']}),
+  essay_vacuum:()=>({type:'essay',q:'A vacuum is a space without any air or other matter. Explain why sound cannot travel through a vacuum.',
+    model:`Sound travels by making particles vibrate and pass the vibration along — from one particle to the next. A <b>vacuum has no particles</b> (no air, no matter). With nothing to vibrate, the sound has nothing to travel through, so it <b>cannot reach our ears</b>.`,
+    hint:'Sound needs a medium (particles).',
+    concept:'Sound needs matter (a medium) to travel. No matter → no sound.',
+    keys:['particle','medium','matter','vacuum','vibrat']}),
+};
+
+const MAGNET_GEN = {
+  // ── MCQ ──────────────────────────────────────────────────────
+  magnetic_metal:()=>{
+    // Vary which magnetic metal is correct
+    const magnetic = pick(['iron','steel','nickel','cobalt']);
+    const nonM = shuf(['gold','silver','aluminium','copper','plastic','wood','rubber','glass']).slice(0,3);
+    const{opts,ans}=mkOpts(magnetic,nonM);
+    return{type:'mcq',q:'Which of the following is <b>attracted</b> to magnets?',opts,ans,
+      hint:'Magnetic metals: iron, steel, nickel, cobalt. Most other materials are NOT magnetic.',
+      concept:'Only certain metals — iron, steel, nickel and cobalt — are attracted to magnets. Most other metals (gold, silver, aluminium, copper) are NOT magnetic.',
+      steps:[`Magnetic metals contain <b>iron, nickel, or cobalt</b>.`,`Among the choices, <b>${magnetic}</b> is magnetic.`,`The others (${nonM.join(', ')}) are not attracted to magnets.`]};
+  },
+  poles_interact:()=>{
+    // Two magnet poles: like repel, unlike attract
+    const pairs=[
+      {sides:'N–N',result:'They will repel each other'},
+      {sides:'S–S',result:'They will repel each other'},
+      {sides:'N–S',result:'They will attract each other'},
+      {sides:'S–N',result:'They will attract each other'},
+    ];
+    const p=pick(pairs);
+    const distractors=['Both magnets will turn to the right','Both magnets will turn to the left',
+      p.result.includes('repel')?'They will attract each other':'They will repel each other'];
+    const{opts,ans}=mkOpts(p.result,distractors);
+    return{type:'mcq',q:`Two magnets are placed next to each other with poles facing: <b>${p.sides}</b>. What will happen?`,opts,ans,
+      hint:'Like poles repel. Unlike poles attract.',
+      concept:'Like poles (N–N or S–S) repel. Unlike poles (N–S) attract.',
+      steps:[`The poles facing each other are <b>${p.sides}</b>.`,`${p.sides==='N–N'||p.sides==='S–S'?'These are <b>like poles</b> → repel.':'These are <b>unlike poles</b> → attract.'}`,`So: <b>${p.result}</b>.`]};
+  },
+  strongest_part:()=>{
+    const cor='poles (ends)';
+    const{opts,ans}=mkOpts(cor,['middle','sides','top']);
+    return{type:'mcq',q:'Where is the magnetic force of a bar magnet <b>strongest</b>?',opts,ans,
+      hint:'Look at iron filings around a magnet — where do they cluster most?',
+      concept:'The magnetic force is concentrated at the two ends of a magnet — the north and south poles.',
+      steps:['Iron filings cluster most densely at the <b>ends</b> of a bar magnet.','These ends are the <b>poles</b> (north and south).','So the force is strongest at the <b>poles</b>.']};
+  },
+  cant_attract:()=>{
+    const metal=pick(['aluminium soft drink can','copper coin','gold ring','silver spoon']);
+    const cor='It is not made of a magnetic material like iron.';
+    const{opts,ans}=mkOpts(cor,['The magnet is too weak.','It is too small.','It has paint on it.']);
+    return{type:'mcq',q:`Why is a <b>${metal}</b> NOT attracted to a magnet?`,opts,ans,
+      hint:'Not all metals are magnetic.',
+      concept:'Only iron, steel, nickel and cobalt are magnetic. Other metals (aluminium, copper, gold, silver) are not.',
+      steps:[`A ${metal} is made of a <b>non-magnetic metal</b>.`,`Magnets only attract materials containing iron, nickel or cobalt.`,`So even though it is metal, it is <b>not attracted</b>.`]};
+  },
+  // ── TRUE/FALSE ──────────────────────────────────────────────
+  tf_touch:()=>({type:'tf',q:'Magnets do not need to touch an object to attract it.',ans:true,
+    hint:'You can feel the pull from a small distance.',
+    concept:'A magnetic field extends around a magnet, so it can attract magnetic objects without touching them.',
+    steps:['A magnet has a <b>magnetic field</b> around it.','This field reaches outward — even through air.','So a magnet can attract iron objects <b>without touching</b> them. <b>True</b>.']}),
+  tf_same_strength:()=>({type:'tf',q:'All bar magnets have the same magnetic strength.',ans:false,
+    hint:'Some magnets pick up many nails, others only a few.',
+    concept:'Different magnets have different strengths depending on their material, size, and how strongly they were magnetised.',
+    steps:['Magnets are made from different materials and in different sizes.','A bigger or stronger magnet can pick up <b>more</b> iron objects.','So they do <b>not</b> all have the same strength. <b>False</b>.']}),
+  tf_more_nails:()=>({type:'tf',q:'A magnet with a greater magnetic strength will attract more iron nails.',ans:true,
+    hint:'Stronger pull = ?',
+    concept:'A stronger magnet exerts a greater force, so it can hold more iron nails.',
+    steps:['Stronger magnet = stronger pulling force.','Stronger force can hold <b>more</b> iron nails at once.','<b>True.</b>']}),
+  tf_like_attract:()=>({type:'tf',q:'Two north poles placed near each other will attract each other.',ans:false,
+    hint:'Like poles do the opposite of attract.',
+    concept:'Like poles (N–N or S–S) repel. Unlike poles (N–S) attract.',
+    steps:['N and N are <b>like</b> poles.','Like poles <b>repel</b> (push apart), not attract.','So the statement is <b>False</b>.']}),
+  tf_distance:()=>({type:'tf',q:'A stronger magnet can act over a greater distance than a weaker one.',ans:true,
+    hint:'Stronger field reaches further.',
+    concept:'A stronger magnet has a larger magnetic field, so it can attract objects further away.',
+    steps:['Magnetic strength = how powerful the field is.','A stronger field <b>reaches further</b>.','So stronger magnets attract from a greater distance. <b>True</b>.']}),
+  // ── FILL-IN ─────────────────────────────────────────────────
+  fill_poles:()=>({type:'fill',q:'The magnetic force is strongest at the __________ of a magnet.',answers:['poles','pole','ends','end'],display:'poles (ends)',
+    hint:'Where iron filings cluster most.',
+    concept:'The poles are the two ends of a magnet where the force is strongest.',
+    steps:['Iron filings stick most thickly at the two <b>ends</b> of a bar magnet — these are the <b>poles</b>.']}),
+  fill_attract_materials:()=>({type:'fill',q:'Magnets attract __________ materials.',answers:['magnetic','iron','ferromagnetic'],display:'magnetic',
+    hint:'Materials containing iron, nickel or cobalt.',
+    concept:'Magnetic materials contain iron, nickel or cobalt.',
+    steps:['Magnets only attract materials with iron, nickel or cobalt — these are called <b>magnetic</b> materials.']}),
+  fill_strengths:()=>({type:'fill',q:'Magnets have different shapes and sizes. They also have different __________.',answers:['strengths','strength','magnetic strengths','magnetic strength','powers'],display:'strengths',
+    hint:'Some are stronger, some weaker.',
+    concept:'Magnets vary in strength.',
+    steps:['Just like sizes and shapes vary, magnets also vary in how strongly they pull — their <b>strengths</b>.']}),
+  fill_distance:()=>({type:'fill',q:'Strong magnets have stronger magnetic force and can act over a greater __________.',answers:['distance','range','area'],display:'distance',
+    hint:'How far away the force reaches.',
+    concept:'A stronger magnet reaches further.',
+    steps:['Stronger magnets pull from <b>further away</b> — they act over a greater <b>distance</b>.']}),
+  fill_bat:()=>({type:'fill',q:'A bat is a __________ animal — it is active during the night.',answers:['nocturnal'],display:'nocturnal',
+    hint:'Active at night = ?',
+    concept:'Nocturnal animals are active at night and rest during the day.',
+    steps:['Animals active at <b>night</b> are called <b>nocturnal</b>.','Bats sleep during the day and hunt at night → nocturnal.']}),
+  // ── ESSAY ───────────────────────────────────────────────────
+  essay_filings:()=>({type:'essay',q:'Two students draw iron-filing patterns around a bar magnet. Whose diagram is correct — one showing filings spread evenly along the magnet, or one showing filings clustered most at the two ends?',
+    model:`The diagram showing iron filings <b>clustered most at the two ends</b> is correct. The magnetic force is <b>strongest at the poles</b> (the ends of the bar magnet), so iron filings are attracted there most strongly. Along the middle, the force is weaker, so fewer filings stick there.`,
+    hint:'Force is strongest at the poles.',
+    concept:'Magnetic field lines are densest near the poles, so filings cluster there.',
+    keys:['poles','ends','strongest','cluster','strong']}),
+  essay_can:()=>({type:'essay',q:'A soft drink can is made of metal, but it is not attracted to a magnet. Why?',
+    model:`A soft drink can is usually made from <b>aluminium</b> (or sometimes tin-plated steel that has been treated). <b>Aluminium is not a magnetic metal</b> — only metals that contain iron, nickel or cobalt are attracted to magnets. So even though the can is metal, the magnet does not pull it.`,
+    hint:'Not all metals are magnetic.',
+    concept:'Only iron, nickel and cobalt are magnetic. Aluminium, copper, gold, silver are not.',
+    keys:['aluminium','aluminum','not magnetic','iron','non-magnetic']}),
+  essay_list:()=>({type:'essay',q:'List three (3) <b>magnetic</b> materials and three (3) <b>non-magnetic</b> materials.',
+    model:`<b>Magnetic:</b> iron nail, steel paperclip, nickel coin (also cobalt, steel screw, iron filings).<br><b>Non-magnetic:</b> aluminium can, copper wire, plastic ruler (also wood, glass, rubber, gold, silver, paper, fabric).`,
+    hint:'Magnetic: iron / steel / nickel / cobalt. Non-magnetic: everything else.',
+    concept:'Only iron, steel, nickel and cobalt are attracted to magnets.',
+    keys:['iron','steel','nickel','cobalt','aluminium','copper','plastic','wood']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER → GENERATOR LIST
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': {title:'Ch 7 · Sound', gen: SOUND_GEN},
+  '2': {title:'Ch 8 · Magnets', gen: MAGNET_GEN},
+  'all': {title:'Daily Test — Ch 7 & 8 Combined', gen: {...SOUND_GEN, ...MAGNET_GEN}},
+};
+
+// ════════════════════════════════════════════════════════════════
+// QUEUE & STATE
+// ════════════════════════════════════════════════════════════════
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null; // 'correct'|'wrong'|null
+
+function buildQueue(chKey){
+  const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+  document.getElementById('hdrTitle').textContent = '🔬 ' + ch.title;
+  // Build queue: take each generator key, shuffle, generate one instance each
+  const keys = shuf(Object.keys(ch.gen));
+  // For 'all' chapter, order by type group: MCQ → TF → FILL → ESSAY (like real test)
+  let qs = keys.map(k => ({key:k, gen:ch.gen[k]}));
+  if(chKey === 'all'){
+    const typeOrder = {mcq:0, tf:1, fill:2, essay:3};
+    // Generate once just to read type, then sort
+    qs = qs.map(q => ({...q, _t: q.gen().type}));
+    qs.sort((a,b)=>typeOrder[a._t] - typeOrder[b._t]);
+  }
+  queue = qs.map(q => q.gen());
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateScore();
+  next();
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  document.getElementById('hdrMeta').textContent = `Question ${Math.min(idx+1,total)} of ${total}`;
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDERERS — one per question type
+// ════════════════════════════════════════════════════════════════
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  switch(current.type){
+    case 'mcq':   slot.innerHTML = mcqHtml(current); attachMCQ(); break;
+    case 'tf':    slot.innerHTML = tfHtml(current); attachTF(); break;
+    case 'fill':  slot.innerHTML = fillHtml(current); attachFill(); break;
+    case 'essay': slot.innerHTML = essayHtml(current); attachEssay(); break;
+  }
+  attachHint();
+}
+
+function badgeFor(t){
+  return ({mcq:'<span class="q-badge mcq">📝 Multiple Choice</span>',
+           tf:'<span class="q-badge tf">✅ True or False</span>',
+           fill:'<span class="q-badge fill">📋 Fill in the Blank</span>',
+           essay:'<span class="q-badge essay">📖 Short Answer</span>'})[t];
+}
+
+function hintBlock(q){
+  if(!q.hint) return '';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">💡 Show Hint</button>
+    <div class="hint-box" id="hintBox">${q.hint}</div>
+  </div>`;
+}
+
+function feedbackBlock(){
+  return `<div class="fb" id="fb"></div>`;
+}
+
+// ── MCQ ─────────────────────────────────────────────────────────
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${q.q}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+// ── TRUE/FALSE ──────────────────────────────────────────────────
+function tfHtml(q){
+  return `${badgeFor('tf')}<div class="q-text">${q.q}</div>
+    <div class="tf-row">
+      <button class="tf-btn true" data-v="true"><span class="tf-icon">✓</span> True</button>
+      <button class="tf-btn false" data-v="false"><span class="tf-icon">✗</span> False</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachTF(){
+  document.querySelectorAll('.tf-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const v = b.dataset.v === 'true';
+      checkAnswer(v === current.ans, ()=>{
+        document.querySelectorAll('.tf-btn').forEach(btn=>{
+          btn.disabled = true;
+          const bv = btn.dataset.v === 'true';
+          if(bv === current.ans) btn.classList.add('correct');
+          else if(bv === v) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+// ── FILL-IN-BLANK ───────────────────────────────────────────────
+function fillHtml(q){
+  return `${badgeFor('fill')}<div class="q-text">${q.q}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Type your answer…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Check</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#00b894' : '#d63031';
+      inp.style.background = ok ? '#f0fff8' : '#fff5f5';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+// ── ESSAY (short answer with self-grading) ──────────────────────
+function essayHtml(q){
+  return `${badgeFor('essay')}<div class="q-text">${q.q}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="Write your answer in your own words…"></textarea>
+    <button class="essay-show" id="essayShow">📋 Show Model Answer</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">✓ I got it right</button>
+      <button class="miss" data-v="0">✗ Need to review</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML=`<strong>Write your answer first</strong> — even a sentence or two. Then click "Show Model Answer" to compare.`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    // Auto-check key terms
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const total = (current.keys||[]).length || 1;
+    const score = hits/total;
+    fb.className = 'fb info show';
+    fb.innerHTML = `<strong>📋 Model Answer:</strong><br><br>${current.model}<br><br>
+      <small>🔍 Your answer mentioned <strong>${hits} of ${total}</strong> key concepts. Compare with the model and grade yourself honestly:</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#f0fff8' : '#fff5f0';
+      // Self-graded — register result
+      registerResult(ok);
+      // Append concept box
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${current.concept}</div>`;
+      }
+      // Auto-advance after short delay
+      setTimeout(()=>{ idx++; next(); }, 1600);
+    });
+  });
+}
+
+// ── Hint toggle ─────────────────────────────────────────────────
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    btn.textContent = box.classList.contains('show') ? '🙈 Hide Hint' : '💡 Show Hint';
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// ANSWER CHECK
+// ════════════════════════════════════════════════════════════════
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsHtml = (current.steps||[]).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${current.concept}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    fb.innerHTML = `<strong>✅ Correct! Well done!</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = current.opts[current.ans];
+    else if(current.type==='tf') correctText = current.ans ? 'True' : 'False';
+    else if(current.type==='fill') correctText = current.display || current.answers[0];
+    fb.innerHTML = `<strong>❌ Not quite.</strong> The correct answer is <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  // Add Next button
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total ? '🏁 See Results' : 'Next Question →';
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+// ════════════════════════════════════════════════════════════════
+// DONE SCREEN + CONFETTI
+// ════════════════════════════════════════════════════════════════
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  const msg = pct>=80 ? '🎉 Outstanding!' : pct>=60 ? '👍 Good job!' : pct>=40 ? '💪 Keep practising!' : '📚 Time to review!';
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>You finished <strong>${total}</strong> questions.</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>Correct</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>Wrong</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>Score</span></div>
+      </div>
+      <button class="restart-btn" onclick="location.reload()">🔄 Try Again</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#00b894;font-weight:700;text-decoration:none">← Back to topics</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#00b894','#0ea5e9','#6366f1','#f9ca24','#e17055','#fd79a8'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+buildQueue(chKey);
+</script>
+</body>
+</html>
