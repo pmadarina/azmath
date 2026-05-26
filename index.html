@@ -3,284 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AzMath — Math Practice</title>
+<title>AzLearn — Grade 5 Practice</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:100vh;display:flex;flex-direction:column}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#f6f8ff 0%,#eef7f4 100%);min-height:100vh;display:flex;flex-direction:column}
 
-/* ── Hero header ── */
-.hero{background:linear-gradient(135deg,#4f8ef7 0%,#6c5ce7 60%,#a29bfe 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px}
-.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px}
-.hero p{font-size:1rem;opacity:.85;max-width:360px;margin:0 auto;line-height:1.6}
+/* Hero */
+.hero{background:linear-gradient(135deg,#4f8ef7 0%,#6c5ce7 40%,#00b894 100%);color:#fff;padding:64px 24px 96px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);border-radius:20px;font-size:.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:6px 18px;margin-bottom:22px;position:relative}
+.hero h1{font-size:3.4rem;font-weight:900;letter-spacing:-2.5px;line-height:1;margin-bottom:14px;position:relative}
+.hero p{font-size:1.05rem;opacity:.9;max-width:440px;margin:0 auto;line-height:1.6;position:relative;font-weight:500}
 
-/* ── Cards ── */
-.main{max-width:700px;margin:-44px auto 0;padding:0 20px 60px;width:100%}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:520px){.grid{grid-template-columns:1fr}}
+/* Main */
+.main{max-width:760px;margin:-56px auto 0;padding:0 22px 80px;width:100%;position:relative}
+.subject-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:620px){.subject-grid{grid-template-columns:1fr;gap:18px}}
 
-.card{background:#fff;border-radius:24px;padding:32px 26px 26px;box-shadow:0 8px 32px rgba(79,142,247,.13);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
-.card.blue::after{background:#4f8ef7}
-.card.purple::after{background:#6c5ce7}
-.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(79,142,247,.22)}
+/* Subject cards */
+.subject{background:#fff;border-radius:28px;padding:36px 28px 30px;text-decoration:none;display:block;position:relative;overflow:hidden;transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;cursor:pointer}
+.subject:hover{transform:translateY(-8px) scale(1.01)}
 
-.card-accent{height:5px;border-radius:3px;margin-bottom:22px}
-.card.blue .card-accent{background:linear-gradient(90deg,#4f8ef7,#74b9ff)}
-.card.purple .card-accent{background:linear-gradient(90deg,#6c5ce7,#a29bfe)}
+.subject.math{box-shadow:0 12px 40px rgba(79,142,247,.18)}
+.subject.math:hover{box-shadow:0 24px 60px rgba(79,142,247,.32)}
+.subject.science{box-shadow:0 12px 40px rgba(0,184,148,.18)}
+.subject.science:hover{box-shadow:0 24px 60px rgba(0,184,148,.32)}
 
-.card-icon{font-size:2.6rem;margin-bottom:14px;display:block}
-.card h3{font-size:1.1rem;font-weight:900;color:#1a1a2e;margin-bottom:8px;letter-spacing:-.3px}
-.card p{font-size:.84rem;color:#666;line-height:1.6;margin-bottom:16px}
+.subject::before{content:'';position:absolute;top:0;left:0;right:0;height:6px}
+.subject.math::before{background:linear-gradient(90deg,#4f8ef7,#6c5ce7,#a29bfe)}
+.subject.science::before{background:linear-gradient(90deg,#00b894,#0ea5e9,#6366f1)}
 
-.pill-row{display:flex;gap:6px;flex-wrap:wrap}
-.pill{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 11px;border-radius:12px;letter-spacing:.3px}
-.card.blue .pill{background:#eef3ff;color:#4f8ef7}
-.card.purple .pill{background:#f0eeff;color:#6c5ce7}
-.card.teal::after{background:#00b894}
-.card.teal .card-accent{background:linear-gradient(90deg,#00b894,#55efc4)}
-.card.teal .pill{background:#e8fff8;color:#00b894}
-.card.orange::after{background:#e17055}
-.card.orange .card-accent{background:linear-gradient(90deg,#e17055,#fdcb6e)}
-.card.orange .pill{background:#fff5f0;color:#e17055}
-.card.gold::after{background:#f9ca24}
-.card.gold .card-accent{background:linear-gradient(90deg,#f9ca24,#f0932b)}
-.card.gold .pill{background:#fffbe8;color:#b7760a}
-.card.green::after{background:#27ae60}
-.card.green .card-accent{background:linear-gradient(90deg,#27ae60,#2ecc71)}
-.card.green .pill{background:#eafaf1;color:#27ae60}
-.card.pink::after{background:#e84393}
-.card.pink .card-accent{background:linear-gradient(90deg,#e84393,#fd79a8)}
-.card.pink .pill{background:#fdeef6;color:#e84393}
-.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:20px}
+.subject::after{content:'';position:absolute;bottom:-60px;right:-40px;width:200px;height:200px;border-radius:50%;opacity:.08;transition:transform .4s,opacity .22s}
+.subject.math::after{background:radial-gradient(circle,#4f8ef7,#6c5ce7)}
+.subject.science::after{background:radial-gradient(circle,#00b894,#0ea5e9)}
+.subject:hover::after{transform:scale(1.4);opacity:.12}
 
-.card-arrow{position:absolute;top:28px;right:24px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
-.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
+.subject-icon{display:inline-flex;align-items:center;justify-content:center;width:74px;height:74px;border-radius:22px;font-size:2.4rem;margin-bottom:18px;position:relative;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.subject.math .subject-icon{background:linear-gradient(135deg,#eef3ff,#f0eeff);color:#4f8ef7}
+.subject.science .subject-icon{background:linear-gradient(135deg,#e8fff8,#e0f2fe);color:#00b894}
 
-/* ── Footer ── */
-.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
-.footer span{color:#a29bfe;font-weight:700}
+.subject h2{font-size:1.55rem;font-weight:900;letter-spacing:-.8px;margin-bottom:6px;position:relative}
+.subject.math h2{color:#1a1a2e}
+.subject.science h2{color:#1a1a2e}
+.subject-tagline{font-size:.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;position:relative}
+.subject.math .subject-tagline{color:#6c5ce7}
+.subject.science .subject-tagline{color:#00b894}
+.subject p{font-size:.92rem;color:#555;line-height:1.6;margin-bottom:20px;position:relative}
 
-/* ── Mobile ── */
-@media(max-width:520px){
-  .hero{padding:40px 18px 72px}
-  .hero h1{font-size:2.4rem;letter-spacing:-1.5px}
-  .hero p{font-size:.88rem}
-  .hero-badge{font-size:.68rem;padding:4px 13px}
-  .main{padding:0 14px 40px}
-  .grid{gap:13px}
-  .card{padding:24px 20px 20px}
-  .card-icon{font-size:2.2rem;margin-bottom:10px}
-  .card h3{font-size:1rem}
-  .card p{font-size:.8rem}
-  .pill{font-size:.65rem;padding:3px 9px}
+.subject-stats{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.stat-pill{font-size:.72rem;font-weight:800;padding:5px 12px;border-radius:14px;letter-spacing:.3px}
+.subject.math .stat-pill{background:#eef3ff;color:#4f8ef7}
+.subject.science .stat-pill{background:#e8fff8;color:#00b894}
+
+.subject-cta{position:absolute;top:32px;right:28px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;transition:transform .22s,background .22s}
+.subject.math .subject-cta{background:#eef3ff;color:#4f8ef7}
+.subject.science .subject-cta{background:#e8fff8;color:#00b894}
+.subject:hover .subject-cta{transform:translateX(4px) scale(1.1)}
+.subject.math:hover .subject-cta{background:#4f8ef7;color:#fff}
+.subject.science:hover .subject-cta{background:#00b894;color:#fff}
+
+/* Footer */
+.footer{margin-top:auto;text-align:center;padding:28px;color:#999;font-size:.78rem}
+.footer span{font-weight:800}
+.footer .m{color:#6c5ce7}
+.footer .s{color:#00b894}
+
+@media(max-width:620px){
+  .hero{padding:48px 18px 80px}
+  .hero h1{font-size:2.6rem;letter-spacing:-1.8px}
+  .hero p{font-size:.95rem}
+  .hero-badge{font-size:.7rem;padding:5px 14px}
+  .main{padding:0 16px 60px;margin-top:-44px}
+  .subject{padding:28px 22px 22px;border-radius:24px}
+  .subject-icon{width:62px;height:62px;font-size:2rem;margin-bottom:14px}
+  .subject h2{font-size:1.3rem}
+  .subject-tagline{font-size:.72rem}
+  .subject p{font-size:.85rem;margin-bottom:16px}
+  .subject-cta{width:36px;height:36px;top:24px;right:22px}
 }
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <div class="hero-badge">Grade 5 · Math &amp; Science</div>
-  <h1>📐 AzMath</h1>
-  <p>Math practice + Science practice. Pick a subject and start!</p>
+  <div class="hero-badge">Grade 5 · Practice Hub</div>
+  <h1>📚 AzLearn</h1>
+  <p>Two subjects, one place. Pick what you want to practise today.</p>
 </div>
 
 <div class="main">
 
-  <div class="section-label">🔬 Other Subjects</div>
-  <div class="grid">
-    <a class="card teal" href="science/" style="grid-column:1/-1">
-      <span class="card-arrow">→</span>
-      <div class="card-accent" style="background:linear-gradient(90deg,#00b894,#0ea5e9)"></div>
-      <span class="card-icon">🔬</span>
-      <h3>AzScience — Grade 5 Science</h3>
-      <p>Sound &amp; Magnets practice. MCQ, True/False, Fill-in-the-blank, and Short Answer — daily-test style.</p>
-      <div class="pill-row">
-        <span class="pill">2 chapters</span>
-        <span class="pill">4 question types</span>
-        <span class="pill">Self-grading</span>
-      </div>
-    </a>
-  </div>
+  <div class="subject-grid">
 
-  <div class="section-label">📝 Math · MCQ Practice</div>
-  <div class="grid">
-
-    <a class="card blue" href="latihan-pecahan/?ch=1">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔢</span>
-      <h3>Ch 1 · Fractions</h3>
-      <p>Improper &amp; mixed numbers, adding, multiplying and dividing fractions.</p>
-      <div class="pill-row">
-        <span class="pill">5 topics</span>
-        <span class="pill">5.NF</span>
-        <span class="pill">MCQ ✓</span>
+    <a class="subject math" href="math/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">📐</div>
+      <div class="subject-tagline">Mathematics</div>
+      <h2>AzMath</h2>
+      <p>Fractions, decimals, percentages, ratio, BODMAS, data handling, Venn &amp; Carroll diagrams — plus interactive practice tools.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">10 chapters</span>
+        <span class="stat-pill">40+ topics</span>
+        <span class="stat-pill">Interactive</span>
       </div>
     </a>
 
-    <a class="card purple" href="latihan-pecahan/?ch=2">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔄</span>
-      <h3>Ch 2 · Conversions</h3>
-      <p>Convert and compare fractions, decimals &amp; percentages across all formats.</p>
-      <div class="pill-row">
-        <span class="pill">8 topics</span>
-        <span class="pill">5.NBT</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card teal" href="latihan-pecahan/?ch=3">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔣</span>
-      <h3>Ch 3 · Decimals</h3>
-      <p>Add, subtract and multiply decimal numbers with step-by-step solutions.</p>
-      <div class="pill-row">
-        <span class="pill">3 topics</span>
-        <span class="pill">5.NBT.B</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card orange" href="latihan-pecahan/?ch=4">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">📝</span>
-      <h3>Ch 4 · Word Problems</h3>
-      <p>Real-world problems: lengths, mass, cost, pricing &amp; sharing fractions.</p>
-      <div class="pill-row">
-        <span class="pill">6 topics</span>
-        <span class="pill">5.NF.A</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card green" href="latihan-pecahan/?ch=5">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔢</span>
-      <h3>Ch 5 · Whole Number Operations</h3>
-      <p>Estimation to nearest 100, multiply &amp; divide by 10/100, long multiplication, division with remainder.</p>
-      <div class="pill-row">
-        <span class="pill">4 topics</span>
-        <span class="pill">5.NBT</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card pink" href="latihan-pecahan/?ch=6">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">⚖️</span>
-      <h3>Ch 6 · Number Laws &amp; BODMAS</h3>
-      <p>Commutative &amp; associative laws for addition, distributive law for multiplication, order of operations.</p>
-      <div class="pill-row">
-        <span class="pill">3 topics</span>
-        <span class="pill">5.OA</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card teal" href="latihan-pecahan/?ch=7">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔵</span>
-      <h3>Ch 7 · Proportion</h3>
-      <p>Express part/whole as a fraction or percentage. Find the complement proportion.</p>
-      <div class="pill-row">
-        <span class="pill">3 topics</span>
-        <span class="pill">6.RP.A</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card purple" href="latihan-pecahan/?ch=8">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">📊</span>
-      <h3>Ch 8 · Frequency &amp; Averages</h3>
-      <p>Frequency tables, missing values, percentages from frequency, and finding the mode.</p>
-      <div class="pill-row">
-        <span class="pill">3 topics</span>
-        <span class="pill">5.MD</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card blue" href="latihan-pecahan/?ch=9">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">📈</span>
-      <h3>Ch 9 · Charts &amp; Graphs</h3>
-      <p>Read bar charts, pictograms with a key, and waffle charts — most/least popular &amp; counts.</p>
-      <div class="pill-row">
-        <span class="pill">3 topics</span>
-        <span class="pill">5.MD</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-    <a class="card green" href="latihan-pecahan/?ch=10">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔵</span>
-      <h3>Ch 10 · Venn &amp; Carroll</h3>
-      <p>Complete Venn diagrams (two overlapping circles) and Carroll diagrams (2×2 sorting grid).</p>
-      <div class="pill-row">
-        <span class="pill">2 topics</span>
-        <span class="pill">5.MD</span>
-        <span class="pill">MCQ ✓</span>
-      </div>
-    </a>
-
-  </div>
-
-  <div class="section-label">📋 Exam</div>
-  <div class="grid">
-    <a class="card gold" href="latihan-pecahan/?exam=1" style="grid-column:1/-1">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🏫</span>
-      <h3>Full Exam — All Chapters</h3>
-      <p>All 40 questions from 10 chapters in one session. No hints. Graded by accuracy. Good luck!</p>
-      <div class="pill-row">
-        <span class="pill">40 questions</span>
-        <span class="pill">All chapters</span>
-        <span class="pill">No hints</span>
-      </div>
-    </a>
-  </div>
-
-  <div class="section-label">📊 Fill-in Practice</div>
-  <div class="grid">
-
-    <a class="card purple" href="konversi-tabel/">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">📊</span>
-      <h3>Conversion Table</h3>
-      <p>Fill in the missing fraction, decimal or percentage — with visual diagrams to help.</p>
-      <div class="pill-row">
-        <span class="pill">Diagrams</span>
-        <span class="pill">Fill-in</span>
-        <span class="pill">Real-time</span>
-      </div>
-    </a>
-
-    <a class="card orange" href="diagram-latihan/">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">✏️</span>
-      <h3>Diagram Practice</h3>
-      <p>Build bar charts, fill waffle grids, and complete Venn &amp; Carroll diagrams interactively.</p>
-      <div class="pill-row">
-        <span class="pill">4 types</span>
-        <span class="pill">Interactive</span>
-        <span class="pill">Draw &amp; Fill</span>
+    <a class="subject science" href="science/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🔬</div>
+      <div class="subject-tagline">Science</div>
+      <h2>AzScience</h2>
+      <p>Cambridge Primary Stage 5: Sound, Magnets, Atmosphere &amp; Water Cycle, Pollution, and Movement of Earth — bilingual EN/ID.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">5 chapters</span>
+        <span class="stat-pill">UAS mode</span>
+        <span class="stat-pill">EN / ID</span>
       </div>
     </a>
 
@@ -288,7 +125,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:1
 
 </div>
 
-<div class="footer">AzMath · Built with ❤️ for <span>young mathematicians</span></div>
+<div class="footer">Built with ❤️ for <span class="m">young mathematicians</span> &amp; <span class="s">curious scientists</span></div>
 
 </body>
 </html>
