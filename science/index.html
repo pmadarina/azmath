@@ -8,7 +8,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:100vh;display:flex;flex-direction:column}
 
-/* ── Hero header (green palette to distinguish from math) ── */
+/* Hero */
 .hero{background:linear-gradient(135deg,#00b894 0%,#0ea5e9 60%,#6366f1 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Ccircle cx='50' cy='10' r='2'/%3E%3Ccircle cx='10' cy='50' r='2'/%3E%3Ccircle cx='50' cy='50' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
 .hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative}
@@ -17,39 +17,51 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
 .back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
 .back-btn:hover{background:rgba(255,255,255,.28)}
 
-/* ── Cards ── */
-.main{max-width:700px;margin:-44px auto 0;padding:0 20px 60px;width:100%;position:relative}
+/* Cards */
+.main{max-width:780px;margin:-44px auto 0;padding:0 20px 60px;width:100%;position:relative}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:520px){.grid{grid-template-columns:1fr}}
 
-.card{background:#fff;border-radius:24px;padding:32px 26px 26px;box-shadow:0 8px 32px rgba(0,184,148,.15);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.card{background:#fff;border-radius:24px;padding:28px 24px 24px;box-shadow:0 8px 32px rgba(0,184,148,.15);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
 .card.green::after{background:#00b894}
 .card.sky::after{background:#0ea5e9}
+.card.teal::after{background:#14b8a6}
+.card.orange::after{background:#f97316}
 .card.indigo::after{background:#6366f1}
+.card.gold::after{background:#f9ca24}
 .card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,184,148,.25)}
 
-.card-accent{height:5px;border-radius:3px;margin-bottom:22px}
+.card-accent{height:5px;border-radius:3px;margin-bottom:20px}
 .card.green .card-accent{background:linear-gradient(90deg,#00b894,#55efc4)}
 .card.sky .card-accent{background:linear-gradient(90deg,#0ea5e9,#7dd3fc)}
+.card.teal .card-accent{background:linear-gradient(90deg,#14b8a6,#5eead4)}
+.card.orange .card-accent{background:linear-gradient(90deg,#f97316,#fdba74)}
 .card.indigo .card-accent{background:linear-gradient(90deg,#6366f1,#a5b4fc)}
+.card.gold .card-accent{background:linear-gradient(90deg,#f9ca24,#fde68a)}
 
-.card-icon{font-size:2.6rem;margin-bottom:14px;display:block}
-.card h3{font-size:1.1rem;font-weight:900;color:#1a1a2e;margin-bottom:8px;letter-spacing:-.3px}
-.card p{font-size:.84rem;color:#666;line-height:1.6;margin-bottom:16px}
+.card-icon{font-size:2.4rem;margin-bottom:12px;display:block}
+.card h3{font-size:1.05rem;font-weight:900;color:#1a1a2e;margin-bottom:8px;letter-spacing:-.3px}
+.card p{font-size:.82rem;color:#666;line-height:1.55;margin-bottom:14px}
 
 .pill-row{display:flex;gap:6px;flex-wrap:wrap}
-.pill{display:inline-block;font-size:.7rem;font-weight:800;padding:3px 11px;border-radius:12px;letter-spacing:.3px}
+.pill{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
 .card.green .pill{background:#e8fff8;color:#00b894}
 .card.sky .pill{background:#e0f2fe;color:#0284c7}
+.card.teal .pill{background:#ccfbf1;color:#0d9488}
+.card.orange .pill{background:#ffedd5;color:#c2410c}
 .card.indigo .pill{background:#eef2ff;color:#6366f1}
+.card.gold .pill{background:#fef9c3;color:#a16207}
 
-.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:20px}
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:24px}
 
-.card-arrow{position:absolute;top:28px;right:24px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
+.card-arrow{position:absolute;top:24px;right:22px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
 .card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
 
-/* ── Footer ── */
+.uas-card{background:linear-gradient(135deg,#fffbe8 0%,#fff5d6 100%);border:2px solid #f9ca24;position:relative}
+.uas-card h3{color:#7c5e02}
+.uas-card .card-icon{filter:drop-shadow(0 2px 4px rgba(249,202,36,.4))}
+
 .footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
 .footer span{color:#00b894;font-weight:700}
 
@@ -60,11 +72,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
   .hero-badge{font-size:.68rem;padding:4px 13px}
   .main{padding:0 14px 40px}
   .grid{gap:13px}
-  .card{padding:24px 20px 20px}
-  .card-icon{font-size:2.2rem;margin-bottom:10px}
-  .card h3{font-size:1rem}
-  .card p{font-size:.8rem}
-  .pill{font-size:.65rem;padding:3px 9px}
+  .card{padding:22px 18px 18px}
+  .card-icon{font-size:2rem;margin-bottom:8px}
+  .card h3{font-size:.95rem}
+  .card p{font-size:.78rem}
+  .pill{font-size:.62rem;padding:3px 8px}
 }
 </style>
 </head>
@@ -74,12 +86,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
   <a class="back-btn" href="../">← AzMath</a>
   <div class="hero-badge">Grade 5 · Science</div>
   <h1>🔬 AzScience</h1>
-  <p>Practice Sound &amp; Magnets — MCQ, True/False, Fill-in-the-blank, and Short Answer.</p>
+  <p>Cambridge Primary Science — practise Ch 7–11 with MCQ, fill-in-the-blank, and short answers. Bilingual EN/ID.</p>
 </div>
 
 <div class="main">
 
-  <div class="section-label">📝 Daily Test Topics</div>
+  <div class="section-label">📝 Chapter Practice</div>
   <div class="grid">
 
     <a class="card green" href="latihan-science/?ch=1">
@@ -91,7 +103,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
       <div class="pill-row">
         <span class="pill">Vibration</span>
         <span class="pill">Pitch &amp; Volume</span>
-        <span class="pill">All 4 types</span>
       </div>
     </a>
 
@@ -104,24 +115,60 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
       <div class="pill-row">
         <span class="pill">Poles</span>
         <span class="pill">Materials</span>
-        <span class="pill">All 4 types</span>
+      </div>
+    </a>
+
+    <a class="card teal" href="latihan-science/?ch=3">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🌦️</span>
+      <h3>Ch 9 · Atmosphere &amp; Water Cycle</h3>
+      <p>Layers of the atmosphere, the gases we breathe, and how water moves between sky and Earth.</p>
+      <div class="pill-row">
+        <span class="pill">Atmosphere</span>
+        <span class="pill">Water Cycle</span>
+      </div>
+    </a>
+
+    <a class="card orange" href="latihan-science/?ch=4">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🏭</span>
+      <h3>Ch 10 · Pollution</h3>
+      <p>Air, water, land, noise &amp; light pollution. Effects on people, animals, plants — and the 3 R's.</p>
+      <div class="pill-row">
+        <span class="pill">Types</span>
+        <span class="pill">3R</span>
+      </div>
+    </a>
+
+    <a class="card indigo" href="latihan-science/?ch=5" style="grid-column:1/-1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🌍</span>
+      <h3>Ch 11 · Movement of Earth</h3>
+      <p>Rotation, orbit, seasons, day &amp; night, the Moon's phases, eclipses, and what satellites do.</p>
+      <div class="pill-row">
+        <span class="pill">Earth's Orbit</span>
+        <span class="pill">Satellites</span>
+        <span class="pill">Moon Phases</span>
       </div>
     </a>
 
   </div>
 
-  <div class="section-label">📋 Combined</div>
+  <div class="section-label">🏆 Final Exam</div>
   <div class="grid">
-    <a class="card indigo" href="latihan-science/?ch=all" style="grid-column:1/-1">
+    <a class="card gold uas-card" href="latihan-science/?ch=uas" style="grid-column:1/-1">
       <span class="card-arrow">→</span>
       <div class="card-accent"></div>
-      <span class="card-icon">🏫</span>
-      <h3>Daily Test — Ch 7 &amp; 8 Combined</h3>
-      <p>All sections in one go: MCQ → True/False → Fill-blank → Short Answer. 25 questions like the real daily test.</p>
+      <span class="card-icon">🎓</span>
+      <h3>UAS — Final Exam</h3>
+      <p>Real test format: MCQ first, then fill-in-the-blank, then short answers. Covers all chapters (7–11) following the official kisi-kisi.</p>
       <div class="pill-row">
-        <span class="pill">25 questions</span>
-        <span class="pill">4 sections</span>
-        <span class="pill">Sound + Magnets</span>
+        <span class="pill">All chapters</span>
+        <span class="pill">MCQ + Fill + Essay</span>
+        <span class="pill">Kisi-kisi format</span>
       </div>
     </a>
   </div>
