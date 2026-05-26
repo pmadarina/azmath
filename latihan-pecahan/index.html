@@ -1274,15 +1274,15 @@ const Generators={
     // SVG Carroll diagram: 2×2 grid with row/column headers
     const dv=(i)=>i===ti?'?':String(cells[i]);
     const fc=(i)=>i===ti?'#d63031':'#1a1a2e';
-    const fs=(i)=>i===ti?22:17;
-    // Layout: headerCol=108, each data col=114, headerRow=50, each data row=58
-    const hC=108,dC=114,hR=50,dR=58;
-    const W=hC+dC*2+2,H=hR+dR*2+30;
+    const fs=(i)=>i===ti?30:24;
+    // Layout (scaled ~1.4×): headerCol=150, each data col=160, headerRow=70, each data row=82
+    const hC=150,dC=160,hR=70,dR=82;
+    const W=hC+dC*2+2,H=hR+dR*2+34;
     // helper: split label at last space for 2-line rendering
     const sp=(s)=>{const i=s.lastIndexOf(' ');return i<0?[s,'']:[s.slice(0,i),s.slice(i+1)];};
-    const colLabel=(x,s)=>{const[a,b]=sp(s);return `<text x="${x}" y="${hR/2-5}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">${a}</text><text x="${x}" y="${hR/2+8}" text-anchor="middle" font-size="10" font-weight="800" fill="#4f8ef7">${b}</text>`;};
-    const rowLabel=(x,y,s)=>{const[a,b]=sp(s);return `<text x="${x}" y="${y-6}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">${a}</text><text x="${x}" y="${y+7}" text-anchor="middle" font-size="10" font-weight="800" fill="#6c5ce7">${b}</text>`;};
-    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">
+    const colLabel=(x,s)=>{const[a,b]=sp(s);return `<text x="${x}" y="${hR/2-6}" text-anchor="middle" font-size="14" font-weight="800" fill="#4f8ef7">${a}</text><text x="${x}" y="${hR/2+12}" text-anchor="middle" font-size="14" font-weight="800" fill="#4f8ef7">${b}</text>`;};
+    const rowLabel=(x,y,s)=>{const[a,b]=sp(s);return `<text x="${x}" y="${y-8}" text-anchor="middle" font-size="14" font-weight="800" fill="#6c5ce7">${a}</text><text x="${x}" y="${y+10}" text-anchor="middle" font-size="14" font-weight="800" fill="#6c5ce7">${b}</text>`;};
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">
 <rect x="0" y="${hR}" width="${hC}" height="${dR}" fill="#f4f0ff" stroke="#dce8ff" stroke-width="1"/>
 <rect x="0" y="${hR+dR}" width="${hC}" height="${dR}" fill="#f4f0ff" stroke="#dce8ff" stroke-width="1"/>
 <rect x="${hC}" y="0" width="${dC}" height="${hR}" fill="#eef3ff" stroke="#dce8ff" stroke-width="1"/>
@@ -1299,7 +1299,7 @@ ${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
 <text x="${hC+dC+dC/2}" y="${hR+dR/2+7}" text-anchor="middle" font-size="${fs(2)}" font-weight="900" fill="${fc(2)}">${dv(2)}</text>
 <text x="${hC+dC/2}" y="${hR+dR+dR/2+7}" text-anchor="middle" font-size="${fs(1)}" font-weight="900" fill="${fc(1)}">${dv(1)}</text>
 <text x="${hC+dC+dC/2}" y="${hR+dR+dR/2+7}" text-anchor="middle" font-size="${fs(3)}" font-weight="900" fill="${fc(3)}">${dv(3)}</text>
-<text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="10" fill="#aaa">Total: ${t}</text>
+<text x="${W/2}" y="${H-6}" text-anchor="middle" font-size="13" fill="#aaa">Total: ${t}</text>
 </svg>`;
     return{text:{en:`There are ${t} ${nm.tot}. Complete the Carroll diagram. What is the missing value?`,
                  id:`Ada ${t} ${nm.tot}. Lengkapi diagram Carroll. Berapa nilai yang hilang?`},
