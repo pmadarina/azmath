@@ -1404,24 +1404,24 @@ ${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
     // Build flat squares array (cat index per square)
     const squares=[];counts.forEach((cnt,ci)=>{for(let j=0;j<cnt;j++)squares.push(ci);});
     // SVG with SVG patterns matching worksheet style
-    const sz=22,gap=2,cols=5,rows=5;
+    const sz=36,gap=3,cols=5,rows=5;
     const gridW=cols*(sz+gap)-gap,gridH=rows*(sz+gap)-gap;
-    const legX=gridW+20,W=legX+120,H=Math.max(gridH,n*32+8);
+    const legX=gridW+28,W=legX+150,H=Math.max(gridH,n*40+10);
     const defs=`<defs>
-<pattern id="wf_diag" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#333" stroke-width="2.2"/></pattern>
-<pattern id="wf_cross" patternUnits="userSpaceOnUse" width="6" height="6"><line x1="0" y1="3" x2="6" y2="3" stroke="#666" stroke-width="1.5"/><line x1="3" y1="0" x2="3" y2="6" stroke="#666" stroke-width="1.5"/></pattern>
+<pattern id="wf_diag" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#333" stroke-width="2.6"/></pattern>
+<pattern id="wf_cross" patternUnits="userSpaceOnUse" width="7" height="7"><line x1="0" y1="3.5" x2="7" y2="3.5" stroke="#666" stroke-width="1.6"/><line x1="3.5" y1="0" x2="3.5" y2="7" stroke="#666" stroke-width="1.6"/></pattern>
 </defs>`;
     const fills=['url(#wf_diag)','#fff','#bbb','url(#wf_cross)'];
     const strokes=['#555','#bbb','#999','#777'];
     const gridRects=squares.map((ci,idx)=>{
       const x=(idx%cols)*(sz+gap),y=Math.floor(idx/cols)*(sz+gap);
-      return `<rect x="${x}" y="${y}" width="${sz}" height="${sz}" fill="${fills[ci]}" stroke="${strokes[ci]}" stroke-width="1"/>`;
+      return `<rect x="${x}" y="${y}" width="${sz}" height="${sz}" fill="${fills[ci]}" stroke="${strokes[ci]}" stroke-width="1.3"/>`;
     }).join('');
     const legItems=s.cats.map((cat,ci)=>{
-      const ly=ci*32+4;
-      return `<rect x="${legX}" y="${ly}" width="20" height="20" fill="${fills[ci]}" stroke="${strokes[ci]}" stroke-width="1"/><text x="${legX+26}" y="${ly+14}" font-size="12" font-weight="700" fill="#333">${cat}</text>`;
+      const ly=ci*40+6;
+      return `<rect x="${legX}" y="${ly}" width="26" height="26" fill="${fills[ci]}" stroke="${strokes[ci]}" stroke-width="1.3"/><text x="${legX+34}" y="${ly+19}" font-size="14" font-weight="700" fill="#333">${cat}</text>`;
     }).join('');
-    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px" xmlns="http://www.w3.org/2000/svg">${defs}${gridRects}${legItems}</svg>`;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:12px 0 6px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">${defs}${gridRects}${legItems}</svg>`;
     if(vv===0){
       const cor=s.cats[maxI];
       const{opts,ans}=mkOpts(cor,[s.cats[minI],s.cats[sortedIdx[1]],s.cats[sortedIdx[2]]]);
