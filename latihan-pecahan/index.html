@@ -248,8 +248,13 @@ let lang='en';
 function t(obj){ return typeof obj==='string'?obj:(obj[lang]||obj.en) }
 function updateChapterHeader(){
   if(isExam){
-    document.getElementById('hTitle').textContent=lang==='en'?'Full Exam':'Ujian Lengkap';
-    document.getElementById('hSub').textContent=lang==='en'?'All Chapters · Grade 5 · Mathematics · No Hints':'Semua Bab · Kelas 5 · Matematika · Tanpa Petunjuk';
+    if(isUAS){
+      document.getElementById('hTitle').textContent=lang==='en'?'UAS Math — Final Exam':'UAS Matematika';
+      document.getElementById('hSub').textContent=lang==='en'?'Kisi-Kisi · 35 Questions · Grade 5 · No Hints':'Kisi-Kisi · 35 Soal · Kelas 5 · Tanpa Petunjuk';
+    } else {
+      document.getElementById('hTitle').textContent=lang==='en'?'Full Exam':'Ujian Lengkap';
+      document.getElementById('hSub').textContent=lang==='en'?'All Chapters · Grade 5 · Mathematics · No Hints':'Semua Bab · Kelas 5 · Matematika · Tanpa Petunjuk';
+    }
     return;
   }
   const ch=parseInt(new URLSearchParams(window.location.search).get('ch'))||0;
@@ -1447,6 +1452,430 @@ ${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
                  id:'Hitung semua kotak dengan pola tersebut dalam diagram wafer.'}};
     }
   },
+
+  // ── Chapter 11 — Negatives & Two-Unknowns ──────────────────────
+  // UAS sub-topic: algebra_unknowns
+  algebra_unknowns:()=>{
+    const syms=['⬛','△','⊗','★','♦','●','♥','■'];
+    const vv=pickA([0,1,2,3]);
+    let qEn,qId,cor,stepEn,stepId;
+    if(vv===0){
+      // ⬛ + a = b → ⬛ = b - a
+      const s=pickA(syms);const a=ri(2,9);const x=ri(2,12);const b=a+x;
+      cor=x;
+      qEn=`If <b>${s} + ${a} = ${b}</b>, what is <b>${s}</b>?`;
+      qId=`Jika <b>${s} + ${a} = ${b}</b>, berapakah <b>${s}</b>?`;
+      stepEn=[`${s} + ${a} = ${b}`,`${s} = ${b} − ${a}`,`${s} = <b>${cor}</b>`];
+      stepId=[`${s} + ${a} = ${b}`,`${s} = ${b} − ${a}`,`${s} = <b>${cor}</b>`];
+    } else if(vv===1){
+      // △ + △ = b → △ = b/2
+      const s=pickA(syms);const x=ri(3,12);const b=2*x;
+      cor=x;
+      qEn=`If <b>${s} + ${s} = ${b}</b>, then <b>${s}</b> = ?`;
+      qId=`Jika <b>${s} + ${s} = ${b}</b>, maka <b>${s}</b> = ?`;
+      stepEn=[`Two of the same symbol: 2 × ${s} = ${b}`,`${s} = ${b} ÷ 2`,`${s} = <b>${cor}</b>`];
+      stepId=[`Dua simbol yang sama: 2 × ${s} = ${b}`,`${s} = ${b} ÷ 2`,`${s} = <b>${cor}</b>`];
+    } else if(vv===2){
+      // ⬛ + △ = b, ⬛ = a → △ = b - a
+      const pool=shuffA(syms);const s1=pool[0],s2=pool[1];
+      const a=ri(2,8);const x=ri(2,10);const b=a+x;
+      cor=x;
+      qEn=`If <b>${s1} + ${s2} = ${b}</b> and <b>${s1} = ${a}</b>, what is <b>${s2}</b>?`;
+      qId=`Jika <b>${s1} + ${s2} = ${b}</b> dan <b>${s1} = ${a}</b>, berapakah <b>${s2}</b>?`;
+      stepEn=[`Substitute ${s1} = ${a}`,`${a} + ${s2} = ${b}`,`${s2} = ${b} − ${a} = <b>${cor}</b>`];
+      stepId=[`Ganti ${s1} dengan ${a}`,`${a} + ${s2} = ${b}`,`${s2} = ${b} − ${a} = <b>${cor}</b>`];
+    } else {
+      // k × ⊗ = b → ⊗ = b/k
+      const s=pickA(syms);const k=pickA([2,3,4,5]);const x=ri(2,9);const b=k*x;
+      cor=x;
+      qEn=`If <b>${k}${s} = ${b}</b>, find <b>${s}</b>.`;
+      qId=`Jika <b>${k}${s} = ${b}</b>, cari <b>${s}</b>.`;
+      stepEn=[`${k} × ${s} = ${b}`,`${s} = ${b} ÷ ${k}`,`${s} = <b>${cor}</b>`];
+      stepId=[`${k} × ${s} = ${b}`,`${s} = ${b} ÷ ${k}`,`${s} = <b>${cor}</b>`];
+    }
+    const w1=cor+1, w2=cor-1>0?cor-1:cor+2, w3=cor+pickA([2,3]);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:qEn,id:qId},math:null,isWord:true,opts,ans,
+      steps:{en:stepEn,id:stepId},
+      concept:{en:'Use a symbol to stand for an unknown value, then work out what the symbol is.',
+               id:'Gunakan simbol untuk mewakili nilai yang belum diketahui, lalu cari nilai simbol itu.'}};
+  },
+
+  // UAS sub-topic: neg_add
+  neg_add:()=>{
+    // Generate two integers in [-12, 12], avoid trivial both-positive
+    let a,b,cor;
+    do{
+      a=ri(-12,12); b=ri(-12,12);
+      cor=a+b;
+    } while((a>=0&&b>=0) || Math.abs(cor)>20);
+    const fmt=(n)=>n<0?`(${n})`:String(n);
+    const expr=`${a} + ${fmt(b)}`;
+    const w1=a-b;                      // sign flip on b
+    const w2=Math.abs(a)+Math.abs(b);  // magnitude only
+    const w3=cor+pickA([-1,1]);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const stepEn=[
+      `Start at ${a} on the number line.`,
+      b>=0?`Move ${b} to the right → <b>${cor}</b>`:`Move ${Math.abs(b)} to the left → <b>${cor}</b>`
+    ];
+    const stepId=[
+      `Mulai dari ${a} pada garis bilangan.`,
+      b>=0?`Geser ${b} ke kanan → <b>${cor}</b>`:`Geser ${Math.abs(b)} ke kiri → <b>${cor}</b>`
+    ];
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${expr}</b>`,opts,ans,
+      steps:{en:stepEn,id:stepId},
+      concept:{en:'Adding a positive moves right; adding a negative moves left.',
+               id:'Menjumlah bilangan positif = geser ke kanan; menjumlah bilangan negatif = geser ke kiri.'}};
+  },
+
+  // UAS sub-topic: neg_sub
+  neg_sub:()=>{
+    let a,b,cor;
+    do{
+      a=ri(-12,12); b=ri(-12,12);
+      cor=a-b;
+    } while(b===0 || Math.abs(cor)>20);
+    const fmt=(n)=>n<0?`(${n})`:String(n);
+    const expr=`${a} − ${fmt(b)}`;
+    const w1=a+b;
+    const w2=-(a-b);
+    const w3=cor+pickA([-1,1]);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const stepEn=b<0
+      ? [`Subtracting a negative is the same as adding the positive.`,`${a} − (${b}) = ${a} + ${-b} = <b>${cor}</b>`]
+      : [`Start at ${a}.`,`Move ${b} to the left → <b>${cor}</b>`];
+    const stepId=b<0
+      ? [`Mengurangi bilangan negatif sama dengan menjumlah positifnya.`,`${a} − (${b}) = ${a} + ${-b} = <b>${cor}</b>`]
+      : [`Mulai dari ${a}.`,`Geser ${b} ke kiri → <b>${cor}</b>`];
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${expr}</b>`,opts,ans,
+      steps:{en:stepEn,id:stepId},
+      concept:{en:'Subtracting a negative is the same as adding the positive.',
+               id:'Mengurangi bilangan negatif sama dengan menjumlah bilangan positifnya.'}};
+  },
+
+  // ── Chapter 12 — Decimals × ÷ 10/100/1000 & Ratio ───────────────
+  // UAS sub-topic: dec_mul_pow10
+  dec_mul_pow10:()=>{
+    const pow=pickA([10,100,1000]);
+    const isMul=pickA([true,false]);
+    // Pick a decimal with 1-3 dp
+    const baseN=ri(1,9999);
+    const dp=pickA([1,2,3]);
+    const a=+(baseN/Math.pow(10,dp)).toFixed(dp);
+    const cor=isMul?+(a*pow).toPrecision(12):+(a/pow).toPrecision(12);
+    const corStr=String(+cor.toFixed(6)).replace(/0+$/,'').replace(/\.$/,'');
+    // Distractors: wrong shift direction & wrong shift count
+    const wrong1=isMul?+(a*pow/10).toPrecision(12):+(a/pow*10).toPrecision(12);
+    const wrong2=isMul?+(a/pow).toPrecision(12):+(a*pow).toPrecision(12);
+    const wrong3=isMul?+(a*pow*10).toPrecision(12):+(a/pow/10).toPrecision(12);
+    const fmt=(n)=>String(+n.toFixed(6)).replace(/0+$/,'').replace(/\.$/,'');
+    const{opts,ans}=mkOpts(corStr,[fmt(wrong1),fmt(wrong2),fmt(wrong3)]);
+    const zeros=Math.log10(pow);
+    const stepEn=isMul
+      ? [`Multiplying by ${pow}: move the decimal point <b>${zeros}</b> place(s) to the right.`,`${a} × ${pow} = <b>${corStr}</b>`]
+      : [`Dividing by ${pow}: move the decimal point <b>${zeros}</b> place(s) to the left.`,`${a} ÷ ${pow} = <b>${corStr}</b>`];
+    const stepId=isMul
+      ? [`Mengalikan dengan ${pow}: geser koma <b>${zeros}</b> tempat ke kanan.`,`${a} × ${pow} = <b>${corStr}</b>`]
+      : [`Membagi dengan ${pow}: geser koma <b>${zeros}</b> tempat ke kiri.`,`${a} ÷ ${pow} = <b>${corStr}</b>`];
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${a} ${isMul?'×':'÷'} ${pow}</b>`,opts,ans,
+      steps:{en:stepEn,id:stepId},
+      concept:{en:'× 10/100/1000 → shift decimal right by 1/2/3 places. ÷ 10/100/1000 → shift left.',
+               id:'× 10/100/1000 → geser koma 1/2/3 tempat ke kanan. ÷ 10/100/1000 → geser ke kiri.'}};
+  },
+
+  // UAS sub-topic: ratio (simplify)
+  ratio_simplify:()=>{
+    // Pairs where GCD ≥ 2 — gives a non-trivial simplification
+    const pairs=[[12,18],[25,75],[6,10],[8,12],[15,20],[14,21],[16,24],[9,15],[18,30],[20,28],[24,36],[10,25],[27,36],[14,35],[12,30],[40,60],[8,20],[18,24]];
+    const[a,b]=pickA(pairs);
+    const g=gcd2(a,b);const sa=a/g,sb=b/g;
+    const cor=`${sa} : ${sb}`;
+    // Distractors
+    const w1=`${a} : ${b}`;          // unsimplified
+    const w2=`${sb} : ${sa}`;        // swapped order
+    const g2=g>2?g-1:g+1;
+    const w3=`${Math.round(a/g2)} : ${Math.round(b/g2)}`; // wrong divisor
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:`Simplify the ratio <b>${a} : ${b}</b>.`,id:`Sederhanakan rasio <b>${a} : ${b}</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Find the GCF of ${a} and ${b}: <b>${g}</b>`,`${a} ÷ ${g} = ${sa},  ${b} ÷ ${g} = ${sb}`,`Simplest form: <b>${cor}</b>`],
+             id:[`Cari FPB dari ${a} dan ${b}: <b>${g}</b>`,`${a} ÷ ${g} = ${sa},  ${b} ÷ ${g} = ${sb}`,`Bentuk paling sederhana: <b>${cor}</b>`]},
+      concept:{en:'Divide both terms of the ratio by their greatest common factor (GCF).',
+               id:'Bagi kedua bagian rasio dengan FPB-nya.'}};
+  },
+
+  // UAS sub-topic: ratio (share)
+  ratio_share:()=>{
+    // configs with clean division
+    const cfgs=[
+      {p:2,q:3,total:60},{p:1,q:4,total:30},{p:3,q:5,total:80},
+      {p:2,q:5,total:70},{p:1,q:3,total:48},{p:3,q:7,total:50},
+      {p:4,q:5,total:90},{p:2,q:7,total:45},{p:3,q:4,total:84},
+      {p:1,q:5,total:60},{p:5,q:7,total:60},{p:2,q:3,total:75},
+    ];
+    const{p,q,total}=pickA(cfgs);
+    const parts=p+q;
+    if(total%parts!==0) return Generators.ratio_share(); // skip if non-clean
+    const one=total/parts;
+    const largerShare=Math.max(p,q)*one;
+    const smallerShare=Math.min(p,q)*one;
+    const askLarger=pickA([true,false]);
+    const cor=askLarger?largerShare:smallerShare;
+    const names=pickA([['Ahmad','Budi'],['Rina','Sari'],['Ali','Hana'],['Omar','Layla']]);
+    const items=pickA([
+      {en:'sweets',id:'permen',curr:''},
+      {en:'marbles',id:'kelereng',curr:''},
+      {en:'rupiah',id:'rupiah',curr:'Rp '},
+      {en:'stickers',id:'stiker',curr:''},
+    ]);
+    const w1=total-cor;
+    const w2=one;
+    const w3=cor+one;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const askPart=askLarger?'larger':'smaller';
+    const askPartId=askLarger?'lebih besar':'lebih kecil';
+    return{text:{en:`${names[0]} and ${names[1]} share ${items.curr}${total} ${items.en} in the ratio <b>${p} : ${q}</b>. What is the <b>${askPart}</b> share?`,
+                 id:`${names[0]} dan ${names[1]} membagi ${items.curr}${total} ${items.id} dengan rasio <b>${p} : ${q}</b>. Berapa bagian yang <b>${askPartId}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Total parts = ${p} + ${q} = <b>${parts}</b>`,`One part = ${total} ÷ ${parts} = <b>${one}</b>`,`${askPart.charAt(0).toUpperCase()+askPart.slice(1)} share = ${Math.max(askLarger?p:q,askLarger?q:p)===Math.max(p,q)?Math.max(p,q):Math.min(p,q)} × ${one} = <b>${cor}</b>`],
+             id:[`Total bagian = ${p} + ${q} = <b>${parts}</b>`,`Satu bagian = ${total} ÷ ${parts} = <b>${one}</b>`,`Bagian ${askPartId} = ${askLarger?Math.max(p,q):Math.min(p,q)} × ${one} = <b>${cor}</b>`]},
+      concept:{en:'Add the ratio parts to get the total parts. Divide total ÷ parts = one part. Multiply by the number of parts in the share.',
+               id:'Jumlahkan bagian rasio. Total ÷ jumlah bagian = nilai satu bagian. Kalikan dengan jumlah bagian yang diminta.'}};
+  },
+
+  // ── Chapter 13 — Advanced Data ─────────────────────────────────
+  // UAS sub-topic: median
+  data_median:()=>{
+    const isOdd=pickA([true,false]);
+    const n=isOdd?pickA([5,7]):pickA([4,6]);
+    // Generate distinct values
+    const vals=[];
+    while(vals.length<n){
+      const v=ri(1,20);
+      if(!vals.includes(v)) vals.push(v);
+    }
+    const sorted=[...vals].sort((a,b)=>a-b);
+    let cor;
+    if(isOdd){
+      cor=sorted[Math.floor(n/2)];
+    } else {
+      const m1=sorted[n/2-1],m2=sorted[n/2];
+      cor=(m1+m2)/2;
+    }
+    const corStr=Number.isInteger(cor)?String(cor):String(cor);
+    // Distractors: mode/mean/max/min
+    const mean=Math.round(vals.reduce((s,v)=>s+v,0)/n);
+    const w1=String(Math.max(...vals));
+    const w2=String(Math.min(...vals));
+    const w3=String(mean);
+    const{opts,ans}=mkOpts(corStr,[w1,w2,w3]);
+    const listHtml=`<div style="font-size:1.1rem;font-weight:700;letter-spacing:1px;color:#1a1a2e">${vals.join(',&nbsp; ')}</div>`;
+    const stepEn=isOdd
+      ? [`Sort the data: ${sorted.join(', ')}`,`Middle value (position ${Math.floor(n/2)+1}) → <b>${corStr}</b>`]
+      : [`Sort the data: ${sorted.join(', ')}`,`Two middle values: ${sorted[n/2-1]} and ${sorted[n/2]}`,`Median = (${sorted[n/2-1]} + ${sorted[n/2]}) ÷ 2 = <b>${corStr}</b>`];
+    const stepId=isOdd
+      ? [`Urutkan data: ${sorted.join(', ')}`,`Nilai tengah (posisi ${Math.floor(n/2)+1}) → <b>${corStr}</b>`]
+      : [`Urutkan data: ${sorted.join(', ')}`,`Dua nilai tengah: ${sorted[n/2-1]} dan ${sorted[n/2]}`,`Median = (${sorted[n/2-1]} + ${sorted[n/2]}) ÷ 2 = <b>${corStr}</b>`];
+    return{text:{en:'Find the median of the following data:',id:'Cari median dari data berikut:'},
+      math:listHtml,isWord:true,opts,ans,
+      steps:{en:stepEn,id:stepId},
+      concept:{en:'Sort the data first. The median is the middle value (or the mean of the two middle values).',
+               id:'Urutkan data terlebih dahulu. Median adalah nilai tengah (atau rata-rata dua nilai tengah).'}};
+  },
+
+  // UAS sub-topic: dotplot
+  data_dotplot:()=>{
+    // Generate a dataset over values 1..10
+    const counts={};
+    const total=ri(8,12);
+    for(let i=0;i<total;i++){
+      const v=ri(1,8);
+      counts[v]=(counts[v]||0)+1;
+    }
+    const used=Object.keys(counts).map(Number).sort((a,b)=>a-b);
+    const maxCount=Math.max(...Object.values(counts));
+    const modeVal=Number(Object.keys(counts).find(k=>counts[k]===maxCount));
+    const range=Math.max(...used)-Math.min(...used);
+    // Build SVG dot plot
+    const W=360,H=140,leftM=24,rightM=24,bottomM=30;
+    const axisY=H-bottomM;
+    const span=W-leftM-rightM;
+    const step=span/9; // values 1..10
+    const xFor=(v)=>leftM+(v-1)*step;
+    const axisLine=`<line x1="${leftM-6}" y1="${axisY}" x2="${W-rightM+6}" y2="${axisY}" stroke="#666" stroke-width="1.5"/>`;
+    let ticks='',labels='',dots='';
+    for(let v=1;v<=10;v++){
+      const x=xFor(v);
+      ticks+=`<line x1="${x}" y1="${axisY-3}" x2="${x}" y2="${axisY+3}" stroke="#666" stroke-width="1.2"/>`;
+      labels+=`<text x="${x}" y="${axisY+18}" text-anchor="middle" font-size="11" fill="#444">${v}</text>`;
+      const c=counts[v]||0;
+      for(let i=0;i<c;i++){
+        const cy=axisY-8-i*10;
+        dots+=`<circle cx="${x}" cy="${cy}" r="4" fill="#4f8ef7" stroke="#1a1a2e" stroke-width="0.6"/>`;
+      }
+    }
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">${dots}${axisLine}${ticks}${labels}</svg>`;
+    const vv=pickA([0,1,2,3]);
+    let qEn,qId,cor,distractors;
+    if(vv===0||vv===2){
+      qEn='What is the mode of this dot plot?';
+      qId='Berapa modus dari diagram titik ini?';
+      cor=String(modeVal);
+      distractors=[String(maxCount),String(Math.max(...used)),String(Math.min(...used))];
+    } else if(vv===1){
+      qEn='How many data points are shown in this dot plot?';
+      qId='Berapa banyak data yang ditampilkan pada diagram titik ini?';
+      cor=String(total);
+      distractors=[String(total+1),String(total-1),String(maxCount)];
+    } else {
+      qEn='What is the range of this dot plot?';
+      qId='Berapa jangkauan (range) dari diagram titik ini?';
+      cor=String(range);
+      distractors=[String(range+1),String(Math.max(...used)),String(Math.min(...used))];
+    }
+    const{opts,ans}=mkOpts(cor,distractors);
+    return{text:{en:qEn,id:qId},math:svg,isWord:true,opts,ans,
+      steps:{en:[`Read the dot plot carefully.`,`Mode = value with most dots = ${modeVal}; total dots = ${total}; range = ${range}.`,`Answer: <b>${cor}</b>`],
+             id:[`Baca diagram titik dengan teliti.`,`Modus = nilai dengan titik terbanyak = ${modeVal}; total titik = ${total}; jangkauan = ${range}.`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'A dot plot stacks one dot per data point above its value on a number line.',
+               id:'Diagram titik menumpuk satu titik per data di atas nilainya pada garis bilangan.'}};
+  },
+
+  // UAS sub-topic: histogram
+  data_histogram:()=>{
+    // 5 grouped intervals
+    const intervals=[[0,10],[10,20],[20,30],[30,40],[40,50]];
+    const freqs=[ri(2,8),ri(4,12),ri(6,15),ri(3,10),ri(1,7)];
+    const total=freqs.reduce((s,v)=>s+v,0);
+    const maxF=Math.max(...freqs);
+    const maxI=freqs.indexOf(maxF);
+    // SVG histogram (bars touching)
+    const W=380,H=220,leftM=40,rightM=14,topM=20,bottomM=42;
+    const plotW=W-leftM-rightM, plotH=H-topM-bottomM;
+    const barW=plotW/intervals.length;
+    const yMax=Math.ceil(maxF/2)*2+2; // round up to even for tidy ticks
+    const yFor=(v)=>topM+plotH-(v/yMax)*plotH;
+    let bars='',xLabs='';
+    intervals.forEach((iv,i)=>{
+      const x=leftM+i*barW;
+      const y=yFor(freqs[i]);
+      const h=topM+plotH-y;
+      bars+=`<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="url(#hgg)" stroke="#1a1a2e" stroke-width="1"/>`;
+      xLabs+=`<text x="${x+barW/2}" y="${topM+plotH+15}" text-anchor="middle" font-size="10" fill="#444">${iv[0]}-${iv[1]}</text>`;
+    });
+    let yTicks='',gridLines='';
+    for(let v=0;v<=yMax;v+=2){
+      const y=yFor(v);
+      yTicks+=`<text x="${leftM-6}" y="${y+4}" text-anchor="end" font-size="10" fill="#444">${v}</text>`;
+      gridLines+=`<line x1="${leftM}" y1="${y}" x2="${leftM+plotW}" y2="${y}" stroke="#dce8ff" stroke-width="0.8"/>`;
+    }
+    const axisLines=`<line x1="${leftM}" y1="${topM}" x2="${leftM}" y2="${topM+plotH}" stroke="#666" stroke-width="1.5"/><line x1="${leftM}" y1="${topM+plotH}" x2="${leftM+plotW}" y2="${topM+plotH}" stroke="#666" stroke-width="1.5"/>`;
+    const grad=`<defs><linearGradient id="hgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6c5ce7"/><stop offset="100%" stop-color="#a29bfe"/></linearGradient></defs>`;
+    const yTitle=`<text x="12" y="${topM+plotH/2}" text-anchor="middle" font-size="11" font-weight="700" fill="#444" transform="rotate(-90 12,${topM+plotH/2})">Frequency</text>`;
+    const xTitle=`<text x="${leftM+plotW/2}" y="${H-6}" text-anchor="middle" font-size="11" font-weight="700" fill="#444">Interval</text>`;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">${grad}${gridLines}${bars}${axisLines}${yTicks}${xLabs}${yTitle}${xTitle}</svg>`;
+    const vv=pickA([0,1,2]);
+    let qEn,qId,cor,distractors;
+    if(vv===0){
+      qEn='Which interval has the highest frequency?';
+      qId='Interval mana yang memiliki frekuensi tertinggi?';
+      cor=`${intervals[maxI][0]}-${intervals[maxI][1]}`;
+      distractors=intervals.filter((_,i)=>i!==maxI).map(iv=>`${iv[0]}-${iv[1]}`);
+    } else if(vv===1){
+      const askI=ri(0,4);
+      qEn=`How many data points are in the <b>${intervals[askI][0]}-${intervals[askI][1]}</b> interval?`;
+      qId=`Berapa banyak data pada interval <b>${intervals[askI][0]}-${intervals[askI][1]}</b>?`;
+      cor=String(freqs[askI]);
+      distractors=[String(freqs[askI]+1),String(freqs[askI]-1>0?freqs[askI]-1:freqs[askI]+2),String(maxF)];
+    } else {
+      qEn='What is the total frequency of all intervals?';
+      qId='Berapa total frekuensi dari semua interval?';
+      cor=String(total);
+      distractors=[String(total+2),String(total-2),String(maxF)];
+    }
+    const{opts,ans}=mkOpts(cor,distractors);
+    return{text:{en:qEn,id:qId},math:svg,isWord:true,opts,ans,
+      steps:{en:[`Read each bar's height on the frequency axis.`,`Frequencies: ${freqs.join(', ')} (total = ${total}).`,`Answer: <b>${cor}</b>`],
+             id:[`Baca tinggi setiap batang pada sumbu frekuensi.`,`Frekuensi: ${freqs.join(', ')} (total = ${total}).`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'A histogram shows frequencies of grouped intervals. Bars touch (no gaps) because the intervals are continuous.',
+               id:'Histogram menunjukkan frekuensi interval yang dikelompokkan. Batang saling menempel karena intervalnya bersambung.'}};
+  },
+
+  // UAS sub-topic: linegraph
+  data_linegraph:()=>{
+    const datasets=[
+      {title:{en:'Temperature (°C)',id:'Suhu (°C)'},xlabs:['Mon','Tue','Wed','Thu','Fri'],xlabsId:['Sen','Sel','Rab','Kam','Jum'],unit:{en:'°C',id:'°C'}},
+      {title:{en:'Sales (units)',id:'Penjualan (unit)'},xlabs:['Jan','Feb','Mar','Apr','May'],xlabsId:['Jan','Feb','Mar','Apr','Mei'],unit:{en:'units',id:'unit'}},
+      {title:{en:'Visitors',id:'Pengunjung'},xlabs:['Mon','Tue','Wed','Thu','Fri'],xlabsId:['Sen','Sel','Rab','Kam','Jum'],unit:{en:'visitors',id:'pengunjung'}},
+    ];
+    const d=pickA(datasets);
+    // Values 5..30 with at least one rise and one drop
+    const vals=Array.from({length:5},()=>ri(8,28));
+    const maxV=Math.max(...vals);const maxI=vals.indexOf(maxV);
+    const minV=Math.min(...vals);const minI=vals.indexOf(minV);
+    // Largest drop between consecutive days
+    let dropMag=-Infinity,dropIdx=0;
+    for(let i=0;i<4;i++){
+      const diff=vals[i]-vals[i+1];
+      if(diff>dropMag){dropMag=diff;dropIdx=i;}
+    }
+    // SVG layout
+    const W=380,H=220,leftM=40,rightM=20,topM=22,bottomM=42;
+    const plotW=W-leftM-rightM, plotH=H-topM-bottomM;
+    const yMax=Math.ceil(maxV/5)*5+5;
+    const stepX=plotW/4;
+    const xFor=(i)=>leftM+i*stepX;
+    const yFor=(v)=>topM+plotH-(v/yMax)*plotH;
+    let pts='';
+    vals.forEach((v,i)=>{pts+=`${xFor(i).toFixed(1)},${yFor(v).toFixed(1)} `;});
+    const polyline=`<polyline points="${pts.trim()}" fill="none" stroke="#4f8ef7" stroke-width="2.4"/>`;
+    let dots='';
+    vals.forEach((v,i)=>{dots+=`<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="4" fill="#6c5ce7" stroke="#fff" stroke-width="1.5"/>`;});
+    let xLabs='';
+    const labs=lang==='id'?d.xlabsId:d.xlabs;
+    labs.forEach((l,i)=>{xLabs+=`<text x="${xFor(i).toFixed(1)}" y="${topM+plotH+16}" text-anchor="middle" font-size="11" fill="#444">${l}</text>`;});
+    let yTicks='',gridLines='';
+    for(let v=0;v<=yMax;v+=5){
+      const y=yFor(v);
+      yTicks+=`<text x="${leftM-6}" y="${y+4}" text-anchor="end" font-size="10" fill="#444">${v}</text>`;
+      gridLines+=`<line x1="${leftM}" y1="${y}" x2="${leftM+plotW}" y2="${y}" stroke="#dce8ff" stroke-width="0.8"/>`;
+    }
+    const axisLines=`<line x1="${leftM}" y1="${topM}" x2="${leftM}" y2="${topM+plotH}" stroke="#666" stroke-width="1.5"/><line x1="${leftM}" y1="${topM+plotH}" x2="${leftM+plotW}" y2="${topM+plotH}" stroke="#666" stroke-width="1.5"/>`;
+    const title=`<text x="${leftM+plotW/2}" y="14" text-anchor="middle" font-size="12" font-weight="800" fill="#1a1a2e">${t(d.title)}</text>`;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">${gridLines}${axisLines}${polyline}${dots}${yTicks}${xLabs}${title}</svg>`;
+    const vv=pickA([0,1,2]);
+    let qEn,qId,cor,distractors;
+    if(vv===0){
+      qEn=`On which ${d.xlabs.includes('Mon')?'day':'month'} was the value highest?`;
+      qId=`Pada ${d.xlabs.includes('Mon')?'hari':'bulan'} mana nilai tertinggi terjadi?`;
+      cor=labs[maxI];
+      distractors=labs.filter((_,i)=>i!==maxI);
+    } else if(vv===1){
+      const askI=ri(0,4);
+      qEn=`What was the value on <b>${labs[askI]}</b>?`;
+      qId=`Berapa nilai pada <b>${labs[askI]}</b>?`;
+      cor=String(vals[askI]);
+      distractors=[String(vals[askI]+1),String(vals[askI]-1>0?vals[askI]-1:vals[askI]+2),String(maxV)];
+    } else {
+      qEn=`Between which two ${d.xlabs.includes('Mon')?'days':'months'} did the value drop the most?`;
+      qId=`Antara dua ${d.xlabs.includes('Mon')?'hari':'bulan'} mana nilai turun paling banyak?`;
+      cor=`${labs[dropIdx]} → ${labs[dropIdx+1]}`;
+      const otherPairs=[];
+      for(let i=0;i<4;i++) if(i!==dropIdx) otherPairs.push(`${labs[i]} → ${labs[i+1]}`);
+      distractors=otherPairs;
+    }
+    const{opts,ans}=mkOpts(cor,distractors);
+    return{text:{en:qEn,id:qId},math:svg,isWord:true,opts,ans,
+      steps:{en:[`Read each plotted point on the line graph.`,`Values: ${vals.join(', ')}.`,`Answer: <b>${cor}</b>`],
+             id:[`Baca setiap titik pada grafik garis.`,`Nilai: ${vals.join(', ')}.`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'A line graph connects data points to show changes over time.',
+               id:'Grafik garis menghubungkan titik data untuk menunjukkan perubahan nilai dari waktu ke waktu.'}};
+  },
+
 };
 
 const Parts=[
@@ -1470,6 +1899,91 @@ const Parts=[
     topics:['data_bar','data_pictogram','data_waffle'] },
   { ch:10, section:{en:'Chapter 10 — Venn & Carroll Diagrams',id:'Bab 10 — Diagram Venn & Carroll'},
     topics:['data_venn','data_carroll'] },
+  { ch:11, section:{en:'Chapter 11 — Negatives & Two-Unknowns',id:'Bab 11 — Bilangan Negatif & Dua Nilai Tidak Diketahui'},
+    topics:['algebra_unknowns','neg_add','neg_sub'] },
+  { ch:12, section:{en:'Chapter 12 — Decimals × 10/100/1000 & Ratio',id:'Bab 12 — Desimal × 10/100/1000 & Rasio'},
+    topics:['dec_mul_pow10','ratio_simplify','ratio_share'] },
+  { ch:13, section:{en:'Chapter 13 — Advanced Data (Dot Plot, Histogram, Line Graph, Median)',id:'Bab 13 — Data Lanjutan (Diagram Titik, Histogram, Grafik Garis, Median)'},
+    topics:['data_dotplot','data_histogram','data_linegraph','data_median'] },
+];
+
+// ─────────────────────────────────────────────────────────────
+// UAS topic map (school's kisi-kisi → generator keys)
+// ─────────────────────────────────────────────────────────────
+const UAS_TOPIC_MAP = {
+  algebra_unknowns: ['algebra_unknowns'],
+  neg_add: ['neg_add'],
+  neg_sub: ['neg_sub'],
+  mul1000_2dig: ['longmul'],
+  div1000_1dig: ['divrem'],
+  muldiv_pow10: ['mul10'],
+  dec_muldiv_pow10: ['dec_mul_pow10'],
+  arith_laws: ['numlaws_add','numlaws_mul'],
+  order_ops: ['bodmas'],
+  frac_as_div: ['ftd','ftd2'],
+  frac_of_amount: ['fmul'],
+  improper_mixed: ['itm','mti'],
+  pct_as_100: ['ptf','ftp'],
+  equiv_fdp: ['dtf','dtp','ftd','ftd2'],
+  compare_fdp: ['cmp','ord'],
+  add_sub_frac: ['fadd'],
+  mul_unit_frac: ['fmul'],
+  div_unit_frac: ['fdiv'],
+  add_sub_dec: ['dadd','dsub'],
+  mul_dec_1dig: ['dmul'],
+  proportion: ['prop_basic','prop_pct','prop_complement'],
+  ratio: ['ratio_simplify','ratio_share'],
+  venn_carroll: ['data_venn','data_carroll'],
+  freq_waffle: ['data_freq','data_waffle','data_pct'],
+  dotplot: ['data_dotplot'],
+  bar_with_scale: ['data_bar'],
+  histogram: ['data_histogram'],
+  linegraph: ['data_linegraph'],
+  mode_median: ['data_mode','data_median'],
+};
+
+// UAS distribution: [topic_key, count, slot_type] — 20 mcq + 10 fill + 5 essay = 35
+const UAS_KISI = [
+  ['algebra_unknowns', 1, 'mcq'],
+  ['neg_add', 1, 'mcq'],
+  ['neg_add', 1, 'fill'],
+  ['neg_sub', 1, 'essay'],
+  ['mul1000_2dig', 1, 'mcq'],
+  ['div1000_1dig', 1, 'mcq'],
+  ['muldiv_pow10', 1, 'fill'],
+  ['dec_muldiv_pow10', 1, 'fill'],
+  ['arith_laws', 1, 'mcq'],
+  ['order_ops', 1, 'mcq'],
+  ['order_ops', 1, 'fill'],
+  ['frac_as_div', 1, 'mcq'],
+  ['frac_as_div', 1, 'fill'],
+  ['frac_of_amount', 1, 'mcq'],
+  ['frac_of_amount', 1, 'essay'],
+  ['improper_mixed', 1, 'mcq'],
+  ['improper_mixed', 1, 'fill'],
+  ['pct_as_100', 1, 'mcq'],
+  ['equiv_fdp', 1, 'mcq'],
+  ['compare_fdp', 1, 'mcq'],
+  ['compare_fdp', 1, 'fill'],
+  ['add_sub_frac', 1, 'mcq'],
+  ['add_sub_frac', 1, 'fill'],
+  ['mul_unit_frac', 1, 'mcq'],
+  ['div_unit_frac', 1, 'mcq'],
+  ['add_sub_dec', 1, 'mcq'],
+  ['add_sub_dec', 1, 'fill'],
+  ['mul_dec_1dig', 1, 'mcq'],
+  ['proportion', 1, 'mcq'],
+  ['ratio', 1, 'mcq'],
+  ['ratio', 1, 'essay'],
+  ['venn_carroll', 1, 'mcq'],
+  ['venn_carroll', 1, 'fill'],
+  ['freq_waffle', 1, 'mcq'],
+  ['freq_waffle', 1, 'essay'],
+  ['dotplot', 1, 'mcq'],
+  ['bar_with_scale', 1, 'fill'],
+  ['histogram', 1, 'essay'],
+  ['linegraph', 1, 'mcq'],
+  ['mode_median', 1, 'fill'],
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -1516,6 +2030,16 @@ const topicNames={
   data_bar:{ en:'Bar Chart Reading',               id:'Membaca Diagram Batang' },
   data_waffle:{ en:'Waffle Chart',                 id:'Diagram Wafer' },
   data_carroll:{ en:'Carroll Diagram',             id:'Diagram Carroll' },
+  algebra_unknowns:{ en:'Two Unknowns',             id:'Dua Nilai Tidak Diketahui' },
+  neg_add:{ en:'Adding Negative Numbers',           id:'Penjumlahan Bilangan Negatif' },
+  neg_sub:{ en:'Subtracting with Negatives',        id:'Pengurangan dengan Bilangan Negatif' },
+  dec_mul_pow10:{ en:'Decimals × ÷ by 10/100/1000', id:'Desimal × ÷ 10/100/1000' },
+  ratio_simplify:{ en:'Simplify Ratios',            id:'Sederhanakan Rasio' },
+  ratio_share:{ en:'Share by Ratio',                id:'Bagi dengan Rasio' },
+  data_dotplot:{ en:'Dot Plot Reading',             id:'Membaca Diagram Titik' },
+  data_histogram:{ en:'Histogram Reading',          id:'Membaca Histogram' },
+  data_linegraph:{ en:'Line Graph Reading',         id:'Membaca Grafik Garis' },
+  data_median:{ en:'Find the Median',               id:'Cari Median' },
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -1524,7 +2048,9 @@ const topicNames={
 const topicStats={};
 Object.keys(topicNames).forEach(k=>topicStats[k]={wrong:0,correct:0});
 
-const isExam=new URLSearchParams(window.location.search).has('exam');
+const _examParam=new URLSearchParams(window.location.search).get('exam');
+const isExam=_examParam!==null;
+const isUAS=_examParam==='uas';
 
 let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false,selectedAnswer=null;
 let round=1, isAdaptive=false;
@@ -1792,6 +2318,31 @@ function getActiveParts(){
 function buildInitialQueue(){
   // Keep _usedVals persistent across restarts so conversion values don't repeat within a session
   Object.keys(_usedWordIdx).forEach(k=>_usedWordIdx[k].clear());
+
+  // ── UAS mode: build queue from the school's kisi-kisi distribution ──
+  if(isUAS){
+    const orderRank={mcq:0,fill:1,essay:2};
+    const ordered=[...UAS_KISI].sort((a,b)=>orderRank[a[2]]-orderRank[b[2]]);
+    const uasQueue=[];
+    for(const[topicKey,count,slotType]of ordered){
+      const gens=UAS_TOPIC_MAP[topicKey]||[];
+      for(let i=0;i<count;i++){
+        const genKey=gens[Math.floor(Math.random()*gens.length)];
+        const q=Generators[genKey]();
+        q.topic=genKey;
+        q._uasSlot=slotType;
+        uasQueue.push(q);
+      }
+    }
+    const tot=uasQueue.length;
+    uasQueue.forEach((q,i)=>{
+      const slotLbl=q._uasSlot==='mcq'?'PG':q._uasSlot==='fill'?'Isian':'Uraian';
+      const slotLblEn=q._uasSlot==='mcq'?'MCQ':q._uasSlot==='fill'?'Fill':'Essay';
+      q.tag={en:`Q${i+1} of ${tot} · ${slotLblEn}`,id:`S${i+1} dari ${tot} · ${slotLbl}`};
+    });
+    return uasQueue;
+  }
+
   let qNum=1;
   const result=getActiveParts().flatMap(part=>{
     const picked=part.topics.map(topic=>{
