@@ -6,7 +6,7 @@
 <title>Science Practice — AzScience</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#e8f4ef 0%,#eaf2f7 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
 
 /* Header */
 .hdr{background:linear-gradient(135deg,#00b894,#0ea5e9 60%,#6366f1);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -20,7 +20,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0fff8;min-height:1
 /* Progress bar */
 .progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .progress{display:flex;gap:4px;align-items:center}
-.progress-bar{flex:1;height:8px;background:#e8f5ef;border-radius:5px;overflow:hidden}
+.progress-bar{flex:1;height:8px;background:#d4eadf;border-radius:5px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#00b894,#0ea5e9);border-radius:5px;transition:width .35s ease}
 .progress-text{font-size:.78rem;font-weight:800;color:#00b894;min-width:75px;text-align:right}
 
@@ -1908,14 +1908,25 @@ function next(){
 // ════════════════════════════════════════════════════════════════
 function renderQuestion(){
   const slot = document.getElementById('quizSlot');
+  let inner = '';
   switch(current.type){
-    case 'mcq':         slot.innerHTML = mcqHtml(current); attachMCQ(); break;
-    case 'tf':          slot.innerHTML = tfHtml(current); attachTF(); break;
-    case 'fill':        slot.innerHTML = fillHtml(current); attachFill(); break;
-    case 'essay':       slot.innerHTML = essayHtml(current); attachEssay(); break;
-    case 'fill_bank':   slot.innerHTML = fillBankHtml(current); attachFillBank(); break;
-    case 'multi_check': slot.innerHTML = multiCheckHtml(current); attachMultiCheck(); break;
-    case 'scenario':    slot.innerHTML = scenarioHtml(current); attachScenario(); break;
+    case 'mcq':         inner = mcqHtml(current); break;
+    case 'tf':          inner = tfHtml(current); break;
+    case 'fill':        inner = fillHtml(current); break;
+    case 'essay':       inner = essayHtml(current); break;
+    case 'fill_bank':   inner = fillBankHtml(current); break;
+    case 'multi_check': inner = multiCheckHtml(current); break;
+    case 'scenario':    inner = scenarioHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq':         attachMCQ(); break;
+    case 'tf':          attachTF(); break;
+    case 'fill':        attachFill(); break;
+    case 'essay':       attachEssay(); break;
+    case 'fill_bank':   attachFillBank(); break;
+    case 'multi_check': attachMultiCheck(); break;
+    case 'scenario':    attachScenario(); break;
   }
   attachHint();
 }
