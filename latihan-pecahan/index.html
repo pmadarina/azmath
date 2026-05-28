@@ -112,14 +112,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#eef3ff;min-height:1
 /* ── Weakness report ── */
 .weak-report{background:#fff5f5;border:2px solid #ffcdd2;border-radius:14px;padding:16px 18px;margin:16px 0}
 .weak-report h3{font-size:.9rem;font-weight:800;color:#d63031;margin-bottom:12px}
-.weak-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.weak-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:10px}
 .weak-row .topic-name{font-size:.85rem;font-weight:600;color:#333;flex:1}
-.weak-bar-wrap{width:100px;height:8px;background:#fce4e4;border-radius:4px;overflow:hidden;flex-shrink:0}
-.weak-bar-fill{height:100%;background:#d63031;border-radius:4px}
-.weak-pct{font-size:.78rem;font-weight:800;color:#d63031;min-width:32px;text-align:right}
-.strong-row .topic-name{color:#00634d}
-.strong-row .weak-bar-fill{background:#00b894}
-.strong-row .weak-pct{color:#00634d}
+.weak-bar-wrap{width:120px;height:9px;background:#eef0f5;border-radius:5px;overflow:hidden;flex-shrink:0}
+.weak-bar-fill{height:100%;background:#d63031;border-radius:5px;transition:width .5s ease}
+.weak-pct{font-size:.78rem;font-weight:800;color:#666;min-width:70px;text-align:right}
+.weak-row.good .topic-name{color:#00634d}
+.weak-row.good .weak-bar-fill{background:linear-gradient(90deg,#00b894,#55efc4)}
+.weak-row.good .weak-pct{color:#00634d}
+.weak-row.mid .topic-name{color:#7c5e02}
+.weak-row.mid .weak-bar-fill{background:linear-gradient(90deg,#f9ca24,#fdcb6e)}
+.weak-row.mid .weak-pct{color:#b7760a}
+.weak-row.weak .topic-name{color:#9a1010}
+.weak-row.weak .weak-bar-fill{background:linear-gradient(90deg,#d63031,#e17055)}
+.weak-row.weak .weak-pct{color:#d63031}
 
 /* ── Adaptive practice button ── */
 .practice-btn{padding:12px 28px;background:linear-gradient(135deg,#d63031,#e17055);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(214,48,49,.35);margin-right:10px}
@@ -2426,17 +2432,19 @@ function renderDone(){
   const topicScores=Object.keys(topicStats)
     .map(tp=>({tp,s:topicStats[tp],att:topicStats[tp].wrong+topicStats[tp].correct}))
     .filter(x=>x.att>0)
-    .sort((a,b)=>(b.s.wrong/b.att)-(a.s.wrong/a.att));
+    .sort((a,b)=>(a.s.correct/a.att)-(b.s.correct/b.att)); // weakest first
 
   const hasWeakness=topicScores.some(x=>x.s.wrong/x.att>0.33);
 
   const weakRowsHtml=topicScores.map(({tp,s,att})=>{
-    const errPct=Math.round(s.wrong/att*100);
-    const isWeak=errPct>33;
-    return`<div class="weak-row${isWeak?'':' strong-row'}">
-      <span class="topic-name">${isWeak?'⚠️':'✅'} ${t(topicNames[tp])}</span>
-      <div class="weak-bar-wrap"><div class="weak-bar-fill" style="width:${errPct}%"></div></div>
-      <span class="weak-pct">${errPct}% ${lang==='en'?'wrong':'salah'}</span>
+    const corPct=Math.round(s.correct/att*100);
+    let tier='good',icon='✅';
+    if(corPct<50){tier='weak';icon='⚠️';}
+    else if(corPct<80){tier='mid';icon='💪';}
+    return`<div class="weak-row ${tier}">
+      <span class="topic-name">${icon} ${t(topicNames[tp])}</span>
+      <div class="weak-bar-wrap"><div class="weak-bar-fill" style="width:${corPct}%"></div></div>
+      <span class="weak-pct">${s.correct}/${att} ${lang==='en'?'right':'benar'}</span>
     </div>`;
   }).join('');
 
