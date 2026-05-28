@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alesha's English Library — Practice</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#f5f3ff 0%,#ecfeff 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#a78bfa 0%,#818cf8 40%,#06b6d4 100%);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.1rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.95;background:rgba(255,255,255,.18);padding:5px 12px;border-radius:16px}
+
+/* Progress bar */
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#ede9fe;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#06b6d4);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#7c3aed;min-width:75px;text-align:right}
+
+/* Score chips */
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:760px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #e8ecef;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#06b6d4;background:#ecfeff}
+.score-chip.correct strong{color:#0891b2}
+.score-chip.wrong{border-color:#f43f5e;background:#fff5f5}
+.score-chip.wrong strong{color:#e11d48}
+.score-chip.answered{border-color:#a78bfa;background:#f5f3ff}
+.score-chip.answered strong{color:#7c3aed}
+
+/* Main quiz container */
+.main{max-width:760px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(167,139,250,.16)}
+.q-badge{display:inline-block;background:#ede9fe;color:#7c3aed;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#e0e7ff;color:#4338ca}
+.q-badge.tf{background:#ffedd5;color:#c2410c}
+.q-badge.fill{background:#ede9fe;color:#6d28d9}
+.q-badge.essay{background:#cffafe;color:#0e7490}
+.q-badge.fill_bank{background:#fce7f3;color:#be185d}
+.q-badge.multi_check{background:#dbeafe;color:#1e40af}
+.q-badge.scenario{background:#fef3c7;color:#92400e}
+
+/* Word bank chips */
+.bank-wrap{background:#fffbeb;border:1.5px solid #f59e0b;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.bank-title{font-size:.72rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#92400e;margin-bottom:8px}
+.bank-chips{display:flex;flex-wrap:wrap;gap:6px}
+.bank-chip{background:#fff;border:1.5px solid #f59e0b;color:#7c2d12;padding:6px 12px;border-radius:14px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.bank-chip:hover:not(:disabled){background:#fef3c7;transform:translateY(-1px)}
+.bank-chip:disabled{cursor:not-allowed;opacity:.5}
+
+/* Multi-check */
+.mc-instr{font-size:.85rem;color:#666;font-weight:700;margin-bottom:8px}
+.mc-opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:12px 16px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:12px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit;margin-bottom:8px}
+.mc-opt:hover:not(.locked){border-color:#1e40af;background:#dbeafe}
+.mc-box{width:24px;height:24px;border-radius:6px;border:2px solid #c0c8d0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;background:#fff}
+.mc-opt.checked .mc-box{background:#1e40af;border-color:#1e40af}
+.mc-opt.checked .mc-box::after{content:'✓'}
+.mc-opt.correct{border-color:#06b6d4;background:#ecfeff}
+.mc-opt.correct .mc-box{background:#06b6d4;border-color:#06b6d4}
+.mc-opt.correct .mc-box::after{content:'✓'}
+.mc-opt.wrong{border-color:#f43f5e;background:#fff5f5}
+.mc-opt.wrong .mc-box{background:#f43f5e;border-color:#f43f5e}
+.mc-opt.wrong .mc-box::after{content:'✗'}
+.mc-opt.missed{border-color:#f59e0b;background:#fffbeb}
+.mc-opt.missed .mc-box{background:#f59e0b;border-color:#f59e0b}
+.mc-opt.missed .mc-box::after{content:'!'}
+.mc-opt.locked{cursor:not-allowed}
+
+/* Scenario */
+.scenario-part{background:#faf5ff;border-left:4px solid #a78bfa;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.scenario-part-label{font-size:.78rem;font-weight:900;color:#7c3aed;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.scenario-part-q{font-size:.96rem;line-height:1.5;margin-bottom:10px;font-weight:600}
+.scenario-part .opts{margin-top:6px}
+.scenario-part .opt{padding:10px 14px;font-size:.9rem}
+.scenario-part .fill-row{margin-top:4px}
+.scenario-part .essay-area{min-height:70px}
+.scenario-part-result{margin-top:8px;font-size:.86rem;font-weight:700;padding:6px 10px;border-radius:8px;display:none}
+.scenario-part-result.show{display:inline-block}
+.scenario-part-result.ok{background:#ecfeff;color:#0e7490}
+.scenario-part-result.bad{background:#fff5f5;color:#e11d48}
+.scenario-check-all{background:linear-gradient(135deg,#a78bfa,#06b6d4);color:#fff;border:none;border-radius:14px;padding:12px 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;width:100%;margin-top:6px}
+.scenario-check-all:hover:not(:disabled){opacity:.9}
+.scenario-check-all:disabled{cursor:not-allowed;opacity:.5}
+
+.q-text{font-size:1.05rem;line-height:1.6;background:#f5f3ff;border-left:4px solid #a78bfa;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+.passage-box{background:#fdfaff;border:1.5px solid #ddd6fe;border-radius:14px;padding:16px 20px;margin-bottom:18px;font-size:.95rem;line-height:1.65;color:#3b2461;font-style:italic}
+.passage-box .passage-label{display:block;font-style:normal;font-size:.7rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#7c3aed;margin-bottom:8px}
+
+/* MCQ options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit}
+.opt:hover:not(:disabled){border-color:#a78bfa;background:#f5f3ff}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#ede9fe;color:#7c3aed;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#06b6d4;background:#ecfeff}
+.opt.correct .opt-letter{background:#06b6d4;color:#fff}
+.opt.wrong{border-color:#f43f5e;background:#fff5f5}
+.opt.wrong .opt-letter{background:#f43f5e;color:#fff}
+
+/* True/False */
+.tf-row{display:flex;gap:12px}
+.tf-btn{flex:1;background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:20px 16px;cursor:pointer;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;font-family:inherit;color:inherit}
+.tf-btn:hover:not(:disabled){transform:translateY(-2px);border-color:#a78bfa}
+.tf-btn.true{color:#0891b2}
+.tf-btn.false{color:#e11d48}
+.tf-btn:disabled{cursor:not-allowed;opacity:.7}
+.tf-btn.correct{border-color:#06b6d4;background:#ecfeff}
+.tf-btn.wrong{border-color:#f43f5e;background:#fff5f5}
+.tf-icon{font-size:1.4rem}
+
+/* Fill */
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:inherit;font-size:1rem;font-weight:700;padding:14px 18px;border:2px dashed #a78bfa;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(167,139,250,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#a78bfa,#06b6d4);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+/* Essay */
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #a78bfa;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none;resize:vertical;min-height:110px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(167,139,250,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#06b6d4;color:#0891b2}
+.essay-self .got:hover{background:#ecfeff}
+.essay-self .miss{border-color:#e11d48;color:#e11d48}
+.essay-self .miss:hover{background:#fff5f5}
+
+/* Feedback */
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#ecfeff;border:1.5px solid #06b6d4;color:#0e4f60}
+.fb.wrong{background:#fff5f5;border:1.5px solid #f43f5e;color:#9f1239}
+.fb.info{background:#f5f3ff;border:1.5px solid #a78bfa;color:#5b21b6}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#a78bfa;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c2d12}
+
+/* Hint */
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #f59e0b;color:#92400e;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fffbeb}
+.hint-box{display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c2d12;margin-top:10px}
+.hint-box.show{display:block}
+
+/* Done */
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#a78bfa,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#a78bfa,#06b6d4);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(167,139,250,.4)}
+.restart-btn:hover{opacity:.92}
+
+/* Confetti */
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .tf-btn{padding:16px 12px;font-size:1rem}
+  .hdr-title{font-size:.95rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">&larr; Library</a>
+  <div class="hdr-title" id="hdrTitle">📖 English Practice</div>
+  <div class="hdr-meta" id="hdrMeta">Question 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong><span>✓ Correct</span></div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong><span>✗ Wrong</span></div>
+  <div class="score-chip answered"><strong id="sDone">0</strong><span>📝 Answered</span></div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const shuf = a => { const c=[...a]; for(let i=c.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]]; } return c; };
+const norm = s => String(s||'').trim().toLowerCase().replace(/[.,!?;:'"]/g,'').replace(/\s+/g,' ');
+
+// MCQ shuffle helper
+function mkOpts(correct, distractors){
+  const all = [correct, ...distractors].slice(0,4);
+  while(all.length<4) all.push('—');
+  const sh = shuf(all);
+  return { opts: sh, ans: sh.indexOf(correct) };
+}
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 1 — PAST PERFECT
+// ════════════════════════════════════════════════════════════════
+const CH1_GEN = {
+  pp_bell: () => {
+    const { opts, ans } = mkOpts('had rung', ['has rung', 'rings', 'rang']);
+    return { type:'mcq', topic:'past_perfect',
+      q:'Choose the correct form: "Before I arrived at school, the bell ___."',
+      opts, ans,
+      hint:'Two past actions — which happened FIRST? Use past perfect for the earlier one.',
+      concept:'Past perfect = <b>had + past participle</b>. Use it for an action that happened BEFORE another past action.',
+      steps:['Two past actions: (1) bell rang, (2) I arrived.','The bell rang FIRST.','Earlier past action → past perfect → <b>had rung</b>.']
+    };
+  },
+  pp_film: () => {
+    const { opts, ans } = mkOpts('had started', ['has started', 'started', 'was starting']);
+    return { type:'mcq', topic:'past_perfect',
+      q:'Choose the correct form: "By the time we got to the cinema, the film ___."',
+      opts, ans,
+      hint:'"By the time…" is a classic past perfect signal!',
+      concept:'After "by the time" + past simple, use past perfect for the earlier action.',
+      steps:['"By the time we got" = past simple action.','The film started BEFORE we arrived.','So → <b>had started</b>.']
+    };
+  },
+  pp_paris: () => {
+    const { opts, ans } = mkOpts('had / been', ['has / been', 'had / went', 'was / been']);
+    return { type:'mcq', topic:'past_perfect',
+      q:'Fill the gaps: "She told me she ___ never ___ to Paris before."',
+      opts, ans,
+      hint:'Past perfect = had + past participle of the verb.',
+      concept:'"Have/has been" becomes "had been" when shifted to the past.',
+      steps:['Reported in the past → shift "have" to "had".','Past participle of "be" = <b>been</b>.','So → <b>had / been</b>.']
+    };
+  },
+  pp_picnic: () => ({ type:'fill', topic:'past_perfect',
+    q:'Type the past perfect: "Before the rain came, we ___ (finish) our picnic."',
+    answers:['had finished'],
+    display:'had finished',
+    hint:'had + past participle of "finish".',
+    concept:'Past perfect = had + past participle.',
+    steps:['Earlier past action = finishing the picnic.','Past participle of finish = finished.','So → <b>had finished</b>.']
+  }),
+  pp_homework: () => ({ type:'fill', topic:'past_perfect',
+    q:'Type the past perfect: "When mum called us for dinner, I ___ (already / do) my homework."',
+    answers:['had already done','already had done'],
+    display:'had already done',
+    hint:'"Already" goes between had and the participle.',
+    concept:'Adverbs like already, just, never sit between "had" and the past participle.',
+    steps:['Past participle of "do" = done.','Place "already" between had and done.','So → <b>had already done</b>.']
+  }),
+  pp_train: () => ({ type:'fill', topic:'past_perfect',
+    q:'Type the past perfect: "By the time we reached the station, the train ___ (leave)."',
+    answers:['had left'],
+    display:'had left',
+    hint:'Irregular: leave → left → left.',
+    concept:'Past perfect uses the third form (past participle) of irregular verbs.',
+    steps:['leave → left (past) → <b>left</b> (past participle).','So → <b>had left</b>.']
+  }),
+  pp_error_spot: () => {
+    const { opts, ans } = mkOpts(
+      'When she came in, I had already left.',
+      ['When she came in, I have already left.','When she came in, I leave already.','When she came in, I have leave already.']);
+    return { type:'mcq', topic:'past_perfect',
+      q:'Which sentence uses the past perfect correctly?',
+      opts, ans,
+      hint:'Look for "had + past participle".',
+      concept:'Past perfect needs <b>had</b> (not has/have) + past participle.',
+      steps:['Correct form = had + left.','"Had already left" = past perfect with adverb.']
+    };
+  },
+  pp_marker: () => {
+    const { opts, ans } = mkOpts('by the time', ['yesterday','tomorrow','every day']);
+    return { type:'mcq', topic:'past_perfect',
+      q:'Which time marker goes BEST with past perfect?',
+      opts, ans,
+      hint:'It signals "before another past event".',
+      concept:'Time markers that pair with past perfect: <b>by the time, before, after, already, just, never, when</b>.',
+      steps:['"By the time" sets up two past actions.','It naturally signals past perfect for the earlier one.']
+    };
+  },
+  pp_tf_bef: () => ({ type:'tf', topic:'past_perfect',
+    q:'In "After Sara had eaten breakfast, she went to school", the past perfect refers to going to school.',
+    ans:false,
+    hint:'Which action happened first?',
+    concept:'Past perfect = the EARLIER action.',
+    steps:['Eating happened first → <b>had eaten</b>.','Going to school is the later past action.']
+  }),
+  pp_tf_struct: () => ({ type:'tf', topic:'past_perfect',
+    q:'Past perfect is formed with "had" + past participle.',
+    ans:true,
+    hint:'had + 3rd form of verb.',
+    concept:'Past perfect structure: <b>had + past participle</b>, for all subjects (I, you, he, she, we, they).',
+    steps:['Use "had" for every subject.','Add the past participle (3rd form).']
+  }),
+  pp_fb: () => ({ type:'fill_bank', topic:'past_perfect',
+    bank:['had finished','had eaten','had left','had seen','had gone','had written','finished','ate'],
+    q:'"Before the bell rang, the teacher ___ the lesson."',
+    answers:['had finished'],
+    display:'had finished',
+    hint:'Past perfect for the earlier action.',
+    concept:'Past perfect = had + past participle.',
+    steps:['Finishing happened before the bell.','So → <b>had finished</b>.']
+  }),
+  pp_essay: () => ({ type:'essay', topic:'past_perfect',
+    q:'Write ONE sentence about your morning using the past perfect. Example pattern: "By the time ___, I had ___."',
+    model:'By the time my mum called me for breakfast, I had already brushed my teeth and made my bed.',
+    hint:'Use "by the time" + past simple, then "had" + past participle.',
+    concept:'Past perfect describes the action completed BEFORE another past action.',
+    keys:['had','by the time']
+  })
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 2 — SECOND CONDITIONAL
+// ════════════════════════════════════════════════════════════════
+const CH2_GEN = {
+  sc_bird: () => {
+    const { opts, ans } = mkOpts('were', ['am','was','will be']);
+    return { type:'mcq', topic:'second_conditional',
+      q:'"If I ___ a bird, I would fly." (Choose the most correct form.)',
+      opts, ans,
+      hint:'In the second conditional, all subjects use "were" (formal rule).',
+      concept:'In the second conditional, the verb <b>be</b> becomes <b>were</b> for every subject (I/he/she/it). "Was" is accepted in informal English, but "were" is the textbook answer.',
+      steps:['Second conditional = If + past simple, would + verb.','For "be", use <b>were</b> for all subjects.','So → <b>were</b>.']
+    };
+  },
+  sc_car: () => {
+    const { opts, ans } = mkOpts('had', ['has','have','would have']);
+    return { type:'mcq', topic:'second_conditional',
+      q:'"She would buy a new car if she ___ enough money."',
+      opts, ans,
+      hint:'The if-clause needs past simple.',
+      concept:'Structure: <b>If + past simple, would + base verb</b>.',
+      steps:['Main clause: "would buy" = would + verb.','If-clause needs past simple.','Past of "have" = <b>had</b>.']
+    };
+  },
+  sc_you: () => ({ type:'fill', topic:'second_conditional',
+    q:'Type the missing verb: "If I ___ (be) you, I would tell the teacher."',
+    answers:['were','was'],
+    display:'were',
+    hint:'Standard 2nd conditional form is "were" for all subjects.',
+    concept:'"If I were you" is a famous second-conditional phrase used to give advice.',
+    steps:['Subject is "I" + verb "be".','Second conditional → <b>were</b>.']
+  }),
+  sc_lottery: () => {
+    const { opts, ans } = mkOpts('would buy', ['buy','bought','will buy']);
+    return { type:'mcq', topic:'second_conditional',
+      q:'"If we won the lottery, we ___ a big house."',
+      opts, ans,
+      hint:'Main clause = would + base verb.',
+      concept:'Main clause of the second conditional uses <b>would + base verb</b>.',
+      steps:['If-clause uses past simple ("won").','Main clause uses <b>would + buy</b>.']
+    };
+  },
+  sc_rewrite_fly: () => {
+    const { opts, ans } = mkOpts(
+      'If I were a bird, I would fly.',
+      ['If I am a bird, I will fly.','If I was a bird, I will fly.','If I be a bird, I would fly.']);
+    return { type:'mcq', topic:'second_conditional',
+      q:'Rewrite using the 2nd conditional: "I can\'t fly because I\'m not a bird. → If I ___"',
+      opts, ans,
+      hint:'Imaginary present → 2nd conditional.',
+      concept:'Use 2nd conditional for things that are NOT true now or unlikely.',
+      steps:['I am not a bird → unreal.','Use If + were + would + verb.']
+    };
+  },
+  sc_super: () => ({ type:'fill', topic:'second_conditional',
+    q:'Type the missing words: "If I ___ a superpower, I ___ help everyone." (be / would)',
+    answers:['had would','had,would','had / would','had/would','had-would'],
+    display:'had / would',
+    hint:'Past simple of "have" + "would".',
+    concept:'Past simple in the if-clause, would + verb in the main clause.',
+    steps:['"Had a superpower" = past simple.','"Would help" = main clause.','Type both separated by a space, comma or slash.']
+  }),
+  sc_tf_real: () => ({ type:'tf', topic:'second_conditional',
+    q:'The second conditional is used for situations that are imaginary or unlikely.',
+    ans:true,
+    hint:'It\'s "what if" thinking.',
+    concept:'2nd conditional = imaginary / unreal / unlikely now.',
+    steps:['"If I had wings…" — imaginary.','"If I won the lottery…" — unlikely.','Both use the 2nd conditional.']
+  }),
+  sc_tf_will: () => ({ type:'tf', topic:'second_conditional',
+    q:'We use "will" in the main clause of the second conditional.',
+    ans:false,
+    hint:'"Will" belongs to the FIRST conditional.',
+    concept:'1st conditional → will. 2nd conditional → <b>would</b>.',
+    steps:['1st conditional (real future): If + present, will + verb.','2nd conditional (imaginary): If + past, <b>would</b> + verb.']
+  }),
+  sc_choose_pair: () => {
+    const { opts, ans } = mkOpts(
+      'If she studied harder, she would pass.',
+      ['If she studies harder, she would pass.','If she studied harder, she will pass.','If she would study harder, she passed.']);
+    return { type:'mcq', topic:'second_conditional',
+      q:'Which sentence uses the 2nd conditional CORRECTLY?',
+      opts, ans,
+      hint:'Past simple in the if-clause, would + verb after.',
+      concept:'Match the pattern: If + past, would + base verb.',
+      steps:['Check the if-clause: past simple.','Check the main clause: would + base.','Only one option follows both rules.']
+    };
+  },
+  sc_fb_dream: () => ({ type:'fill_bank', topic:'second_conditional',
+    bank:['would travel','would go','would buy','were','was','have','had','will','would'],
+    q:'"If I ___ rich, I ___ the world."',
+    answers:['were would travel','was would travel','were,would travel','were/would travel'],
+    display:'were / would travel',
+    hint:'Pick the word for "be" + the would-phrase for travelling.',
+    concept:'2nd conditional: If + were/past, would + base verb.',
+    steps:['Imaginary → "If I were rich".','Action → "would travel".','Combine the two chips.']
+  }),
+  sc_essay_advice: () => ({ type:'essay', topic:'second_conditional',
+    q:'Give advice to a friend who is worried about a test. Use "If I were you…"',
+    model:'If I were you, I would make a study plan for each day, take short breaks between subjects, and ask the teacher about anything I didn\'t understand. I would also get a good sleep the night before the test.',
+    hint:'Start with "If I were you, I would…" and give 1–2 ideas.',
+    concept:'"If I were you, I would…" is a polite, friendly way to give advice using the 2nd conditional.',
+    keys:['were','would']
+  }),
+  sc_essay_dream: () => ({ type:'essay', topic:'second_conditional',
+    q:'Finish this idea in 2 sentences: "If I could travel anywhere in the world…"',
+    model:'If I could travel anywhere in the world, I would visit Japan in spring to see the cherry blossoms. I would also try sushi in Tokyo and ride the famous bullet train across the country.',
+    hint:'Use "would" in both sentences.',
+    concept:'2nd conditional helps us talk about dreams and possibilities.',
+    keys:['would','if']
+  })
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 3 — ALTHOUGH / EVEN THOUGH
+// ════════════════════════════════════════════════════════════════
+const CH3_GEN = {
+  alt_error: () => {
+    const { opts, ans } = mkOpts(
+      'Although it was raining, we went out.',
+      ['Although it was raining, but we went out.','Although it was raining and we went out.','Although raining, but we went out.']);
+    return { type:'mcq', topic:'although',
+      q:'Which sentence is CORRECT?',
+      opts, ans,
+      hint:'Never use "although" AND "but" together!',
+      concept:'After <b>although</b> or <b>even though</b>, do NOT add "but". Choose one connector — never both.',
+      steps:['"Although" already shows contrast.','Adding "but" is double-contrast = wrong.','Drop "but" and the sentence is correct.']
+    };
+  },
+  alt_tired: () => {
+    const { opts, ans } = mkOpts('Although', ['But','So','Because']);
+    return { type:'mcq', topic:'although',
+      q:'"___ she was tired, she finished the race."',
+      opts, ans,
+      hint:'We need a contrast word at the start.',
+      concept:'Although introduces a contrast clause at the start of a sentence.',
+      steps:['Being tired and finishing = surprising / contrasting.','"Although" introduces this contrast.','"But" can\'t start this sentence here.']
+    };
+  },
+  alt_swim: () => {
+    const { opts, ans } = mkOpts(
+      'Although it was cold, we went swimming.',
+      ['Although it was cold, but we went swimming.','It was cold although we went swimming.','Although we went swimming because it was cold.']);
+    return { type:'mcq', topic:'although',
+      q:'Combine with "although": "It was cold. We went swimming."',
+      opts, ans,
+      hint:'Although + contrast idea, comma, main idea (no "but").',
+      concept:'Pattern: <b>Although + clause, main clause.</b>',
+      steps:['Put "Although" before the contrast.','Add a comma.','Add the main clause — no "but" needed.']
+    };
+  },
+  alt_tried: () => ({ type:'fill', topic:'although',
+    q:'Type the missing connector: "___ he tried his best, he didn\'t win." (one word)',
+    answers:['although','though'],
+    display:'Although (or "Though")',
+    hint:'Shows contrast — and not "but".',
+    concept:'"Although" and "though" introduce contrast clauses. "Even though" is stronger.',
+    steps:['Trying hard vs not winning = contrast.','Start with "Although" or "Though".']
+  }),
+  alt_fb_homework: () => ({ type:'fill_bank', topic:'although',
+    bank:['although','even though','but','so','because','and'],
+    q:'"___ Sam was sleepy, he finished his homework on time."',
+    answers:['although','even though'],
+    display:'although / even though',
+    hint:'Pick a contrast word that goes at the START.',
+    concept:'Both "although" and "even though" work to start a contrast sentence.',
+    steps:['Sleepy vs finished on time = contrast.','Choose "although" or "even though".']
+  }),
+  alt_tf_combine: () => ({ type:'tf', topic:'although',
+    q:'"Although I was hungry, but I waited for dinner" is correct.',
+    ans:false,
+    hint:'You can\'t use "although" AND "but" together.',
+    concept:'Iron rule: <b>although + comma + clause</b>. Never add "but".',
+    steps:['"Although" already shows contrast.','Adding "but" is duplicate contrast.','Choose ONE word, not both.']
+  }),
+  alt_tf_middle: () => ({ type:'tf', topic:'although',
+    q:'"Although" can also appear in the middle of a sentence.',
+    ans:true,
+    hint:'"We went out, although it was raining" — does that sound okay?',
+    concept:'"Although" can start a sentence (with comma after the clause) OR sit in the middle joining two clauses.',
+    steps:['Start: <b>Although</b> X, Y.','Middle: Y <b>although</b> X.','Both are correct.']
+  }),
+  alt_mc_correct: () => ({ type:'multi_check', topic:'although',
+    q:'Tick the TWO correct sentences.',
+    opts:[
+      'Although she was scared, she opened the door.',
+      'Although she was scared, but she opened the door.',
+      'Even though it rained, the picnic went well.',
+      'Even though it rained, but the picnic went well.'
+    ],
+    correctIdx:[0,2],
+    require:2,
+    hint:'Look for sentences WITHOUT "but" after "although/even though".',
+    concept:'Correct contrast sentences have only ONE connector — not two.',
+    steps:['Sentences 1 and 3 use only "Although" / "Even though" → correct.','Sentences 2 and 4 add "but" → wrong.']
+  }),
+  alt_choose_connector: () => {
+    const { opts, ans } = mkOpts('Even though', ['But','Because','So']);
+    return { type:'mcq', topic:'although',
+      q:'"___ Maya had never skated before, she joined the ice rink trip."',
+      opts, ans,
+      hint:'We want a STRONG contrast at the start.',
+      concept:'"Even though" is the strongest contrast connector — perfect for surprising actions.',
+      steps:['No experience + joined trip = surprising.','Use "Even though" for extra emphasis.']
+    };
+  },
+  alt_essay: () => ({ type:'essay', topic:'although',
+    q:'Write a sentence about yourself using "Although" or "Even though". Remember: no "but"!',
+    model:'Even though I find maths tricky sometimes, I keep practising every day because I want to get better.',
+    hint:'Pattern: Although/Even though + clause, main clause.',
+    concept:'Contrast sentences make writing more interesting and grown-up.',
+    keys:['although','even though']
+  })
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 4 — READING COMPREHENSION (scenarios)
+// ════════════════════════════════════════════════════════════════
+const CH4_GEN = {
+  comp_box: () => ({ type:'scenario', topic:'comprehension',
+    q:'Read the passage carefully, then answer each question. Read it twice if you need to!',
+    parts:[
+      { kind:'mcq',
+        q:'<div class="passage-box"><span class="passage-label">📖 Passage</span>Liam opened the old wooden box carefully, his fingers trembling against the rusty clasp. Inside, he found a small silver key and a folded note that said in spidery handwriting, "Some doors should never be opened." He looked around the dusty attic nervously before slipping the key into his pocket. Outside, the wind howled against the roof and a single floorboard creaked behind him. Liam swallowed hard and tried to breathe quietly. He had a sudden, prickly feeling that he was no longer alone in the attic.</div>(a) Where was Liam?',
+        opts:['the kitchen','the attic','the garden','the bedroom'], ans:1 },
+      { kind:'mcq',
+        q:'(b) What did Liam find inside the box?',
+        opts:['a key and a note','just a key','a book','nothing'], ans:0 },
+      { kind:'essay',
+        q:'(c) Why do you think Liam felt nervous? Use evidence from the passage.',
+        model:'Liam felt nervous because the note warned that "some doors should never be opened", suggesting the key was dangerous. He also looked around the dusty attic before slipping the key into his pocket — which shows he was worried someone might be watching.',
+        keys:['note','warned','should never','danger','alone','watching','floorboard','wind'] },
+      { kind:'essay',
+        q:'(d) What do you think might happen next? Give one prediction with a reason.',
+        model:'I think Liam might hear footsteps coming up the attic stairs because the floorboard already creaked behind him. He may try to hide the key or run downstairs to tell his family what he found.',
+        keys:['footsteps','creak','hide','run','family','door'] }
+    ],
+    concept:'Comprehension means understanding both WHAT a passage says and what it HINTS at. Always look for evidence.'
+  }),
+  comp_cat: () => ({ type:'scenario', topic:'comprehension',
+    q:'Read the passage, then answer the questions.',
+    parts:[
+      { kind:'mcq',
+        q:'<div class="passage-box"><span class="passage-label">📖 Passage</span>On the way to school, Maya noticed a small grey cat curled up behind the bus stop. Its fur was wet and matted, and it shivered in the cold morning air. Maya bent down slowly so she wouldn\'t scare it. She had no food, but she had her warm scarf. Carefully, she draped the scarf over the little cat. The cat looked up at her with bright green eyes and gave a soft, grateful purr. Maya promised herself she would come back at lunchtime with food.</div>(a) Where did Maya find the cat?',
+        opts:['behind the bus stop','at school','near her house','in a tree'], ans:0 },
+      { kind:'mcq',
+        q:'(b) What did Maya give the cat?',
+        opts:['food','milk','her scarf','her bag'], ans:2 },
+      { kind:'essay',
+        q:'(c) What kind of person is Maya? Use evidence from the passage.',
+        model:'Maya is kind, caring and thoughtful. She bent down slowly so she wouldn\'t scare the cat, gave it her own warm scarf even though she had nothing else, and promised to come back at lunchtime with food. These actions show that she puts the needs of an animal before her own comfort.',
+        keys:['kind','caring','thoughtful','scarf','slowly','promised','food','lunchtime'] }
+    ],
+    concept:'When asked "what kind of person", give a personality word PLUS evidence from the text.'
+  }),
+  comp_treehouse: () => ({ type:'scenario', topic:'comprehension',
+    q:'Read the passage, then answer each question.',
+    parts:[
+      { kind:'mcq',
+        q:'<div class="passage-box"><span class="passage-label">📖 Passage</span>Owen and Jamie spent the whole Saturday building a treehouse in the old oak in Owen\'s back garden. Owen had drawn careful plans on graph paper, but Jamie kept changing things — adding a rope ladder, then a secret door, then a tiny window for spotting birds. By sunset, the treehouse looked nothing like the plans, but the boys were grinning from ear to ear. They climbed inside, shared a packet of biscuits, and watched the sky turn pink and gold. "Best Saturday ever," whispered Jamie.</div>(a) Where were they building the treehouse?',
+        opts:['in a park','in Owen\'s back garden','in a forest','on the school field'], ans:1 },
+      { kind:'mcq',
+        q:'(b) Why did the treehouse look different from the plans?',
+        opts:['Owen made mistakes','Jamie kept adding new ideas','It rained','They ran out of wood'], ans:1 },
+      { kind:'essay',
+        q:'(c) How do Owen and Jamie feel at the end of the day? Use clues from the passage.',
+        model:'Owen and Jamie feel very happy and proud at the end of the day. The text says they were "grinning from ear to ear" and Jamie called it the "best Saturday ever". Sharing biscuits and watching the sunset together also shows how peaceful and content they felt about what they had built.',
+        keys:['happy','proud','content','grin','best','sunset','biscuits','together'] }
+    ],
+    concept:'Look at characters\' actions, faces and what they say to figure out feelings.'
+  }),
+  comp_fossil: () => ({ type:'scenario', topic:'comprehension',
+    q:'Read the passage carefully, then answer the questions.',
+    parts:[
+      { kind:'mcq',
+        q:'<div class="passage-box"><span class="passage-label">📖 Passage</span>At the beach, Daniel scooped up a strange grey stone. At first he thought it was just an odd pebble, but when he wiped off the sand he saw curling lines pressed into the surface, almost like a tiny snail shell turned to rock. His dad, a science teacher, took one look and gasped. "Daniel, that\'s an ammonite — a fossil from millions of years ago." Daniel held the stone more carefully now, as though it might break in his palm. The little snail had been waiting in the sand for longer than he could even imagine.</div>(a) What did Daniel find on the beach?',
+        opts:['an old coin','a fossil (ammonite)','a piece of glass','a sea shell'], ans:1 },
+      { kind:'mcq',
+        q:'(b) Who told Daniel what the object was?',
+        opts:['his teacher','a stranger','his dad','his sister'], ans:2 },
+      { kind:'essay',
+        q:'(c) Why do you think Daniel held the stone "more carefully" after his dad spoke? Use evidence.',
+        model:'Daniel held the stone more carefully because his dad said it was millions of years old, so it suddenly felt special and fragile. The text says he held it "as though it might break in his palm", which shows he now understood how rare and precious it was. Before, he had thought it was just an ordinary pebble.',
+        keys:['millions','old','special','precious','fragile','rare','break','careful'] },
+      { kind:'essay',
+        q:'(d) What might Daniel do with the fossil? Give one prediction.',
+        model:'I think Daniel might take the fossil home and put it on a shelf in his bedroom, or bring it to school to show his class. He may also ask his dad to help him find out more about ammonites in a book or online.',
+        keys:['shelf','show','class','school','book','dad','research'] }
+    ],
+    concept:'When a character\'s behaviour changes, look at WHAT happened just before — that\'s the cause.'
+  }),
+  comp_letter: () => ({ type:'scenario', topic:'comprehension',
+    q:'Read the passage and answer the questions.',
+    parts:[
+      { kind:'mcq',
+        q:'<div class="passage-box"><span class="passage-label">📖 Passage</span>Mia was tidying the school library when a yellowed envelope slipped out of an old hardback book. The address on the front said, "To whoever finds this — 1972." Her heart began to thump. Carefully, she opened the envelope and pulled out a folded letter written in faded blue ink. The words began: "If you are reading this, the time capsule is still hidden in the school garden, under the silver birch tree." Mia glanced up at the library clock. There were only twenty minutes until the end of break.</div>(a) Where did Mia find the envelope?',
+        opts:['in a desk drawer','inside an old book','on the floor','in her bag'], ans:1 },
+      { kind:'mcq',
+        q:'(b) What year was the letter written?',
+        opts:['1872','1927','1972','2007'], ans:2 },
+      { kind:'essay',
+        q:'(c) Why did Mia\'s heart "begin to thump"? Use evidence from the passage.',
+        model:'Mia\'s heart began to thump because she had just found a mysterious letter addressed to "whoever finds this" from 1972, which is very exciting and unusual. The fact that the envelope was yellowed and the ink was faded shows how old it is, and a secret message about a hidden time capsule would make anyone feel nervous and excited at the same time.',
+        keys:['exciting','mystery','time capsule','hidden','old','1972','nervous'] },
+      { kind:'essay',
+        q:'(d) Predict what Mia does next, and explain WHY.',
+        model:'I think Mia might rush out to the school garden to find the silver birch tree before break ends, because the passage says she only has twenty minutes left. She would probably want to dig there secretly so no one else discovers the time capsule before her.',
+        keys:['garden','silver birch','twenty minutes','rush','dig','secret','break'] }
+    ],
+    concept:'Predictions should use evidence + reasoning. "Because the text says…" is a great phrase to use.'
+  })
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 5 — VOCABULARY IN CONTEXT
+// ════════════════════════════════════════════════════════════════
+function vocabMCQ(word, sentence, correct, distractors, concept){
+  const { opts, ans } = mkOpts(correct, distractors);
+  return { type:'mcq', topic:'vocab_context',
+    q:`Choose the closest meaning of <b>${word}</b>: "${sentence}"`,
+    opts, ans,
+    hint:'Use the other words in the sentence as clues.',
+    concept: concept || 'Context clues help us guess the meaning of new words.',
+    steps:[`Look at the sentence around "${word}".`,'Pick the option that matches the feeling of the sentence.',`Best match → <b>${correct}</b>.`]
+  };
+}
+const CH5_GEN = {
+  v_carefully: () => vocabMCQ('carefully',
+    'Liam opened the old box carefully so nothing would break.',
+    'slowly and with great attention',
+    ['in a hurry','noisily','angrily'],
+    '"Carefully" = with great attention so nothing goes wrong.'),
+  v_exhausted: () => vocabMCQ('exhausted',
+    'After running for an hour, Tom collapsed on the sofa, completely exhausted.',
+    'very tired',
+    ['very angry','very happy','very quiet'],
+    '"Exhausted" = used up all your energy.'),
+  v_delighted: () => vocabMCQ('delighted',
+    'Grandma was delighted when she opened her birthday present.',
+    'very pleased',
+    ['very surprised','very tired','very confused'],
+    '"Delighted" = very pleased and full of joy.'),
+  v_enormous: () => vocabMCQ('enormous',
+    'The blue whale is an enormous creature that lives in the ocean.',
+    'very large',
+    ['very colourful','very fast','very strange'],
+    '"Enormous" = huge / very large.'),
+  v_tiny: () => vocabMCQ('tiny',
+    'A tiny ladybird crawled across the leaf.',
+    'very small',
+    ['very fast','very rare','very colourful'],
+    '"Tiny" = very small.'),
+  v_whispered: () => vocabMCQ('whispered',
+    '"Don\'t wake the baby," whispered Mum.',
+    'spoke very softly',
+    ['spoke very loudly','spoke very quickly','spoke very rudely'],
+    '"Whispered" = spoke very softly so no one else could hear.'),
+  v_shouted: () => vocabMCQ('shouted',
+    '"Watch out!" shouted the lifeguard as the wave rolled in.',
+    'spoke very loudly',
+    ['spoke very softly','spoke politely','sang'],
+    '"Shouted" = spoke very loudly to be heard.'),
+  v_ancient: () => vocabMCQ('ancient',
+    'The museum had ancient pots that were over two thousand years old.',
+    'very old',
+    ['very expensive','very fragile','very colourful'],
+    '"Ancient" = extremely old, from long ago in history.'),
+  v_freezing: () => vocabMCQ('freezing',
+    'It was freezing outside, so we wore three jumpers and thick coats.',
+    'very cold',
+    ['very wet','very windy','very dark'],
+    '"Freezing" = very, very cold — cold enough to freeze water.'),
+  v_rushing: () => vocabMCQ('rushing',
+    'Cars were rushing past on the busy motorway.',
+    'moving very quickly',
+    ['stopping','moving slowly','reversing'],
+    '"Rushing" = moving fast, in a hurry.'),
+  v_grumpy: () => vocabMCQ('grumpy',
+    'My little brother is always grumpy before breakfast.',
+    'bad-tempered',
+    ['hungry','sleepy','generous'],
+    '"Grumpy" = in a bad mood, easily annoyed.'),
+  v_furious: () => vocabMCQ('furious',
+    'Dad was furious when he saw the muddy footprints on the new carpet.',
+    'very angry',
+    ['very sad','very surprised','very afraid'],
+    '"Furious" = extremely angry.'),
+  v_glanced: () => vocabMCQ('glanced',
+    'She glanced at the clock before answering the question.',
+    'looked quickly',
+    ['stared for a long time','closed her eyes','pointed at'],
+    '"Glanced" = looked briefly / quickly.'),
+  v_sprinted: () => vocabMCQ('sprinted',
+    'When the bell rang, the children sprinted out of the classroom.',
+    'ran very fast',
+    ['walked slowly','sat down','jumped'],
+    '"Sprinted" = ran as fast as possible.'),
+  v_silent: () => vocabMCQ('silent',
+    'The library was silent except for the ticking of the clock.',
+    'completely quiet',
+    ['very noisy','crowded','dark'],
+    '"Silent" = no sound at all (almost).'),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 6 — DIRECT SPEECH & PUNCTUATION
+// ════════════════════════════════════════════════════════════════
+const CH6_GEN = {
+  ds_punct: () => {
+    const { opts, ans } = mkOpts(
+      '"Where are you going?" asked Sara.',
+      ['"where are you going" asked sara',
+       'Where are you going, asked Sara.',
+       '"where are you going?" Asked sara.']);
+    return { type:'mcq', topic:'direct_speech',
+      q:'Which sentence is punctuated CORRECTLY?',
+      opts, ans,
+      hint:'Check: capital letters, question mark INSIDE the quotes, full stop at the end.',
+      concept:'Direct speech rules: 1) Capital at the start of the speech. 2) Punctuation INSIDE the closing quote. 3) Lower-case dialogue tag (e.g. "asked"). 4) Full stop at the end.',
+      steps:['"Where" → capital W ✓','Question mark INSIDE the quotes ✓','"asked Sara." → name capitalised, full stop ✓']
+    };
+  },
+  ds_change: () => {
+    const { opts, ans } = mkOpts(
+      'Quotation marks, capital letter, AND punctuation are needed.',
+      ['Just commas are needed.','Nothing — it is fine.','Just lower-case is needed.']);
+    return { type:'mcq', topic:'direct_speech',
+      q:'What needs to change in: "i love pizza said tom"?',
+      opts, ans,
+      hint:'Almost EVERYTHING about direct speech is missing!',
+      concept:'A direct-speech sentence needs quote marks, capitalisation, and punctuation around the spoken words.',
+      steps:['Add "quotes" around the spoken words.','Capitalise "I" and "Tom".','Add a comma or full stop and the dialogue tag.','Result: "I love pizza," said Tom.']
+    };
+  },
+  ds_capital: () => {
+    const { opts, ans } = mkOpts(
+      '"My brother and I went to Paris in July."',
+      ['"my brother and i went to paris in July."','"My brother and I went to paris in july."','"my brother and I went to Paris in July."']);
+    return { type:'mcq', topic:'direct_speech',
+      q:'Which sentence has CORRECT capitalisation?',
+      opts, ans,
+      hint:'Capitals: sentence start, the pronoun "I", and proper nouns (places, months).',
+      concept:'Capital letters are used for: sentence starts, the pronoun <b>I</b>, names, places, days, months.',
+      steps:['"My" → start of sentence ✓','"I" → always capital ✓','"Paris" → place ✓','"July" → month ✓']
+    };
+  },
+  ds_id_error: () => {
+    const { opts, ans } = mkOpts(
+      'No error — it is already correct.',
+      ['Should be lower-case "i".','"Sara" should be "sara".','Wrong quote marks.']);
+    return { type:'mcq', topic:'direct_speech',
+      q:'Identify any error in: <b>Sara said, "I am tired."</b>',
+      opts, ans,
+      hint:'Check capitalisation, comma, quotes, and final punctuation.',
+      concept:'Reverse pattern: <b>Name said, "Quote with capital and end punctuation."</b>',
+      steps:['"Sara" → capital ✓','Comma after "said" ✓','Quotes + capital I + full stop INSIDE ✓','All correct!']
+    };
+  },
+  ds_tag_after: () => {
+    const { opts, ans } = mkOpts(
+      '"I love this book," said Mia.',
+      ['"I love this book." said Mia.','"I love this book," Said Mia.','"I love this book" said Mia.']);
+    return { type:'mcq', topic:'direct_speech',
+      q:'When the dialogue tag comes AFTER the speech, which sentence is correct?',
+      opts, ans,
+      hint:'Use a comma (not a full stop) inside the quotes, then a lower-case dialogue tag.',
+      concept:'Speech first, then tag: end the speech with a <b>comma inside the quotes</b>, then a lower-case "said".',
+      steps:['"…book," → comma INSIDE the quotes ✓','"said" → lower case ✓','"Mia." → name + final full stop ✓']
+    };
+  },
+  ds_question: () => {
+    const { opts, ans } = mkOpts(
+      '"Is the door locked?" whispered Tom.',
+      ['"Is the door locked." whispered Tom.','"Is the door locked?" Whispered Tom.','"Is the door locked" whispered Tom.']);
+    return { type:'mcq', topic:'direct_speech',
+      q:'For a question in speech, which is correct?',
+      opts, ans,
+      hint:'A question mark replaces the comma — and still goes INSIDE the quotes.',
+      concept:'Question marks and exclamation marks replace the comma inside the quotes, but the dialogue tag still starts lower case.',
+      steps:['Question mark INSIDE quotes ✓','"whispered" → lower case ✓','Tom + final full stop ✓']
+    };
+  },
+  ds_fb_comma: () => ({ type:'fill_bank', topic:'direct_speech',
+    bank:['comma','full stop','question mark','exclamation mark','capital','colon'],
+    q:'When the speaker tag comes AFTER the speech, the speech usually ends with a ___ inside the quotes.',
+    answers:['comma'],
+    display:'comma',
+    hint:'Not a full stop — it would be confusing!',
+    concept:'Speech + tag → end speech with a COMMA inside the quotes, then add the tag.',
+    steps:['"I am tired," said Mia.','The comma sits INSIDE the closing quote.']
+  }),
+  ds_tf_inside: () => ({ type:'tf', topic:'direct_speech',
+    q:'Punctuation that belongs to the speech goes INSIDE the closing quotation mark.',
+    ans:true,
+    hint:'"Hello!" he said. — see where the ! sits.',
+    concept:'In direct speech, punctuation that belongs to the speech (. ? ! ,) goes inside the closing quote.',
+    steps:['"Hello!" — inside ✓','"Is that you?" — inside ✓']
+  }),
+  ds_tf_proper: () => ({ type:'tf', topic:'direct_speech',
+    q:'Names of people are always written with a capital letter, even in direct speech.',
+    ans:true,
+    hint:'Proper nouns = always capital.',
+    concept:'Proper nouns (names, places, months, days) always start with a capital — speech or not.',
+    steps:['"Tom" → capital','"Paris" → capital','"July" → capital']
+  }),
+  ds_rewrite: () => ({ type:'essay', topic:'direct_speech',
+    q:'Add correct punctuation and capital letters to this sentence: <i>where are you going asked sara</i>',
+    model:'"Where are you going?" asked Sara.',
+    hint:'Open quotes, capital W, question mark INSIDE the quotes, close quotes, lower-case "asked", capital S for Sara, full stop.',
+    concept:'A correctly punctuated direct-speech sentence needs quotation marks, capitalisation, INSIDE punctuation, and a closing full stop.',
+    keys:['"','Where','?','asked','Sara','.']
+  })
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 7 — INFERENCING
+// ════════════════════════════════════════════════════════════════
+const CH7_GEN = {
+  inf_trophy: () => ({ type:'essay', topic:'inference',
+    q:'Read this short scene and explain how the character feels — give EVIDENCE from the text:<br><br><i>"Adam smiled as he looked at the trophy, but his hands were shaking."</i>',
+    model:'Adam feels excited but also nervous. The fact that he smiled and looked at the trophy shows he is happy and proud about winning. However, his shaking hands suggest he is also nervous — perhaps he isn\'t used to so much attention, or he can\'t quite believe he won.',
+    hint:'Look at TWO clues: face/smile AND hands.',
+    concept:'Good inferences combine a FEELING with EVIDENCE from the text. Use the structure: "[Feeling] because [evidence]."',
+    keys:['excited','nervous','smiled','shaking','proud','happy']
+  }),
+  inf_clock: () => ({ type:'essay', topic:'inference',
+    q:'How does Lily feel? Use evidence:<br><br><i>"Lily kept checking the clock and tapping her foot."</i>',
+    model:'Lily feels impatient and possibly anxious. The way she "kept checking the clock" shows she wants time to go faster, and "tapping her foot" is a sign of restlessness. Together these clues tell us she is waiting for something and doesn\'t want to be late.',
+    hint:'Why do people keep checking clocks and tap their feet?',
+    concept:'Body language is a big clue in inferencing — tapping, fidgeting and checking time = impatience.',
+    keys:['impatient','anxious','restless','waiting','clock','tapping']
+  }),
+  inf_dinner: () => ({ type:'essay', topic:'inference',
+    q:'How does Sam feel? Use evidence:<br><br><i>"Sam pushed his food around the plate and didn\'t say a word during dinner."</i>',
+    model:'Sam feels upset or worried. He "pushed his food around the plate" instead of eating, which suggests he has no appetite, and the fact he "didn\'t say a word" all dinner shows something is on his mind. Together these clues tell us he is bothered by something he isn\'t ready to talk about.',
+    hint:'No appetite + silent = ?',
+    concept:'When a character does the OPPOSITE of normal (not eating, not talking), it usually signals something is wrong.',
+    keys:['upset','sad','worried','quiet','pushed','silent','appetite']
+  }),
+  inf_called: () => ({ type:'essay', topic:'inference',
+    q:'How does Maya feel? Use evidence:<br><br><i>"When her name was called, Maya jumped up and ran to the front."</i>',
+    model:'Maya feels excited and eager. "Jumping up" shows energy and enthusiasm, and "running to the front" tells us she couldn\'t wait to get there. She was clearly happy and proud to be chosen.',
+    hint:'Quick, energetic movements = ?',
+    concept:'Fast, energetic body actions usually show positive emotions like excitement, eagerness or pride.',
+    keys:['excited','eager','happy','proud','jumped','ran']
+  }),
+  inf_spider: () => ({ type:'essay', topic:'inference',
+    q:'How does the boy feel? Use evidence:<br><br><i>"The boy stared at the spider, his eyes wide and his body still."</i>',
+    model:'The boy feels scared or frozen with fear. His "eyes wide" shows shock, and the fact his "body still" tells us he is too afraid to move. He probably doesn\'t want to startle the spider or attract its attention.',
+    hint:'Wide eyes + frozen body = a classic sign of which feeling?',
+    concept:'Stillness and wide eyes usually mean fear or shock — sometimes called the "freeze" reaction.',
+    keys:['scared','afraid','fear','frozen','still','wide']
+  }),
+  inf_mcq_grandma: () => {
+    const { opts, ans } = mkOpts('proud',
+      ['angry','bored','confused']);
+    return { type:'mcq', topic:'inference',
+      q:'Read and infer: <i>"Grandma kept showing my photo to every neighbour she met."</i> How does Grandma probably feel about you?',
+      opts, ans,
+      hint:'Showing someone\'s photo to lots of people = ?',
+      concept:'Inferring a character\'s feelings about someone else means looking at their behaviour towards / about that person.',
+      steps:['Showing the photo to everyone = sharing happiness.','That suggests Grandma is <b>proud</b>.']
+    };
+  },
+  inf_mcq_party: () => {
+    const { opts, ans } = mkOpts('disappointed',
+      ['delighted','curious','furious']);
+    return { type:'mcq', topic:'inference',
+      q:'Read and infer: <i>"Noah read the cancelled-party message, dropped onto the sofa and let out a long sigh."</i> How does Noah feel?',
+      opts, ans,
+      hint:'Sigh + slump on the sofa = ?',
+      concept:'A long sigh and a slumped body suggest disappointment more than full anger.',
+      steps:['Cancelled = bad news.','Sigh + drop = let-down.','Best match → <b>disappointed</b>.']
+    };
+  },
+  inf_essay_present: () => ({ type:'essay', topic:'inference',
+    q:'Infer the feeling and explain: <i>"Anna opened the present, looked at it for a long time, then forced a small smile."</i>',
+    model:'Anna feels disappointed but is trying to be polite. "Looking at it for a long time" suggests she is unsure how to react, and a "forced small smile" tells us she doesn\'t really love the gift but doesn\'t want to hurt anyone\'s feelings. Together these clues show kindness mixed with quiet disappointment.',
+    hint:'"Forced smile" is the key clue.',
+    concept:'A "forced" or "small" smile often signals hidden feelings — usually disappointment, awkwardness or politeness.',
+    keys:['disappointed','polite','forced','smile','unsure','hide','kind']
+  })
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTER 8 — WRITING PROMPTS
+// ════════════════════════════════════════════════════════════════
+function writingPrompt(prompt, model){
+  return { type:'essay', topic:'writing',
+    q: prompt,
+    model: model,
+    hint:'Plan a beginning, middle and end before you start writing. Add one descriptive detail in every paragraph.',
+    concept:'Aim for: a strong opening that hooks the reader · a clear problem or event in the middle · a satisfying ending · descriptive words · correct punctuation · separate paragraphs. Don\'t worry about being perfect — just write boldly and edit later!',
+    keys:['paragraph','description','punctuation','dialogue','because','suddenly','then','finally']
+  };
+}
+const CH8_GEN = {
+  w_door: () => writingPrompt(
+    'Write a short story (3–5 paragraphs) beginning with: <i>"When I opened the door, everything changed."</i>',
+    `When I opened the door, everything changed. Instead of the dusty hallway I expected, a long beach stretched out in front of me, with turquoise waves and a sky the colour of strawberry ice cream. The salty wind tugged at my hair as if welcoming me home.
+
+I stepped through carefully, half expecting the floor to vanish. Soft sand pressed between my toes, warm and real. In the distance, a small wooden boat bobbed beside a jetty, and an old man waved as though he had been waiting for me for a very long time.
+
+"You took your time," he chuckled, holding out a folded map. I didn\'t know who he was, but somehow I trusted him. As I unfolded the map, my own name appeared in shining gold letters at the very centre — and I knew this was the start of an adventure I would never forget.`),
+  w_strangest: () => writingPrompt(
+    'Continue this opening for 3–5 paragraphs: <i>"The strangest thing happened on my way home…"</i>',
+    `The strangest thing happened on my way home from school yesterday. I was walking past Mrs Patel\'s corner shop when I noticed a small ginger cat sitting very neatly on the postbox, staring at me. Its eyes were the brightest green I had ever seen, and around its neck hung a tiny silver bell.
+
+The cat tilted its head, hopped down, and began trotting beside me as if it had known me forever. I tried to shoo it gently, but it simply blinked and carried on, its tail high in the air. When I stopped, it stopped. When I sped up, it sped up.
+
+By the time I reached my front gate, the cat sat down once more and waited. I bent down to scratch its ear, and a voice in my head — clear and friendly — said, "About time. We have a lot of work to do." I stared at the cat. The cat winked. And just like that, my ordinary afternoon turned into something else entirely.`),
+  w_safe: () => writingPrompt(
+    'Describe a place where you feel completely safe. Use all FIVE senses (sight, sound, smell, touch, taste).',
+    `The place where I feel completely safe is my grandmother\'s kitchen on a Sunday afternoon. The walls are painted a warm buttery yellow, and sunlight spills through the lace curtains in soft, dancing patterns. A small radio hums old songs from a shelf above the fridge.
+
+The smell of cinnamon and freshly baked bread fills every corner, mixed with the gentle aroma of Grandma\'s peppermint tea. When I sit at the wooden table, I can feel the smooth surface beneath my fingers — warm from the sunlight — and the wooden chair creaks comfortably whenever I move.
+
+If I am lucky, Grandma slides a slice of warm apple cake across the table. The first bite is sweet and buttery, with a kiss of cinnamon at the end. In that kitchen, with the radio playing and Grandma humming along, nothing in the world feels scary. It is my safest, warmest, happiest place.`),
+  w_bag: () => writingPrompt(
+    'Write a story about finding something unexpected in your bag.',
+    `I was rummaging through my school bag for my pencil case when my hand brushed against something cool and metallic. Curious, I pulled it out — a small silver pocket watch with strange symbols around the edge. I had never seen it before in my life.
+
+Carefully, I pressed the tiny button on the top. The lid sprang open, and instead of normal hands, the watch had three glowing arrows pointing in different directions. Underneath, in delicate letters, were the words: "FOLLOW ME."
+
+My heart thumped. I glanced around the empty classroom, then back at the watch. One of the arrows was pointing straight at the library. I tucked the watch into my pocket, slung my bag over my shoulder, and tiptoed out — already certain that this would be the most unusual lunchtime of my life.`),
+  w_super: () => writingPrompt(
+    'Imagine you woke up with a superpower. Describe your day — from morning to night.',
+    `I woke up with the strangest feeling in my fingertips, as if tiny sparks were jumping between them. When I reached for my alarm clock, the digital numbers froze, then began rolling backwards. I had the power to control time.
+
+At breakfast, I stopped time to butter my toast perfectly without my little brother stealing a bite. At school, I paused the clock during a maths test just long enough to double-check one tricky question — but never longer, because that wouldn\'t be fair.
+
+By the evening, I had used my power to help an old man cross the road safely, to rewind a moment when I accidentally said something unkind, and to give myself one extra hour to finish a book I loved. As I lay in bed, I decided that the best superpower isn\'t about doing big, flashy things — it\'s about using small moments to be kinder. Then I slowed time just a little, so I could enjoy falling asleep.`),
+  w_helped: () => writingPrompt(
+    'Tell the story of a time you helped someone in need. (It can be real or imagined.)',
+    `It was raining hard when I noticed an elderly lady standing at the edge of the pavement, struggling with two shopping bags and a broken umbrella. Cars hissed past, splashing puddles in every direction. She looked tired, and her glasses were speckled with rain.
+
+I hurried over with my own umbrella and held it above her head. "Let me help you with those bags," I said. At first she protested politely, but when I smiled, she handed one over with a relieved sigh. Together, we walked slowly down the street, chatting about her grandchildren and the cake she was planning to bake.
+
+When we reached her front gate, she squeezed my hand and said, "You are very kind, dear. Thank you." Walking home alone afterwards, I felt warm inside despite the rain. I had only used ten minutes of my afternoon, but I realised that small acts of kindness can mean a lot to someone having a hard day.`)
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTERS
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': { title:'⏪ Ch 1 · Past Perfect', gen: CH1_GEN },
+  '2': { title:'🌟 Ch 2 · Second Conditional', gen: CH2_GEN },
+  '3': { title:'🔀 Ch 3 · Although & Even Though', gen: CH3_GEN },
+  '4': { title:'📖 Ch 4 · Reading Comprehension', gen: CH4_GEN },
+  '5': { title:'💬 Ch 5 · Vocabulary in Context', gen: CH5_GEN },
+  '6': { title:'💭 Ch 6 · Direct Speech & Punctuation', gen: CH6_GEN },
+  '7': { title:'🔍 Ch 7 · Inferencing', gen: CH7_GEN },
+  '8': { title:'✍️ Ch 8 · Writing Prompts', gen: CH8_GEN }
+};
+
+const ALL_GENS = { ...CH1_GEN, ...CH2_GEN, ...CH3_GEN, ...CH4_GEN, ...CH5_GEN, ...CH6_GEN, ...CH7_GEN, ...CH8_GEN };
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null;
+let currentChapterTitle=null;
+
+function buildQueue(chKey){
+  if(chKey === 'mix'){
+    currentChapterTitle = '🎯 Cambridge Stage 5 Mix';
+    const all = Object.keys(ALL_GENS);
+    const picked = shuf(all).slice(0, 20);
+    queue = picked.map(k => ALL_GENS[k]());
+  } else {
+    const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+    currentChapterTitle = ch.title;
+    const keys = shuf(Object.keys(ch.gen));
+    queue = keys.map(k => ch.gen[k]());
+  }
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateHeader();
+  updateScore();
+  next();
+}
+
+function updateHeader(){
+  document.getElementById('hdrTitle').textContent = currentChapterTitle || 'English Practice';
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  document.getElementById('hdrMeta').textContent = 'Question ' + Math.min(idx+1, total) + ' of ' + total;
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDERERS
+// ════════════════════════════════════════════════════════════════
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  let inner = '';
+  switch(current.type){
+    case 'mcq':         inner = mcqHtml(current); break;
+    case 'tf':          inner = tfHtml(current); break;
+    case 'fill':        inner = fillHtml(current); break;
+    case 'essay':       inner = essayHtml(current); break;
+    case 'fill_bank':   inner = fillBankHtml(current); break;
+    case 'multi_check': inner = multiCheckHtml(current); break;
+    case 'scenario':    inner = scenarioHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq':         attachMCQ(); break;
+    case 'tf':          attachTF(); break;
+    case 'fill':        attachFill(); break;
+    case 'essay':       attachEssay(); break;
+    case 'fill_bank':   attachFillBank(); break;
+    case 'multi_check': attachMultiCheck(); break;
+    case 'scenario':    attachScenario(); break;
+  }
+  attachHint();
+}
+
+function badgeFor(typ){
+  const labels = {
+    mcq:'📝 Multiple Choice', tf:'✅ True or False', fill:'📋 Fill in the Blank',
+    essay:'📖 Short Answer', fill_bank:'🗂️ Word Bank Fill',
+    multi_check:'☑️ Tick Multiple', scenario:'📚 Passage / Scenario'
+  };
+  return `<span class="q-badge ${typ}">${labels[typ]}</span>`;
+}
+
+function hintBlock(q){
+  if(!q.hint) return '';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">💡 Show Hint</button>
+    <div class="hint-box" id="hintBox">${q.hint}</div>
+  </div>`;
+}
+
+function feedbackBlock(){ return `<div class="fb" id="fb"></div>`; }
+
+// ── MCQ ─────────────────────────────────────────────────────────
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${q.q}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+// ── T/F ─────────────────────────────────────────────────────────
+function tfHtml(q){
+  return `${badgeFor('tf')}<div class="q-text">${q.q}</div>
+    <div class="tf-row">
+      <button class="tf-btn true" data-v="true"><span class="tf-icon">✓</span> True</button>
+      <button class="tf-btn false" data-v="false"><span class="tf-icon">✗</span> False</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachTF(){
+  document.querySelectorAll('.tf-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const v = b.dataset.v === 'true';
+      checkAnswer(v === current.ans, ()=>{
+        document.querySelectorAll('.tf-btn').forEach(btn=>{
+          btn.disabled = true;
+          const bv = btn.dataset.v === 'true';
+          if(bv === current.ans) btn.classList.add('correct');
+          else if(bv === v) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+// ── FILL ────────────────────────────────────────────────────────
+function fillHtml(q){
+  return `${badgeFor('fill')}<div class="q-text">${q.q}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Type your answer…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Check</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#06b6d4' : '#f43f5e';
+      inp.style.background = ok ? '#ecfeff' : '#fff5f5';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+// ── ESSAY ───────────────────────────────────────────────────────
+function essayHtml(q){
+  return `${badgeFor('essay')}<div class="q-text">${q.q}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="Write your answer in your own words…"></textarea>
+    <button class="essay-show" id="essayShow">📋 Show Model Answer</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">✓ I got it right</button>
+      <button class="miss" data-v="0">✗ Need to review</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML = `<strong>Write your answer first</strong> — even a sentence or two. Then click "Show Model Answer" to compare.`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const ttl = (current.keys||[]).length || 1;
+    fb.className = 'fb info show';
+    fb.innerHTML = `<strong>📋 Model Answer:</strong><br><br>${current.model}<br><br><small>🔍 Your answer mentioned <strong>${hits} of ${ttl}</strong> key ideas. Compare with the model and grade yourself honestly:</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#ecfeff' : '#fff5f5';
+      registerResult(ok);
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${current.concept}</div>`;
+      }
+      setTimeout(()=>{
+        const nxt = document.createElement('button');
+        nxt.className = 'restart-btn';
+        nxt.style.marginTop = '16px';
+        nxt.style.padding = '10px 24px';
+        nxt.style.fontSize = '.88rem';
+        nxt.textContent = idx+1 >= total ? '🏁 See Results' : 'Next Question →';
+        nxt.onclick = ()=>{ idx++; next(); };
+        fb.appendChild(nxt);
+      }, 200);
+    });
+  });
+}
+
+// ── FILL_BANK ───────────────────────────────────────────────────
+function fillBankHtml(q){
+  const chips = (q.bank||[]).map(w=>`<button type="button" class="bank-chip" data-w="${w}">${w}</button>`).join('');
+  return `${badgeFor('fill_bank')}<div class="q-text">${q.q}</div>
+    <div class="bank-wrap">
+      <div class="bank-title">📦 Word Bank</div>
+      <div class="bank-chips">${chips}</div>
+    </div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Type or click a word…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Check</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFillBank(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  document.querySelectorAll('.bank-chip').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if(c.disabled) return;
+      inp.value = c.dataset.w;
+      inp.focus();
+    });
+  });
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#06b6d4' : '#f43f5e';
+      inp.style.background = ok ? '#ecfeff' : '#fff5f5';
+      document.querySelectorAll('.bank-chip').forEach(c=>c.disabled=true);
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+// ── MULTI_CHECK ─────────────────────────────────────────────────
+function multiCheckHtml(q){
+  const need = q.require || (q.correctIdx||[]).length;
+  const opts = q.opts.map((o,i)=>`
+    <button type="button" class="mc-opt" data-i="${i}">
+      <span class="mc-box"></span><span>${o}</span>
+    </button>`).join('');
+  return `${badgeFor('multi_check')}<div class="q-text">${q.q}</div>
+    <div class="mc-instr">Tick <b>${need}</b> answer${need>1?'s':''}.</div>
+    <div>${opts}</div>
+    <button class="scenario-check-all" id="mcSub" style="margin-top:10px">Submit</button>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMultiCheck(){
+  const need = current.require || (current.correctIdx||[]).length;
+  const picked = new Set();
+  document.querySelectorAll('.mc-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.classList.contains('locked')) return;
+      const i = parseInt(b.dataset.i);
+      if(picked.has(i)){ picked.delete(i); b.classList.remove('checked'); }
+      else { picked.add(i); b.classList.add('checked'); }
+    });
+  });
+  document.getElementById('mcSub').addEventListener('click', ()=>{
+    if(picked.size !== need){
+      const fb = document.getElementById('fb');
+      fb.className='fb info show';
+      fb.innerHTML = `<strong>Please select exactly ${need} answer${need>1?'s':''}.</strong>`;
+      return;
+    }
+    const correctSet = new Set(current.correctIdx);
+    let allRight = true;
+    for(const c of correctSet) if(!picked.has(c)) allRight = false;
+    for(const p of picked) if(!correctSet.has(p)) allRight = false;
+    checkAnswer(allRight, ()=>{
+      document.querySelectorAll('.mc-opt').forEach(b=>{
+        b.classList.add('locked');
+        const i = parseInt(b.dataset.i);
+        if(correctSet.has(i) && picked.has(i)) b.classList.add('correct');
+        else if(picked.has(i) && !correctSet.has(i)) b.classList.add('wrong');
+        else if(correctSet.has(i) && !picked.has(i)) b.classList.add('missed');
+      });
+      document.getElementById('mcSub').disabled = true;
+    });
+  });
+}
+
+// ── SCENARIO ────────────────────────────────────────────────────
+function scenarioHtml(q){
+  const parts = q.parts.map((p,i)=>{
+    let body = '';
+    if(p.kind==='mcq'){
+      const letters=['A','B','C','D'];
+      body = `<div class="opts">${p.opts.map((o,j)=>`<button type="button" class="opt sc-opt" data-part="${i}" data-i="${j}"><span class="opt-letter">${letters[j]}</span><span>${o}</span></button>`).join('')}</div>`;
+    } else if(p.kind==='fill'){
+      body = `<div class="fill-row"><input type="text" class="fill-input sc-fill" data-part="${i}" placeholder="Type your answer…" autocomplete="off"/></div>`;
+    } else if(p.kind==='essay'){
+      body = `<textarea class="essay-area sc-essay" data-part="${i}" placeholder="Write your answer…"></textarea>`;
+    }
+    return `<div class="scenario-part" data-part="${i}">
+      <div class="scenario-part-label">Part ${i+1}</div>
+      <div class="scenario-part-q">${p.q}</div>
+      ${body}
+      <div class="scenario-part-result" data-part-result="${i}"></div>
+    </div>`;
+  }).join('');
+  return `${badgeFor('scenario')}<div class="q-text">${q.q}</div>
+    ${parts}
+    <button class="scenario-check-all" id="scCheck">✓ Check All Answers</button>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachScenario(){
+  document.querySelectorAll('.sc-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.disabled) return;
+      const part = b.dataset.part;
+      document.querySelectorAll(`.sc-opt[data-part="${part}"]`).forEach(x=>{
+        x.classList.remove('correct','wrong');
+        x.dataset.picked = '0';
+        x.style.borderColor=''; x.style.background='';
+      });
+      b.dataset.picked = '1';
+      b.style.borderColor = '#a78bfa';
+      b.style.background = '#f5f3ff';
+    });
+  });
+  document.getElementById('scCheck').addEventListener('click', ()=>{
+    const parts = current.parts;
+    let correctCount = 0;
+    parts.forEach((p,i)=>{
+      const resEl = document.querySelector(`[data-part-result="${i}"]`);
+      let ok = false;
+      if(p.kind==='mcq'){
+        const picked = document.querySelector(`.sc-opt[data-part="${i}"][data-picked="1"]`);
+        const pickedIdx = picked ? parseInt(picked.dataset.i) : -1;
+        ok = pickedIdx === p.ans;
+        document.querySelectorAll(`.sc-opt[data-part="${i}"]`).forEach(b=>{
+          b.disabled = true;
+          const j = parseInt(b.dataset.i);
+          b.style.borderColor=''; b.style.background='';
+          if(j === p.ans) b.classList.add('correct');
+          else if(j === pickedIdx) b.classList.add('wrong');
+        });
+      } else if(p.kind==='fill'){
+        const inp = document.querySelector(`.sc-fill[data-part="${i}"]`);
+        const u = norm(inp.value);
+        ok = !!u && p.answers.some(a => norm(a) === u);
+        inp.disabled = true;
+        inp.style.borderColor = ok ? '#06b6d4' : '#f43f5e';
+        inp.style.background = ok ? '#ecfeff' : '#fff5f5';
+      } else if(p.kind==='essay'){
+        const area = document.querySelector(`.sc-essay[data-part="${i}"]`);
+        const u = norm(area.value);
+        const hits = (p.keys||[]).filter(k => u.includes(norm(k))).length;
+        const need = Math.max(1, Math.ceil((p.keys||[]).length * 0.3));
+        ok = u.length >= 20 && hits >= need;
+        area.disabled = true;
+        area.style.borderColor = ok ? '#06b6d4' : '#f59e0b';
+        area.style.background = ok ? '#ecfeff' : '#fffbeb';
+      }
+      if(ok) correctCount++;
+      resEl.classList.remove('ok','bad'); resEl.classList.add('show', ok?'ok':'bad');
+      if(p.kind==='essay'){
+        resEl.innerHTML = ok
+          ? '✓ Good — key ideas covered.'
+          : `✗ Missing some key ideas. Model answer:<div style="font-weight:600;margin-top:6px;color:#333">${p.model}</div>`;
+      } else if(p.kind==='fill'){
+        resEl.innerHTML = ok ? '✓ Correct!' : `✗ Expected: <b>${p.display || p.answers[0]}</b>`;
+      } else {
+        resEl.innerHTML = ok ? '✓ Correct!' : '✗ Not quite.';
+      }
+    });
+    document.getElementById('scCheck').disabled = true;
+    const partTotal = parts.length;
+    const ok = correctCount >= Math.ceil(partTotal * 0.6);
+    const fb = document.getElementById('fb');
+    fb.className = `fb ${ok?'correct':'wrong'} show`;
+    const conceptHtml = current.concept ? `<div class="concept-box">💡 ${current.concept}</div>` : '';
+    fb.innerHTML = `<strong>${ok?'✅ Well done!':'📚 Keep practising.'}</strong> You got <strong>${correctCount} of ${partTotal}</strong> parts correct.${conceptHtml}`;
+    registerResult(ok);
+    setTimeout(()=>{
+      const nxt = document.createElement('button');
+      nxt.className = 'restart-btn';
+      nxt.style.marginTop = '16px';
+      nxt.style.padding = '10px 24px';
+      nxt.style.fontSize = '.88rem';
+      nxt.textContent = idx+1 >= total ? '🏁 See Results' : 'Next Question →';
+      nxt.onclick = ()=>{ idx++; next(); };
+      fb.appendChild(nxt);
+    }, 300);
+  });
+}
+
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    btn.textContent = box.classList.contains('show') ? '🙈 Hide Hint' : '💡 Show Hint';
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// ANSWER CHECK
+// ════════════════════════════════════════════════════════════════
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsArr = current.steps || [];
+  const stepsHtml = stepsArr.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${current.concept}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    fb.innerHTML = `<strong>✅ Correct! Well done!</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = current.opts[current.ans];
+    else if(current.type==='tf') correctText = current.ans ? 'True' : 'False';
+    else if(current.type==='fill' || current.type==='fill_bank') correctText = current.display || current.answers[0];
+    else if(current.type==='multi_check') correctText = current.correctIdx.map(i=>current.opts[i]).join(' + ');
+    fb.innerHTML = `<strong>❌ Not quite.</strong> The correct answer is <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total ? '🏁 See Results' : 'Next Question →';
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+// ════════════════════════════════════════════════════════════════
+// DONE
+// ════════════════════════════════════════════════════════════════
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  const msg = pct>=80 ? '🎉 Outstanding!' : pct>=60 ? '👍 Great job!' : pct>=40 ? '💪 Keep practising!' : '📚 Time to review!';
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>You finished <strong>${total}</strong> questions.</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>Correct</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>Wrong</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>Score</span></div>
+      </div>
+      <button class="restart-btn" onclick="location.reload()">🔄 Try Again</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#7c3aed;font-weight:700;text-decoration:none">← Back to library</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#a78bfa','#06b6d4','#818cf8','#f59e0b','#38bdf8','#2dd4bf'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+buildQueue(chKey);
+</script>
+</body>
+</html>
