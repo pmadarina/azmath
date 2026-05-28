@@ -2055,8 +2055,15 @@ const topicStats={};
 Object.keys(topicNames).forEach(k=>topicStats[k]={wrong:0,correct:0});
 
 const _examParam=new URLSearchParams(window.location.search).get('exam');
-const isExam=_examParam!==null;
+// NOTE: isExam can be flipped to false when we transition from a finished UAS
+// into auto-weak-practice mode, so it must be `let` not `const`.
+let isExam=_examParam!==null;
 const isUAS=_examParam==='uas';
+
+// Auto-weak-practice (UAS finished with acc<90% → drill weak topics to SmartScore 100)
+let isAutoWeak=false;
+let originalUasAcc=0;
+let autoWeakCount=0;
 
 let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false,selectedAnswer=null;
 let round=1, isAdaptive=false;
@@ -2086,6 +2093,7 @@ function applyScore(ok){
       score=Math.max(0,score-loss);
     }
   }
+  if(isAutoWeak) autoWeakCount++;
   // In exam mode, score stays at 0 until all questions done
   if(!isExam){
     document.getElementById('ssVal').textContent=score;
@@ -2117,7 +2125,15 @@ function renderDots(){
 // ─────────────────────────────────────────────────────────────
 function refillQueue(){
   const activeParts=getActiveParts();
-  const allTopics=activeParts.flatMap(p=>p.topics);
+  let allTopics=activeParts.flatMap(p=>p.topics);
+  // In auto-weak-practice mode, restrict the pool to topics the student got
+  // wrong on the UAS. Fall back to all active topics if (defensively) the
+  // weak set is empty.
+  if(isAutoWeak){
+    const weakSet=Object.keys(topicStats).filter(tp=>topicStats[tp].wrong>0);
+    if(weakSet.length>0) allTopics=allTopics.filter(tp=>weakSet.includes(tp));
+    if(allTopics.length===0) allTopics=activeParts.flatMap(p=>p.topics);
+  }
   if(allTopics.length===0) return;
   // Weight: 1 + 3×wrong + (1 if topic unattempted) so weak/new topics get more reps
   const weighted=allTopics.map(tp=>{
@@ -2452,6 +2468,16 @@ function renderDone(){
     document.getElementById('barPct').textContent=score;
     document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
   }
+  // ── Auto-Weak-Practice fork: UAS finished with acc < 90% → drill weak areas.
+  if(isExam && !isAutoWeak && acc < 90){
+    autoWeakPractice(acc);
+    return;
+  }
+  // ── Mastery screen: auto-weak loop reached SmartScore 100 ──
+  if(isAutoWeak && score >= 100){
+    renderMasteryDone();
+    return;
+  }
   let trophy='📚',msg={en:'Keep studying — you can do it!',id:'Terus belajar ya, kamu pasti bisa!'};
   if(isExam){
     if(acc>=90){trophy='🏆';msg={en:'Outstanding! Excellent exam result!',id:'Luar biasa! Hasil ujian yang sangat baik!'};}
@@ -2495,11 +2521,16 @@ function renderDone(){
       🎯 ${lang==='en'?'Practice Weak Areas':'Latih Area Lemah'}
     </button>`:'';
 
+  const greatWorkNote = (isExam && !isAutoWeak && acc>=90) ? `
+    <p style="margin-top:-6px;margin-bottom:14px;color:#00b894;font-weight:700;font-size:.92rem">
+      ${lang==='en'?'✨ Great work — no weak-area practice needed!':'✨ Mantap — tidak perlu latihan area lemah!'}
+    </p>` : '';
   document.getElementById('qArea').innerHTML=`
   <div class="qcard completion">
     <div class="trophy">${trophy}</div>
     <h2>${isExam?(lang==='en'?'Exam Complete!':'Ujian Selesai!'):'SmartScore: '+score}</h2>
     <p>${t(msg)}</p>
+    ${greatWorkNote}
     <div class="stats-row" style="max-width:360px;margin:0 auto 16px">
       <div class="stat-box"><div class="val val-g">${nCorrect}</div><div class="lbl">${lang==='en'?'Correct':'Benar'}</div></div>
       <div class="stat-box"><div class="val val-r">${nWrong}</div><div class="lbl">${lang==='en'?'Wrong':'Salah'}</div></div>
@@ -2524,6 +2555,89 @@ function startAdaptive(){
   ['sCorrect','sWrong','sTotal'].forEach(id=>document.getElementById(id).textContent='0');
   render();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────────────────────
+// Auto-Weak-Practice — shown after a UAS with acc < 90%.
+// Transitions out of exam mode into the existing IXL-style refill loop,
+// but with refillQueue restricted to weak topics (via isAutoWeak flag).
+// SmartScore starts at the UAS accuracy and climbs to 100.
+// ─────────────────────────────────────────────────────────────
+function autoWeakPractice(acc){
+  document.getElementById('qArea').innerHTML=`
+  <div class="qcard completion">
+    <div class="trophy">🎯</div>
+    <h2>${lang==='en'?'Time to level up!':'Saatnya naik level!'}</h2>
+    <p>${lang==='en'
+      ? `You got <strong>${acc}%</strong> on the UAS — let's master the topics you missed!`
+      : `Kamu dapat <strong>${acc}%</strong> di UAS — yuk kuasai topik yang masih lemah!`}</p>
+    <p style="opacity:.75;font-size:.9rem">${lang==='en'
+      ? 'Practice continues until SmartScore 100.'
+      : 'Latihan berlanjut sampai SmartScore 100.'}</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+      <button class="practice-btn" id="startAutoWeakBtn">
+        ${lang==='en'?'Start Weak Practice →':'Mulai Latihan Area Lemah →'}
+      </button>
+    </div>
+  </div>`;
+  document.getElementById('startAutoWeakBtn').onclick = ()=>{
+    // Transition state: leave exam mode, enter weak-practice IXL loop.
+    isAutoWeak = true;
+    isExam = false;
+    originalUasAcc = acc;
+    autoWeakCount = 0;
+    // Seed SmartScore at UAS accuracy (spec).
+    score = acc;
+    document.getElementById('ssVal').textContent=score;
+    document.getElementById('barFill').style.width=score+'%';
+    document.getElementById('barPct').textContent=score;
+    document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+    // Build an adaptive queue restricted to weak topics. buildAdaptiveQueue
+    // already weights by error rate, and refillQueue (when isAutoWeak) filters
+    // to weak topics — so this fits naturally with the existing infra.
+    const {queue:newQ}=buildAdaptiveQueue();
+    // Filter the seed queue to weak topics only (fall back if filter empties it).
+    const weakSet=Object.keys(topicStats).filter(tp=>topicStats[tp].wrong>0);
+    let filtered=newQ;
+    if(weakSet.length>0){
+      const f=newQ.filter(q=>weakSet.includes(q.topic));
+      if(f.length>0) filtered=f;
+    }
+    queue=filtered;
+    cur=0;
+    results=new Array(queue.length).fill(null);
+    nCorrect=0;nWrong=0;streak=0;answered=false;
+    ['sCorrect','sWrong','sTotal'].forEach(id=>document.getElementById(id).textContent='0');
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+}
+
+// Celebration screen shown when the auto-weak-practice loop hits SmartScore 100.
+function renderMasteryDone(){
+  document.getElementById('progDots').innerHTML='';
+  const head = lang==='en' ? '🏆 Mastered!' : '🏆 Mantap!';
+  const sub  = lang==='en'
+    ? 'You reached 100% after practising your weak areas.'
+    : 'Kamu mencapai 100% setelah berlatih area lemah.';
+  const uasLbl   = lang==='en' ? 'UAS score' : 'Skor UAS';
+  const smartLbl = 'SmartScore';
+  const weakLbl  = lang==='en' ? 'Weak-area questions' : 'Soal latihan area lemah';
+  document.getElementById('qArea').innerHTML=`
+  <div class="qcard completion">
+    <div class="trophy">🏆</div>
+    <h2>${head}</h2>
+    <p>${sub}</p>
+    <div class="stats-row" style="max-width:420px;margin:0 auto 16px">
+      <div class="stat-box"><div class="val val-b">${originalUasAcc}%</div><div class="lbl">${uasLbl}</div></div>
+      <div class="stat-box"><div class="val val-g">100/100</div><div class="lbl">${smartLbl}</div></div>
+      <div class="stat-box"><div class="val val-b">${autoWeakCount}</div><div class="lbl">${weakLbl}</div></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+      <button class="restart-btn" onclick="location.reload()">🔄 ${lang==='en'?'Try Again':'Coba Lagi'}</button>
+    </div>
+  </div>`;
+  for(let i=0;i<3;i++) setTimeout(confetti, i*200);
 }
 
 function restart(){

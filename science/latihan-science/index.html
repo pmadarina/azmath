@@ -1884,6 +1884,15 @@ let currentChapterTitle = null;
 let isUAS = false;
 let uasBreakdown = {}; // chapter -> {correct, total}
 
+// ── Auto-Weak-Practice state (kicks in when UAS finishes with acc < 90%) ──
+// Tracks per-topic correct/wrong counts so we know what to drill.
+let topicStats = {};            // { topicKey: {correct, wrong, recentWrong:[]} }
+let isWeakPractice = false;     // true once we leave UAS and enter drill mode
+let smartScore = 0;             // 0-100, updated +5/-3 during weak practice
+let originalUasAcc = 0;         // accuracy from the UAS exam (for celebration screen)
+let weakTopicSet = [];          // list of topic keys the student got wrong
+let weakCount = 0;              // # of weak-practice questions answered
+
 function buildQueue(chKey){
   if(chKey === 'uas'){
     buildUAS();
@@ -1981,19 +1990,153 @@ function updateScore(){
   document.getElementById('sCorrect').textContent = stats.correct;
   document.getElementById('sWrong').textContent = stats.wrong;
   document.getElementById('sDone').textContent = stats.done;
-  const pct = total>0 ? (stats.done/total)*100 : 0;
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
-  document.getElementById('hdrMeta').textContent =
-    (lang==='en'?'Question ':'Soal ') + Math.min(idx+1,total) + (lang==='en'?' of ':' dari ') + total;
+  if(isWeakPractice){
+    // During weak practice, the progress bar tracks SmartScore (0→100).
+    document.getElementById('progFill').style.width = smartScore + '%';
+    document.getElementById('progText').textContent =
+      (lang==='en'?'SmartScore: ':'SmartScore: ') + smartScore + '/100';
+    document.getElementById('hdrMeta').textContent =
+      (lang==='en'?'Weak practice · Q':'Latihan area lemah · Soal ') + (idx+1);
+  } else {
+    const pct = total>0 ? (stats.done/total)*100 : 0;
+    document.getElementById('progFill').style.width = pct + '%';
+    document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+    document.getElementById('hdrMeta').textContent =
+      (lang==='en'?'Question ':'Soal ') + Math.min(idx+1,total) + (lang==='en'?' of ':' dari ') + total;
+  }
 }
 
 function next(){
-  if(idx >= total){ renderDone(); return; }
+  if(idx >= total){
+    // Branch 1: still in weak-practice loop AND not yet mastered → refill & continue.
+    if(isWeakPractice && smartScore < 100){
+      refillWeakQueue();
+      current = queue[idx];
+      lastResult = null;
+      renderQuestion();
+      updateScore();
+      return;
+    }
+    // Branch 2: UAS just finished with acc < 90% → enter weak-practice flow.
+    if(isUAS && !isWeakPractice){
+      const acc = total>0 ? Math.round((stats.correct/total)*100) : 0;
+      if(acc < 90){
+        enterWeakPractice(acc);
+        return;
+      }
+    }
+    // Branch 3: anything else → normal done screen (or mastery screen if weak-practice done).
+    renderDone();
+    return;
+  }
   current = queue[idx];
   lastResult = null;
   renderQuestion();
   updateScore();
+}
+
+// ────────────────────────────────────────────────────────────────
+// AUTO-WEAK-PRACTICE — drills the topics the student got wrong on UAS
+// until SmartScore reaches 100.
+// ────────────────────────────────────────────────────────────────
+
+// Find generator keys whose questions match one of the given topics.
+function _genKeysForTopics(topicSet){
+  const out = [];
+  for(const [key, fn] of Object.entries(ALL_GENS)){
+    try {
+      const sample = fn();
+      if(topicSet.includes(sample.topic)) out.push(key);
+    } catch(e){ /* skip broken gen */ }
+  }
+  return out;
+}
+
+// Transition from finished UAS into the weak-practice loop.
+function enterWeakPractice(acc){
+  // Identify topics with at least one wrong answer; if none (shouldn't happen at acc<90
+  // but defensive), fall back to all topics that were attempted.
+  weakTopicSet = Object.keys(topicStats).filter(tp => topicStats[tp].wrong > 0);
+  if(weakTopicSet.length === 0){
+    weakTopicSet = Object.keys(topicStats);
+  }
+  // If still empty (no topicStats collected), fall back to all generator topics.
+  if(weakTopicSet.length === 0){
+    const tset = new Set();
+    for(const fn of Object.values(ALL_GENS)){
+      try { tset.add(fn().topic); } catch(e){}
+    }
+    weakTopicSet = Array.from(tset);
+  }
+
+  isWeakPractice = true;
+  originalUasAcc = acc;
+  smartScore = acc;       // start SmartScore at UAS accuracy
+  weakCount = 0;
+  // reset per-question stats so weak-practice progress is clearly separate
+  stats = {correct:0, wrong:0, done:0};
+  idx = 0;
+
+  // Build the initial weak-area queue (8 fresh questions, shuffled).
+  const pool = _genKeysForTopics(weakTopicSet);
+  const usePool = pool.length > 0 ? pool : Object.keys(ALL_GENS);
+  const QN = 8;
+  const built = [];
+  const shuffled = shuf(usePool);
+  for(let i=0;i<QN;i++){
+    const k = shuffled[i % shuffled.length];
+    const q = ALL_GENS[k]();
+    q._weak = true;
+    built.push(q);
+  }
+  queue = built;
+  total = queue.length;
+
+  // Show transition card → on click, start the first weak question.
+  const enMsg  = `You got <strong>${acc}%</strong> on the UAS — let's master the topics you missed!`;
+  const idMsg  = `Kamu dapat <strong>${acc}%</strong> di UAS — yuk kuasai topik yang masih lemah!`;
+  const enSub  = `Practice continues until SmartScore 100.`;
+  const idSub  = `Latihan berlanjut sampai SmartScore 100.`;
+  const enBtn  = `Start Weak Practice →`;
+  const idBtn  = `Mulai Latihan Area Lemah →`;
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>🎯 ${lang==='en'?'Time to level up!':'Saatnya naik level!'}</h2>
+      <p>${lang==='en'?enMsg:idMsg}</p>
+      <p style="opacity:.75;font-size:.9rem">${lang==='en'?enSub:idSub}</p>
+      <button class="restart-btn" id="startWeakBtn">${lang==='en'?enBtn:idBtn}</button>
+    </div>`;
+  document.getElementById('startWeakBtn').addEventListener('click', ()=>{
+    updateScore();
+    next();
+  });
+}
+
+// Top up the queue with more weak-area questions, weighted by recent wrongs.
+function refillWeakQueue(){
+  const pool = _genKeysForTopics(weakTopicSet);
+  const usePool = pool.length > 0 ? pool : Object.keys(ALL_GENS);
+  // Build per-generator weights from per-topic recent error counts.
+  const weighted = usePool.map(k => {
+    let w = 1;
+    try {
+      const tp = ALL_GENS[k]().topic;
+      const st = topicStats[tp] || {wrong:0,correct:0,recentWrong:[]};
+      const recent = (st.recentWrong||[]).slice(-3).reduce((a,b)=>a+b,0);
+      w = 1 + 2*st.wrong + 3*recent;
+    } catch(e){}
+    return {k, w};
+  });
+  const totalW = weighted.reduce((s,x)=>s+x.w, 0) || 1;
+  const need = 5;
+  for(let i=0;i<need;i++){
+    let r = Math.random()*totalW, pickKey = weighted[0].k;
+    for(const w of weighted){ r -= w.w; if(r <= 0){ pickKey = w.k; break; } }
+    const q = ALL_GENS[pickKey]();
+    q._weak = true;
+    queue.push(q);
+  }
+  total = queue.length;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2438,6 +2581,20 @@ function registerResult(ok){
     uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
     if(ok) uasBreakdown[current._chapter].correct++;
   }
+  // ── Per-topic tracking (used to build the weak-areas queue after UAS) ──
+  const tp = (current && (current._topic || current.topic)) || null;
+  if(tp){
+    topicStats[tp] = topicStats[tp] || {correct:0, wrong:0, recentWrong:[]};
+    if(ok){ topicStats[tp].correct++; topicStats[tp].recentWrong.push(0); }
+    else  { topicStats[tp].wrong++;   topicStats[tp].recentWrong.push(1); }
+    if(topicStats[tp].recentWrong.length > 5) topicStats[tp].recentWrong.shift();
+  }
+  // ── SmartScore update during weak-practice loop ──
+  if(isWeakPractice){
+    weakCount++;
+    if(ok) smartScore = Math.min(100, smartScore + 5);
+    else   smartScore = Math.max(0,   smartScore - 3);
+  }
   updateScore();
 }
 
@@ -2470,7 +2627,10 @@ function checkAnswer(ok, lockFn){
     nxt.style.marginTop = '16px';
     nxt.style.padding = '10px 24px';
     nxt.style.fontSize = '.88rem';
-    nxt.textContent = idx+1 >= total
+    // In weak-practice mode the loop continues until SmartScore 100,
+    // so always show "Next Question" (we refill on the fly).
+    const willContinue = isWeakPractice && smartScore < 100;
+    nxt.textContent = (idx+1 >= total && !willContinue)
       ? (lang==='en' ? '🏁 See Results' : '🏁 Lihat Hasil')
       : (lang==='en' ? 'Next Question →' : 'Soal Berikutnya →');
     nxt.onclick = ()=>{ idx++; next(); };
@@ -2482,6 +2642,35 @@ function checkAnswer(ok, lockFn){
 // DONE SCREEN
 // ════════════════════════════════════════════════════════════════
 function renderDone(){
+  // ── Mastery screen: weak-practice loop reached SmartScore 100 ──
+  if(isWeakPractice && smartScore >= 100){
+    const retryLbl = lang==='en'?'🔄 Try Again':'🔄 Coba Lagi';
+    const backLbl  = lang==='en'?'← Back to topics':'← Kembali ke daftar topik';
+    const head = lang==='en'
+      ? '🏆 Mastered!'
+      : '🏆 Mantap!';
+    const sub = lang==='en'
+      ? 'You reached 100% after practising your weak areas.'
+      : 'Kamu mencapai 100% setelah berlatih area lemah.';
+    const uasLbl    = lang==='en'?'UAS score':'Skor UAS';
+    const smartLbl  = lang==='en'?'SmartScore':'SmartScore';
+    const weakLbl   = lang==='en'?'Weak-area questions answered':'Soal latihan area lemah';
+    document.getElementById('quizSlot').innerHTML = `
+      <div class="q-card done">
+        <h2>${head}</h2>
+        <p>${sub}</p>
+        <div class="done-stats">
+          <div class="done-stat"><strong>${originalUasAcc}%</strong><span>${uasLbl}</span></div>
+          <div class="done-stat"><strong>100/100</strong><span>${smartLbl}</span></div>
+          <div class="done-stat"><strong>${weakCount}</strong><span>${weakLbl}</span></div>
+        </div>
+        <button class="restart-btn" onclick="location.reload()">${retryLbl}</button>
+        <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#00b894;font-weight:700;text-decoration:none">${backLbl}</a></p>
+      </div>`;
+    for(let i=0;i<5;i++) setTimeout(confetti, i*250);
+    return;
+  }
+
   const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
   let msg;
   if(lang==='en'){
@@ -2509,10 +2698,17 @@ function renderDone(){
     breakdownHtml = `<div class="breakdown"><h4>${bdTitle}</h4>${rows}</div>`;
   }
 
+  // For a UAS with acc >= 90 we still show the normal done screen, but add a note.
+  const greatWorkNote = (isUAS && !isWeakPractice && pct>=90) ? `
+    <p style="margin-top:8px;color:#00b894;font-weight:600">
+      ${lang==='en'?'✨ Great work — no weak-area practice needed!':'✨ Mantap — tidak perlu latihan area lemah!'}
+    </p>` : '';
+
   document.getElementById('quizSlot').innerHTML = `
     <div class="q-card done">
       <h2>${msg}</h2>
       <p>${finishedLbl}</p>
+      ${greatWorkNote}
       <div class="done-stats">
         <div class="done-stat"><strong>${stats.correct}</strong><span>${correctLbl}</span></div>
         <div class="done-stat"><strong>${stats.wrong}</strong><span>${wrongLbl}</span></div>

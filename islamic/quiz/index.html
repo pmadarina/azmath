@@ -543,11 +543,23 @@ let currentChapterTitle = null;
 let isUAS = false;
 let uasBreakdown = {};
 
+// ── Auto-Weak-Practice state (kicks in when UAS finishes with acc < 90%) ──
+let topicStats = {};
+let isWeakPractice = false;
+let smartScore = 0;
+let originalUasAcc = 0;
+let weakTopicSet = [];
+let weakCount = 0;
+
 function setHdrTitle(){
   document.getElementById('hdrTitle').textContent = '🕌 ' + (currentChapterTitle || 'Latihan Sirah');
 }
 function updateMeta(){
-  document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+  if(isWeakPractice){
+    document.getElementById('hdrMeta').textContent = 'Latihan area lemah · Soal ' + (idx+1);
+  } else {
+    document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+  }
 }
 
 function buildQueue(chKey){
@@ -614,14 +626,101 @@ function updateScore(){
   document.getElementById('sCorrect').textContent = stats.correct;
   document.getElementById('sWrong').textContent = stats.wrong;
   document.getElementById('sDone').textContent = stats.done;
-  const pct = total>0 ? (stats.done/total)*100 : 0;
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  if(isWeakPractice){
+    document.getElementById('progFill').style.width = smartScore + '%';
+    document.getElementById('progText').textContent = 'SmartScore: ' + smartScore + '/100';
+  } else {
+    const pct = total>0 ? (stats.done/total)*100 : 0;
+    document.getElementById('progFill').style.width = pct + '%';
+    document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  }
   updateMeta();
 }
 
+// ── Auto-Weak-Practice helpers ──
+function _genKeysForTopics(topicSet){
+  const out = [];
+  for(const [key, fn] of Object.entries(ALL_GENS)){
+    try { const s = fn(); if(topicSet.includes(s.topic)) out.push(key); } catch(e){}
+  }
+  return out;
+}
+function enterWeakPractice(acc){
+  weakTopicSet = Object.keys(topicStats).filter(tp => topicStats[tp].wrong > 0);
+  if(weakTopicSet.length === 0) weakTopicSet = Object.keys(topicStats);
+  if(weakTopicSet.length === 0){
+    const tset = new Set();
+    for(const fn of Object.values(ALL_GENS)){ try { tset.add(fn().topic); } catch(e){} }
+    weakTopicSet = Array.from(tset);
+  }
+  isWeakPractice = true;
+  originalUasAcc = acc;
+  smartScore = acc;
+  weakCount = 0;
+  stats = {correct:0, wrong:0, done:0};
+  idx = 0;
+  const pool = _genKeysForTopics(weakTopicSet);
+  const usePool = pool.length > 0 ? pool : Object.keys(ALL_GENS);
+  const built = [];
+  const shuffled = shuf(usePool);
+  for(let i=0;i<8;i++){
+    const k = shuffled[i % shuffled.length];
+    const q = ALL_GENS[k]();
+    q._weak = true;
+    built.push(q);
+  }
+  queue = built;
+  total = queue.length;
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>🎯 Saatnya naik level!</h2>
+      <p>Kamu dapat <strong>${acc}%</strong> di UAS — yuk kuasai topik yang masih lemah!</p>
+      <p style="opacity:.75;font-size:.9rem">Latihan berlanjut sampai SmartScore 100.</p>
+      <button class="restart-btn" id="startWeakBtn">Mulai Latihan Area Lemah →</button>
+    </div>`;
+  document.getElementById('startWeakBtn').addEventListener('click', ()=>{ updateScore(); next(); });
+}
+function refillWeakQueue(){
+  const pool = _genKeysForTopics(weakTopicSet);
+  const usePool = pool.length > 0 ? pool : Object.keys(ALL_GENS);
+  const weighted = usePool.map(k => {
+    let w = 1;
+    try {
+      const tp = ALL_GENS[k]().topic;
+      const st = topicStats[tp] || {wrong:0,correct:0,recentWrong:[]};
+      const recent = (st.recentWrong||[]).slice(-3).reduce((a,b)=>a+b,0);
+      w = 1 + 2*st.wrong + 3*recent;
+    } catch(e){}
+    return {k, w};
+  });
+  const totalW = weighted.reduce((s,x)=>s+x.w, 0) || 1;
+  for(let i=0;i<5;i++){
+    let r = Math.random()*totalW, pickKey = weighted[0].k;
+    for(const w of weighted){ r -= w.w; if(r <= 0){ pickKey = w.k; break; } }
+    const q = ALL_GENS[pickKey]();
+    q._weak = true;
+    queue.push(q);
+  }
+  total = queue.length;
+}
+
 function next(){
-  if(idx >= total){ renderDone(); return; }
+  if(idx >= total){
+    if(isWeakPractice && smartScore < 100){
+      refillWeakQueue();
+      current = queue[idx];
+      lastResult = null;
+      renderQuestion();
+      updateScore();
+      return;
+    }
+    if(isUAS && !isWeakPractice){
+      const acc = total>0 ? Math.round((stats.correct/total)*100) : 0;
+      if(acc < 90){ enterWeakPractice(acc); return; }
+    }
+    renderDone();
+    return;
+  }
   current = queue[idx];
   lastResult = null;
   renderQuestion();
@@ -800,6 +899,18 @@ function registerResult(ok){
     uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
     if(ok) uasBreakdown[current._chapter].correct++;
   }
+  const tp = (current && (current._topic || current.topic)) || null;
+  if(tp){
+    topicStats[tp] = topicStats[tp] || {correct:0, wrong:0, recentWrong:[]};
+    if(ok){ topicStats[tp].correct++; topicStats[tp].recentWrong.push(0); }
+    else  { topicStats[tp].wrong++;   topicStats[tp].recentWrong.push(1); }
+    if(topicStats[tp].recentWrong.length > 5) topicStats[tp].recentWrong.shift();
+  }
+  if(isWeakPractice){
+    weakCount++;
+    if(ok) smartScore = Math.min(100, smartScore + 5);
+    else   smartScore = Math.max(0,   smartScore - 3);
+  }
   updateScore();
 }
 
@@ -828,13 +939,30 @@ function checkAnswer(ok, lockFn){
     nxt.style.marginTop = '16px';
     nxt.style.padding = '10px 24px';
     nxt.style.fontSize = '.88rem';
-    nxt.textContent = idx+1 >= total ? '🏁 Lihat Hasil' : 'Soal Berikutnya →';
+    const willContinue = isWeakPractice && smartScore < 100;
+    nxt.textContent = (idx+1 >= total && !willContinue) ? '🏁 Lihat Hasil' : 'Soal Berikutnya →';
     nxt.onclick = ()=>{ idx++; next(); };
     fb.appendChild(nxt);
   }, 300);
 }
 
 function renderDone(){
+  if(isWeakPractice && smartScore >= 100){
+    document.getElementById('quizSlot').innerHTML = `
+      <div class="q-card done">
+        <h2>🏆 Mantap!</h2>
+        <p>Kamu mencapai 100% setelah berlatih area lemah.</p>
+        <div class="done-stats">
+          <div class="done-stat"><strong>${originalUasAcc}%</strong><span>Skor UAS</span></div>
+          <div class="done-stat"><strong>100/100</strong><span>SmartScore</span></div>
+          <div class="done-stat"><strong>${weakCount}</strong><span>Soal latihan area lemah</span></div>
+        </div>
+        <button class="restart-btn" onclick="location.reload()">🔄 Coba Lagi</button>
+        <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#10b981;font-weight:700;text-decoration:none">← Kembali ke daftar tema</a></p>
+      </div>`;
+    for(let i=0;i<5;i++) setTimeout(confetti, i*250);
+    return;
+  }
   const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
   const msg = pct>=80 ? '🎉 Masya Allah!' : pct>=60 ? '👍 Kerja bagus!' : pct>=40 ? '💪 Terus berlatih!' : '📚 Saatnya belajar lagi!';
   let breakdownHtml = '';
@@ -846,10 +974,13 @@ function renderDone(){
     }).join('');
     breakdownHtml = `<div class="breakdown"><h4>📊 Skor per Tema</h4>${rows}</div>`;
   }
+  const greatWorkNote = (isUAS && !isWeakPractice && pct>=90)
+    ? `<p style="margin-top:8px;color:#16a34a;font-weight:600">✨ Mantap — tidak perlu latihan area lemah!</p>` : '';
   document.getElementById('quizSlot').innerHTML = `
     <div class="q-card done">
       <h2>${msg}</h2>
       <p>Kamu menyelesaikan <strong>${total}</strong> soal.</p>
+      ${greatWorkNote}
       <div class="done-stats">
         <div class="done-stat"><strong>${stats.correct}</strong><span>Benar</span></div>
         <div class="done-stat"><strong>${stats.wrong}</strong><span>Salah</span></div>
