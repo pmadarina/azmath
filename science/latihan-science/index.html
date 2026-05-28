@@ -1351,6 +1351,97 @@ const ATMOS_GEN = {
     concept:{en:'Water keeps moving between Earth and atmosphere — powered by the Sun.',
              id:'Air terus bergerak antara Bumi dan atmosfer — digerakkan Matahari.'},
     keys:['evaporation','condensation','precipitation','collection','sun','evaporasi','kondensasi','presipitasi','pengumpulan','matahari']}),
+
+  // ── Water on the Earth (Ch 9 sub-topic) ──
+  water_dist:()=>{
+    const cor={en:'Salt water in the oceans',id:'Air asin di lautan'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Fresh water in rivers',id:'Air tawar di sungai'},
+      {en:'Frozen water in glaciers',id:'Air beku di gletser'},
+      {en:'Underground water',id:'Air bawah tanah'}]);
+    return{type:'mcq',topic:'water_earth',
+      q:{en:'Most of the water on Earth is found as ___.',id:'Sebagian besar air di Bumi berbentuk ___.'},
+      opts,ans,
+      hint:{en:'About 97% of Earth\'s water is salty.',id:'Sekitar 97% air di Bumi itu asin.'},
+      concept:{en:'~97% of Earth\'s water is salt water in oceans; only ~3% is fresh water.',
+               id:'~97% air di Bumi adalah air asin di lautan; hanya ~3% air tawar.'},
+      steps:{en:['Earth is sometimes called the "Blue Planet" because oceans cover about 71% of its surface.','Of all water on Earth, around <b>97%</b> is salty ocean water.'],
+             id:['Bumi sering disebut "Planet Biru" karena lautan menutupi sekitar 71% permukaannya.','Dari seluruh air di Bumi, sekitar <b>97%</b> adalah air asin di laut.']}};
+  },
+  fresh_water_source:()=>{
+    const cor={en:'Glaciers and ice caps',id:'Gletser dan tudung es'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Oceans and seas',id:'Lautan dan laut'},
+      {en:'Salty lakes',id:'Danau air asin'},
+      {en:'Clouds only',id:'Hanya awan'}]);
+    return{type:'mcq',topic:'water_earth',
+      q:{en:'Where is <b>most of Earth\'s fresh water</b> stored?',id:'Di mana <b>sebagian besar air tawar Bumi</b> disimpan?'},
+      opts,ans,
+      hint:{en:'Most fresh water is frozen.',id:'Sebagian besar air tawar berbentuk beku.'},
+      concept:{en:'Around 2/3 of fresh water is locked in ice — glaciers, ice caps, and polar ice.',
+               id:'Sekitar 2/3 air tawar terkunci dalam es — gletser, tudung es, dan es kutub.'},
+      steps:{en:['Of the ~3% fresh water, most is <b>frozen</b> in glaciers and polar ice caps.','Only a small portion is accessible as rivers, lakes, and groundwater.'],
+             id:['Dari ~3% air tawar, sebagian besar <b>beku</b> dalam gletser dan tudung es kutub.','Hanya sebagian kecil yang bisa diakses sebagai sungai, danau, dan air tanah.']}};
+  },
+  fresh_water_use:()=>{
+    const cor={en:'River',id:'Sungai'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Ocean',id:'Lautan'},
+      {en:'Sea',id:'Laut'},
+      {en:'Salt lake',id:'Danau garam'}]);
+    return{type:'mcq',topic:'water_earth',
+      q:{en:'Which of these is a source of <b>fresh water</b> that people can drink?',id:'Mana berikut ini sumber <b>air tawar</b> yang bisa diminum manusia?'},
+      opts,ans,
+      hint:{en:'Salty water is not safe to drink.',id:'Air asin tidak bisa diminum.'},
+      concept:{en:'Fresh water comes from rivers, lakes, groundwater, and melting glaciers.',
+               id:'Air tawar berasal dari sungai, danau, air tanah, dan gletser yang mencair.'},
+      steps:{en:['Oceans and salt lakes are <b>salty</b> — not drinkable.','Rivers carry <b>fresh water</b> that can be cleaned and used for drinking.'],
+             id:['Lautan dan danau garam itu <b>asin</b> — tidak bisa diminum.','Sungai membawa <b>air tawar</b> yang bisa dibersihkan dan digunakan untuk minum.']}};
+  },
+  conserve_water:()=>{
+    const cor={en:'Turn off the tap while brushing teeth',id:'Matikan keran saat menyikat gigi'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Take very long showers every day',id:'Mandi sangat lama setiap hari'},
+      {en:'Leave taps running while washing dishes',id:'Biarkan keran mengalir saat mencuci piring'},
+      {en:'Water the garden during noon heat',id:'Siram kebun di siang terik'}]);
+    return{type:'mcq',topic:'water_earth',
+      q:{en:'Which action helps to <b>save water</b>?',id:'Tindakan mana yang membantu <b>menghemat air</b>?'},
+      opts,ans,
+      hint:{en:'Don\'t let water run when you don\'t need it.',id:'Jangan biarkan air mengalir saat tidak dipakai.'},
+      concept:{en:'Saving water means using only what you need and stopping waste.',
+               id:'Menghemat air berarti pakai seperlunya dan tidak membuang-buang.'},
+      steps:{en:['Fresh water is limited — only ~3% of Earth\'s water.','Small habits like turning off the tap save lots of water over time.'],
+             id:['Air tawar terbatas — hanya ~3% dari air di Bumi.','Kebiasaan kecil seperti mematikan keran menghemat banyak air dari waktu ke waktu.']}};
+  },
+  // ── Water on the Earth: FILL ──
+  fill_water_pct:()=>({type:'fill',topic:'water_earth',
+    q:{en:'About __________ % of Earth\'s water is salt water in the oceans.',
+       id:'Sekitar __________ % air di Bumi adalah air asin di lautan.'},
+    answers:['97','97%','97 percent','97 persen'],
+    display:{en:'97 (about 97%)',id:'97 (sekitar 97%)'},
+    hint:{en:'Almost all of Earth\'s water is salty.',id:'Hampir semua air di Bumi itu asin.'},
+    concept:{en:'~97% salt water, ~3% fresh water.',id:'~97% air asin, ~3% air tawar.'},
+    steps:{en:['Of all the water on Earth, about <b>97%</b> is salty ocean water.'],
+           id:['Dari seluruh air di Bumi, sekitar <b>97%</b> adalah air asin lautan.']}}),
+  fill_water_fresh_source:()=>({type:'fill',topic:'water_earth',
+    q:{en:'Most of Earth\'s fresh water is frozen in __________ and polar ice caps.',
+       id:'Sebagian besar air tawar Bumi membeku di __________ dan tudung es kutub.'},
+    answers:['glaciers','glacier','gletser','es'],
+    display:{en:'glaciers',id:'gletser'},
+    hint:{en:'Huge sheets of ice that move slowly.',id:'Lapisan es besar yang bergerak perlahan.'},
+    concept:{en:'Glaciers store most of the planet\'s fresh water.',id:'Gletser menyimpan sebagian besar air tawar planet.'},
+    steps:{en:['Most fresh water is locked in <b>glaciers</b> and polar ice.'],
+           id:['Sebagian besar air tawar terkunci dalam <b>gletser</b> dan es kutub.']}}),
+  fill_blue_planet:()=>({type:'fill',topic:'water_earth',
+    q:{en:'Earth is called the __________ Planet because water covers most of its surface.',
+       id:'Bumi disebut Planet __________ karena air menutupi sebagian besar permukaannya.'},
+    answers:['blue','biru'],
+    display:{en:'Blue',id:'Biru'},
+    hint:{en:'The colour of the ocean from space.',id:'Warna lautan jika dilihat dari luar angkasa.'},
+    concept:{en:'From space, Earth looks blue because oceans cover ~71% of the surface.',
+             id:'Dari luar angkasa, Bumi terlihat biru karena lautan menutupi ~71% permukaannya.'},
+    steps:{en:['Oceans cover most of Earth → it looks <b>blue</b> from space.'],
+           id:['Lautan menutupi sebagian besar Bumi → terlihat <b>biru</b> dari luar angkasa.']}}),
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -1765,6 +1856,8 @@ const UAS_KISI = [
   {topic:'water_cycle', type:'mcq', n:2, chapter:'Ch 9'},
   {topic:'water_cycle', type:'fill', n:2, chapter:'Ch 9'},
   {topic:'water_cycle', type:'essay', n:1, chapter:'Ch 9'},
+  {topic:'water_earth', type:'mcq', n:2, chapter:'Ch 9'},
+  {topic:'water_earth', type:'fill', n:1, chapter:'Ch 9'},
   // Pollution
   {topic:'pollution_env', type:'mcq', n:3, chapter:'Ch 10'},
   {topic:'pollution_env', type:'fill', n:1, chapter:'Ch 10'},
