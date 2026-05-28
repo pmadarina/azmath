@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Practice — AzEnglish</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#fff0f4 0%,#ffe8ee 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+.hdr{background:linear-gradient(135deg,#ec4899,#f43f5e 50%,#f97316);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.1rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.9;background:rgba(255,255,255,.15);padding:5px 12px;border-radius:16px}
+.lang-toggle{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:inherit}
+.lang-toggle:hover{background:rgba(255,255,255,.28)}
+
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#ffe4e6;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ec4899,#f97316);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#ec4899;min-width:75px;text-align:right}
+
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:720px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #f3e8ec;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#10b981;background:#ecfdf5}
+.score-chip.correct strong{color:#10b981}
+.score-chip.wrong{border-color:#d63031;background:#fff5f5}
+.score-chip.wrong strong{color:#d63031}
+.score-chip.answered{border-color:#ec4899;background:#fdf2f8}
+.score-chip.answered strong{color:#ec4899}
+
+.main{max-width:720px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(236,72,153,.13)}
+.q-badge{display:inline-block;background:#fce7f3;color:#be185d;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#fce7f3;color:#be185d}
+.q-badge.fill{background:#f0eeff;color:#6c5ce7}
+.q-badge.essay{background:#ecfdf5;color:#10b981}
+
+.q-text{font-size:1.05rem;line-height:1.6;background:#fdf2f8;border-left:4px solid #ec4899;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+.q-text i{font-style:italic;color:#be185d;font-weight:700}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #f3e8ec;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit}
+.opt:hover:not(:disabled){border-color:#ec4899;background:#fdf2f8}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#fce7f3;color:#be185d;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#10b981;background:#ecfdf5}
+.opt.correct .opt-letter{background:#10b981;color:#fff}
+.opt.wrong{border-color:#d63031;background:#fff5f5}
+.opt.wrong .opt-letter{background:#d63031;color:#fff}
+
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:inherit;font-size:1rem;font-weight:700;padding:14px 18px;border:2px dashed #6c5ce7;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#ec4899;background:#fff;box-shadow:0 0 0 3px rgba(236,72,153,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#ec4899,#f97316);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #6c5ce7;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none;resize:vertical;min-height:100px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#ec4899;background:#fff;box-shadow:0 0 0 3px rgba(236,72,153,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#10b981;color:#10b981}
+.essay-self .got:hover{background:#ecfdf5}
+.essay-self .miss{border-color:#e17055;color:#e17055}
+.essay-self .miss:hover{background:#fff5f0}
+
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#ecfdf5;border:1.5px solid #10b981;color:#065f46}
+.fb.wrong{background:#fff5f5;border:1.5px solid #d63031;color:#a30000}
+.fb.info{background:#fdf2f8;border:1.5px solid #ec4899;color:#831843}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#10b981;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fffbe8;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02}
+
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #f9ca24;color:#b7760a;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fffbe8}
+.hint-box{display:none;background:#fffbe8;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02;margin-top:10px}
+.hint-box.show{display:block}
+
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#ec4899,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#ec4899,#f97316);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(236,72,153,.4)}
+.restart-btn:hover{opacity:.92}
+
+.breakdown{text-align:left;background:#fdf2f8;border-radius:14px;padding:14px 18px;margin:0 auto 22px;max-width:480px}
+.breakdown h4{font-size:.85rem;font-weight:900;margin-bottom:10px;color:#be185d;letter-spacing:.5px;text-transform:uppercase}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #f3e8ec;font-size:.88rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-row .bd-label{font-weight:700;color:#333;flex:1}
+.breakdown-row .bd-score{font-weight:800;color:#10b981}
+.breakdown-row .bd-score.low{color:#d63031}
+
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .hdr-title{font-size:.95rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+  .lang-toggle{padding:5px 9px;font-size:.7rem}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">← All</a>
+  <div class="hdr-title" id="hdrTitle">📚 English Practice</div>
+  <button class="lang-toggle" id="langBtn" onclick="toggleLang()">🌐 ID</button>
+  <div class="hdr-meta" id="hdrMeta">Question 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong><span id="lblCorrect">✓ Correct</span></div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong><span id="lblWrong">✗ Wrong</span></div>
+  <div class="score-chip answered"><strong id="sDone">0</strong><span id="lblDone">📝 Answered</span></div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;};
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.,!?;:'"]/g,'').replace(/\s+/g,' ');
+
+let lang = localStorage.getItem('azeng_lang') || 'en';
+function t(obj){
+  if(obj==null) return '';
+  if(typeof obj==='string') return obj;
+  if(Array.isArray(obj)) return obj.map(t);
+  if(typeof obj==='object' && ('en' in obj || 'id' in obj)) return obj[lang] || obj.en || obj.id || '';
+  return obj;
+}
+function toggleLang(){
+  lang = lang==='en' ? 'id' : 'en';
+  localStorage.setItem('azeng_lang', lang);
+  updateLangUI();
+  if(current) renderQuestion();
+}
+function updateLangUI(){
+  document.getElementById('langBtn').textContent = lang==='en' ? '🌐 ID' : '🌐 EN';
+  document.getElementById('lblCorrect').textContent = lang==='en' ? '✓ Correct' : '✓ Benar';
+  document.getElementById('lblWrong').textContent = lang==='en' ? '✗ Wrong' : '✗ Salah';
+  document.getElementById('lblDone').textContent = lang==='en' ? '📝 Answered' : '📝 Dijawab';
+  document.getElementById('hdrTitle').textContent = '📚 ' + (currentChapterTitle ? t(currentChapterTitle) : (lang==='en'?'English Practice':'Latihan Bahasa Inggris'));
+  document.getElementById('hdrMeta').textContent = (lang==='en'?'Question ':'Soal ') + Math.min(idx+1,total) + (lang==='en'?' of ':' dari ') + total;
+}
+
+function mkOpts(correct, distractors){
+  const all=[correct, ...distractors].slice(0,4);
+  while(all.length<4) all.push({en:'—',id:'—'});
+  const sh=shuf(all);
+  return {opts:sh, ans:sh.indexOf(correct)};
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE 7 — Let's help (verb maybe, future will, vocab)
+// Topics: m7_maybe, m7_will, m7_vocab
+// ════════════════════════════════════════════════════════════════
+const M7_GEN = {
+  m7_will_basic:()=>{
+    const cor={en:'will help',id:'will help'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'helps',id:'helps'},
+      {en:'helped',id:'helped'},
+      {en:'helping',id:'helping'}]);
+    return{type:'mcq',topic:'m7_will',
+      q:{en:'Choose the correct form: "Tomorrow, I ___ the children clean the park."',
+         id:'Pilih bentuk yang benar: "Tomorrow, I ___ the children clean the park."'},
+      opts,ans,
+      hint:{en:'"Tomorrow" signals the future. Use will + base verb.',
+            id:'Kata "tomorrow" menandakan waktu mendatang. Gunakan will + kata kerja dasar.'},
+      concept:{en:'Future "will" + base verb is used for promises and predictions.',
+               id:'Future "will" + kata kerja dasar dipakai untuk janji dan prediksi.'},
+      steps:{en:['"Tomorrow" → future time.','Use <b>will + base verb</b>: will help.'],
+             id:['"Tomorrow" → waktu mendatang.','Gunakan <b>will + kata kerja dasar</b>: will help.']}};
+  },
+  m7_will_promise:()=>{
+    const cor={en:"I'll bring some pills and vitamins.",id:"I'll bring some pills and vitamins."};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'I bring some pills and vitamins.',id:'I bring some pills and vitamins.'},
+      {en:'I bringing some pills and vitamins.',id:'I bringing some pills and vitamins.'},
+      {en:'I brought some pills and vitamins.',id:'I brought some pills and vitamins.'}]);
+    return{type:'mcq',topic:'m7_will',
+      q:{en:'Sara is sick. You want to make a promise to visit her. Which sentence is correct?',
+         id:'Sara sakit. Kamu ingin berjanji menjenguknya. Kalimat mana yang benar?'},
+      opts,ans,
+      hint:{en:'Promises in English use "I will" or the contraction "I\'ll".',
+            id:'Janji dalam bahasa Inggris menggunakan "I will" atau singkatannya "I\'ll".'},
+      concept:{en:'Use "will" (or "\'ll") for spontaneous promises and offers.',
+               id:'Gunakan "will" (atau "\'ll") untuk janji dan tawaran spontan.'},
+      steps:{en:['A promise → future tense.','Use <b>I\'ll + base verb</b>.'],
+             id:['Janji → future tense.','Gunakan <b>I\'ll + kata kerja dasar</b>.']}};
+  },
+  m7_maybe_position:()=>{
+    const cor={en:'Maybe I will join the charity event.',id:'Maybe I will join the charity event.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'I will maybe join the charity event.',id:'I will maybe join the charity event.'},
+      {en:'I will join maybe the charity event.',id:'I will join maybe the charity event.'},
+      {en:'I will join the charity event maybe.',id:'I will join the charity event maybe.'}]);
+    return{type:'mcq',topic:'m7_maybe',
+      q:{en:'Where does "maybe" usually go in a sentence?',id:'Di posisi mana "maybe" biasanya diletakkan dalam kalimat?'},
+      opts,ans,
+      hint:{en:'"Maybe" usually starts the sentence.',id:'"Maybe" biasanya berada di awal kalimat.'},
+      concept:{en:'"Maybe" is an adverb of possibility — usually placed at the beginning of a sentence.',
+               id:'"Maybe" adalah kata keterangan kemungkinan — biasanya diletakkan di awal kalimat.'},
+      steps:{en:['"Maybe" = perhaps / possibly.','Standard position: <b>at the start</b>.'],
+             id:['"Maybe" = mungkin.','Posisi standar: <b>di awal kalimat</b>.']}};
+  },
+  m7_maybe_meaning:()=>{
+    const cor={en:'mungkin / barangkali',id:'mungkin / barangkali'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'pasti',id:'pasti'},
+      {en:'tidak pernah',id:'tidak pernah'},
+      {en:'selalu',id:'selalu'}]);
+    return{type:'mcq',topic:'m7_maybe',
+      q:{en:'What is the meaning of "maybe" in "Maybe it will rain tomorrow"?',
+         id:'Apa arti "maybe" pada kalimat "Maybe it will rain tomorrow"?'},
+      opts,ans,
+      hint:{en:'It shows something is not certain.',id:'Menunjukkan sesuatu yang belum pasti.'},
+      concept:{en:'"Maybe" expresses possibility — something is not 100% sure.',
+               id:'"Maybe" menyatakan kemungkinan — belum 100% pasti.'},
+      steps:{en:['Maybe → expresses uncertainty.','Indonesian: <b>mungkin</b>.'],
+             id:['Maybe → menyatakan ketidakpastian.','Bahasa Indonesia: <b>mungkin</b>.']}};
+  },
+  m7_vocab_raise:()=>{
+    const cor={en:'raise money',id:'raise money'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'lift money',id:'lift money'},
+      {en:'reach money',id:'reach money'},
+      {en:'put away money',id:'put away money'}]);
+    return{type:'mcq',topic:'m7_vocab',
+      q:{en:'The children want to ___ for the homeless shelter by selling cookies.',
+         id:'Anak-anak ingin ___ untuk panti tunawisma dengan menjual kue.'},
+      opts,ans,
+      hint:{en:'It means "collect money from people for a cause".',
+            id:'Artinya "mengumpulkan uang untuk suatu tujuan".'},
+      concept:{en:'"Raise money" = collect money for a charity or cause.',
+               id:'"Raise money" = mengumpulkan uang untuk amal atau tujuan tertentu.'},
+      steps:{en:['Selling cookies for charity → collecting money.','The phrase is <b>raise money</b>.'],
+             id:['Menjual kue untuk amal → mengumpulkan uang.','Frasanya adalah <b>raise money</b>.']}};
+  },
+  m7_vocab_putaway:()=>{
+    const cor={en:'put away',id:'put away'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'put on',id:'put on'},
+      {en:'put up',id:'put up'},
+      {en:'put down',id:'put down'}]);
+    return{type:'mcq',topic:'m7_vocab',
+      q:{en:'After playing, please ___ your toys in the box.',
+         id:'Setelah bermain, tolong ___ mainanmu di dalam kotak.'},
+      opts,ans,
+      hint:{en:'It means "store something in its proper place".',
+            id:'Artinya "menyimpan sesuatu di tempatnya".'},
+      concept:{en:'"Put away" = store / tidy something into its proper place.',
+               id:'"Put away" = menyimpan / merapikan sesuatu ke tempatnya.'},
+      steps:{en:['Storing toys → <b>put away</b>.'],
+             id:['Menyimpan mainan → <b>put away</b>.']}};
+  },
+  m7_vocab_makefun:()=>{
+    const cor={en:'make fun of',id:'make fun of'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'make up',id:'make up'},
+      {en:'make sure',id:'make sure'},
+      {en:'make out',id:'make out'}]);
+    return{type:'mcq',topic:'m7_vocab',
+      q:{en:'It is unkind to ___ your friends.',id:'Tidak baik untuk ___ temanmu.'},
+      opts,ans,
+      hint:{en:'Means to laugh at someone in a hurtful way.',id:'Artinya menertawakan seseorang dengan cara menyakitkan.'},
+      concept:{en:'"Make fun of" = tease or laugh at someone.',
+               id:'"Make fun of" = mengejek atau menertawakan seseorang.'},
+      steps:{en:['Teasing someone → <b>make fun of</b>.'],
+             id:['Mengejek seseorang → <b>make fun of</b>.']}};
+  },
+  m7_vocab_charity:()=>{
+    const cor={en:'a charity',id:'a charity'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'a chore',id:'a chore'},
+      {en:'a wish',id:'a wish'},
+      {en:'a legend',id:'a legend'}]);
+    return{type:'mcq',topic:'m7_vocab',
+      q:{en:'An organization that helps people in need is called ___.',
+         id:'Organisasi yang membantu orang yang membutuhkan disebut ___.'},
+      opts,ans,
+      hint:{en:'Begins with "ch".',id:'Diawali huruf "ch".'},
+      concept:{en:'A charity is an organization that helps others.',
+               id:'A charity adalah organisasi yang menolong orang lain.'},
+      steps:{en:['Helping organization = <b>charity</b>.'],
+             id:['Organisasi penolong = <b>charity</b>.']}};
+  },
+  m7_vocab_secondhand:()=>{
+    const cor={en:'second-hand',id:'second-hand'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'modern',id:'modern'},
+      {en:'brand new',id:'brand new'},
+      {en:'broken',id:'broken'}]);
+    return{type:'mcq',topic:'m7_vocab',
+      q:{en:'Clothes that were used by someone before are called ___ clothes.',
+         id:'Pakaian yang sudah pernah dipakai orang lain disebut pakaian ___.'},
+      opts,ans,
+      hint:{en:'Hyphenated word: "second-___".',id:'Kata berhubung-strip: "second-___".'},
+      concept:{en:'"Second-hand" = previously owned / used.',
+               id:'"Second-hand" = bekas / sudah pernah dipakai.'},
+      steps:{en:['Pre-owned → <b>second-hand</b>.'],
+             id:['Bekas → <b>second-hand</b>.']}};
+  },
+  m7_vocab_legend:()=>{
+    const cor={en:'a legend',id:'a legend'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'a chore',id:'a chore'},
+      {en:'an illness',id:'an illness'},
+      {en:'a vitamin',id:'a vitamin'}]);
+    return{type:'mcq',topic:'m7_vocab',
+      q:{en:'An old story passed down from grandparents to children is called ___.',
+         id:'Cerita tua yang diwariskan dari kakek-nenek ke anak-anak disebut ___.'},
+      opts,ans,
+      hint:{en:'Like the story of Malin Kundang.',id:'Seperti cerita Malin Kundang.'},
+      concept:{en:'A legend is a traditional story from long ago.',
+               id:'A legend adalah cerita tradisional dari masa lalu.'},
+      steps:{en:['Old traditional story = <b>legend</b>.'],
+             id:['Cerita tradisional lama = <b>legend</b>.']}};
+  },
+  // FILL
+  m7_fill_will:()=>({type:'fill',topic:'m7_will',
+    q:{en:'Complete with <b>will</b> or the base verb: "I _______ help my mother tomorrow." (write the missing word)',
+       id:'Lengkapi dengan <b>will</b> atau kata kerja dasar: "I _______ help my mother tomorrow." (tulis kata yang hilang)'},
+    answers:['will','\'ll','ill'],
+    display:{en:'will',id:'will'},
+    hint:{en:'It\'s the future auxiliary verb.',id:'Kata bantu untuk waktu mendatang.'},
+    concept:{en:'Future: subject + will + base verb.',
+             id:'Future: subjek + will + kata kerja dasar.'},
+    steps:{en:['Tomorrow → future.','Use <b>will</b>.'],
+           id:['Tomorrow → mendatang.','Gunakan <b>will</b>.']}}),
+  m7_fill_vocab_lift:()=>({type:'fill',topic:'m7_vocab',
+    q:{en:'The bag is heavy. Can you help me _______ it? (one word)',
+       id:'Tasnya berat. Bisakah kamu membantu saya _______ -nya? (satu kata)'},
+    answers:['lift','mengangkat'],
+    display:{en:'lift',id:'lift (mengangkat)'},
+    hint:{en:'To raise something up.',id:'Mengangkat sesuatu ke atas.'},
+    concept:{en:'"Lift" = raise something off the ground.',
+             id:'"Lift" = mengangkat sesuatu dari permukaan.'},
+    steps:{en:['Heavy bag → need to <b>lift</b>.'],
+           id:['Tas berat → perlu <b>lift</b> (angkat).']}}),
+  m7_fill_vocab_wish:()=>({type:'fill',topic:'m7_vocab',
+    q:{en:'When you blow out birthday candles, you make a _______. (one word)',
+       id:'Saat kamu meniup lilin ulang tahun, kamu membuat sebuah _______. (satu kata)'},
+    answers:['wish','harapan'],
+    display:{en:'wish',id:'wish (harapan)'},
+    hint:{en:'Something you hope will come true.',id:'Sesuatu yang kamu harapkan terjadi.'},
+    concept:{en:'A "wish" is a hope or desire.',
+             id:'"Wish" adalah harapan atau keinginan.'},
+    steps:{en:['Birthday candles → make a <b>wish</b>.'],
+           id:['Lilin ultah → membuat <b>wish</b> (harapan).']}}),
+  // ESSAY
+  m7_essay_promise:()=>({type:'essay',topic:'m7_will',
+    q:{en:'Your friend is sad because his pet is sick. Write 2–3 sentences using "I will / I\'ll" to promise three things you will do to help.',
+       id:'Temanmu sedih karena hewan peliharaannya sakit. Tulis 2–3 kalimat menggunakan "I will / I\'ll" untuk menjanjikan tiga hal yang akan kamu lakukan.'},
+    model:{en:`I'll visit your house after school. I'll bring some vitamins for your pet. I will also help you take care of him every day until he feels better.`,
+           id:`I'll visit your house after school. I'll bring some vitamins for your pet. I will also help you take care of him every day until he feels better.`},
+    hint:{en:'Use "I\'ll" or "I will" + base verb three times.',
+          id:'Gunakan "I\'ll" atau "I will" + kata kerja dasar tiga kali.'},
+    concept:{en:'"Will" is for future promises.',
+             id:'"Will" digunakan untuk janji masa depan.'},
+    keys:["i will","i'll",'help','visit','bring','take care','vitamin']}),
+  m7_essay_charity:()=>({type:'essay',topic:'m7_vocab',
+    q:{en:'Imagine your class is doing a charity event. Write 2–3 sentences explaining what activities you will organise (use vocabulary like "raise money", "raffle tickets", "ring toss").',
+       id:'Bayangkan kelasmu mengadakan acara amal. Tulis 2–3 kalimat menjelaskan kegiatan yang akan kamu adakan (gunakan kosakata seperti "raise money", "raffle tickets", "ring toss").'},
+    model:{en:`We will hold a fun fair to raise money for sick children. We will sell raffle tickets and play a ring toss game. We hope to make our friends' wishes come true.`,
+           id:`We will hold a fun fair to raise money for sick children. We will sell raffle tickets and play a ring toss game. We hope to make our friends' wishes come true.`},
+    hint:{en:'Use "raise money", "will", and at least one activity.',
+          id:'Gunakan "raise money", "will", dan minimal satu kegiatan.'},
+    concept:{en:'Charity events raise money to help people.',
+             id:'Acara amal mengumpulkan uang untuk membantu orang.'},
+    keys:['raise money','will','charity','raffle','ring toss','help','wish']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// MODULE 8 — What's up? (prepositions, directions, May, -ing)
+// Topics: m8_preposition, m8_directions, m8_may, m8_ing, m8_vocab
+// ════════════════════════════════════════════════════════════════
+const M8_GEN = {
+  m8_prep_across:()=>{
+    const cor={en:'across',id:'across'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'into',id:'into'},
+      {en:'over',id:'over'},
+      {en:'around',id:'around'}]);
+    return{type:'mcq',topic:'m8_preposition',
+      q:{en:'To get to the windmill, you must walk ___ the bridge.',
+         id:'Untuk sampai ke kincir angin, kamu harus berjalan ___ jembatan.'},
+      opts,ans,
+      hint:{en:'From one side to the other side.',id:'Dari satu sisi ke sisi lainnya.'},
+      concept:{en:'"Across" means from one side to the other.',
+               id:'"Across" berarti dari satu sisi ke sisi lain (menyeberang).'},
+      steps:{en:['Crossing a bridge = <b>across</b> the bridge.'],
+             id:['Menyeberangi jembatan = <b>across</b> the bridge.']}};
+  },
+  m8_prep_through:()=>{
+    const cor={en:'through',id:'through'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'over',id:'over'},
+      {en:'past',id:'past'},
+      {en:'around',id:'around'}]);
+    return{type:'mcq',topic:'m8_preposition',
+      q:{en:'The train goes ___ the long tunnel under the hill.',
+         id:'Kereta melewati ___ terowongan panjang di bawah bukit.'},
+      opts,ans,
+      hint:{en:'Inside and out the other end.',id:'Masuk dari satu ujung dan keluar dari ujung lainnya.'},
+      concept:{en:'"Through" means moving from one end to the other inside something.',
+               id:'"Through" berarti bergerak dari satu ujung ke ujung lain di dalam sesuatu.'},
+      steps:{en:['Tunnel → goes <b>through</b> it.'],
+             id:['Terowongan → lewat <b>through</b> (menembus).']}};
+  },
+  m8_prep_up:()=>{
+    const cor={en:'up',id:'up'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'down',id:'down'},
+      {en:'past',id:'past'},
+      {en:'across',id:'across'}]);
+    return{type:'mcq',topic:'m8_preposition',
+      q:{en:'They walked ___ the hill to see the windmill at the top.',
+         id:'Mereka berjalan ___ bukit untuk melihat kincir angin di puncak.'},
+      opts,ans,
+      hint:{en:'Movement toward a higher position.',id:'Bergerak ke posisi yang lebih tinggi.'},
+      concept:{en:'"Up" indicates upward movement.',
+               id:'"Up" menunjukkan gerakan ke atas.'},
+      steps:{en:['To the top → <b>up</b> the hill.'],
+             id:['Ke puncak → <b>up</b> the hill.']}};
+  },
+  m8_directions_turn:()=>{
+    const cor={en:'Turn left',id:'Turn left'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Go straight',id:'Go straight'},
+      {en:'Turn right',id:'Turn right'},
+      {en:'Cross the road',id:'Cross the road'}]);
+    return{type:'mcq',topic:'m8_directions',
+      q:{en:'Which instruction tells you to change direction toward your left side?',
+         id:'Petunjuk mana yang menyuruhmu berbelok ke sisi kiri?'},
+      opts,ans,
+      hint:{en:'"Left" = the opposite of right.',id:'"Left" = kebalikan dari right.'},
+      concept:{en:'Direction phrases: turn left, turn right, go straight.',
+               id:'Frasa arah: turn left, turn right, go straight.'},
+      steps:{en:['Left = kiri → <b>Turn left</b>.'],
+             id:['Left = kiri → <b>Turn left</b>.']}};
+  },
+  m8_directions_post:()=>{
+    const cor={en:'Go straight and turn right at the fire station. The post office is on your left.',
+               id:'Go straight and turn right at the fire station. The post office is on your left.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Stop and wait at the chemist.',id:'Stop and wait at the chemist.'},
+      {en:'Cross the bridge to the windmill.',id:'Cross the bridge to the windmill.'},
+      {en:'Climb up the hill and turn left.',id:'Climb up the hill and turn left.'}]);
+    return{type:'mcq',topic:'m8_directions',
+      q:{en:'Tom wants to go to the <b>post office</b>. Which directions would help him?',
+         id:'Tom ingin pergi ke <b>kantor pos</b>. Petunjuk mana yang akan membantunya?'},
+      opts,ans,
+      hint:{en:'Look for directions that mention the post office.',
+            id:'Cari petunjuk yang menyebut kantor pos.'},
+      concept:{en:'Good directions name the destination and the turns to make.',
+               id:'Petunjuk yang baik menyebut tujuan dan belokan-belokannya.'},
+      steps:{en:['Destination = post office.','Pick the option that ends at the post office.'],
+             id:['Tujuan = post office.','Pilih opsi yang berakhir di post office.']}};
+  },
+  m8_may_request:()=>{
+    const cor={en:'May I borrow your pen, please?',id:'May I borrow your pen, please?'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'May borrowing your pen?',id:'May borrowing your pen?'},
+      {en:'I may to borrow your pen?',id:'I may to borrow your pen?'},
+      {en:'I borrowing may your pen?',id:'I borrowing may your pen?'}]);
+    return{type:'mcq',topic:'m8_may',
+      q:{en:'Which sentence politely asks for permission?',
+         id:'Kalimat mana yang dengan sopan meminta izin?'},
+      opts,ans,
+      hint:{en:'Pattern: May + I + base verb + …?',id:'Pola: May + I + kata kerja dasar + …?'},
+      concept:{en:'"May" is used to ask for permission politely.',
+               id:'"May" digunakan untuk meminta izin secara sopan.'},
+      steps:{en:['Polite request → <b>May I + base verb</b>?'],
+             id:['Permintaan sopan → <b>May I + kata kerja dasar</b>?']}};
+  },
+  m8_may_meaning:()=>{
+    const cor={en:'asking for permission',id:'asking for permission'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'giving a command',id:'giving a command'},
+      {en:'describing the past',id:'describing the past'},
+      {en:'making a comparison',id:'making a comparison'}]);
+    return{type:'mcq',topic:'m8_may',
+      q:{en:'"May I sit here?" — What is the speaker doing?',
+         id:'"May I sit here?" — Apa yang dilakukan pembicara?'},
+      opts,ans,
+      hint:{en:'"May" can mean possibility or permission. Here it is the second meaning.',
+            id:'"May" bisa berarti kemungkinan atau izin. Di sini artinya yang kedua.'},
+      concept:{en:'"May I…?" = polite request for permission.',
+               id:'"May I…?" = meminta izin dengan sopan.'},
+      steps:{en:['May + I + verb = <b>asking for permission</b>.'],
+             id:['May + I + verb = <b>meminta izin</b>.']}};
+  },
+  m8_ing_love:()=>{
+    const cor={en:'reading',id:'reading'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'read',id:'read'},
+      {en:'reads',id:'reads'},
+      {en:'to read',id:'to read'}]);
+    return{type:'mcq',topic:'m8_ing',
+      q:{en:'I love ___ books about ancient legends.',
+         id:'I love ___ books about ancient legends.'},
+      opts,ans,
+      hint:{en:'After like/love/enjoy/hate we use the -ing form.',
+            id:'Setelah like/love/enjoy/hate kita gunakan bentuk -ing.'},
+      concept:{en:'Like / love / enjoy / hate + verb-ing.',
+               id:'Like / love / enjoy / hate + verb-ing.'},
+      steps:{en:['Love + <b>-ing form</b>.','Love + <b>reading</b>.'],
+             id:['Love + <b>bentuk -ing</b>.','Love + <b>reading</b>.']}};
+  },
+  m8_ing_hate:()=>{
+    const cor={en:'doing',id:'doing'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'do',id:'do'},
+      {en:'does',id:'does'},
+      {en:'to do',id:'to do'}]);
+    return{type:'mcq',topic:'m8_ing',
+      q:{en:'My brother hates ___ his chores on weekends.',
+         id:'Kakak laki-lakiku benci ___ tugas rumahnya di akhir pekan.'},
+      opts,ans,
+      hint:{en:'After "hate" the verb takes -ing.',id:'Setelah "hate" kata kerja menggunakan -ing.'},
+      concept:{en:'Hate + verb-ing.',id:'Hate + verb-ing.'},
+      steps:{en:['Hate + <b>doing</b>.'],id:['Hate + <b>doing</b>.']}};
+  },
+  m8_vocab_chemist:()=>{
+    const cor={en:'a chemist',id:'a chemist'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'a fire station',id:'a fire station'},
+      {en:'a post office',id:'a post office'},
+      {en:'a windmill',id:'a windmill'}]);
+    return{type:'mcq',topic:'m8_vocab',
+      q:{en:'Where can you buy pills and vitamins?',id:'Di mana kamu dapat membeli pil dan vitamin?'},
+      opts,ans,
+      hint:{en:'It is also called a pharmacy.',id:'Disebut juga apotek.'},
+      concept:{en:'A chemist (UK English) is a pharmacy.',
+               id:'A chemist (Bahasa Inggris UK) adalah apotek.'},
+      steps:{en:['Pills + vitamins → bought at a <b>chemist</b>.'],
+             id:['Pil + vitamin → dibeli di <b>chemist</b> (apotek).']}};
+  },
+  m8_vocab_borrow:()=>{
+    const cor={en:'borrow',id:'borrow'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'lend',id:'lend'},
+      {en:'buy',id:'buy'},
+      {en:'sell',id:'sell'}]);
+    return{type:'mcq',topic:'m8_vocab',
+      q:{en:'I forgot my notebook. Can I ___ yours for one day?',
+         id:'I forgot my notebook. Can I ___ yours for one day?'},
+      opts,ans,
+      hint:{en:'To take something from someone with permission to give it back.',
+            id:'Mengambil sesuatu dari seseorang dengan janji untuk mengembalikannya.'},
+      concept:{en:'"Borrow" = take something temporarily.',
+               id:'"Borrow" = meminjam sesuatu sementara.'},
+      steps:{en:['Take + return later → <b>borrow</b>.'],
+             id:['Mengambil + mengembalikan → <b>borrow</b>.']}};
+  },
+  m8_fill_directions:()=>({type:'fill',topic:'m8_directions',
+    q:{en:'To find the chemist, go straight and turn _______ at the corner. (left/right — write one word for "kiri")',
+       id:'Untuk menemukan apotek, jalan lurus dan belok _______ di pojok. (left/right — tulis satu kata untuk "kiri")'},
+    answers:['left','kiri'],
+    display:{en:'left',id:'left (kiri)'},
+    hint:{en:'"Kiri" in English.',id:'"Kiri" dalam bahasa Inggris.'},
+    concept:{en:'Left = kiri; Right = kanan.',id:'Left = kiri; Right = kanan.'},
+    steps:{en:['"Kiri" → <b>left</b>.'],id:['"Kiri" → <b>left</b>.']}}),
+  m8_fill_ing:()=>({type:'fill',topic:'m8_ing',
+    q:{en:'Complete with the correct form: "Maya enjoys _______ a language at the art class." (verb: learn)',
+       id:'Lengkapi dengan bentuk yang benar: "Maya enjoys _______ a language at the art class." (kata kerja: learn)'},
+    answers:['learning'],
+    display:{en:'learning',id:'learning'},
+    hint:{en:'After "enjoy", verbs take -ing.',id:'Setelah "enjoy", kata kerja memakai -ing.'},
+    concept:{en:'Enjoy + verb-ing.',id:'Enjoy + verb-ing.'},
+    steps:{en:['Enjoy + <b>learning</b>.'],id:['Enjoy + <b>learning</b>.']}}),
+  m8_fill_may:()=>({type:'fill',topic:'m8_ing',
+    q:{en:'Polite permission: "_______ I borrow your eraser, please?" (one word)',
+       id:'Permintaan izin sopan: "_______ I borrow your eraser, please?" (satu kata)'},
+    answers:['may'],
+    display:{en:'May',id:'May'},
+    hint:{en:'Modal verb for polite permission.',id:'Kata kerja modal untuk izin sopan.'},
+    concept:{en:'May = polite permission.',id:'May = izin sopan.'},
+    steps:{en:['Polite permission → <b>May</b> I…'],id:['Izin sopan → <b>May</b> I…']}}),
+  m8_essay_directions:()=>({type:'essay',topic:'m8_directions',
+    q:{en:'A new student is lost. Give directions in 2–3 sentences from the classroom to the school canteen using "go straight", "turn left/right".',
+       id:'Murid baru tersesat. Berikan petunjuk dalam 2–3 kalimat dari kelas ke kantin sekolah menggunakan "go straight", "turn left/right".'},
+    model:{en:`Go out of the classroom and turn left. Walk straight to the end of the corridor. Then turn right and you will see the canteen on your left.`,
+           id:`Go out of the classroom and turn left. Walk straight to the end of the corridor. Then turn right and you will see the canteen on your left.`},
+    hint:{en:'Include at least one "go straight" and one "turn".',
+          id:'Sertakan minimal satu "go straight" dan satu "turn".'},
+    concept:{en:'Clear directions include verbs of movement and turns.',
+             id:'Petunjuk yang jelas memuat kata kerja gerak dan belokan.'},
+    keys:['go straight','turn','left','right','walk','corridor','canteen']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// MODULE 9 — Goals & Plans (full infinitive, infinitive of purpose, too/enough, suggestions)
+// Topics: m9_infinitive, m9_purpose, m9_too_enough, m9_suggest, m9_vocab
+// ════════════════════════════════════════════════════════════════
+const M9_GEN = {
+  m9_inf_want:()=>{
+    const cor={en:'to save',id:'to save'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'save',id:'save'},
+      {en:'saving',id:'saving'},
+      {en:'saved',id:'saved'}]);
+    return{type:'mcq',topic:'m9_infinitive',
+      q:{en:'I want ___ money to buy a new bicycle.',id:'Saya ingin ___ uang untuk membeli sepeda baru.'},
+      opts,ans,
+      hint:{en:'After "want" we use the full infinitive (to + verb).',
+            id:'Setelah "want" kita gunakan full infinitive (to + verb).'},
+      concept:{en:'Full infinitive = to + base verb. Used after verbs like want, hope, decide.',
+               id:'Full infinitive = to + kata kerja dasar. Digunakan setelah want, hope, decide.'},
+      steps:{en:['Want + <b>to + base verb</b>.','Want + <b>to save</b>.'],
+             id:['Want + <b>to + kata kerja dasar</b>.','Want + <b>to save</b>.']}};
+  },
+  m9_inf_decide:()=>{
+    const cor={en:'to spend',id:'to spend'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'spend',id:'spend'},
+      {en:'spending',id:'spending'},
+      {en:'spent',id:'spent'}]);
+    return{type:'mcq',topic:'m9_infinitive',
+      q:{en:'They decided ___ more time with their grandparents.',
+         id:'Mereka memutuskan ___ lebih banyak waktu dengan kakek-nenek.'},
+      opts,ans,
+      hint:{en:'Decide is followed by the full infinitive.',
+            id:'Decide diikuti full infinitive.'},
+      concept:{en:'Decide + to + base verb.',
+               id:'Decide + to + kata kerja dasar.'},
+      steps:{en:['Decide + <b>to spend</b>.'],id:['Decide + <b>to spend</b>.']}};
+  },
+  m9_purpose_inorder:()=>{
+    const cor={en:'to take care of',id:'to take care of'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'taking care of',id:'taking care of'},
+      {en:'take care of',id:'take care of'},
+      {en:'takes care of',id:'takes care of'}]);
+    return{type:'mcq',topic:'m9_purpose',
+      q:{en:'Ali studies hard ___ his future. (Why?)',id:'Ali studies hard ___ his future. (Mengapa?)'},
+      opts,ans,
+      hint:{en:'"To + verb" answers "why?" — it tells the purpose.',
+            id:'"To + verb" menjawab pertanyaan "kenapa?" — menjelaskan tujuan.'},
+      concept:{en:'Infinitive of purpose: to + base verb explains why someone does something.',
+               id:'Infinitive of purpose: to + kata kerja dasar menjelaskan mengapa seseorang melakukan sesuatu.'},
+      steps:{en:['Why does he study? → <b>to take care of</b> his future.'],
+             id:['Kenapa belajar? → <b>to take care of</b> masa depannya.']}};
+  },
+  m9_purpose_alarm:()=>{
+    const cor={en:'to wake up early',id:'to wake up early'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'waking up early',id:'waking up early'},
+      {en:'wake up early',id:'wake up early'},
+      {en:'for wake up early',id:'for wake up early'}]);
+    return{type:'mcq',topic:'m9_purpose',
+      q:{en:'Mira uses an alarm clock ___.',id:'Mira menggunakan alarm clock ___.'},
+      opts,ans,
+      hint:{en:'"Why does she use an alarm?" → infinitive of purpose.',
+            id:'"Kenapa pakai alarm?" → infinitive of purpose.'},
+      concept:{en:'Use "to + verb" to express purpose.',
+               id:'Gunakan "to + kata kerja" untuk menyatakan tujuan.'},
+      steps:{en:['Purpose → <b>to wake up early</b>.'],
+             id:['Tujuan → <b>to wake up early</b>.']}};
+  },
+  m9_too_small:()=>{
+    const cor={en:'too small',id:'too small'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'small enough',id:'small enough'},
+      {en:'enough small',id:'enough small'},
+      {en:'too enough small',id:'too enough small'}]);
+    return{type:'mcq',topic:'m9_too_enough',
+      q:{en:'The button is ___ for a tall adult to use comfortably.',
+         id:'Tombol itu ___ untuk digunakan dengan nyaman oleh orang dewasa yang tinggi.'},
+      opts,ans,
+      hint:{en:'"Too + adjective" = more than necessary (negative meaning).',
+            id:'"Too + kata sifat" = lebih dari yang seharusnya (makna negatif).'},
+      concept:{en:'"Too + adjective" expresses a problem; "adjective + enough" expresses sufficiency.',
+               id:'"Too + adjective" menyatakan masalah; "adjective + enough" menyatakan kecukupan.'},
+      steps:{en:['Adult cannot use comfortably → problem.','Pattern: <b>too + adjective</b>.'],
+             id:['Dewasa tak bisa pakai dengan nyaman → masalah.','Pola: <b>too + adjective</b>.']}};
+  },
+  m9_enough_old:()=>{
+    const cor={en:'old enough',id:'old enough'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'enough old',id:'enough old'},
+      {en:'too old',id:'too old'},
+      {en:'too enough old',id:'too enough old'}]);
+    return{type:'mcq',topic:'m9_too_enough',
+      q:{en:'You must be ___ to ride the roller coaster.',
+         id:'Kamu harus ___ untuk menaiki roller coaster.'},
+      opts,ans,
+      hint:{en:'"Enough" comes <b>after</b> the adjective.',
+            id:'"Enough" diletakkan <b>setelah</b> kata sifat.'},
+      concept:{en:'Adjective + enough = at the required level.',
+               id:'Kata sifat + enough = sesuai tingkat yang dibutuhkan.'},
+      steps:{en:['Sufficient age → <b>old enough</b>.'],
+             id:['Usia cukup → <b>old enough</b>.']}};
+  },
+  m9_suggest_whydont:()=>{
+    const cor={en:"Why don't we go to the bouncy castle?",id:"Why don't we go to the bouncy castle?"};
+    const{opts,ans}=mkOpts(cor,[
+      {en:"Why we don't go to the bouncy castle?",id:"Why we don't go to the bouncy castle?"},
+      {en:"Why don't going to the bouncy castle?",id:"Why don't going to the bouncy castle?"},
+      {en:"Why don't we to go to the bouncy castle?",id:"Why don't we to go to the bouncy castle?"}]);
+    return{type:'mcq',topic:'m9_suggest',
+      q:{en:'Which is the correct suggestion?',id:'Mana saran yang benar?'},
+      opts,ans,
+      hint:{en:"Pattern: Why don't + subject + base verb?",
+            id:"Pola: Why don't + subjek + kata kerja dasar?"},
+      concept:{en:"\"Why don't…\" makes a friendly suggestion.",
+               id:'"Why don\'t…" memberi saran ramah.'},
+      steps:{en:["Why don't + we + <b>go</b>?"],id:["Why don't + we + <b>go</b>?"]}};
+  },
+  m9_suggest_howabout:()=>{
+    const cor={en:'How about going to the museum?',id:'How about going to the museum?'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'How about go to the museum?',id:'How about go to the museum?'},
+      {en:'How about to go to the museum?',id:'How about to go to the museum?'},
+      {en:'How about we going to the museum?',id:'How about we going to the museum?'}]);
+    return{type:'mcq',topic:'m9_suggest',
+      q:{en:'Choose the correct sentence.',id:'Pilih kalimat yang benar.'},
+      opts,ans,
+      hint:{en:'"How about" + verb-ing.',id:'"How about" + verb-ing.'},
+      concept:{en:'How about + verb-ing makes a suggestion.',
+               id:'How about + verb-ing menyatakan saran.'},
+      steps:{en:['How about + <b>going</b>?'],id:['How about + <b>going</b>?']}};
+  },
+  m9_suggest_lets:()=>{
+    const cor={en:"Let's create a new game!",id:"Let's create a new game!"};
+    const{opts,ans}=mkOpts(cor,[
+      {en:"Let's to create a new game!",id:"Let's to create a new game!"},
+      {en:"Let's creating a new game!",id:"Let's creating a new game!"},
+      {en:"Let we create a new game!",id:"Let we create a new game!"}]);
+    return{type:'mcq',topic:'m9_suggest',
+      q:{en:'Pick the correct suggestion using "Let\'s".',
+         id:'Pilih saran yang benar menggunakan "Let\'s".'},
+      opts,ans,
+      hint:{en:"Let's + base verb.",id:"Let's + kata kerja dasar."},
+      concept:{en:"Let's = let us. Followed by the base verb.",
+               id:"Let's = let us. Diikuti kata kerja dasar."},
+      steps:{en:["Let's + <b>create</b>."],id:["Let's + <b>create</b>."]}};
+  },
+  m9_vocab_engineer:()=>{
+    const cor={en:'an engineer',id:'an engineer'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'an adult',id:'an adult'},
+      {en:'a customer',id:'a customer'},
+      {en:'a globe',id:'a globe'}]);
+    return{type:'mcq',topic:'m9_vocab',
+      q:{en:'Someone who designs and builds machines is called ___.',
+         id:'Seseorang yang merancang dan membuat mesin disebut ___.'},
+      opts,ans,
+      hint:{en:'Begins with "engi-".',id:'Diawali dengan "engi-".'},
+      concept:{en:'An engineer designs and builds things.',
+               id:'Engineer merancang dan membuat sesuatu.'},
+      steps:{en:['Designs machines = <b>engineer</b>.'],id:['Merancang mesin = <b>engineer</b>.']}};
+  },
+  m9_fill_inf_save:()=>({type:'fill',topic:'m9_infinitive',
+    q:{en:'Use the correct form of "save": "I want _______ money for a new bike." (two words)',
+       id:'Gunakan bentuk yang benar dari "save": "I want _______ money for a new bike." (dua kata)'},
+    answers:['to save'],
+    display:{en:'to save',id:'to save'},
+    hint:{en:'Want + full infinitive.',id:'Want + full infinitive.'},
+    concept:{en:'Want + to + base verb.',id:'Want + to + kata kerja dasar.'},
+    steps:{en:['Want + <b>to save</b>.'],id:['Want + <b>to save</b>.']}}),
+  m9_fill_purpose:()=>({type:'fill',topic:'m9_purpose',
+    q:{en:'Complete: "I went to the shop _______ buy some cream." (one word)',
+       id:'Lengkapi: "I went to the shop _______ buy some cream." (satu kata)'},
+    answers:['to'],
+    display:{en:'to',id:'to'},
+    hint:{en:'Infinitive of purpose.',id:'Infinitive of purpose.'},
+    concept:{en:'Use "to + verb" to explain why.',
+             id:'Gunakan "to + kata kerja" untuk menjelaskan kenapa.'},
+    steps:{en:['Why? → <b>to</b> buy.'],id:['Kenapa? → <b>to</b> buy.']}}),
+  m9_fill_enough:()=>({type:'fill',topic:'m9_too_enough',
+    q:{en:'Complete: "She is tall _______ to reach the top shelf." (one word)',
+       id:'Lengkapi: "She is tall _______ to reach the top shelf." (satu kata)'},
+    answers:['enough'],
+    display:{en:'enough',id:'enough'},
+    hint:{en:'After the adjective.',id:'Setelah kata sifat.'},
+    concept:{en:'Adjective + enough = sufficient.',id:'Kata sifat + enough = cukup.'},
+    steps:{en:['tall + <b>enough</b>.'],id:['tall + <b>enough</b>.']}}),
+  m9_essay_plans:()=>({type:'essay',topic:'m9_infinitive',
+    q:{en:'Write 2–3 sentences about your plans for next weekend using "I want to…" or "I plan to…".',
+       id:'Tulis 2–3 kalimat tentang rencanamu akhir pekan depan menggunakan "I want to…" atau "I plan to…".'},
+    model:{en:`I want to visit my grandmother next weekend. I plan to help her in the garden and cook her favourite meal. After that, I want to read a book on the porch.`,
+           id:`I want to visit my grandmother next weekend. I plan to help her in the garden and cook her favourite meal. After that, I want to read a book on the porch.`},
+    hint:{en:'Use "to + base verb" at least twice.',id:'Gunakan "to + kata kerja dasar" minimal dua kali.'},
+    concept:{en:'Use full infinitive after plan, want, hope.',
+             id:'Gunakan full infinitive setelah plan, want, hope.'},
+    keys:['want to','plan to','to','visit','help','read','cook','weekend']}),
+  m9_essay_suggest:()=>({type:'essay',topic:'m9_suggest',
+    q:{en:'Your friend is bored. Write 2–3 sentences suggesting activities using "Why don\'t we…", "How about…", and "Let\'s…".',
+       id:'Temanmu bosan. Tulis 2–3 kalimat memberi saran kegiatan menggunakan "Why don\'t we…", "How about…", dan "Let\'s…".'},
+    model:{en:`Why don't we go to the park? How about riding our bikes around the lake? Let's bring some snacks and have a picnic too.`,
+           id:`Why don't we go to the park? How about riding our bikes around the lake? Let's bring some snacks and have a picnic too.`},
+    hint:{en:"Use all three forms: Why don't…, How about…, Let's….",
+          id:"Gunakan ketiga bentuk: Why don't…, How about…, Let's…."},
+    concept:{en:'These are friendly suggestion patterns in English.',
+             id:'Itu adalah pola saran ramah dalam bahasa Inggris.'},
+    keys:["why don't","how about","let's",'go','ride','play','park']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// MODULE 10 — Up high (reported speech: commands & requests)
+// Topics: m10_reported_cmd, m10_reported_req, m10_vocab
+// ════════════════════════════════════════════════════════════════
+const M10_GEN = {
+  m10_cmd_pos:()=>{
+    const cor={en:'The coach told us to wear our goggles.',id:'The coach told us to wear our goggles.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'The coach told us we wear our goggles.',id:'The coach told us we wear our goggles.'},
+      {en:'The coach told us wear our goggles.',id:'The coach told us wear our goggles.'},
+      {en:'The coach told us wearing our goggles.',id:'The coach told us wearing our goggles.'}]);
+    return{type:'mcq',topic:'m10_reported_cmd',
+      q:{en:'Direct: The coach said, "Wear your goggles." → Which is the reported (indirect) form?',
+         id:'Direct: The coach said, "Wear your goggles." → Mana bentuk reported (indirect)-nya?'},
+      opts,ans,
+      hint:{en:'Pattern: told + person + to + base verb.',
+            id:'Pola: told + orang + to + kata kerja dasar.'},
+      concept:{en:'Reported affirmative command: told + object + to + base verb.',
+               id:'Reported perintah positif: told + objek + to + kata kerja dasar.'},
+      steps:{en:['Direct command → reported with <b>told … to …</b>.',
+                 'Coach told us <b>to wear</b> our goggles.'],
+             id:['Perintah langsung → reported dengan <b>told … to …</b>.',
+                 'Coach told us <b>to wear</b> our goggles.']}};
+  },
+  m10_cmd_neg:()=>{
+    const cor={en:'My mother told me not to chew gum in class.',id:'My mother told me not to chew gum in class.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:"My mother told me don't chew gum in class.",id:"My mother told me don't chew gum in class."},
+      {en:'My mother told me to not chewing gum in class.',id:'My mother told me to not chewing gum in class.'},
+      {en:'My mother told me no chew gum in class.',id:'My mother told me no chew gum in class.'}]);
+    return{type:'mcq',topic:'m10_reported_cmd',
+      q:{en:'Direct: Mother said, "Don\'t chew gum in class." → Choose the correct reported sentence.',
+         id:'Direct: Mother said, "Don\'t chew gum in class." → Pilih kalimat reported yang benar.'},
+      opts,ans,
+      hint:{en:'Negative command: told + person + <b>not to</b> + base verb.',
+            id:'Perintah negatif: told + orang + <b>not to</b> + kata kerja dasar.'},
+      concept:{en:'For negative commands use "not to + base verb".',
+               id:'Untuk perintah negatif gunakan "not to + kata kerja dasar".'},
+      steps:{en:['Don\'t do X → told … <b>not to do</b> X.'],
+             id:['Don\'t do X → told … <b>not to do</b> X.']}};
+  },
+  m10_cmd_choose:()=>{
+    const cor={en:'told me to follow her',id:'told me to follow her'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'told me follow her',id:'told me follow her'},
+      {en:'told to me follow her',id:'told to me follow her'},
+      {en:'said me to follow her',id:'said me to follow her'}]);
+    return{type:'mcq',topic:'m10_reported_cmd',
+      q:{en:'The instructor said, "Follow me!" → The instructor ___.',
+         id:'The instructor said, "Follow me!" → The instructor ___.'},
+      opts,ans,
+      hint:{en:'After "told" comes the person, then "to + verb".',
+            id:'Setelah "told" ada orangnya, lalu "to + verb".'},
+      concept:{en:'Reported command: told + person + to + verb.',
+               id:'Reported perintah: told + orang + to + verb.'},
+      steps:{en:['Told + me + <b>to follow</b> her.'],id:['Told + me + <b>to follow</b> her.']}};
+  },
+  m10_req_polite:()=>{
+    const cor={en:'asked me to pass her the notebook',id:'asked me to pass her the notebook'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'asked me pass her the notebook',id:'asked me pass her the notebook'},
+      {en:'said me to pass her the notebook',id:'said me to pass her the notebook'},
+      {en:'told to me pass her the notebook',id:'told to me pass her the notebook'}]);
+    return{type:'mcq',topic:'m10_reported_req',
+      q:{en:'Mira said, "Please pass me the notebook." → Mira ___.',
+         id:'Mira said, "Please pass me the notebook." → Mira ___.'},
+      opts,ans,
+      hint:{en:'For polite requests, use "asked + person + to + verb".',
+            id:'Untuk permintaan sopan, gunakan "asked + orang + to + verb".'},
+      concept:{en:'Reported request: asked + person + to + base verb.',
+               id:'Reported permintaan: asked + orang + to + kata kerja dasar.'},
+      steps:{en:['"Please" = request → use <b>asked</b>.','Asked + me + <b>to pass</b> her the notebook.'],
+             id:['"Please" = permintaan → gunakan <b>asked</b>.','Asked + me + <b>to pass</b> her the notebook.']}};
+  },
+  m10_req_typhoon:()=>{
+    const cor={en:'asked us to go to the basement during the typhoon',
+               id:'asked us to go to the basement during the typhoon'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'asked us go to the basement during the typhoon',
+       id:'asked us go to the basement during the typhoon'},
+      {en:'asked we to go to the basement during the typhoon',
+       id:'asked we to go to the basement during the typhoon'},
+      {en:'said us to go to the basement during the typhoon',
+       id:'said us to go to the basement during the typhoon'}]);
+    return{type:'mcq',topic:'m10_reported_req',
+      q:{en:'The teacher said, "Please go to the basement during the typhoon." → The teacher ___.',
+         id:'The teacher said, "Please go to the basement during the typhoon." → The teacher ___.'},
+      opts,ans,
+      hint:{en:'Polite request → asked + person + to + verb.',
+            id:'Permintaan sopan → asked + orang + to + verb.'},
+      concept:{en:'Reported polite request uses "asked".',
+               id:'Reported permintaan sopan menggunakan "asked".'},
+      steps:{en:['Asked + us + <b>to go</b>.'],id:['Asked + us + <b>to go</b>.']}};
+  },
+  m10_vocab_jacket:()=>{
+    const cor={en:'a life jacket',id:'a life jacket'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'goggles',id:'goggles'},
+      {en:'elbow pads',id:'elbow pads'},
+      {en:'a notebook',id:'a notebook'}]);
+    return{type:'mcq',topic:'m10_vocab',
+      q:{en:'When canoeing, you should wear ___ to stay safe in the water.',
+         id:'Saat canoeing, kamu harus memakai ___ agar aman di air.'},
+      opts,ans,
+      hint:{en:'It keeps you floating.',id:'Membuatmu tetap mengapung.'},
+      concept:{en:'A life jacket helps a person float and stay safe in water.',
+               id:'Life jacket membantu seseorang mengapung dan aman di air.'},
+      steps:{en:['Water safety → <b>life jacket</b>.'],id:['Keselamatan air → <b>life jacket</b>.']}};
+  },
+  m10_vocab_earthquake:()=>{
+    const cor={en:'earthquake',id:'earthquake'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'typhoon',id:'typhoon'},
+      {en:'panic',id:'panic'},
+      {en:'roof tiles',id:'roof tiles'}]);
+    return{type:'mcq',topic:'m10_vocab',
+      q:{en:'A natural disaster when the ground shakes is called ___.',
+         id:'Bencana alam ketika tanah berguncang disebut ___.'},
+      opts,ans,
+      hint:{en:'Ground + shake = ?',id:'Tanah + guncang = ?'},
+      concept:{en:'An earthquake is the shaking of the ground.',
+               id:'Earthquake adalah guncangan tanah (gempa bumi).'},
+      steps:{en:['Ground shakes → <b>earthquake</b>.'],id:['Tanah berguncang → <b>earthquake</b>.']}};
+  },
+  m10_vocab_coach:()=>{
+    const cor={en:'a coach',id:'a coach'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'a professor',id:'a professor'},
+      {en:'a politician',id:'a politician'},
+      {en:'a chemist',id:'a chemist'}]);
+    return{type:'mcq',topic:'m10_vocab',
+      q:{en:'Someone who trains athletes in a sport is called ___.',
+         id:'Seseorang yang melatih atlet dalam suatu olahraga disebut ___.'},
+      opts,ans,
+      hint:{en:'Like in football, boxing, canoeing…',id:'Seperti di sepak bola, tinju, canoeing…'},
+      concept:{en:'A coach trains players or athletes.',
+               id:'Coach melatih pemain atau atlet.'},
+      steps:{en:['Trainer = <b>coach</b>.'],id:['Pelatih = <b>coach</b>.']}};
+  },
+  m10_fill_cmd_pos:()=>({type:'fill',topic:'m10_reported_cmd',
+    q:{en:'The coach said, "Put on your helmet." → The coach told me _______ on my helmet. (two words)',
+       id:'The coach said, "Put on your helmet." → The coach told me _______ on my helmet. (dua kata)'},
+    answers:['to put'],
+    display:{en:'to put',id:'to put'},
+    hint:{en:'told + person + <b>to + base verb</b>.',id:'told + orang + <b>to + kata kerja dasar</b>.'},
+    concept:{en:'Reported command pattern: told … to + verb.',
+             id:'Pola reported perintah: told … to + kata kerja.'},
+    steps:{en:['Put on → <b>to put</b> on.'],id:['Put on → <b>to put</b> on.']}}),
+  m10_fill_cmd_neg:()=>({type:'fill',topic:'m10_reported_cmd',
+    q:{en:'My father said, "Don\'t panic!" → My father told me _______ panic. (two words)',
+       id:'My father said, "Don\'t panic!" → My father told me _______ panic. (dua kata)'},
+    answers:['not to'],
+    display:{en:'not to',id:'not to'},
+    hint:{en:'Negative reported command: <b>not to</b>.',id:'Reported perintah negatif: <b>not to</b>.'},
+    concept:{en:'Don\'t + verb → not to + verb.',id:'Don\'t + verb → not to + verb.'},
+    steps:{en:['Don\'t panic → told me <b>not to</b> panic.'],
+           id:['Don\'t panic → told me <b>not to</b> panic.']}}),
+  m10_fill_req:()=>({type:'fill',topic:'m10_reported_req',
+    q:{en:'Sara said, "Please lend me a coin." → Sara _______ me to lend her a coin. (one word)',
+       id:'Sara said, "Please lend me a coin." → Sara _______ me to lend her a coin. (satu kata)'},
+    answers:['asked'],
+    display:{en:'asked',id:'asked'},
+    hint:{en:'Polite request → which verb?',id:'Permintaan sopan → kata kerja apa?'},
+    concept:{en:'For requests we use "asked".',id:'Untuk permintaan kita gunakan "asked".'},
+    steps:{en:['Please … → <b>asked</b>.'],id:['Please … → <b>asked</b>.']}}),
+  m10_essay_safety:()=>({type:'essay',topic:'m10_reported_cmd',
+    q:{en:'Your coach gave the team three safety rules before canoeing. Report what the coach said in 2–3 sentences using "told us to…" and "told us not to…".',
+       id:'Pelatihmu memberi tiga aturan keselamatan sebelum canoeing. Laporkan apa yang dikatakan pelatih dalam 2–3 kalimat menggunakan "told us to…" dan "told us not to…".'},
+    model:{en:`The coach told us to put on our life jackets and elbow pads. He also told us to follow him at all times. He told us not to panic if the canoe shook.`,
+           id:`The coach told us to put on our life jackets and elbow pads. He also told us to follow him at all times. He told us not to panic if the canoe shook.`},
+    hint:{en:'Use both "told … to …" and "told … not to …".',
+          id:'Gunakan "told … to …" dan "told … not to …".'},
+    concept:{en:'Reported speech uses "told + person + (not) to + verb".',
+             id:'Reported speech: "told + orang + (not) to + kata kerja".'},
+    keys:['told us to','told us not to','put on','life jacket','panic','follow']}),
+  m10_essay_earthquake:()=>({type:'essay',topic:'m10_reported_cmd',
+    q:{en:'Imagine your teacher gave instructions during an earthquake drill. Write 2–3 sentences in reported speech using "told us to…".',
+       id:'Bayangkan gurumu memberi petunjuk saat simulasi gempa. Tulis 2–3 kalimat dalam reported speech menggunakan "told us to…".'},
+    model:{en:`Our teacher told us to stop and stay calm. She told us to move away from broken glass and roof tiles. She also told us not to use the lift during the earthquake.`,
+           id:`Our teacher told us to stop and stay calm. She told us to move away from broken glass and roof tiles. She also told us not to use the lift during the earthquake.`},
+    hint:{en:'Mention earthquake vocabulary (broken glass, roof tiles, move away).',
+          id:'Sebut kosakata gempa (broken glass, roof tiles, move away).'},
+    concept:{en:'Reported commands use "told + person + to + verb".',
+             id:'Reported perintah menggunakan "told + orang + to + verb".'},
+    keys:['told us to','earthquake','broken glass','roof tiles','move away','stay','panic']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTERS
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': {title:{en:"Module 7 · Let's Help",id:"Module 7 · Let's Help"}, gen: M7_GEN},
+  '2': {title:{en:"Module 8 · What's Up?",id:"Module 8 · What's Up?"}, gen: M8_GEN},
+  '3': {title:{en:"Module 9 · Goals & Plans",id:"Module 9 · Goals & Plans"}, gen: M9_GEN},
+  '4': {title:{en:'Module 10 · Up High',id:'Module 10 · Up High'}, gen: M10_GEN},
+};
+
+// UAS Kisi-Kisi (35 questions = 20 MCQ + 10 Fill + 5 Essay)
+// Module 7: 5 MCQ + 2 Fill + 1 Essay
+// Module 8: 5 MCQ + 2 Fill + 1 Essay
+// Module 9: 5 MCQ + 3 Fill + 1 Essay
+// Module 10: 5 MCQ + 3 Fill + 2 Essay
+const UAS_KISI = [
+  // Module 7
+  {topic:'m7_will',      type:'mcq',   n:2, chapter:'Module 7'},
+  {topic:'m7_maybe',     type:'mcq',   n:1, chapter:'Module 7'},
+  {topic:'m7_vocab',     type:'mcq',   n:2, chapter:'Module 7'},
+  {topic:'m7_will',      type:'fill',  n:1, chapter:'Module 7'},
+  {topic:'m7_vocab',     type:'fill',  n:1, chapter:'Module 7'},
+  {topic:'m7_will',      type:'essay', n:1, chapter:'Module 7'},
+  // Module 8
+  {topic:'m8_preposition', type:'mcq', n:2, chapter:'Module 8'},
+  {topic:'m8_may',         type:'mcq', n:1, chapter:'Module 8'},
+  {topic:'m8_ing',         type:'mcq', n:1, chapter:'Module 8'},
+  {topic:'m8_vocab',       type:'mcq', n:1, chapter:'Module 8'},
+  {topic:'m8_directions',  type:'fill',n:1, chapter:'Module 8'},
+  {topic:'m8_ing',         type:'fill',n:1, chapter:'Module 8'},
+  {topic:'m8_directions',  type:'essay',n:1, chapter:'Module 8'},
+  // Module 9
+  {topic:'m9_infinitive',  type:'mcq', n:2, chapter:'Module 9'},
+  {topic:'m9_purpose',     type:'mcq', n:1, chapter:'Module 9'},
+  {topic:'m9_too_enough',  type:'mcq', n:1, chapter:'Module 9'},
+  {topic:'m9_suggest',     type:'mcq', n:1, chapter:'Module 9'},
+  {topic:'m9_infinitive',  type:'fill',n:1, chapter:'Module 9'},
+  {topic:'m9_purpose',     type:'fill',n:1, chapter:'Module 9'},
+  {topic:'m9_too_enough',  type:'fill',n:1, chapter:'Module 9'},
+  {topic:'m9_suggest',     type:'essay',n:1, chapter:'Module 9'},
+  // Module 10
+  {topic:'m10_reported_cmd', type:'mcq', n:3, chapter:'Module 10'},
+  {topic:'m10_reported_req', type:'mcq', n:1, chapter:'Module 10'},
+  {topic:'m10_vocab',        type:'mcq', n:1, chapter:'Module 10'},
+  {topic:'m10_reported_cmd', type:'fill',n:2, chapter:'Module 10'},
+  {topic:'m10_reported_req', type:'fill',n:1, chapter:'Module 10'},
+  {topic:'m10_reported_cmd', type:'essay',n:2, chapter:'Module 10'},
+];
+
+const ALL_GENS = {...M7_GEN, ...M8_GEN, ...M9_GEN, ...M10_GEN};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null;
+let currentChapterTitle = null;
+let isUAS = false;
+let uasBreakdown = {};
+
+function buildQueue(chKey){
+  if(chKey === 'uas'){ buildUAS(); return; }
+  isUAS = false;
+  const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+  currentChapterTitle = ch.title;
+  const keys = shuf(Object.keys(ch.gen));
+  let qs = keys.map(k => ({key:k, gen:ch.gen[k]}));
+  // order: mcq, fill, essay
+  qs = qs.map(q => ({...q, _t: q.gen().type}));
+  const typeOrder = {mcq:0, fill:1, essay:2};
+  qs.sort((a,b)=>(typeOrder[a._t]??9) - (typeOrder[b._t]??9));
+  queue = qs.map(q => q.gen());
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateLangUI();
+  updateScore();
+  next();
+}
+
+function buildUAS(){
+  isUAS = true;
+  currentChapterTitle = {en:'UAS — Final Exam (35 Q)',id:'UAS — Ujian Akhir (35 Soal)'};
+  uasBreakdown = {};
+
+  const byTopicType = {};
+  for(const [key,fn] of Object.entries(ALL_GENS)){
+    const sample = fn();
+    const k = sample.topic + ':' + sample.type;
+    (byTopicType[k] = byTopicType[k] || []).push(fn);
+  }
+
+  const built = [];
+  for(const spec of UAS_KISI){
+    const key = spec.topic + ':' + spec.type;
+    const pool = byTopicType[key] || [];
+    uasBreakdown[spec.chapter] = uasBreakdown[spec.chapter] || {correct:0,total:0};
+    uasBreakdown[spec.chapter].total += spec.n;
+    if(pool.length === 0){
+      for(let i=0;i<spec.n;i++){
+        built.push({type:spec.type,
+          q:{en:`[Missing question for ${spec.topic}]`,id:`[Soal hilang untuk ${spec.topic}]`},
+          opts:[{en:'—',id:'—'},{en:'—',id:'—'},{en:'—',id:'—'},{en:'—',id:'—'}],
+          ans:0, answers:['—'], display:{en:'—',id:'—'}, model:{en:'—',id:'—'}, keys:[],
+          _chapter:spec.chapter, _topic:spec.topic});
+      }
+      continue;
+    }
+    const shuffled = shuf(pool);
+    for(let i=0;i<spec.n;i++){
+      const fn = shuffled[i % shuffled.length];
+      const q = fn();
+      q._chapter = spec.chapter;
+      q._topic = spec.topic;
+      built.push(q);
+    }
+  }
+
+  const typeOrder = {mcq:0, fill:1, essay:2};
+  built.sort((a,b)=> (typeOrder[a.type]??9) - (typeOrder[b.type]??9));
+
+  queue = built;
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateLangUI();
+  updateScore();
+  next();
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  document.getElementById('hdrMeta').textContent =
+    (lang==='en'?'Question ':'Soal ') + Math.min(idx+1,total) + (lang==='en'?' of ':' dari ') + total;
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  let inner = '';
+  switch(current.type){
+    case 'mcq':   inner = mcqHtml(current); break;
+    case 'fill':  inner = fillHtml(current); break;
+    case 'essay': inner = essayHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq':   attachMCQ(); break;
+    case 'fill':  attachFill(); break;
+    case 'essay': attachEssay(); break;
+  }
+  attachHint();
+}
+
+function badgeFor(typ){
+  const labels = {
+    mcq:{en:'📝 Multiple Choice',id:'📝 Pilihan Ganda'},
+    fill:{en:'📋 Fill in the Blank',id:'📋 Isian Singkat'},
+    essay:{en:'📖 Short Answer',id:'📖 Uraian Singkat'},
+  };
+  return `<span class="q-badge ${typ}">${t(labels[typ])}</span>`;
+}
+
+function hintBlock(q){
+  if(!q.hint) return '';
+  const showLbl = lang==='en' ? '💡 Show Hint' : '💡 Tampilkan Petunjuk';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">${showLbl}</button>
+    <div class="hint-box" id="hintBox">${t(q.hint)}</div>
+  </div>`;
+}
+
+function feedbackBlock(){ return `<div class="fb" id="fb"></div>`; }
+
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${t(o)}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${t(q.q)}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function fillHtml(q){
+  const ph = lang==='en' ? 'Type your answer…' : 'Ketik jawabanmu…';
+  const btn = lang==='en' ? 'Check' : 'Periksa';
+  return `${badgeFor('fill')}<div class="q-text">${t(q.q)}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="${ph}" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">${btn}</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#10b981' : '#d63031';
+      inp.style.background = ok ? '#ecfdf5' : '#fff5f5';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+function essayHtml(q){
+  const ph = lang==='en' ? 'Write your answer in your own words…' : 'Tulis jawabanmu dengan kata-katamu sendiri…';
+  const showBtn = lang==='en' ? '📋 Show Model Answer' : '📋 Tampilkan Jawaban Contoh';
+  const got = lang==='en' ? '✓ I got it right' : '✓ Saya benar';
+  const miss = lang==='en' ? '✗ Need to review' : '✗ Perlu belajar lagi';
+  return `${badgeFor('essay')}<div class="q-text">${t(q.q)}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="${ph}"></textarea>
+    <button class="essay-show" id="essayShow">${showBtn}</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">${got}</button>
+      <button class="miss" data-v="0">${miss}</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML = lang==='en'
+        ? `<strong>Write your answer first</strong> — even a sentence or two. Then click "Show Model Answer" to compare.`
+        : `<strong>Tulis jawabanmu dulu</strong> — minimal satu atau dua kalimat. Lalu klik "Tampilkan Jawaban Contoh" untuk membandingkan.`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const ttl = (current.keys||[]).length || 1;
+    fb.className = 'fb info show';
+    const modelLbl = lang==='en' ? '📋 Model Answer:' : '📋 Jawaban Contoh:';
+    const smallLbl = lang==='en'
+      ? `🔍 Your answer mentioned <strong>${hits} of ${ttl}</strong> key terms. Compare with the model and grade yourself honestly:`
+      : `🔍 Jawabanmu memuat <strong>${hits} dari ${ttl}</strong> kata kunci. Bandingkan dengan contoh dan nilai jujur:`;
+    fb.innerHTML = `<strong>${modelLbl}</strong><br><br>${t(current.model)}<br><br><small>${smallLbl}</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#ecfdf5' : '#fff5f0';
+      registerResult(ok);
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${t(current.concept)}</div>`;
+      }
+      setTimeout(()=>{ idx++; next(); }, 1600);
+    });
+  });
+}
+
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    const show = box.classList.contains('show');
+    btn.textContent = show
+      ? (lang==='en' ? '🙈 Hide Hint' : '🙈 Sembunyikan Petunjuk')
+      : (lang==='en' ? '💡 Show Hint' : '💡 Tampilkan Petunjuk');
+  });
+}
+
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  if(isUAS && current._chapter){
+    uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
+    if(ok) uasBreakdown[current._chapter].correct++;
+  }
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsArr = current.steps ? t(current.steps) : [];
+  const stepsHtml = (stepsArr||[]).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${t(current.concept)}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    const lbl = lang==='en' ? '✅ Correct! Well done!' : '✅ Benar! Bagus sekali!';
+    fb.innerHTML = `<strong>${lbl}</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = t(current.opts[current.ans]);
+    else if(current.type==='fill') correctText = current.display ? t(current.display) : current.answers[0];
+    const lbl = lang==='en' ? '❌ Not quite.' : '❌ Belum tepat.';
+    const isLbl = lang==='en' ? 'The correct answer is' : 'Jawaban yang benar adalah';
+    fb.innerHTML = `<strong>${lbl}</strong> ${isLbl} <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total
+      ? (lang==='en' ? '🏁 See Results' : '🏁 Lihat Hasil')
+      : (lang==='en' ? 'Next Question →' : 'Soal Berikutnya →');
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  let msg;
+  if(lang==='en'){
+    msg = pct>=80 ? '🎉 Outstanding!' : pct>=60 ? '👍 Good job!' : pct>=40 ? '💪 Keep practising!' : '📚 Time to review!';
+  } else {
+    msg = pct>=80 ? '🎉 Luar biasa!' : pct>=60 ? '👍 Kerja bagus!' : pct>=40 ? '💪 Terus berlatih!' : '📚 Saatnya belajar lagi!';
+  }
+  const finishedLbl = lang==='en'
+    ? `You finished <strong>${total}</strong> questions.`
+    : `Kamu menyelesaikan <strong>${total}</strong> soal.`;
+  const correctLbl = lang==='en'?'Correct':'Benar';
+  const wrongLbl = lang==='en'?'Wrong':'Salah';
+  const scoreLbl = lang==='en'?'Score':'Skor';
+  const retryLbl = lang==='en'?'🔄 Try Again':'🔄 Coba Lagi';
+  const backLbl = lang==='en'?'← Back to modules':'← Kembali ke daftar modul';
+
+  let breakdownHtml = '';
+  if(isUAS){
+    const bdTitle = lang==='en'?'📊 Score by Module':'📊 Skor per Modul';
+    const rows = Object.entries(uasBreakdown).map(([ch,v])=>{
+      const ratio = v.total>0 ? (v.correct/v.total) : 0;
+      const cls = ratio < 0.5 ? 'low' : '';
+      return `<div class="breakdown-row"><span class="bd-label">${ch}</span><span class="bd-score ${cls}">${v.correct} / ${v.total}</span></div>`;
+    }).join('');
+    breakdownHtml = `<div class="breakdown"><h4>${bdTitle}</h4>${rows}</div>`;
+  }
+
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>${finishedLbl}</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>${correctLbl}</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>${wrongLbl}</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>${scoreLbl}</span></div>
+      </div>
+      ${breakdownHtml}
+      <button class="restart-btn" onclick="location.reload()">${retryLbl}</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#ec4899;font-weight:700;text-decoration:none">${backLbl}</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#ec4899','#f43f5e','#f97316','#f9ca24','#10b981','#a29bfe'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+updateLangUI();
+buildQueue(chKey);
+</script>
+</body>
+</html>

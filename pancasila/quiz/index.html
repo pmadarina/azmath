@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Pendidikan Pancasila — AzPancasila</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#fef2f2 0%,#fee2e2 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+.hdr{background:linear-gradient(135deg,#dc2626,#b91c1c 60%,#7f1d1d);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.05rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.95;background:rgba(255,255,255,.15);padding:5px 12px;border-radius:16px}
+
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#fecaca;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#dc2626,#ef4444);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#b91c1c;min-width:75px;text-align:right}
+
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:720px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #e8ecef;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#16a34a;background:#f0fdf4}
+.score-chip.correct strong{color:#16a34a}
+.score-chip.wrong{border-color:#dc2626;background:#fef2f2}
+.score-chip.wrong strong{color:#dc2626}
+.score-chip.answered{border-color:#7f1d1d;background:#fef2f2}
+.score-chip.answered strong{color:#7f1d1d}
+
+.main{max-width:720px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(220,38,38,.13)}
+.q-badge{display:inline-block;background:#fee2e2;color:#b91c1c;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#fee2e2;color:#b91c1c}
+.q-badge.fill{background:#fef2f2;color:#dc2626}
+.q-badge.essay{background:#fecaca;color:#7f1d1d}
+
+.q-text{font-size:1.05rem;line-height:1.6;background:#fef2f2;border-left:4px solid #dc2626;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit}
+.opt:hover:not(:disabled){border-color:#dc2626;background:#fef2f2}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#fee2e2;color:#b91c1c;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#16a34a;background:#f0fdf4}
+.opt.correct .opt-letter{background:#16a34a;color:#fff}
+.opt.wrong{border-color:#dc2626;background:#fef2f2}
+.opt.wrong .opt-letter{background:#dc2626;color:#fff}
+
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:inherit;font-size:1rem;font-weight:700;padding:14px 18px;border:2px dashed #dc2626;border-radius:14px;background:#fef2f2;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#b91c1c;background:#fff;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #dc2626;border-radius:14px;background:#fef2f2;color:#1a1a2e;outline:none;resize:vertical;min-height:110px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#b91c1c;background:#fff;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#7f1d1d,#1f2937);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#16a34a;color:#16a34a}
+.essay-self .got:hover{background:#f0fdf4}
+.essay-self .miss{border-color:#e17055;color:#e17055}
+.essay-self .miss:hover{background:#fff5f0}
+
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#f0fdf4;border:1.5px solid #16a34a;color:#14532d}
+.fb.wrong{background:#fef2f2;border:1.5px solid #dc2626;color:#7f1d1d}
+.fb.info{background:#fef2f2;border:1.5px solid #dc2626;color:#7f1d1d}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#dc2626;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fef9c3;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02}
+
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #f9ca24;color:#a16207;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fef9c3}
+.hint-box{display:none;background:#fef9c3;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02;margin-top:10px}
+.hint-box.show{display:block}
+
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#dc2626,#7f1d1d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(220,38,38,.4)}
+.restart-btn:hover{opacity:.92}
+
+.breakdown{text-align:left;background:#fef2f2;border-radius:14px;padding:14px 18px;margin:0 auto 22px;max-width:480px}
+.breakdown h4{font-size:.85rem;font-weight:900;margin-bottom:10px;color:#7f1d1d;letter-spacing:.5px;text-transform:uppercase}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #fecaca;font-size:.88rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-row .bd-label{font-weight:700;color:#333;flex:1}
+.breakdown-row .bd-score{font-weight:800;color:#16a34a}
+.breakdown-row .bd-score.low{color:#dc2626}
+
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .hdr-title{font-size:.92rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">← Kembali</a>
+  <div class="hdr-title" id="hdrTitle">🇮🇩 Latihan Pendidikan Pancasila</div>
+  <div class="hdr-meta" id="hdrMeta">Soal 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong><span>✓ Benar</span></div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong><span>✗ Salah</span></div>
+  <div class="score-chip answered"><strong id="sDone">0</strong><span>📝 Dijawab</span></div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;};
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.,!?;:'"]/g,'').replace(/\s+/g,' ');
+
+function t(obj){
+  if(obj==null) return '';
+  if(typeof obj==='string') return obj;
+  if(typeof obj==='object' && 'id' in obj) return obj.id || '';
+  return String(obj);
+}
+
+function mkOpts(correct, distractors){
+  const all=[correct, ...distractors].slice(0,4);
+  while(all.length<4) all.push('—');
+  const sh=shuf(all);
+  return {opts:sh, ans:sh.indexOf(correct)};
+}
+
+// ════════════════════════════════════════════════════════════════
+// BAB 3 — Menghormati Keragaman di Indonesia
+// Topik: karakteristik_wilayah, melestarikan_keragaman, menghormati_keragaman, lingkup_wilayah, kerja_sama
+// ════════════════════════════════════════════════════════════════
+const BAB3_GEN = {
+  // ── KARAKTERISTIK WILAYAH KAB/KOTA ───────────────────────────
+  karakter_pemimpin_kab:()=>{
+    const cor='Bupati';
+    const {opts,ans}=mkOpts(cor,['Wali kota','Gubernur','Camat']);
+    return {type:'mcq',topic:'karakteristik_wilayah',
+      q:'Pemimpin tertinggi pemerintahan di tingkat <b>kabupaten</b> adalah ___.',
+      opts,ans,
+      hint:'Kabupaten ≠ Kota. Pemimpin kabupaten berbeda dengan kota.',
+      concept:'Kabupaten dipimpin oleh Bupati, sedangkan Kota dipimpin oleh Wali Kota. Keduanya setingkat.',
+      steps:['Wilayah kabupaten → dipimpin <b>Bupati</b>.','Wilayah kota → dipimpin Wali Kota.']};
+  },
+  karakter_pemimpin_kota:()=>{
+    const cor='Wali Kota';
+    const {opts,ans}=mkOpts(cor,['Bupati','Gubernur','Presiden']);
+    return {type:'mcq',topic:'karakteristik_wilayah',
+      q:'Pemimpin pemerintahan di tingkat <b>kota</b> adalah ___.',
+      opts,ans,
+      hint:'Setingkat dengan Bupati tetapi di wilayah kota.',
+      concept:'Wali Kota memimpin wilayah pemerintahan kota.',
+      steps:['Wilayah kota → <b>Wali Kota</b>.']};
+  },
+  karakter_camat:()=>{
+    const cor='Kecamatan';
+    const {opts,ans}=mkOpts(cor,['Provinsi','Kelurahan','RT/RW']);
+    return {type:'mcq',topic:'karakteristik_wilayah',
+      q:'Camat adalah pemimpin di tingkat ___.',
+      opts,ans,
+      hint:'Tingkat di bawah kabupaten/kota.',
+      concept:'Hierarki wilayah: Provinsi → Kabupaten/Kota → Kecamatan → Kelurahan/Desa.',
+      steps:['Camat memimpin = <b>Kecamatan</b>.']};
+  },
+  karakter_lurah_desa:()=>{
+    const cor='Lurah memimpin kelurahan, Kepala Desa memimpin desa';
+    const {opts,ans}=mkOpts(cor,['Lurah memimpin desa, Kepala Desa memimpin kelurahan','Keduanya memimpin RT','Keduanya memimpin provinsi']);
+    return {type:'mcq',topic:'karakteristik_wilayah',
+      q:'Perbedaan antara Lurah dan Kepala Desa adalah ___.',
+      opts,ans,
+      hint:'Kelurahan ada di kota, desa ada di pedesaan.',
+      concept:'Lurah memimpin Kelurahan (umumnya di kota), Kepala Desa memimpin Desa (umumnya di pedesaan).',
+      steps:['Lurah → <b>Kelurahan</b>.','Kepala Desa → <b>Desa</b>.']};
+  },
+  karakter_wilayah_kota:()=>{
+    const cor='Penduduknya padat dan bangunan rapat';
+    const {opts,ans}=mkOpts(cor,['Banyak sawah dan kebun','Mayoritas bertani','Sedikit kendaraan']);
+    return {type:'mcq',topic:'karakteristik_wilayah',
+      q:'Salah satu ciri wilayah <b>kota</b> adalah ___.',
+      opts,ans,
+      hint:'Kota = pusat aktivitas dan padat penduduk.',
+      concept:'Kota umumnya padat penduduk, bangunan rapat, dan mayoritas bekerja di sektor jasa/industri.',
+      steps:['Kota = pusat aktivitas.','Penduduk → padat, bangunan → rapat.']};
+  },
+  karakter_wilayah_kab:()=>{
+    const cor='Lahan pertanian dan perkebunan luas';
+    const {opts,ans}=mkOpts(cor,['Tidak ada penduduk','Hanya pusat industri','Tanpa pemerintahan']);
+    return {type:'mcq',topic:'karakteristik_wilayah',
+      q:'Salah satu ciri wilayah <b>kabupaten</b> adalah ___.',
+      opts,ans,
+      hint:'Kabupaten umumnya lebih luas dan banyak desa.',
+      concept:'Kabupaten umumnya memiliki lahan pertanian luas dan terdiri dari banyak desa.',
+      steps:['Kabupaten → luas, banyak desa.','Mata pencaharian utama → pertanian.']};
+  },
+  fill_karakter_bupati:()=>({type:'fill',topic:'karakteristik_wilayah',
+    q:'Pemimpin wilayah kabupaten disebut ___.',
+    answers:['bupati'],
+    display:'Bupati',
+    hint:'Berbeda dengan Wali Kota.',
+    concept:'Bupati = pemimpin kabupaten.',
+    steps:['Kabupaten → <b>Bupati</b>.']}),
+  fill_karakter_walikota:()=>({type:'fill',topic:'karakteristik_wilayah',
+    q:'Pemimpin wilayah kota disebut ___.',
+    answers:['wali kota','walikota'],
+    display:'Wali Kota',
+    hint:'Setingkat dengan Bupati.',
+    concept:'Wali Kota = pemimpin kota.',
+    steps:['Kota → <b>Wali Kota</b>.']}),
+  fill_karakter_camat:()=>({type:'fill',topic:'karakteristik_wilayah',
+    q:'Pemimpin wilayah kecamatan disebut ___.',
+    answers:['camat'],
+    display:'Camat',
+    hint:'Tingkatan di bawah kabupaten/kota.',
+    concept:'Camat = pemimpin kecamatan.',
+    steps:['Kecamatan → <b>Camat</b>.']}),
+
+  // ── LINGKUP WILAYAH KAB/KOTA ──────────────────────────────────
+  lingkup_urutan:()=>{
+    const cor='Provinsi → Kabupaten/Kota → Kecamatan → Kelurahan/Desa';
+    const {opts,ans}=mkOpts(cor,['Desa → Kecamatan → Kabupaten → Provinsi','RT → RW → Kelurahan → Desa','Provinsi → Kecamatan → Kabupaten → Desa']);
+    return {type:'mcq',topic:'lingkup_wilayah',
+      q:'Urutan wilayah pemerintahan dari yang paling besar ke paling kecil adalah ___.',
+      opts,ans,
+      hint:'Mulai dari provinsi (paling besar) lalu mengecil.',
+      concept:'Hierarki wilayah Indonesia: Pusat → Provinsi → Kabupaten/Kota → Kecamatan → Kelurahan/Desa → RW → RT.',
+      steps:['Paling besar: Provinsi.','Lalu Kabupaten/Kota.','Lalu Kecamatan.','Terakhir Kelurahan/Desa.']};
+  },
+  lingkup_kelurahan_terdiri:()=>{
+    const cor='RW dan RT';
+    const {opts,ans}=mkOpts(cor,['Kecamatan dan kabupaten','Provinsi dan kota','Desa dan kelurahan']);
+    return {type:'mcq',topic:'lingkup_wilayah',
+      q:'Sebuah kelurahan/desa biasanya terdiri dari beberapa ___.',
+      opts,ans,
+      hint:'Lingkungan tingkat warga.',
+      concept:'Di bawah kelurahan/desa terdapat Rukun Warga (RW) dan Rukun Tetangga (RT).',
+      steps:['Kelurahan/desa terdiri dari beberapa RW.','RW terdiri dari beberapa RT.']};
+  },
+  lingkup_rt_pemimpin:()=>{
+    const cor='Ketua RT';
+    const {opts,ans}=mkOpts(cor,['Lurah','Bupati','Camat']);
+    return {type:'mcq',topic:'lingkup_wilayah',
+      q:'Pemimpin lingkungan terkecil di masyarakat adalah ___.',
+      opts,ans,
+      hint:'Pemimpin tetangga terdekat di sekitar rumah.',
+      concept:'RT (Rukun Tetangga) adalah satuan pemerintahan terkecil, dipimpin oleh Ketua RT.',
+      steps:['Lingkungan terkecil = RT.','Pemimpinnya = <b>Ketua RT</b>.']};
+  },
+  fill_lingkup_rt:()=>({type:'fill',topic:'lingkup_wilayah',
+    q:'Singkatan dari "Rukun Tetangga" adalah ___.',
+    answers:['rt'],
+    display:'RT',
+    hint:'Hanya 2 huruf.',
+    concept:'RT = Rukun Tetangga, satuan lingkungan terkecil.',
+    steps:['Rukun Tetangga = <b>RT</b>.']}),
+  fill_lingkup_rw:()=>({type:'fill',topic:'lingkup_wilayah',
+    q:'Singkatan dari "Rukun Warga" adalah ___.',
+    answers:['rw'],
+    display:'RW',
+    hint:'Hanya 2 huruf.',
+    concept:'RW = Rukun Warga, kumpulan beberapa RT.',
+    steps:['Rukun Warga = <b>RW</b>.']}),
+
+  // ── KERJA SAMA DI KAB/KOTA ────────────────────────────────────
+  kerjasama_gotong_royong:()=>{
+    const cor='Gotong royong membersihkan lingkungan';
+    const {opts,ans}=mkOpts(cor,['Bermain sendirian','Berkelahi dengan tetangga','Membuang sampah sembarangan']);
+    return {type:'mcq',topic:'kerja_sama',
+      q:'Contoh kerja sama warga di lingkungan RT/RW adalah ___.',
+      opts,ans,
+      hint:'Kegiatan bersama untuk kepentingan bersama.',
+      concept:'Gotong royong adalah ciri khas bangsa Indonesia, contoh nyata kerja sama di lingkungan.',
+      steps:['Kerja sama = melakukan bersama.','Gotong royong membersihkan lingkungan = contoh nyata.']};
+  },
+  kerjasama_manfaat:()=>{
+    const cor='Pekerjaan menjadi lebih ringan dan cepat selesai';
+    const {opts,ans}=mkOpts(cor,['Membuat warga bertengkar','Menambah masalah','Membuang waktu']);
+    return {type:'mcq',topic:'kerja_sama',
+      q:'Manfaat kerja sama di lingkungan kabupaten/kota adalah ___.',
+      opts,ans,
+      hint:'Pekerjaan berat menjadi ringan jika bersama.',
+      concept:'Kerja sama meringankan beban, mempererat persaudaraan, dan menyelesaikan masalah bersama.',
+      steps:['Bersama → ringan.','Bersama → cepat selesai.','Hasil → lebih baik.']};
+  },
+  kerjasama_sekolah:()=>{
+    const cor='Membersihkan kelas bersama saat piket';
+    const {opts,ans}=mkOpts(cor,['Tidur di kelas','Mencontek saat ulangan','Membuli teman']);
+    return {type:'mcq',topic:'kerja_sama',
+      q:'Contoh kerja sama yang baik di sekolah adalah ___.',
+      opts,ans,
+      hint:'Kegiatan kolaborasi positif antar siswa.',
+      concept:'Kerja sama di sekolah membangun rasa kebersamaan dan tanggung jawab.',
+      steps:['Piket bersama = kerja sama membersihkan kelas.','Hasilnya kelas bersih untuk semua.']};
+  },
+  kerjasama_siskamling:()=>{
+    const cor='Siskamling (Sistem Keamanan Lingkungan)';
+    const {opts,ans}=mkOpts(cor,['Lomba lari','Konser musik','Pesta perpisahan']);
+    return {type:'mcq',topic:'kerja_sama',
+      q:'Bentuk kerja sama warga untuk menjaga keamanan lingkungan adalah ___.',
+      opts,ans,
+      hint:'Kegiatan ronda malam bergiliran.',
+      concept:'Siskamling adalah ronda malam bergiliran warga untuk menjaga keamanan.',
+      steps:['Keamanan lingkungan bersama = <b>Siskamling</b>.','Warga bergantian jaga malam.']};
+  },
+  fill_kerjasama_gotong:()=>({type:'fill',topic:'kerja_sama',
+    q:'Bekerja bersama-sama tanpa imbalan untuk kepentingan bersama disebut ___.',
+    answers:['gotong royong'],
+    display:'gotong royong',
+    hint:'Terdiri dari 2 kata, ciri khas Indonesia.',
+    concept:'Gotong royong = bekerja bersama untuk kepentingan bersama.',
+    steps:['Bersama tanpa imbalan = <b>gotong royong</b>.']}),
+  fill_kerjasama_musyawarah:()=>({type:'fill',topic:'kerja_sama',
+    q:'Cara mengambil keputusan bersama dengan cara berunding disebut ___.',
+    answers:['musyawarah'],
+    display:'musyawarah',
+    hint:'Berasal dari bahasa Arab.',
+    concept:'Musyawarah adalah cara mengambil keputusan dengan berunding bersama, sesuai sila ke-4.',
+    steps:['Berunding bersama → <b>musyawarah</b>.','Kesepakatannya disebut mufakat.']}),
+
+  // ── MELESTARIKAN KERAGAMAN ───────────────────────────────────
+  lestari_keragaman:()=>{
+    const cor='Suku, agama, budaya, dan bahasa';
+    const {opts,ans}=mkOpts(cor,['Mata uang','Lambang negara','Pemerintah pusat']);
+    return {type:'mcq',topic:'melestarikan_keragaman',
+      q:'Indonesia memiliki keragaman, antara lain dalam hal ___.',
+      opts,ans,
+      hint:'Hal-hal yang berbeda antar daerah.',
+      concept:'Keragaman Indonesia meliputi suku, agama, ras, budaya, bahasa, dan adat istiadat.',
+      steps:['Indonesia = negara kepulauan dengan ribuan suku.','Setiap daerah punya budaya, bahasa, agama yang berbeda.']};
+  },
+  lestari_caratari:()=>{
+    const cor='Mempelajari tarian daerah di sekolah';
+    const {opts,ans}=mkOpts(cor,['Mengejek budaya lain','Hanya menonton TV asing','Menolak makanan daerah']);
+    return {type:'mcq',topic:'melestarikan_keragaman',
+      q:'Cara melestarikan keragaman budaya di sekolah adalah ___.',
+      opts,ans,
+      hint:'Aktivitas yang aktif belajar budaya.',
+      concept:'Melestarikan budaya dapat dimulai dari mempelajari dan mempraktikkannya.',
+      steps:['Mempelajari tarian = aktif menjaga warisan.','Akan diteruskan ke generasi berikutnya.']};
+  },
+  lestari_pakaian:()=>{
+    const cor='Memakai pakaian adat pada hari Kartini atau perayaan tertentu';
+    const {opts,ans}=mkOpts(cor,['Membakar pakaian adat','Membuang baju batik','Mengejek pakaian adat teman']);
+    return {type:'mcq',topic:'melestarikan_keragaman',
+      q:'Salah satu cara melestarikan keragaman pakaian adat adalah ___.',
+      opts,ans,
+      hint:'Sikap positif terhadap pakaian tradisional.',
+      concept:'Memakai pakaian adat menunjukkan rasa cinta dan bangga terhadap budaya bangsa.',
+      steps:['Pakai pakaian adat di hari tertentu → budaya tetap hidup.']};
+  },
+  lestari_bahasa:()=>{
+    const cor='Tetap menggunakan bahasa daerah saat berbicara dengan keluarga';
+    const {opts,ans}=mkOpts(cor,['Mengejek bahasa daerah lain','Hanya bicara bahasa asing','Tidak mau bicara bahasa daerah']);
+    return {type:'mcq',topic:'melestarikan_keragaman',
+      q:'Cara melestarikan bahasa daerah adalah ___.',
+      opts,ans,
+      hint:'Tetap memakainya dalam kehidupan sehari-hari.',
+      concept:'Bahasa daerah lestari jika tetap dipakai dalam komunikasi sehari-hari.',
+      steps:['Bahasa hidup → kalau dipakai.','Bicara bahasa daerah di rumah → bahasa lestari.']};
+  },
+  fill_lestari_museum:()=>({type:'fill',topic:'melestarikan_keragaman',
+    q:'Tempat menyimpan benda-benda bersejarah dan budaya disebut ___.',
+    answers:['museum'],
+    display:'museum',
+    hint:'Tempat wisata edukasi sejarah.',
+    concept:'Museum berperan menyimpan dan melestarikan benda budaya & sejarah.',
+    steps:['Penyimpan benda budaya → <b>museum</b>.']}),
+  fill_lestari_unesco:()=>({type:'fill',topic:'melestarikan_keragaman',
+    q:'Lembaga PBB yang mengurus pendidikan dan kebudayaan dunia disebut ___.',
+    answers:['unesco'],
+    display:'UNESCO',
+    hint:'Singkatan 6 huruf, bagian dari PBB.',
+    concept:'UNESCO mengakui banyak warisan budaya Indonesia (batik, wayang, angklung).',
+    steps:['Lembaga PBB urusan budaya = <b>UNESCO</b>.']}),
+
+  // ── MENGHORMATI KERAGAMAN ────────────────────────────────────
+  hormat_toleransi:()=>{
+    const cor='Toleransi';
+    const {opts,ans}=mkOpts(cor,['Egois','Cemburu','Iri']);
+    return {type:'mcq',topic:'menghormati_keragaman',
+      q:'Sikap saling menghargai perbedaan antar suku, agama, dan budaya disebut ___.',
+      opts,ans,
+      hint:'Berhubungan dengan menghargai perbedaan.',
+      concept:'Toleransi adalah sikap menghargai perbedaan dan tidak memaksakan kehendak kepada orang lain.',
+      steps:['Saling menghargai perbedaan = <b>toleransi</b>.']};
+  },
+  hormat_ibadah:()=>{
+    const cor='Tidak mengganggu ibadah teman yang berbeda agama';
+    const {opts,ans}=mkOpts(cor,['Mengejek cara ibadah teman','Memaksa teman ikut agama kita','Berisik saat teman beribadah']);
+    return {type:'mcq',topic:'menghormati_keragaman',
+      q:'Sikap menghormati keragaman agama dapat ditunjukkan dengan ___.',
+      opts,ans,
+      hint:'Sikap yang baik terhadap teman berbeda agama.',
+      concept:'Menghormati agama lain berarti tidak mengganggu dan memberi ruang untuk beribadah.',
+      steps:['Setiap orang berhak beribadah sesuai agamanya.','Kita tidak boleh mengganggu.']};
+  },
+  hormat_pancasila_sila:()=>{
+    const cor='Sila ke-3 (Persatuan Indonesia)';
+    const {opts,ans}=mkOpts(cor,['Sila ke-1','Sila ke-2','Sila ke-5']);
+    return {type:'mcq',topic:'menghormati_keragaman',
+      q:'Sikap mengutamakan persatuan di tengah keragaman sesuai dengan Pancasila ___.',
+      opts,ans,
+      hint:'Sila yang menyebut "Persatuan Indonesia".',
+      concept:'Sila ke-3 "Persatuan Indonesia" mengajarkan kita bersatu meskipun berbeda-beda.',
+      steps:['Persatuan Indonesia = Sila ke-3.','Bersatu meski berbeda → mengamalkan sila ke-3.']};
+  },
+  hormat_diskriminasi:()=>{
+    const cor='Memperlakukan teman berbeda agama secara tidak adil';
+    const {opts,ans}=mkOpts(cor,['Bermain bersama teman semua agama','Saling menyapa di sekolah','Membantu teman yang kesulitan']);
+    return {type:'mcq',topic:'menghormati_keragaman',
+      q:'Sikap yang <b>BERTENTANGAN</b> dengan menghormati keragaman adalah ___.',
+      opts,ans,
+      hint:'Cari sikap yang membeda-bedakan dengan tidak adil.',
+      concept:'Diskriminasi (membeda-bedakan secara tidak adil) bertentangan dengan menghormati keragaman.',
+      steps:['Membeda-bedakan tidak adil = diskriminasi.','Diskriminasi → BUKAN menghormati.']};
+  },
+  fill_hormat_toleransi:()=>({type:'fill',topic:'menghormati_keragaman',
+    q:'Sikap saling menghargai dan menghormati perbedaan antar sesama disebut ___.',
+    answers:['toleransi'],
+    display:'toleransi',
+    hint:'Berasal dari kata Latin "tolerare".',
+    concept:'Toleransi = menghargai perbedaan tanpa diskriminasi.',
+    steps:['Menghargai perbedaan = <b>toleransi</b>.']}),
+  fill_hormat_bhinneka:()=>({type:'fill',topic:'menghormati_keragaman',
+    q:'Semboyan negara Indonesia yang artinya "berbeda-beda tetapi tetap satu" adalah ___.',
+    answers:['bhinneka tunggal ika','bhineka tunggal ika'],
+    display:'Bhinneka Tunggal Ika',
+    hint:'Tertulis di pita yang dicengkeram Garuda.',
+    concept:'Bhinneka Tunggal Ika = berbeda-beda tetapi tetap satu, semboyan persatuan Indonesia.',
+    steps:['Semboyan persatuan = <b>Bhinneka Tunggal Ika</b>.']}),
+  fill_hormat_sila3:()=>({type:'fill',topic:'menghormati_keragaman',
+    q:'"Persatuan Indonesia" adalah bunyi sila ke-___.',
+    answers:['3','tiga','iii'],
+    display:'3 (tiga)',
+    hint:'Setelah Kemanusiaan, sebelum Kerakyatan.',
+    concept:'Sila ke-3: Persatuan Indonesia.',
+    steps:['Persatuan Indonesia → sila ke-<b>3</b>.']}),
+
+  // ── URAIAN ────────────────────────────────────────────────────
+  essay_lestari_sekolah:()=>({type:'essay',topic:'melestarikan_keragaman',
+    q:'Jelaskan 3 cara <b>melestarikan keragaman budaya</b> di lingkungan sekolahmu.',
+    model:'Tiga cara melestarikan keragaman budaya di sekolah: (1) <b>Mempelajari tarian, lagu, dan alat musik daerah</b> dalam kegiatan ekstrakurikuler seni sehingga budaya tetap hidup di kalangan siswa; (2) <b>Mengadakan perayaan budaya</b> seperti Hari Kartini dengan memakai pakaian adat dari berbagai daerah agar siswa mengenal kekayaan budaya Indonesia; (3) <b>Memperkenalkan makanan tradisional</b> pada acara market day atau pekan budaya sehingga semua siswa mengenal dan menghargai keragaman kuliner; (4) <b>Menggunakan bahasa daerah</b> di hari tertentu untuk melestarikan bahasa ibu. Dengan kegiatan ini, siswa akan bangga dengan budayanya sendiri.',
+    hint:'Sebutkan 3 aksi nyata: tari, pakaian adat, makanan, bahasa daerah.',
+    concept:'Melestarikan budaya = mempelajari, mempraktikkan, dan memperkenalkan budaya kepada orang lain.',
+    keys:['tari','tarian','pakaian','adat','makanan','tradisional','bahasa','daerah','budaya','sekolah']}),
+  essay_hormat_keragaman:()=>({type:'essay',topic:'menghormati_keragaman',
+    q:'Sebutkan minimal 4 contoh sikap <b>menghormati keragaman</b> di lingkungan sekolah dan masyarakat.',
+    model:'Empat contoh sikap menghormati keragaman: (1) <b>Tidak mengganggu teman yang sedang beribadah</b> meskipun berbeda agama; (2) <b>Bermain dan belajar bersama</b> dengan semua teman tanpa membeda-bedakan suku atau agama; (3) <b>Tidak mengejek</b> bahasa daerah, logat, atau budaya teman dari daerah lain; (4) <b>Membantu tetangga</b> yang sedang merayakan hari besar agamanya, misalnya menjaga keamanan saat tetangga merayakan hari raya; (5) <b>Menghargai pendapat</b> teman dalam musyawarah meskipun berbeda. Sikap ini sesuai dengan semboyan <b>Bhinneka Tunggal Ika</b>.',
+    hint:'Sebutkan minimal 4 contoh sikap toleransi yang konkret.',
+    concept:'Menghormati keragaman = tidak mengganggu, tidak mengejek, mau bekerja sama dengan semua.',
+    keys:['tidak mengganggu','ibadah','agama','bermain','belajar','tidak mengejek','bahasa','membantu','tetangga','musyawarah','bhinneka']}),
+  essay_pemimpin_wilayah:()=>({type:'essay',topic:'karakteristik_wilayah',
+    q:'Sebutkan dan jelaskan tugas <b>3 pemimpin wilayah</b> di Indonesia (mulai dari kabupaten/kota ke bawah).',
+    model:'Tiga pemimpin wilayah dan tugasnya: (1) <b>Bupati / Wali Kota</b> — memimpin kabupaten atau kota, bertugas mengatur pemerintahan, pembangunan, dan kesejahteraan masyarakat di wilayahnya; (2) <b>Camat</b> — memimpin kecamatan, bertugas mengoordinasikan pelayanan publik di tingkat kecamatan dan menghubungkan kabupaten/kota dengan kelurahan/desa; (3) <b>Lurah / Kepala Desa</b> — memimpin kelurahan atau desa, bertugas melayani warga secara langsung dalam administrasi seperti KTP, KK, surat pengantar, serta memimpin musyawarah desa. Ketiganya bekerja sama agar pelayanan kepada masyarakat berjalan baik.',
+    hint:'Bupati/Wali Kota → Camat → Lurah/Kepala Desa.',
+    concept:'Hierarki pemimpin wilayah: Bupati/Wali Kota → Camat → Lurah/Kepala Desa.',
+    keys:['bupati','wali kota','camat','lurah','kepala desa','kabupaten','kota','kecamatan','kelurahan','desa','pemerintahan','melayani']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// BAB 4 — Persatuan dan Kesatuan di Lingkup Wilayah Kabupaten/Kota
+// Topik: persatuan_kesatuan, kerja_sama_warga, bhinneka_tunggal_ika, peran_warga, gotong_royong
+// ════════════════════════════════════════════════════════════════
+const BAB4_GEN = {
+  // ── PERSATUAN KESATUAN ───────────────────────────────────────
+  persatuan_arti:()=>{
+    const cor='Bersatu padu meskipun berbeda-beda';
+    const {opts,ans}=mkOpts(cor,['Hidup masing-masing','Tidak peduli orang lain','Hanya berteman dengan yang sama suku']);
+    return {type:'mcq',topic:'persatuan_kesatuan',
+      q:'Arti dari "persatuan" adalah ___.',
+      opts,ans,
+      hint:'Berasal dari kata "satu".',
+      concept:'Persatuan berarti bersatu meskipun ada perbedaan suku, agama, dan budaya.',
+      steps:['"Per-satu-an" = menjadi satu.','Bersatu meski berbeda = persatuan.']};
+  },
+  persatuan_kesatuan_beda:()=>{
+    const cor='Persatuan = proses bersatu; Kesatuan = hasil bersatu (utuh)';
+    const {opts,ans}=mkOpts(cor,['Keduanya sama persis','Persatuan untuk anak, kesatuan untuk dewasa','Persatuan hanya di rumah']);
+    return {type:'mcq',topic:'persatuan_kesatuan',
+      q:'Perbedaan antara "persatuan" dan "kesatuan" adalah ___.',
+      opts,ans,
+      hint:'Satu adalah proses, satu adalah hasil.',
+      concept:'Persatuan = proses bersatu. Kesatuan = sifat sudah menjadi satu/utuh.',
+      steps:['Persatuan = "menjadi satu" (proses).','Kesatuan = "sudah satu" (hasil/keadaan).']};
+  },
+  persatuan_sila:()=>{
+    const cor='Sila ke-3';
+    const {opts,ans}=mkOpts(cor,['Sila ke-1','Sila ke-4','Sila ke-5']);
+    return {type:'mcq',topic:'persatuan_kesatuan',
+      q:'Persatuan dan kesatuan Indonesia tercantum dalam Pancasila sila ___.',
+      opts,ans,
+      hint:'Sila yang berbunyi "Persatuan Indonesia".',
+      concept:'Sila ke-3 Pancasila berbunyi "Persatuan Indonesia".',
+      steps:['Sila ke-3 = "Persatuan Indonesia".']};
+  },
+  persatuan_lambang:()=>{
+    const cor='Pohon Beringin';
+    const {opts,ans}=mkOpts(cor,['Bintang','Rantai','Padi dan Kapas']);
+    return {type:'mcq',topic:'persatuan_kesatuan',
+      q:'Lambang sila ketiga Pancasila adalah ___.',
+      opts,ans,
+      hint:'Pohon yang tinggi besar dan kuat akarnya.',
+      concept:'Pohon Beringin = lambang sila ke-3, menggambarkan tempat berteduh bagi rakyat yang bersatu.',
+      steps:['Sila ke-3 = Persatuan Indonesia.','Lambangnya = <b>Pohon Beringin</b>.']};
+  },
+  persatuan_manfaat:()=>{
+    const cor='Masyarakat hidup damai dan tentram';
+    const {opts,ans}=mkOpts(cor,['Banyak perpecahan','Sering terjadi tawuran','Saling bermusuhan']);
+    return {type:'mcq',topic:'persatuan_kesatuan',
+      q:'Manfaat persatuan dan kesatuan di kabupaten/kota adalah ___.',
+      opts,ans,
+      hint:'Lawan dari konflik.',
+      concept:'Persatuan menciptakan kehidupan damai, aman, dan tentram.',
+      steps:['Bersatu = damai.','Damai = tentram.','Tentram = pembangunan lancar.']};
+  },
+  fill_persatuan_sila3:()=>({type:'fill',topic:'persatuan_kesatuan',
+    q:'Sila Pancasila yang menyatakan "Persatuan Indonesia" adalah sila ke-___.',
+    answers:['3','tiga','iii'],
+    display:'3 (tiga)',
+    hint:'Setelah Kemanusiaan.',
+    concept:'Sila ke-3 = Persatuan Indonesia.',
+    steps:['Persatuan Indonesia = sila <b>3</b>.']}),
+  fill_persatuan_beringin:()=>({type:'fill',topic:'persatuan_kesatuan',
+    q:'Lambang sila ke-3 Pancasila adalah ___.',
+    answers:['pohon beringin','beringin'],
+    display:'Pohon Beringin',
+    hint:'Pohon besar dan rindang.',
+    concept:'Pohon Beringin melambangkan tempat berteduh rakyat yang bersatu.',
+    steps:['Sila ke-3 → <b>Pohon Beringin</b>.']}),
+
+  // ── BHINNEKA TUNGGAL IKA ─────────────────────────────────────
+  bhinneka_arti:()=>{
+    const cor='Berbeda-beda tetapi tetap satu';
+    const {opts,ans}=mkOpts(cor,['Sama tetapi terpisah','Berbeda dan terpisah','Bersatu dan sama']);
+    return {type:'mcq',topic:'bhinneka_tunggal_ika',
+      q:'"Bhinneka Tunggal Ika" artinya ___.',
+      opts,ans,
+      hint:'Mengakui perbedaan tetapi tetap bersatu.',
+      concept:'Bhinneka Tunggal Ika = berbeda-beda tetapi tetap satu (semboyan persatuan).',
+      steps:['Bhinneka = berbeda-beda.','Tunggal Ika = tetap satu.']};
+  },
+  bhinneka_letak:()=>{
+    const cor='Pita yang dicengkeram Garuda Pancasila';
+    const {opts,ans}=mkOpts(cor,['Bendera Merah Putih','Lagu Indonesia Raya','Lambang Provinsi']);
+    return {type:'mcq',topic:'bhinneka_tunggal_ika',
+      q:'Semboyan "Bhinneka Tunggal Ika" tertulis di ___.',
+      opts,ans,
+      hint:'Bagian dari lambang negara.',
+      concept:'Bhinneka Tunggal Ika tertulis di pita putih yang dicengkeram kaki Garuda Pancasila.',
+      steps:['Garuda Pancasila mencengkeram pita.','Pita itu bertuliskan <b>Bhinneka Tunggal Ika</b>.']};
+  },
+  bhinneka_makna:()=>{
+    const cor='Walaupun berbeda suku, agama, budaya, kita tetap bangsa Indonesia';
+    const {opts,ans}=mkOpts(cor,['Hanya boleh berteman dengan suku sendiri','Hanya satu agama yang diakui','Tidak boleh beda pendapat']);
+    return {type:'mcq',topic:'bhinneka_tunggal_ika',
+      q:'Makna semboyan Bhinneka Tunggal Ika bagi bangsa Indonesia adalah ___.',
+      opts,ans,
+      hint:'Mengakui perbedaan dan tetap bersatu.',
+      concept:'Bhinneka Tunggal Ika mengajarkan kita menerima perbedaan dan tetap menjadi satu bangsa.',
+      steps:['Indonesia = beragam.','Tetap satu bangsa = persatuan.']};
+  },
+  fill_bhinneka_semboyan:()=>({type:'fill',topic:'bhinneka_tunggal_ika',
+    q:'Semboyan negara Indonesia yang dicengkeram Garuda Pancasila adalah ___.',
+    answers:['bhinneka tunggal ika','bhineka tunggal ika'],
+    display:'Bhinneka Tunggal Ika',
+    hint:'Tertulis di pita putih.',
+    concept:'Bhinneka Tunggal Ika = semboyan persatuan Indonesia.',
+    steps:['Semboyan negara = <b>Bhinneka Tunggal Ika</b>.']}),
+  fill_bhinneka_garuda:()=>({type:'fill',topic:'bhinneka_tunggal_ika',
+    q:'Lambang negara Indonesia berbentuk burung ___.',
+    answers:['garuda','garuda pancasila'],
+    display:'Garuda (Garuda Pancasila)',
+    hint:'Burung mitos yang gagah perkasa.',
+    concept:'Garuda Pancasila adalah lambang negara Republik Indonesia.',
+    steps:['Lambang negara = burung <b>Garuda</b>.']}),
+
+  // ── PERAN WARGA DALAM PERSATUAN ──────────────────────────────
+  peran_warga_gotong:()=>{
+    const cor='Ikut gotong royong membersihkan lingkungan';
+    const {opts,ans}=mkOpts(cor,['Membuang sampah di jalan','Membakar fasilitas umum','Tidak mau ikut musyawarah']);
+    return {type:'mcq',topic:'peran_warga',
+      q:'Peran warga untuk menjaga persatuan di kabupaten/kota adalah ___.',
+      opts,ans,
+      hint:'Aksi positif untuk lingkungan bersama.',
+      concept:'Gotong royong mempererat hubungan warga dan menjaga persatuan.',
+      steps:['Gotong royong = bekerja bersama.','Bersama → mempererat persatuan.']};
+  },
+  peran_pemilu:()=>{
+    const cor='Ikut serta dalam pemilihan kepala daerah';
+    const {opts,ans}=mkOpts(cor,['Tidak peduli pemerintahan','Mengganggu pemilu','Memilih ganda']);
+    return {type:'mcq',topic:'peran_warga',
+      q:'Peran warga dewasa dalam pemerintahan kabupaten/kota adalah ___.',
+      opts,ans,
+      hint:'Hak warga negara dalam demokrasi.',
+      concept:'Warga dewasa berhak ikut Pilkada untuk memilih Bupati/Wali Kota.',
+      steps:['Pilkada = memilih pemimpin daerah.','Ikut memilih = peran sebagai warga.']};
+  },
+  peran_siswa:()=>{
+    const cor='Belajar dengan tekun dan menghormati teman';
+    const {opts,ans}=mkOpts(cor,['Mencontek saat ulangan','Membully teman','Membolos sekolah']);
+    return {type:'mcq',topic:'peran_warga',
+      q:'Peran siswa dalam menjaga persatuan di sekolah adalah ___.',
+      opts,ans,
+      hint:'Sikap positif sebagai pelajar.',
+      concept:'Siswa menjaga persatuan dengan belajar tekun, menghormati teman, dan tidak membeda-bedakan.',
+      steps:['Tekun belajar → bermanfaat untuk diri & bangsa.','Hormat teman → persatuan terjaga.']};
+  },
+  peran_hak_kewajiban:()=>{
+    const cor='Menjalankan kewajiban dan menghormati hak orang lain';
+    const {opts,ans}=mkOpts(cor,['Hanya menuntut hak','Tidak peduli kewajiban','Merebut hak orang lain']);
+    return {type:'mcq',topic:'peran_warga',
+      q:'Sebagai warga negara yang baik, kita harus ___.',
+      opts,ans,
+      hint:'Seimbang antara hak dan kewajiban.',
+      concept:'Warga yang baik menjalankan kewajiban (membayar pajak, taat hukum) dan menghormati hak orang lain.',
+      steps:['Hak dan kewajiban harus seimbang.','Saling menghormati → masyarakat damai.']};
+  },
+  fill_peran_pkk:()=>({type:'fill',topic:'peran_warga',
+    q:'Organisasi ibu-ibu di tingkat RT/RW/Desa untuk membantu kesejahteraan keluarga adalah ___.',
+    answers:['pkk'],
+    display:'PKK (Pemberdayaan Kesejahteraan Keluarga)',
+    hint:'Singkatan 3 huruf.',
+    concept:'PKK = Pemberdayaan Kesejahteraan Keluarga, organisasi ibu-ibu di tingkat lingkungan.',
+    steps:['Organisasi ibu-ibu = <b>PKK</b>.']}),
+  fill_peran_karangtaruna:()=>({type:'fill',topic:'peran_warga',
+    q:'Organisasi pemuda di tingkat desa/kelurahan untuk kegiatan sosial disebut ___.',
+    answers:['karang taruna','karangtaruna'],
+    display:'Karang Taruna',
+    hint:'Wadah pemuda di lingkungan.',
+    concept:'Karang Taruna = organisasi kepemudaan untuk kegiatan sosial di tingkat desa/kelurahan.',
+    steps:['Organisasi pemuda = <b>Karang Taruna</b>.']}),
+
+  // ── GOTONG ROYONG ────────────────────────────────────────────
+  gotong_arti:()=>{
+    const cor='Bekerja bersama untuk kepentingan bersama tanpa pamrih';
+    const {opts,ans}=mkOpts(cor,['Bekerja sendiri','Bekerja demi upah','Bekerja paksa']);
+    return {type:'mcq',topic:'gotong_royong',
+      q:'Gotong royong adalah ___.',
+      opts,ans,
+      hint:'Ciri khas masyarakat Indonesia.',
+      concept:'Gotong royong = bekerja bersama untuk kepentingan bersama secara sukarela.',
+      steps:['Gotong royong = bersama, sukarela, untuk semua.']};
+  },
+  gotong_contoh:()=>{
+    const cor='Membersihkan selokan bersama tetangga';
+    const {opts,ans}=mkOpts(cor,['Berkelahi dengan tetangga','Menutup gerbang sendiri','Membuang sampah ke selokan']);
+    return {type:'mcq',topic:'gotong_royong',
+      q:'Contoh gotong royong di lingkungan RT adalah ___.',
+      opts,ans,
+      hint:'Aktivitas bersama untuk kebaikan lingkungan.',
+      concept:'Membersihkan selokan bersama adalah contoh nyata gotong royong di RT.',
+      steps:['Selokan bersih → semua warga senang.','Kerja bersama = gotong royong.']};
+  },
+  gotong_manfaat:()=>{
+    const cor='Mempererat tali persaudaraan antar warga';
+    const {opts,ans}=mkOpts(cor,['Memecah belah warga','Membuat masalah','Memboroskan tenaga']);
+    return {type:'mcq',topic:'gotong_royong',
+      q:'Salah satu manfaat gotong royong adalah ___.',
+      opts,ans,
+      hint:'Hasil positif bagi hubungan warga.',
+      concept:'Gotong royong mempererat persaudaraan dan persatuan warga.',
+      steps:['Kerja bersama → kenal akrab.','Akrab → persaudaraan erat.']};
+  },
+  gotong_kerja_bakti:()=>{
+    const cor='Kerja bakti membangun pos ronda';
+    const {opts,ans}=mkOpts(cor,['Lomba menyendiri','Nonton TV sendiri','Tidur seharian']);
+    return {type:'mcq',topic:'gotong_royong',
+      q:'Contoh kegiatan gotong royong di kabupaten/kota adalah ___.',
+      opts,ans,
+      hint:'Kegiatan bangunan/lingkungan bersama.',
+      concept:'Kerja bakti membangun fasilitas umum adalah bentuk gotong royong.',
+      steps:['Kerja bakti = bekerja bersama untuk umum.','Pos ronda = fasilitas umum lingkungan.']};
+  },
+  fill_gotong_royong_isi:()=>({type:'fill',topic:'gotong_royong',
+    q:'Kegiatan bekerja bersama-sama untuk kepentingan umum disebut ___.',
+    answers:['gotong royong'],
+    display:'gotong royong',
+    hint:'Terdiri dari 2 kata.',
+    concept:'Gotong royong = ciri khas bangsa Indonesia.',
+    steps:['Bekerja bersama untuk umum = <b>gotong royong</b>.']}),
+  fill_gotong_kerjabakti:()=>({type:'fill',topic:'gotong_royong',
+    q:'Kegiatan gotong royong membersihkan atau membangun fasilitas umum bersama disebut ___.',
+    answers:['kerja bakti','kerjabakti'],
+    display:'kerja bakti',
+    hint:'Terdiri dari 2 kata.',
+    concept:'Kerja bakti adalah bentuk gotong royong untuk fasilitas/lingkungan umum.',
+    steps:['Gotong royong untuk umum = <b>kerja bakti</b>.']}),
+
+  // ── URAIAN ───────────────────────────────────────────────────
+  essay_peran_warga:()=>({type:'essay',topic:'peran_warga',
+    q:'Sebutkan dan jelaskan minimal 3 <b>peran warga</b> dalam menjaga persatuan dan kesatuan di lingkungan kabupaten/kota.',
+    model:'Tiga peran warga dalam menjaga persatuan: (1) <b>Ikut gotong royong</b> membersihkan lingkungan, memperbaiki jalan, atau membangun pos ronda — kegiatan ini mempererat hubungan warga; (2) <b>Mengikuti musyawarah</b> di tingkat RT/RW untuk membuat keputusan bersama agar tidak ada warga yang merasa diabaikan; (3) <b>Menghormati tetangga yang berbeda</b> suku, agama, atau budaya dengan tidak mengganggu kegiatan ibadah dan adat mereka; (4) <b>Menaati peraturan</b> di lingkungan seperti jam malam, kebersihan, dan keamanan; (5) <b>Ikut Siskamling</b> menjaga keamanan lingkungan secara bergiliran. Semua peran ini menjaga persatuan sesuai semboyan <b>Bhinneka Tunggal Ika</b>.',
+    hint:'Sebutkan 3 peran: gotong royong, musyawarah, menghormati tetangga.',
+    concept:'Peran warga = aksi nyata menjaga persatuan di lingkungan tempat tinggal.',
+    keys:['gotong royong','musyawarah','menghormati','tetangga','peraturan','siskamling','persatuan','bhinneka']}),
+  essay_persatuan_pentingnya:()=>({type:'essay',topic:'persatuan_kesatuan',
+    q:'Jelaskan mengapa <b>persatuan dan kesatuan</b> penting bagi Indonesia.',
+    model:'Persatuan dan kesatuan sangat penting bagi Indonesia karena: (1) Indonesia adalah <b>negara kepulauan</b> dengan ribuan pulau, ratusan suku, bahasa, dan budaya yang berbeda — tanpa persatuan akan mudah terpecah belah; (2) Persatuan membuat <b>pembangunan berjalan lancar</b> karena semua warga bekerja sama membangun negeri; (3) Persatuan membuat bangsa <b>kuat menghadapi ancaman</b> dari luar maupun dalam; (4) Dengan bersatu, masyarakat hidup <b>damai dan tentram</b>. Itulah mengapa semboyan kita adalah <b>Bhinneka Tunggal Ika</b> — berbeda-beda tetapi tetap satu.',
+    hint:'Sebutkan: keragaman, pembangunan, kekuatan menghadapi ancaman, kedamaian.',
+    concept:'Persatuan = kunci kekuatan dan kedamaian bangsa Indonesia.',
+    keys:['kepulauan','suku','budaya','berbeda','pembangunan','kuat','damai','bhinneka','tunggal ika','bersatu']}),
+  essay_gotong_royong_manfaat:()=>({type:'essay',topic:'gotong_royong',
+    q:'Sebutkan minimal 3 contoh kegiatan <b>gotong royong</b> di lingkunganmu dan jelaskan manfaatnya.',
+    model:'Tiga contoh kegiatan gotong royong di lingkungan: (1) <b>Membersihkan lingkungan</b> RT setiap hari Minggu — manfaatnya lingkungan menjadi bersih, sehat, dan terhindar dari penyakit; (2) <b>Kerja bakti memperbaiki jalan</b> atau membangun pos ronda — manfaatnya fasilitas umum menjadi baik dan warga merasa aman; (3) <b>Membantu tetangga</b> yang sedang punya hajat (pernikahan, kelahiran, kematian) — manfaatnya tetangga merasa dibantu dan persaudaraan semakin erat; (4) <b>Membangun rumah ibadah</b> bersama. Manfaat utama gotong royong adalah <b>pekerjaan menjadi ringan</b>, hubungan antar warga menjadi <b>erat</b>, dan persatuan terjaga.',
+    hint:'Sebutkan 3 contoh + manfaatnya (kebersihan, fasilitas, persaudaraan).',
+    concept:'Gotong royong meringankan pekerjaan dan mempererat persaudaraan.',
+    keys:['membersihkan','lingkungan','kerja bakti','jalan','membantu','tetangga','hajat','ringan','persaudaraan','sehat']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTERS
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': {title:'Bab 3 · Menghormati Keragaman', gen: BAB3_GEN},
+  '2': {title:'Bab 4 · Persatuan & Kesatuan', gen: BAB4_GEN},
+};
+
+// UAS: 20 PG + 10 Isian + 5 Uraian = 35 soal
+const UAS_KISI = [
+  // BAB 3
+  {topic:'karakteristik_wilayah', type:'mcq', n:2, chapter:'Bab 3'},
+  {topic:'lingkup_wilayah', type:'mcq', n:1, chapter:'Bab 3'},
+  {topic:'kerja_sama', type:'mcq', n:2, chapter:'Bab 3'},
+  {topic:'melestarikan_keragaman', type:'mcq', n:2, chapter:'Bab 3'},
+  {topic:'menghormati_keragaman', type:'mcq', n:3, chapter:'Bab 3'},
+  {topic:'karakteristik_wilayah', type:'fill', n:1, chapter:'Bab 3'},
+  {topic:'lingkup_wilayah', type:'fill', n:1, chapter:'Bab 3'},
+  {topic:'kerja_sama', type:'fill', n:1, chapter:'Bab 3'},
+  {topic:'melestarikan_keragaman', type:'fill', n:1, chapter:'Bab 3'},
+  {topic:'menghormati_keragaman', type:'fill', n:1, chapter:'Bab 3'},
+  {topic:'melestarikan_keragaman', type:'essay', n:1, chapter:'Bab 3'},
+  {topic:'menghormati_keragaman', type:'essay', n:1, chapter:'Bab 3'},
+
+  // BAB 4
+  {topic:'persatuan_kesatuan', type:'mcq', n:3, chapter:'Bab 4'},
+  {topic:'bhinneka_tunggal_ika', type:'mcq', n:2, chapter:'Bab 4'},
+  {topic:'peran_warga', type:'mcq', n:3, chapter:'Bab 4'},
+  {topic:'gotong_royong', type:'mcq', n:2, chapter:'Bab 4'},
+  {topic:'persatuan_kesatuan', type:'fill', n:2, chapter:'Bab 4'},
+  {topic:'bhinneka_tunggal_ika', type:'fill', n:1, chapter:'Bab 4'},
+  {topic:'peran_warga', type:'fill', n:1, chapter:'Bab 4'},
+  {topic:'gotong_royong', type:'fill', n:1, chapter:'Bab 4'},
+  {topic:'peran_warga', type:'essay', n:1, chapter:'Bab 4'},
+  {topic:'gotong_royong', type:'essay', n:1, chapter:'Bab 4'},
+  {topic:'persatuan_kesatuan', type:'essay', n:1, chapter:'Bab 4'},
+];
+
+const ALL_GENS = {...BAB3_GEN, ...BAB4_GEN};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null;
+let currentChapterTitle = null;
+let isUAS = false;
+let uasBreakdown = {};
+
+function buildQueue(chKey){
+  if(chKey === 'uas'){ buildUAS(); return; }
+  isUAS = false;
+  const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+  currentChapterTitle = ch.title;
+  const keys = shuf(Object.keys(ch.gen));
+  let qs = keys.map(k => ch.gen[k]());
+  const typeOrder = {mcq:0, fill:1, essay:2};
+  qs.sort((a,b)=>(typeOrder[a.type]??9) - (typeOrder[b.type]??9));
+  queue = qs;
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateHeader();
+  updateScore();
+  next();
+}
+
+function buildUAS(){
+  isUAS = true;
+  currentChapterTitle = 'UAS — Ujian Akhir Semester (35 Soal)';
+  uasBreakdown = {};
+
+  const byTopicType = {};
+  for(const [key,fn] of Object.entries(ALL_GENS)){
+    const sample = fn();
+    const k = sample.topic + ':' + sample.type;
+    (byTopicType[k] = byTopicType[k] || []).push(fn);
+  }
+
+  const built = [];
+  for(const spec of UAS_KISI){
+    const key = spec.topic + ':' + spec.type;
+    const pool = byTopicType[key] || [];
+    uasBreakdown[spec.chapter] = uasBreakdown[spec.chapter] || {correct:0,total:0};
+    uasBreakdown[spec.chapter].total += spec.n;
+    if(pool.length === 0){
+      for(let i=0;i<spec.n;i++){
+        built.push({type:spec.type,
+          q:`[Soal hilang: ${spec.topic} / ${spec.type}]`,
+          opts:['—','—','—','—'], ans:0,
+          answers:['—'], display:'—', model:'—', keys:[],
+          _chapter:spec.chapter, _topic:spec.topic});
+      }
+      continue;
+    }
+    const shuffled = shuf(pool);
+    for(let i=0;i<spec.n;i++){
+      const fn = shuffled[i % shuffled.length];
+      const q = fn();
+      q._chapter = spec.chapter;
+      q._topic = spec.topic;
+      built.push(q);
+    }
+  }
+
+  const typeOrder = {mcq:0, fill:1, essay:2};
+  built.sort((a,b)=> (typeOrder[a.type]??9) - (typeOrder[b.type]??9));
+
+  queue = built;
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateHeader();
+  updateScore();
+  next();
+}
+
+function updateHeader(){
+  document.getElementById('hdrTitle').textContent = '🇮🇩 ' + (currentChapterTitle || 'Latihan Pendidikan Pancasila');
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDERERS
+// ════════════════════════════════════════════════════════════════
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  let inner = '';
+  switch(current.type){
+    case 'mcq':   inner = mcqHtml(current); break;
+    case 'fill':  inner = fillHtml(current); break;
+    case 'essay': inner = essayHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq':   attachMCQ(); break;
+    case 'fill':  attachFill(); break;
+    case 'essay': attachEssay(); break;
+  }
+  attachHint();
+}
+
+function badgeFor(typ){
+  const labels = {
+    mcq:'📝 Pilihan Ganda',
+    fill:'📋 Isian Singkat',
+    essay:'📖 Uraian'
+  };
+  return `<span class="q-badge ${typ}">${labels[typ]}</span>`;
+}
+
+function hintBlock(q){
+  if(!q.hint) return '';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">💡 Tampilkan Petunjuk</button>
+    <div class="hint-box" id="hintBox">${t(q.hint)}</div>
+  </div>`;
+}
+
+function feedbackBlock(){ return `<div class="fb" id="fb"></div>`; }
+
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${t(o)}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${t(q.q)}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function fillHtml(q){
+  return `${badgeFor('fill')}<div class="q-text">${t(q.q)}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Ketik jawabanmu…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Periksa</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#16a34a' : '#dc2626';
+      inp.style.background = ok ? '#f0fdf4' : '#fef2f2';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+function essayHtml(q){
+  return `${badgeFor('essay')}<div class="q-text">${t(q.q)}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="Tulis jawabanmu dengan kata-katamu sendiri…"></textarea>
+    <button class="essay-show" id="essayShow">📋 Tampilkan Jawaban Contoh</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">✓ Saya benar</button>
+      <button class="miss" data-v="0">✗ Perlu belajar lagi</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML = `<strong>Tulis jawabanmu dulu</strong> — minimal satu atau dua kalimat. Lalu klik "Tampilkan Jawaban Contoh" untuk membandingkan.`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const ttl = (current.keys||[]).length || 1;
+    fb.className = 'fb info show';
+    fb.innerHTML = `<strong>📋 Jawaban Contoh:</strong><br><br>${t(current.model)}<br><br><small>🔍 Jawabanmu memuat <strong>${hits} dari ${ttl}</strong> konsep kunci. Bandingkan dengan contoh, lalu nilai jujur:</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#f0fdf4' : '#fff5f0';
+      registerResult(ok);
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${t(current.concept)}</div>`;
+      }
+      setTimeout(()=>{ idx++; next(); }, 1600);
+    });
+  });
+}
+
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    btn.textContent = box.classList.contains('show')
+      ? '🙈 Sembunyikan Petunjuk'
+      : '💡 Tampilkan Petunjuk';
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// ANSWER CHECK
+// ════════════════════════════════════════════════════════════════
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  if(isUAS && current._chapter){
+    uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
+    if(ok) uasBreakdown[current._chapter].correct++;
+  }
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsArr = current.steps ? (Array.isArray(current.steps) ? current.steps : t(current.steps)) : [];
+  const stepsHtml = (stepsArr||[]).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${t(current.concept)}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    fb.innerHTML = `<strong>✅ Benar! Bagus sekali!</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = t(current.opts[current.ans]);
+    else if(current.type==='fill') correctText = current.display ? t(current.display) : current.answers[0];
+    fb.innerHTML = `<strong>❌ Belum tepat.</strong> Jawaban yang benar adalah <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total ? '🏁 Lihat Hasil' : 'Soal Berikutnya →';
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+// ════════════════════════════════════════════════════════════════
+// DONE SCREEN
+// ════════════════════════════════════════════════════════════════
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  const msg = pct>=80 ? '🎉 Luar biasa!' : pct>=60 ? '👍 Kerja bagus!' : pct>=40 ? '💪 Terus berlatih!' : '📚 Saatnya belajar lagi!';
+
+  let breakdownHtml = '';
+  if(isUAS){
+    const rows = Object.entries(uasBreakdown).map(([ch,v])=>{
+      const ratio = v.total>0 ? (v.correct/v.total) : 0;
+      const cls = ratio < 0.5 ? 'low' : '';
+      return `<div class="breakdown-row"><span class="bd-label">${ch}</span><span class="bd-score ${cls}">${v.correct} / ${v.total}</span></div>`;
+    }).join('');
+    breakdownHtml = `<div class="breakdown"><h4>📊 Skor per Bab</h4>${rows}</div>`;
+  }
+
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>Kamu menyelesaikan <strong>${total}</strong> soal.</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>Benar</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>Salah</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>Skor</span></div>
+      </div>
+      ${breakdownHtml}
+      <button class="restart-btn" onclick="location.reload()">🔄 Coba Lagi</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#dc2626;font-weight:700;text-decoration:none">← Kembali ke daftar bab</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#dc2626','#b91c1c','#7f1d1d','#f9ca24','#fde68a','#ffffff'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+buildQueue(chKey);
+</script>
+</body>
+</html>

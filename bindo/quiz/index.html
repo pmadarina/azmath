@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Bahasa Indonesia — AzBahasa</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#fff5ef 0%,#ffeede 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+.hdr{background:linear-gradient(135deg,#dc2626,#ea580c);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.1rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.9;background:rgba(255,255,255,.15);padding:5px 12px;border-radius:16px}
+
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#fde4d3;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#dc2626,#ea580c);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#dc2626;min-width:75px;text-align:right}
+
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:720px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #f3e3d6;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#10b981;background:#ecfdf5}
+.score-chip.correct strong{color:#10b981}
+.score-chip.wrong{border-color:#dc2626;background:#fff5f5}
+.score-chip.wrong strong{color:#dc2626}
+.score-chip.answered{border-color:#ea580c;background:#fff7ed}
+.score-chip.answered strong{color:#ea580c}
+
+.main{max-width:720px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(220,38,38,.12)}
+.q-badge{display:inline-block;background:#fee2e2;color:#991b1b;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#fee2e2;color:#991b1b}
+.q-badge.fill{background:#fff7ed;color:#9a3412}
+.q-badge.essay{background:#ecfdf5;color:#10b981}
+
+.q-text{font-size:1.05rem;line-height:1.7;background:#fff7ed;border-left:4px solid #dc2626;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+.q-text i{font-style:italic;color:#9a3412;font-weight:700}
+.q-text em{font-style:italic;color:#9a3412}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #f3e3d6;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit}
+.opt:hover:not(:disabled){border-color:#dc2626;background:#fff7ed}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#fee2e2;color:#991b1b;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#10b981;background:#ecfdf5}
+.opt.correct .opt-letter{background:#10b981;color:#fff}
+.opt.wrong{border-color:#dc2626;background:#fff5f5}
+.opt.wrong .opt-letter{background:#dc2626;color:#fff}
+
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:inherit;font-size:1rem;font-weight:700;padding:14px 18px;border:2px dashed #6c5ce7;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#dc2626;background:#fff;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#dc2626,#ea580c);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #6c5ce7;border-radius:14px;background:#faf9ff;color:#1a1a2e;outline:none;resize:vertical;min-height:100px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#dc2626;background:#fff;box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#10b981;color:#10b981}
+.essay-self .got:hover{background:#ecfdf5}
+.essay-self .miss{border-color:#e17055;color:#e17055}
+.essay-self .miss:hover{background:#fff5f0}
+
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#ecfdf5;border:1.5px solid #10b981;color:#065f46}
+.fb.wrong{background:#fff5f5;border:1.5px solid #dc2626;color:#7f1d1d}
+.fb.info{background:#fff7ed;border:1.5px solid #ea580c;color:#7c2d12}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#10b981;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fffbe8;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02}
+
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #f9ca24;color:#b7760a;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fffbe8}
+.hint-box{display:none;background:#fffbe8;border:1.5px solid #f9ca24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#7c5e02;margin-top:10px}
+.hint-box.show{display:block}
+
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#dc2626,#ea580c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#dc2626,#ea580c);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(220,38,38,.4)}
+.restart-btn:hover{opacity:.92}
+
+.breakdown{text-align:left;background:#fff7ed;border-radius:14px;padding:14px 18px;margin:0 auto 22px;max-width:480px}
+.breakdown h4{font-size:.85rem;font-weight:900;margin-bottom:10px;color:#991b1b;letter-spacing:.5px;text-transform:uppercase}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #f3e3d6;font-size:.88rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-row .bd-label{font-weight:700;color:#333;flex:1}
+.breakdown-row .bd-score{font-weight:800;color:#10b981}
+.breakdown-row .bd-score.low{color:#dc2626}
+
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .hdr-title{font-size:.95rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">← Semua</a>
+  <div class="hdr-title" id="hdrTitle">📖 Latihan Bahasa Indonesia</div>
+  <div class="hdr-meta" id="hdrMeta">Soal 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong><span>✓ Benar</span></div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong><span>✗ Salah</span></div>
+  <div class="score-chip answered"><strong id="sDone">0</strong><span>📝 Dijawab</span></div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;};
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.,!?;:'"]/g,'').replace(/\s+/g,' ');
+
+function updateLangUI(){
+  document.getElementById('hdrTitle').textContent = '📖 ' + (currentChapterTitle || 'Latihan Bahasa Indonesia');
+  document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+}
+
+function mkOpts(correct, distractors){
+  const all=[correct, ...distractors].slice(0,4);
+  while(all.length<4) all.push('—');
+  const sh=shuf(all);
+  return {opts:sh, ans:sh.indexOf(correct)};
+}
+
+// ════════════════════════════════════════════════════════════════
+// BAB 5 — Mencintai Indonesia
+// Topics: b5_kapital, b5_narasi_deskripsi, b5_kalimat_perintah, b5_brosur, b5_sebab_akibat
+// ════════════════════════════════════════════════════════════════
+const B5_GEN = {
+  // ─── b5_kapital: kapital, angka, bilangan ───
+  b5_kapital_nama:()=>{
+    const cor='Saya pergi ke Jakarta bersama Ayah.';
+    const{opts,ans}=mkOpts(cor,[
+      'saya pergi ke jakarta bersama ayah.',
+      'Saya pergi ke jakarta bersama Ayah.',
+      'saya pergi ke Jakarta bersama ayah.']);
+    return{type:'mcq',topic:'b5_kapital',
+      q:'Manakah kalimat yang menggunakan huruf <b>kapital</b> dengan benar?',
+      opts,ans,
+      hint:'Huruf kapital dipakai di awal kalimat, nama orang, dan nama kota.',
+      concept:'Huruf kapital digunakan pada awal kalimat, nama diri (Ayah sebagai sapaan), dan nama tempat (Jakarta).',
+      steps:['"Saya" → di awal kalimat → kapital.','"Jakarta" → nama kota → kapital.','"Ayah" → sapaan pengganti nama → kapital.']};
+  },
+  b5_kapital_gelar:()=>{
+    const cor='Pahlawan nasional kita, R.A. Kartini, lahir di Jepara.';
+    const{opts,ans}=mkOpts(cor,[
+      'Pahlawan nasional kita, r.a. kartini, lahir di jepara.',
+      'pahlawan nasional kita, R.A. Kartini, lahir di Jepara.',
+      'Pahlawan nasional kita, R.A. kartini, lahir di jepara.']);
+    return{type:'mcq',topic:'b5_kapital',
+      q:'Penulisan kalimat dengan huruf kapital yang <b>tepat</b> adalah …',
+      opts,ans,
+      hint:'Singkatan gelar dan nama diri ditulis kapital.',
+      concept:'Huruf kapital dipakai untuk singkatan gelar (R.A.), nama orang (Kartini), dan nama kota (Jepara).',
+      steps:['Awal kalimat: "Pahlawan" → kapital.','Singkatan gelar "R.A." → semua kapital.','Nama orang "Kartini" → kapital.','Nama kota "Jepara" → kapital.']};
+  },
+  b5_kapital_hari:()=>{
+    const cor='Pada hari Senin, kami mengikuti upacara bendera.';
+    const{opts,ans}=mkOpts(cor,[
+      'Pada hari senin, kami mengikuti upacara bendera.',
+      'Pada hari Senin, Kami mengikuti Upacara Bendera.',
+      'pada hari senin, kami mengikuti upacara bendera.']);
+    return{type:'mcq',topic:'b5_kapital',
+      q:'Manakah penulisan kalimat yang <b>benar</b> menurut kaidah huruf kapital?',
+      opts,ans,
+      hint:'Nama hari ditulis dengan huruf kapital di awal.',
+      concept:'Nama hari, bulan, dan hari besar ditulis dengan huruf kapital pada awal kata.',
+      steps:['Awal kalimat → "Pada" kapital.','Nama hari → "Senin" kapital.','Kata umum "kami", "upacara", "bendera" → huruf kecil.']};
+  },
+  b5_angka_bilangan:()=>{
+    const cor='Saya membeli 2 buku dan 5 pensil di toko itu.';
+    const{opts,ans}=mkOpts(cor,[
+      'Saya membeli dua buku dan 5 pensil di toko itu.',
+      'Saya membeli 2 buku dan lima pensil di toko itu.',
+      '2 buku dan 5 pensil saya beli di toko itu.']);
+    return{type:'mcq',topic:'b5_kapital',
+      q:'Penulisan <b>angka</b> yang tepat dalam satu kalimat adalah …',
+      opts,ans,
+      hint:'Bilangan dalam konteks yang sama ditulis konsisten (angka semua atau huruf semua).',
+      concept:'Bilangan yang dijajarkan dalam satu kalimat sebaiknya ditulis dengan bentuk yang sama (semua angka atau semua huruf), bukan campur.',
+      steps:['Dua bilangan dijajarkan: 2 dan 5.','Tulis keduanya sebagai angka: <b>2 buku dan 5 pensil</b>.']};
+  },
+  b5_bilangan_awal:()=>{
+    const cor='Dua puluh siswa mengikuti lomba kebersihan kelas.';
+    const{opts,ans}=mkOpts(cor,[
+      '20 siswa mengikuti lomba kebersihan kelas.',
+      'dua puluh siswa mengikuti lomba kebersihan kelas.',
+      'Dua Puluh siswa mengikuti lomba kebersihan kelas.']);
+    return{type:'mcq',topic:'b5_kapital',
+      q:'Bilangan pada awal kalimat ditulis dengan …',
+      opts,ans,
+      hint:'Awal kalimat tidak boleh diawali angka — ditulis dengan huruf.',
+      concept:'Bilangan yang menjadi awal kalimat ditulis dengan huruf, bukan angka. Huruf pertama kapital.',
+      steps:['Awal kalimat tidak boleh angka.','Ditulis: "<b>Dua puluh</b>" dengan D kapital.']};
+  },
+  // ─── b5_narasi_deskripsi ───
+  b5_teks_narasi:()=>{
+    const cor='Pada masa penjajahan, Pangeran Diponegoro memimpin perang melawan Belanda selama lima tahun.';
+    const{opts,ans}=mkOpts(cor,[
+      'Bunga melati berwarna putih dan harum.',
+      'Ayo, kita jaga lingkungan bersama-sama!',
+      'Saya berharap kita menjadi juara kelas.']);
+    return{type:'mcq',topic:'b5_narasi_deskripsi',
+      q:'Manakah yang merupakan contoh kalimat dari <b>teks narasi sejarah</b>?',
+      opts,ans,
+      hint:'Teks narasi sejarah menceritakan peristiwa masa lalu.',
+      concept:'Teks narasi sejarah berisi cerita peristiwa nyata yang terjadi pada masa lalu, biasanya berurutan menurut waktu.',
+      steps:['Cari kalimat yang menceritakan peristiwa di masa lalu.','Pilihan tentang Diponegoro → kisah sejarah.']};
+  },
+  b5_teks_deskripsi:()=>{
+    const cor='Pantai itu berpasir putih lembut dengan air laut yang berwarna biru jernih dan deburan ombak yang tenang.';
+    const{opts,ans}=mkOpts(cor,[
+      'Tolong bantu ibu di dapur sebentar.',
+      'Ali bangun pagi, sarapan, lalu berangkat ke sekolah.',
+      'Mengapa lampu kelas tidak menyala?']);
+    return{type:'mcq',topic:'b5_narasi_deskripsi',
+      q:'Manakah contoh kalimat <b>teks deskripsi</b>?',
+      opts,ans,
+      hint:'Teks deskripsi menggambarkan suatu objek dengan rinci.',
+      concept:'Teks deskripsi memaparkan sifat, bentuk, atau keadaan suatu objek sehingga pembaca seolah-olah melihatnya.',
+      steps:['Cari kalimat yang menggambarkan ciri-ciri suatu objek.','Pantai dengan pasir, air, ombak → <b>deskripsi</b>.']};
+  },
+  b5_tujuan_narasi:()=>{
+    const cor='Menceritakan peristiwa secara berurutan sesuai waktu kejadiannya.';
+    const{opts,ans}=mkOpts(cor,[
+      'Menggambarkan ciri-ciri benda secara rinci.',
+      'Mengajak pembaca melakukan sesuatu.',
+      'Memberikan pendapat penulis tentang masalah.']);
+    return{type:'mcq',topic:'b5_narasi_deskripsi',
+      q:'Apa tujuan utama dari <b>teks narasi sejarah</b>?',
+      opts,ans,
+      hint:'"Narasi" berasal dari kata "menarasikan" yang berarti menceritakan.',
+      concept:'Teks narasi sejarah bertujuan menceritakan kembali peristiwa masa lalu secara berurutan (kronologis).',
+      steps:['Narasi = cerita.','Cerita sejarah = peristiwa masa lalu disusun urut waktunya.']};
+  },
+  // ─── b5_brosur (informasi dalam brosur, pengumuman, surat undangan) ───
+  b5_brosur_isi:()=>{
+    const cor='Tanggal, tempat, dan acara yang akan diadakan.';
+    const{opts,ans}=mkOpts(cor,[
+      'Hanya nama si pembuat brosur saja.',
+      'Cerita pengalaman pribadi penulis.',
+      'Daftar kosakata sulit dalam pelajaran.']);
+    return{type:'mcq',topic:'b5_brosur',
+      q:'Informasi penting yang biasanya ada dalam sebuah <b>brosur acara</b> adalah …',
+      opts,ans,
+      hint:'Brosur memberi tahu tentang acara: kapan, di mana, dan apa.',
+      concept:'Brosur acara memuat informasi penting: nama acara, tanggal, tempat, dan kegiatan yang ditawarkan.',
+      steps:['Brosur = selebaran untuk menyebarkan informasi.','Informasi pokok: <b>tanggal, tempat, acara</b>.']};
+  },
+  b5_pengumuman_ciri:()=>{
+    const cor='Singkat, jelas, dan ditujukan untuk banyak orang.';
+    const{opts,ans}=mkOpts(cor,[
+      'Panjang, berbelit-belit, dan untuk satu orang.',
+      'Berisi cerita pribadi penulis.',
+      'Selalu menggunakan bahasa kiasan.']);
+    return{type:'mcq',topic:'b5_brosur',
+      q:'Ciri-ciri <b>pengumuman</b> yang baik adalah …',
+      opts,ans,
+      hint:'Pengumuman dibaca oleh banyak orang, jadi harus mudah dimengerti.',
+      concept:'Pengumuman ditulis singkat, jelas, dan menggunakan bahasa baku agar mudah dimengerti banyak pembaca.',
+      steps:['Pengumuman = informasi untuk khalayak.','Harus <b>singkat dan jelas</b>.']};
+  },
+  b5_undangan_unsur:()=>{
+    const cor='Hari, tanggal, waktu, tempat, dan acara.';
+    const{opts,ans}=mkOpts(cor,[
+      'Hanya nama pengirim saja.',
+      'Daftar makanan dan minuman saja.',
+      'Cerita panjang tentang acara sebelumnya.']);
+    return{type:'mcq',topic:'b5_brosur',
+      q:'Unsur penting yang harus ada dalam sebuah <b>surat undangan</b> adalah …',
+      opts,ans,
+      hint:'Penerima undangan perlu tahu kapan dan di mana acaranya.',
+      concept:'Surat undangan memuat: nama acara, hari/tanggal, waktu, tempat, serta pengirim undangan.',
+      steps:['Penerima perlu tahu acara, hari, tanggal, waktu, dan tempat.','Itu unsur wajib undangan.']};
+  },
+  b5_brosur_tujuan:()=>{
+    const cor='Memberitahukan dan mengajak pembaca mengikuti suatu acara atau menggunakan produk.';
+    const{opts,ans}=mkOpts(cor,[
+      'Menggambarkan tempat wisata dengan rinci.',
+      'Menceritakan kisah seorang tokoh.',
+      'Menjelaskan teori ilmu pengetahuan.']);
+    return{type:'mcq',topic:'b5_brosur',
+      q:'Tujuan dibuatnya sebuah <b>brosur</b> adalah …',
+      opts,ans,
+      hint:'Brosur biasanya dibagikan agar orang tertarik.',
+      concept:'Brosur dibuat untuk memberitahukan informasi dan mengajak pembaca melakukan sesuatu (mengikuti acara, membeli produk, dsb.).',
+      steps:['Brosur = media promosi/informasi singkat.','Tujuannya: <b>menginformasikan + mengajak</b>.']};
+  },
+  // ─── b5_sebab_akibat ───
+  b5_sebab_akibat_kata:()=>{
+    const cor='karena, sebab, oleh sebab itu, akibatnya';
+    const{opts,ans}=mkOpts(cor,[
+      'meskipun, walaupun, sekalipun, biarpun',
+      'atau, tetapi, melainkan, sedangkan',
+      'jika, kalau, andaikan, seandainya']);
+    return{type:'mcq',topic:'b5_sebab_akibat',
+      q:'Kata-kata yang biasa dipakai untuk menyatakan hubungan <b>sebab–akibat</b> dalam teks adalah …',
+      opts,ans,
+      hint:'Kata penghubung yang menyatakan penyebab atau hasilnya.',
+      concept:'Konjungsi sebab–akibat antara lain: karena, sebab, sehingga, oleh karena itu, akibatnya.',
+      steps:['"Karena" / "sebab" → menyatakan sebab.','"Akibatnya" / "oleh sebab itu" → menyatakan akibat.']};
+  },
+  b5_sebab_akibat_kalimat:()=>{
+    const cor='Hujan deras turun semalaman, akibatnya jalan di depan rumah tergenang air.';
+    const{opts,ans}=mkOpts(cor,[
+      'Pagi ini cerah dan matahari bersinar terang.',
+      'Saya suka membaca buku cerita rakyat.',
+      'Tolong tutup pintu saat masuk kelas.']);
+    return{type:'mcq',topic:'b5_sebab_akibat',
+      q:'Manakah kalimat yang menunjukkan hubungan <b>sebab–akibat</b>?',
+      opts,ans,
+      hint:'Cari kata "akibatnya", "sehingga", atau "karena".',
+      concept:'Kalimat sebab–akibat memuat peristiwa penyebab dan peristiwa yang terjadi sebagai akibatnya.',
+      steps:['Sebab: hujan deras.','Akibat: jalan tergenang.','Penghubung: <b>akibatnya</b>.']};
+  },
+  b5_sebab:()=>{
+    const cor='Sampah dibuang sembarangan.';
+    const{opts,ans}=mkOpts(cor,[
+      'Sungai menjadi banjir.',
+      'Warga menjadi sakit.',
+      'Tanaman tumbuh subur.']);
+    return{type:'mcq',topic:'b5_sebab_akibat',
+      q:'Bacalah: "Sampah dibuang sembarangan, akibatnya sungai menjadi banjir." Manakah yang merupakan <b>sebab</b>?',
+      opts,ans,
+      hint:'Sebab terjadi lebih dahulu, lalu disusul akibat.',
+      concept:'Sebab adalah peristiwa yang menimbulkan akibat. Akibat adalah peristiwa yang muncul karena sebab.',
+      steps:['Sebab: kejadian awal.','"Sampah dibuang sembarangan" → <b>sebab</b>.','"Sungai banjir" → akibat.']};
+  },
+
+  // ─── ISIAN (Fill in the blank) ───
+  b5_fill_kapital:()=>({type:'fill',topic:'b5_kapital',
+    q:'Tulis ulang nama kota berikut dengan huruf yang benar: "jakarta" → _______',
+    answers:['jakarta','Jakarta'],
+    display:'Jakarta',
+    hint:'Nama kota diawali huruf kapital.',
+    concept:'Nama kota adalah nama diri — diawali huruf kapital.',
+    steps:['"jakarta" → nama kota → ditulis <b>Jakarta</b>.']}),
+  b5_fill_perintah:()=>({type:'fill',topic:'b5_kalimat_perintah',
+    q:'Lengkapi kalimat <b>ajakan</b> berikut: "_______ kita jaga kebersihan kelas!" (satu kata)',
+    answers:['mari','ayo'],
+    display:'Mari / Ayo',
+    hint:'Kata ajakan biasanya: Mari, Ayo, Marilah.',
+    concept:'Kalimat ajakan diawali kata "Mari", "Ayo", atau "Marilah".',
+    steps:['Ajakan → "<b>Mari</b>" atau "<b>Ayo</b>".']}),
+  b5_fill_larangan:()=>({type:'fill',topic:'b5_kalimat_perintah',
+    q:'Lengkapi kalimat <b>larangan</b>: "_______ membuang sampah di sungai!" (satu kata)',
+    answers:['jangan','dilarang'],
+    display:'Jangan',
+    hint:'Kata larangan: "Jangan" atau "Dilarang".',
+    concept:'Kalimat larangan diawali kata "Jangan" atau "Dilarang".',
+    steps:['Larangan → "<b>Jangan</b>" atau "<b>Dilarang</b>".']}),
+  b5_fill_brosur:()=>({type:'fill',topic:'b5_brosur',
+    q:'Selebaran yang berisi informasi singkat tentang sebuah acara atau produk disebut … (satu kata)',
+    answers:['brosur'],
+    display:'brosur',
+    hint:'Berbentuk lembaran yang biasanya dibagikan.',
+    concept:'Brosur adalah selebaran berisi informasi atau promosi.',
+    steps:['Lembaran promosi/informasi = <b>brosur</b>.']}),
+  b5_fill_sebab:()=>({type:'fill',topic:'b5_sebab_akibat',
+    q:'Lengkapi: "Andi tidak masuk sekolah _______ sedang sakit." (kata penghubung sebab, satu kata)',
+    answers:['karena','sebab'],
+    display:'karena / sebab',
+    hint:'Kata penghubung yang menyatakan sebab.',
+    concept:'"Karena" dan "sebab" adalah konjungsi yang menyatakan alasan / penyebab.',
+    steps:['Sebab → <b>karena</b> atau <b>sebab</b>.']}),
+  b5_fill_pengumuman:()=>({type:'fill',topic:'b5_brosur',
+    q:'Pemberitahuan yang ditujukan untuk banyak orang disebut … (satu kata)',
+    answers:['pengumuman'],
+    display:'pengumuman',
+    hint:'Biasanya ditempel di papan informasi.',
+    concept:'Pengumuman adalah pemberitahuan untuk umum.',
+    steps:['Pemberitahuan umum = <b>pengumuman</b>.']}),
+
+  // ─── URAIAN (Essay) ───
+  b5_essay_kapital:()=>({type:'essay',topic:'b5_kapital',
+    q:'Tulis sebuah kalimat menggunakan huruf kapital yang tepat. Sertakan minimal satu <b>nama orang</b> dan satu <b>nama kota</b>.',
+    model:'Pada hari Senin, Andi berangkat ke Bandung bersama Pak Budi untuk mengunjungi Museum Geologi.',
+    hint:'Awal kalimat, nama orang, dan nama kota harus berhuruf kapital.',
+    concept:'Huruf kapital dipakai untuk: awal kalimat, nama orang, nama kota, dan nama hari/bulan.',
+    keys:['senin','andi','bandung','pak','museum','jakarta','budi','surabaya']}),
+  b5_essay_sebab_akibat:()=>({type:'essay',topic:'b5_sebab_akibat',
+    q:'Buatlah satu kalimat yang menunjukkan hubungan <b>sebab–akibat</b>. Gunakan kata penghubung "karena", "sehingga", atau "akibatnya".',
+    model:'Anita rajin belajar setiap hari, sehingga ia berhasil mendapatkan nilai terbaik di kelas.',
+    hint:'Sebut peristiwa penyebab dan peristiwa yang menjadi akibatnya.',
+    concept:'Hubungan sebab–akibat ditandai konjungsi seperti karena, sehingga, akibatnya.',
+    keys:['karena','sehingga','akibatnya','oleh sebab','rajin','sampah','hujan']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// BAB 6 — Menyayangi Bumi
+// Topics: b6_majemuk, b6_peadanaN (pe-an), b6_eksposisi, b6_media, b6_cerita
+// ════════════════════════════════════════════════════════════════
+const B6_GEN = {
+  // ─── b6_majemuk: kalimat majemuk bertingkat ───
+  b6_majemuk_def:()=>{
+    const cor='Kalimat yang terdiri atas induk kalimat dan anak kalimat.';
+    const{opts,ans}=mkOpts(cor,[
+      'Kalimat yang hanya memiliki satu klausa.',
+      'Kalimat yang menggunakan kata depan saja.',
+      'Kalimat yang berupa pertanyaan singkat.']);
+    return{type:'mcq',topic:'b6_majemuk',
+      q:'Apa yang dimaksud dengan <b>kalimat majemuk bertingkat</b>?',
+      opts,ans,
+      hint:'"Bertingkat" → ada bagian utama dan bagian penjelas.',
+      concept:'Kalimat majemuk bertingkat terdiri atas induk kalimat dan anak kalimat yang dihubungkan konjungsi.',
+      steps:['Induk kalimat = bagian yang berdiri sendiri.','Anak kalimat = bagian yang menerangkan induk.']};
+  },
+  b6_majemuk_konjungsi:()=>{
+    const cor='ketika, karena, meskipun, jika, agar';
+    const{opts,ans}=mkOpts(cor,[
+      'dan, atau, tetapi, melainkan',
+      'di, ke, dari, pada',
+      'yang, itu, ini, tersebut']);
+    return{type:'mcq',topic:'b6_majemuk',
+      q:'Konjungsi yang sering digunakan dalam <b>kalimat majemuk bertingkat</b> adalah …',
+      opts,ans,
+      hint:'Konjungsi penghubung anak kalimat dengan induk kalimat.',
+      concept:'Konjungsi pada kalimat majemuk bertingkat: ketika, karena, meskipun, jika, agar, sehingga.',
+      steps:['Konjungsi setara (dan, atau, tetapi) → majemuk setara.','Konjungsi bertingkat → <b>ketika, karena, meskipun, jika, agar</b>.']};
+  },
+  b6_majemuk_contoh:()=>{
+    const cor='Meskipun hujan turun, kami tetap pergi ke sekolah.';
+    const{opts,ans}=mkOpts(cor,[
+      'Adik makan nasi dan ayam goreng.',
+      'Ayah pergi ke kantor, ibu memasak di dapur.',
+      'Kakak dan adik bermain bola di lapangan.']);
+    return{type:'mcq',topic:'b6_majemuk',
+      q:'Manakah contoh <b>kalimat majemuk bertingkat</b>?',
+      opts,ans,
+      hint:'Cari kalimat dengan kata "meskipun", "karena", "ketika", dll.',
+      concept:'Kalimat majemuk bertingkat menggunakan konjungsi seperti meskipun, karena, ketika.',
+      steps:['"Meskipun hujan turun" = anak kalimat.','"Kami tetap pergi ke sekolah" = induk kalimat.','Dihubungkan dengan konjungsi <b>meskipun</b>.']};
+  },
+  // ─── b6_peadanaN: imbuhan pe-an ───
+  b6_pean_didik:()=>{
+    const cor='pendidikan';
+    const{opts,ans}=mkOpts(cor,[
+      'pedidikan',
+      'pemdidikan',
+      'pengdidikan']);
+    return{type:'mcq',topic:'b6_peadanaN',
+      q:'Imbuhan <b>pe-an</b> dari kata dasar <i>didik</i> adalah …',
+      opts,ans,
+      hint:'Kata dasar berawal d/t → pe- berubah menjadi pen-.',
+      concept:'Pe-an + didik → pendidikan (pen- digunakan untuk kata berawalan d/t/c/j).',
+      steps:['Kata dasar: didik (awalan d).','Imbuhan pe-an → pen-didik-an → <b>pendidikan</b>.']};
+  },
+  b6_pean_bersih:()=>{
+    const cor='pembersihan';
+    const{opts,ans}=mkOpts(cor,[
+      'penbersihan',
+      'pengbersihan',
+      'penyersihan']);
+    return{type:'mcq',topic:'b6_peadanaN',
+      q:'Imbuhan <b>pe-an</b> dari kata dasar <i>bersih</i> adalah …',
+      opts,ans,
+      hint:'Kata dasar berawal b → pe- berubah menjadi pem-.',
+      concept:'Pe-an + bersih → pembersihan (pem- digunakan untuk kata berawalan b/p/f).',
+      steps:['Kata dasar: bersih (awalan b).','Imbuhan pe-an → pem-bersih-an → <b>pembersihan</b>.']};
+  },
+  b6_pean_jaga:()=>{
+    const cor='penjagaan';
+    const{opts,ans}=mkOpts(cor,[
+      'pejagaan',
+      'pemjagaan',
+      'pengjagaan']);
+    return{type:'mcq',topic:'b6_peadanaN',
+      q:'Imbuhan <b>pe-an</b> dari kata dasar <i>jaga</i> adalah …',
+      opts,ans,
+      hint:'Kata dasar berawal j → pe- menjadi pen-.',
+      concept:'Pe-an + jaga → penjagaan (pen- untuk kata berawal d/t/c/j).',
+      steps:['Kata dasar: jaga.','Pe-an + jaga = <b>penjagaan</b>.']};
+  },
+  b6_pean_kotor:()=>{
+    const cor='pengotoran';
+    const{opts,ans}=mkOpts(cor,[
+      'pekotoran',
+      'penkotoran',
+      'pemkotoran']);
+    return{type:'mcq',topic:'b6_peadanaN',
+      q:'Imbuhan <b>pe-an</b> dari kata dasar <i>kotor</i> adalah …',
+      opts,ans,
+      hint:'Kata dasar berawal k → pe- menjadi peng-, dan k luluh.',
+      concept:'Pe-an + kotor → pengotoran (peng- untuk k/g/h/vokal; k luluh).',
+      steps:['Kata dasar: kotor (awalan k).','k luluh → <b>pengotoran</b>.']};
+  },
+  b6_pean_makna:()=>{
+    const cor='Hal/proses, hasil perbuatan, atau tempat.';
+    const{opts,ans}=mkOpts(cor,[
+      'Bilangan atau jumlah benda.',
+      'Sifat atau keadaan seseorang.',
+      'Waktu terjadinya peristiwa.']);
+    return{type:'mcq',topic:'b6_peadanaN',
+      q:'Makna umum imbuhan <b>pe-an</b> dalam kata seperti "pendidikan", "perjalanan" adalah …',
+      opts,ans,
+      hint:'pendidikan = hal mendidik; perjalanan = hal berjalan.',
+      concept:'Imbuhan pe-an menunjukkan hal/proses, hasil perbuatan, atau tempat.',
+      steps:['Pendidikan = hal/proses mendidik.','Perjalanan = hal berjalan.','Jadi pe-an = <b>hal/proses</b>.']};
+  },
+  // ─── b6_eksposisi ───
+  b6_eksposisi_def:()=>{
+    const cor='Teks yang berisi informasi atau pengetahuan disertai pendapat penulis.';
+    const{opts,ans}=mkOpts(cor,[
+      'Teks yang menceritakan kisah pribadi penulis.',
+      'Teks yang menggambarkan ciri-ciri benda secara rinci.',
+      'Teks yang berisi langkah-langkah cara membuat sesuatu.']);
+    return{type:'mcq',topic:'b6_eksposisi',
+      q:'Apa yang dimaksud dengan <b>teks eksposisi</b>?',
+      opts,ans,
+      hint:'Eksposisi memaparkan informasi sekaligus pendapat.',
+      concept:'Teks eksposisi memaparkan informasi atau pengetahuan disertai pendapat penulis untuk meyakinkan pembaca.',
+      steps:['Eksposisi = "memaparkan".','Berisi informasi + pendapat penulis.']};
+  },
+  b6_eksposisi_struktur:()=>{
+    const cor='Tesis (pernyataan pendapat) → argumen → penegasan ulang.';
+    const{opts,ans}=mkOpts(cor,[
+      'Pendahuluan → komplikasi → resolusi.',
+      'Pembuka → isi cerita → penutup cerita.',
+      'Alat dan bahan → langkah-langkah → hasil.']);
+    return{type:'mcq',topic:'b6_eksposisi',
+      q:'Struktur umum sebuah <b>teks eksposisi</b> adalah …',
+      opts,ans,
+      hint:'Eksposisi diawali pendapat (tesis), lalu argumen, lalu penegasan ulang.',
+      concept:'Struktur teks eksposisi: tesis → argumen → penegasan ulang.',
+      steps:['Tesis = pernyataan pendapat awal.','Argumen = alasan yang mendukung tesis.','Penegasan ulang = menyimpulkan kembali.']};
+  },
+  b6_eksposisi_tujuan:()=>{
+    const cor='Memaparkan informasi dan meyakinkan pembaca tentang suatu pendapat.';
+    const{opts,ans}=mkOpts(cor,[
+      'Menghibur pembaca dengan cerita lucu.',
+      'Memberi langkah-langkah membuat masakan.',
+      'Menggambarkan keindahan suatu tempat.']);
+    return{type:'mcq',topic:'b6_eksposisi',
+      q:'Tujuan utama <b>teks eksposisi</b> adalah …',
+      opts,ans,
+      hint:'Eksposisi bertujuan menjelaskan dan meyakinkan.',
+      concept:'Tujuan eksposisi: memaparkan informasi dan meyakinkan pembaca.',
+      steps:['Eksposisi memuat fakta + pendapat.','Tujuannya: <b>menjelaskan + meyakinkan</b>.']};
+  },
+  // ─── b6_media: media daring & cetak ───
+  b6_media_daring:()=>{
+    const cor='Situs berita online, blog, dan media sosial.';
+    const{opts,ans}=mkOpts(cor,[
+      'Koran cetak yang dijual di kios.',
+      'Buku pelajaran di perpustakaan.',
+      'Majalah bulanan yang dicetak di kertas.']);
+    return{type:'mcq',topic:'b6_media',
+      q:'Contoh <b>media daring</b> (online) adalah …',
+      opts,ans,
+      hint:'"Daring" = dalam jaringan (online).',
+      concept:'Media daring adalah media informasi yang diakses melalui internet, seperti situs berita, blog, dan media sosial.',
+      steps:['Daring = online.','Contoh: <b>situs berita, blog, medsos</b>.']};
+  },
+  b6_media_cetak:()=>{
+    const cor='Koran, majalah, dan tabloid.';
+    const{opts,ans}=mkOpts(cor,[
+      'Aplikasi berita di ponsel.',
+      'Saluran televisi nasional.',
+      'Siaran radio swasta.']);
+    return{type:'mcq',topic:'b6_media',
+      q:'Contoh <b>media cetak</b> adalah …',
+      opts,ans,
+      hint:'Media cetak dicetak di atas kertas.',
+      concept:'Media cetak adalah media informasi yang dicetak di kertas, seperti koran, majalah, dan tabloid.',
+      steps:['Cetak = ada bentuk fisik di kertas.','Contoh: <b>koran, majalah, tabloid</b>.']};
+  },
+  b6_media_keunggulan:()=>{
+    const cor='Lebih cepat dan dapat diakses kapan saja melalui internet.';
+    const{opts,ans}=mkOpts(cor,[
+      'Selalu lebih akurat daripada media cetak.',
+      'Hanya bisa dibaca pada pagi hari.',
+      'Tidak memerlukan perangkat elektronik.']);
+    return{type:'mcq',topic:'b6_media',
+      q:'Keunggulan <b>media daring</b> dibandingkan media cetak adalah …',
+      opts,ans,
+      hint:'Pikirkan kecepatan dan kemudahan akses.',
+      concept:'Media daring lebih cepat dalam menyajikan berita dan bisa diakses kapan saja.',
+      steps:['Daring → langsung diunggah online.','Bisa dibaca <b>kapan saja</b> dari mana saja.']};
+  },
+  // ─── b6_cerita: cerita bergambar ───
+  b6_cerita_ciri:()=>{
+    const cor='Memiliki gambar yang mendukung cerita pada setiap bagian.';
+    const{opts,ans}=mkOpts(cor,[
+      'Hanya berisi tulisan tanpa gambar.',
+      'Berbentuk angka-angka dan rumus.',
+      'Berupa daftar resep masakan.']);
+    return{type:'mcq',topic:'b6_cerita',
+      q:'Ciri utama <b>cerita bergambar</b> adalah …',
+      opts,ans,
+      hint:'Namanya saja "bergambar".',
+      concept:'Cerita bergambar adalah cerita yang disertai gambar pada setiap bagiannya untuk menggambarkan jalannya cerita.',
+      steps:['Bergambar → ada gambar.','Gambar membantu pembaca memahami cerita.']};
+  },
+
+  // ─── ISIAN (Fill) ───
+  b6_fill_majemuk:()=>({type:'fill',topic:'b6_majemuk',
+    q:'Lengkapi konjungsi pada kalimat majemuk bertingkat: "_______ hujan deras, anak-anak tetap berangkat ke sekolah." (satu kata, makna: walaupun)',
+    answers:['meskipun','walaupun','biarpun','sekalipun'],
+    display:'Meskipun / Walaupun',
+    hint:'Konjungsi yang menyatakan perlawanan/konsesi.',
+    concept:'Konjungsi "meskipun" / "walaupun" digunakan dalam kalimat majemuk bertingkat untuk menyatakan perlawanan.',
+    steps:['Perlawanan → <b>meskipun</b> / <b>walaupun</b>.']}),
+  b6_fill_pean_tulis:()=>({type:'fill',topic:'b6_peadanaN',
+    q:'Bentuk pe-an dari kata dasar <i>tulis</i> adalah … (satu kata)',
+    answers:['penulisan'],
+    display:'penulisan',
+    hint:'Kata berawal t → pe- berubah menjadi pen- dan t luluh.',
+    concept:'Pe-an + tulis → penulisan (t luluh setelah pen-).',
+    steps:['Kata dasar tulis (t luluh).','Pe-an + tulis = <b>penulisan</b>.']}),
+  b6_fill_pean_buang:()=>({type:'fill',topic:'b6_peadanaN',
+    q:'Bentuk pe-an dari kata dasar <i>buang</i> adalah … (satu kata)',
+    answers:['pembuangan'],
+    display:'pembuangan',
+    hint:'Kata berawal b → pe- menjadi pem-.',
+    concept:'Pe-an + buang → pembuangan.',
+    steps:['b → pem-.','<b>pembuangan</b>.']}),
+  b6_fill_eksposisi:()=>({type:'fill',topic:'b6_eksposisi',
+    q:'Teks yang berisi informasi atau pendapat penulis untuk meyakinkan pembaca disebut teks … (satu kata)',
+    answers:['eksposisi'],
+    display:'eksposisi',
+    hint:'Berasal dari kata "memaparkan".',
+    concept:'Teks eksposisi memaparkan informasi dan pendapat penulis.',
+    steps:['Memaparkan informasi + pendapat = <b>eksposisi</b>.']}),
+  b6_fill_media_daring:()=>({type:'fill',topic:'b6_media',
+    q:'Kata "daring" adalah kependekan dari "dalam …" (satu kata)',
+    answers:['jaringan'],
+    display:'jaringan',
+    hint:'Lawan kata "luring" (luar jaringan).',
+    concept:'Daring = dalam jaringan (online); luring = luar jaringan (offline).',
+    steps:['Daring = dalam <b>jaringan</b>.']}),
+
+  // ─── URAIAN (Essay) ───
+  b6_essay_majemuk:()=>({type:'essay',topic:'b6_majemuk',
+    q:'Tulis satu <b>kalimat majemuk bertingkat</b> menggunakan kata penghubung "meskipun" atau "karena".',
+    model:'Meskipun matahari bersinar terik, para petani tetap bekerja di sawah dari pagi sampai sore.',
+    hint:'Gunakan satu konjungsi (meskipun/karena/ketika/agar).',
+    concept:'Kalimat majemuk bertingkat menghubungkan induk dan anak kalimat dengan konjungsi.',
+    keys:['meskipun','walaupun','karena','ketika','agar','sehingga','jika']}),
+  b6_essay_pean:()=>({type:'essay',topic:'b6_peadanaN',
+    q:'Buatlah satu kalimat menggunakan kata berimbuhan <b>pe-an</b> (misalnya: pembuangan, penghijauan, pencemaran).',
+    model:'Pembuangan sampah sembarangan menyebabkan pencemaran sungai di sekitar pemukiman warga.',
+    hint:'Pilih satu kata pe-an lalu rangkai menjadi kalimat utuh.',
+    concept:'Imbuhan pe-an membentuk kata benda yang berarti hal/proses.',
+    keys:['pembuangan','pencemaran','penghijauan','pengelolaan','penanaman','pendidikan','pemanfaatan']}),
+  b6_essay_eksposisi:()=>({type:'essay',topic:'b6_eksposisi',
+    q:'Tulis 2–3 kalimat sebagai <b>teks eksposisi singkat</b> tentang pentingnya menjaga kebersihan lingkungan. Sertakan satu pendapatmu dan satu alasan.',
+    model:'Menjaga kebersihan lingkungan sangat penting bagi kesehatan kita. Lingkungan yang bersih membuat kita terhindar dari penyakit. Oleh sebab itu, marilah kita rajin membuang sampah pada tempatnya.',
+    hint:'Tulis: pendapat + alasan + ajakan/penegasan.',
+    concept:'Teks eksposisi memuat pendapat penulis yang didukung alasan.',
+    keys:['kebersihan','lingkungan','penting','karena','sehingga','sampah','sehat','penyakit','marilah']}),
+  b6_essay_media:()=>({type:'essay',topic:'b6_media',
+    q:'Sebutkan satu contoh media daring dan satu contoh media cetak. Jelaskan dengan satu kalimat perbedaan keduanya.',
+    model:'Contoh media daring adalah situs berita online, sedangkan contoh media cetak adalah koran. Perbedaannya, media daring diakses lewat internet, sedangkan media cetak dibaca dari kertas yang dicetak.',
+    hint:'Sebut satu contoh tiap jenis, lalu jelaskan perbedaannya.',
+    concept:'Media daring diakses via internet; media cetak dicetak di kertas.',
+    keys:['daring','cetak','koran','online','internet','kertas','majalah','situs']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTERS
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': {title:'BAB 5 · Mencintai Indonesia', gen: B5_GEN},
+  '2': {title:'BAB 6 · Menyayangi Bumi',    gen: B6_GEN},
+};
+
+// UAS Kisi-Kisi (35 soal = 20 PG + 10 Isian + 5 Uraian)
+// BAB 5: 2+3+2 = 7 PG, 1+1+1+1 = 4 Isian, 1+1 = 2 Uraian — total 13
+// BAB 6: 1+4+3+3+1 = 12 PG, 1+2+1+2 = 6 Isian, 1+2 = 3 Uraian — total 21
+// Adjusted to fit:
+// BAB 5: PG 2 (kapital) + 1 (perintah/ajakan implicit via fill) actually do via type fill.
+// Following kisi-kisi from prompt EXACTLY:
+// BAB 5: PG = 2(kapital) + 3(brosur) + 2(sebab-akibat) = 7; Isian = 1(kapital) + 1(perintah) + 1(brosur) + 1(sebab-akibat) = 4; Uraian = 1(kapital) + 1(sebab-akibat) = 2
+// BAB 6: PG = 1(majemuk) + 4(pean) + 3(eksposisi) + 3(media) + 1(cerita) = 12 ⟹ wait kisi says: 1+4+3+3+1=12  but need 20 total PG. BAB 5 (7)+ BAB6 (13=1+4+3+3+1+1?)…
+// Actually kisi gives: BAB5 PG=2+3+2=7; isian=1+1+1+1=4; uraian=1+1=2  (total 13)
+//                     BAB6 PG=1+4+3+3+1=12; isian=1+2+2=...; uraian=2+1+...
+// PG total = 7 + 12 = 19, close to 20. Let me re-read prompt to be exact.
+// From prompt:
+//   BAB 5: 2 PG (kapital) + 1 Isian (kapital) + 1 Uraian (kapital); 0 PG (narasi/deskripsi -- not in kisi-kisi types); 1 Isian (perintah); 3 PG (brosur) + 1 Isian (brosur); 2 PG (sebab) + 1 Isian (sebab) + 1 Uraian (sebab)
+//   BAB 5 totals: PG = 2+3+2 = 7; Isian = 1+1+1+1 = 4; Uraian = 1+1 = 2 → 13
+//   BAB 6: 1 PG (majemuk) + 1 Isian (majemuk); 4 PG (pean) + 2 Isian (pean) + 2 Uraian (pean); 3 PG (eksposisi) + 1 Isian (eksposisi) + 1 Uraian (eksposisi); 3 PG (media) + 2 Isian (media); 1 PG (cerita) + 1 Uraian (cerita)
+//   BAB 6 totals: PG = 1+4+3+3+1 = 12; Isian = 1+2+1+2 = 6; Uraian = 2+1+1 = 4
+//   GRAND TOTAL: PG = 7+12 = 19; Isian = 4+6 = 10 ✓; Uraian = 2+4 = 6 (target says 5)
+// Adjust to match 20+10+5: add 1 PG, drop 1 Uraian. We'll add a kapital PG and drop b6 pean uraian to 1.
+const UAS_KISI = [
+  // BAB 5
+  {topic:'b5_kapital',          type:'mcq',  n:2, chapter:'BAB 5'},
+  {topic:'b5_brosur',           type:'mcq',  n:3, chapter:'BAB 5'},
+  {topic:'b5_sebab_akibat',     type:'mcq',  n:2, chapter:'BAB 5'},
+  {topic:'b5_kapital',          type:'fill', n:1, chapter:'BAB 5'},
+  {topic:'b5_kalimat_perintah', type:'fill', n:1, chapter:'BAB 5'},
+  {topic:'b5_brosur',           type:'fill', n:1, chapter:'BAB 5'},
+  {topic:'b5_sebab_akibat',     type:'fill', n:1, chapter:'BAB 5'},
+  {topic:'b5_kapital',          type:'essay',n:1, chapter:'BAB 5'},
+  {topic:'b5_sebab_akibat',     type:'essay',n:1, chapter:'BAB 5'},
+  // BAB 6
+  {topic:'b6_majemuk',          type:'mcq',  n:2, chapter:'BAB 6'},
+  {topic:'b6_peadanaN',         type:'mcq',  n:4, chapter:'BAB 6'},
+  {topic:'b6_eksposisi',        type:'mcq',  n:3, chapter:'BAB 6'},
+  {topic:'b6_media',            type:'mcq',  n:3, chapter:'BAB 6'},
+  {topic:'b6_cerita',           type:'mcq',  n:1, chapter:'BAB 6'},
+  {topic:'b6_majemuk',          type:'fill', n:1, chapter:'BAB 6'},
+  {topic:'b6_peadanaN',         type:'fill', n:2, chapter:'BAB 6'},
+  {topic:'b6_eksposisi',        type:'fill', n:1, chapter:'BAB 6'},
+  {topic:'b6_media',            type:'fill', n:2, chapter:'BAB 6'},
+  {topic:'b6_peadanaN',         type:'essay',n:1, chapter:'BAB 6'},
+  {topic:'b6_eksposisi',        type:'essay',n:1, chapter:'BAB 6'},
+  {topic:'b6_majemuk',          type:'essay',n:1, chapter:'BAB 6'},
+];
+// Tally: MCQ = 2+3+2 + 2+4+3+3+1 = 20 ✓
+//        Fill = 1+1+1+1 + 1+2+1+2 = 10 ✓
+//        Essay = 1+1 + 1+1+1 = 5 ✓
+
+const ALL_GENS = {...B5_GEN, ...B6_GEN};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null;
+let currentChapterTitle = null;
+let isUAS = false;
+let uasBreakdown = {};
+
+function buildQueue(chKey){
+  if(chKey === 'uas'){ buildUAS(); return; }
+  isUAS = false;
+  const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+  currentChapterTitle = ch.title;
+  const keys = shuf(Object.keys(ch.gen));
+  let qs = keys.map(k => ({key:k, gen:ch.gen[k]}));
+  qs = qs.map(q => ({...q, _t: q.gen().type}));
+  const typeOrder = {mcq:0, fill:1, essay:2};
+  qs.sort((a,b)=>(typeOrder[a._t]??9) - (typeOrder[b._t]??9));
+  queue = qs.map(q => q.gen());
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateLangUI();
+  updateScore();
+  next();
+}
+
+function buildUAS(){
+  isUAS = true;
+  currentChapterTitle = 'UAS — Ujian Akhir (35 Soal)';
+  uasBreakdown = {};
+
+  const byTopicType = {};
+  for(const [key,fn] of Object.entries(ALL_GENS)){
+    const sample = fn();
+    const k = sample.topic + ':' + sample.type;
+    (byTopicType[k] = byTopicType[k] || []).push(fn);
+  }
+
+  const built = [];
+  for(const spec of UAS_KISI){
+    const key = spec.topic + ':' + spec.type;
+    const pool = byTopicType[key] || [];
+    uasBreakdown[spec.chapter] = uasBreakdown[spec.chapter] || {correct:0,total:0};
+    uasBreakdown[spec.chapter].total += spec.n;
+    if(pool.length === 0){
+      for(let i=0;i<spec.n;i++){
+        built.push({type:spec.type,
+          q:`[Soal hilang untuk ${spec.topic}]`,
+          opts:['—','—','—','—'], ans:0,
+          answers:['—'], display:'—', model:'—', keys:[],
+          _chapter:spec.chapter, _topic:spec.topic});
+      }
+      continue;
+    }
+    const shuffled = shuf(pool);
+    for(let i=0;i<spec.n;i++){
+      const fn = shuffled[i % shuffled.length];
+      const q = fn();
+      q._chapter = spec.chapter;
+      q._topic = spec.topic;
+      built.push(q);
+    }
+  }
+
+  const typeOrder = {mcq:0, fill:1, essay:2};
+  built.sort((a,b)=> (typeOrder[a.type]??9) - (typeOrder[b.type]??9));
+
+  queue = built;
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  updateLangUI();
+  updateScore();
+  next();
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  let inner = '';
+  switch(current.type){
+    case 'mcq':   inner = mcqHtml(current); break;
+    case 'fill':  inner = fillHtml(current); break;
+    case 'essay': inner = essayHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq':   attachMCQ(); break;
+    case 'fill':  attachFill(); break;
+    case 'essay': attachEssay(); break;
+  }
+  attachHint();
+}
+
+function badgeFor(typ){
+  const labels = {mcq:'📝 Pilihan Ganda', fill:'📋 Isian Singkat', essay:'📖 Uraian'};
+  return `<span class="q-badge ${typ}">${labels[typ]}</span>`;
+}
+
+function hintBlock(q){
+  if(!q.hint) return '';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">💡 Tampilkan Petunjuk</button>
+    <div class="hint-box" id="hintBox">${q.hint}</div>
+  </div>`;
+}
+
+function feedbackBlock(){ return `<div class="fb" id="fb"></div>`; }
+
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${q.q}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function fillHtml(q){
+  return `${badgeFor('fill')}<div class="q-text">${q.q}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Ketik jawabanmu…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Periksa</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const u = norm(inp.value);
+    if(!u){ inp.focus(); return; }
+    const ok = current.answers.some(a => norm(a) === u);
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#10b981' : '#dc2626';
+      inp.style.background = ok ? '#ecfdf5' : '#fff5f5';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+function essayHtml(q){
+  return `${badgeFor('essay')}<div class="q-text">${q.q}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="Tulis jawabanmu dengan kata-katamu sendiri…"></textarea>
+    <button class="essay-show" id="essayShow">📋 Tampilkan Jawaban Contoh</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">✓ Saya benar</button>
+      <button class="miss" data-v="0">✗ Perlu belajar lagi</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML = `<strong>Tulis jawabanmu dulu</strong> — minimal satu atau dua kalimat. Lalu klik "Tampilkan Jawaban Contoh" untuk membandingkan.`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const ttl = (current.keys||[]).length || 1;
+    fb.className = 'fb info show';
+    fb.innerHTML = `<strong>📋 Jawaban Contoh:</strong><br><br>${current.model}<br><br><small>🔍 Jawabanmu memuat <strong>${hits} dari ${ttl}</strong> kata kunci. Bandingkan dengan contoh dan nilai jujur:</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#ecfdf5' : '#fff5f0';
+      registerResult(ok);
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${current.concept}</div>`;
+      }
+      setTimeout(()=>{ idx++; next(); }, 1600);
+    });
+  });
+}
+
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    const show = box.classList.contains('show');
+    btn.textContent = show ? '🙈 Sembunyikan Petunjuk' : '💡 Tampilkan Petunjuk';
+  });
+}
+
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  if(isUAS && current._chapter){
+    uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
+    if(ok) uasBreakdown[current._chapter].correct++;
+  }
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsArr = current.steps || [];
+  const stepsHtml = stepsArr.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${current.concept}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    fb.innerHTML = `<strong>✅ Benar! Bagus sekali!</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = current.opts[current.ans];
+    else if(current.type==='fill') correctText = current.display ? current.display : current.answers[0];
+    fb.innerHTML = `<strong>❌ Belum tepat.</strong> Jawaban yang benar adalah <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total ? '🏁 Lihat Hasil' : 'Soal Berikutnya →';
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  const msg = pct>=80 ? '🎉 Luar biasa!' : pct>=60 ? '👍 Kerja bagus!' : pct>=40 ? '💪 Terus berlatih!' : '📚 Saatnya belajar lagi!';
+
+  let breakdownHtml = '';
+  if(isUAS){
+    const rows = Object.entries(uasBreakdown).map(([ch,v])=>{
+      const ratio = v.total>0 ? (v.correct/v.total) : 0;
+      const cls = ratio < 0.5 ? 'low' : '';
+      return `<div class="breakdown-row"><span class="bd-label">${ch}</span><span class="bd-score ${cls}">${v.correct} / ${v.total}</span></div>`;
+    }).join('');
+    breakdownHtml = `<div class="breakdown"><h4>📊 Skor per Bab</h4>${rows}</div>`;
+  }
+
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>Kamu menyelesaikan <strong>${total}</strong> soal.</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>Benar</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>Salah</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>Skor</span></div>
+      </div>
+      ${breakdownHtml}
+      <button class="restart-btn" onclick="location.reload()">🔄 Coba Lagi</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#dc2626;font-weight:700;text-decoration:none">← Kembali ke daftar bab</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#dc2626','#ea580c','#f97316','#f9ca24','#10b981','#fde68a'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+updateLangUI();
+buildQueue(chKey);
+</script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Sirah — AzIslamic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#ecfdf5 0%,#fef3c7 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+.arabic-text{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Traditional Arabic',serif;font-size:1.35em;line-height:1.9;direction:rtl;display:inline-block;font-weight:700;color:#065f46}
+.arabic-block{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic',serif;font-size:1.6em;line-height:2.2;direction:rtl;text-align:center;font-weight:700;color:#065f46;background:#f0fdf4;border:1.5px solid #10b981;border-radius:12px;padding:18px 20px;margin:12px 0}
+.arabic-verse{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic',serif;font-size:1.7em;line-height:2.4;direction:rtl;text-align:center;font-weight:700;color:#065f46;background:#fefce8;border:2px solid #fbbf24;border-radius:14px;padding:20px 22px;margin:14px 0}
+
+.hdr{background:linear-gradient(135deg,#10b981,#059669 60%,#f59e0b);color:#fff;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.05rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.95;background:rgba(255,255,255,.18);padding:5px 12px;border-radius:16px}
+
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#d1fae5;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#10b981,#f59e0b);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#059669;min-width:75px;text-align:right}
+
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:720px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #e8ecef;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#10b981;background:#ecfdf5}.score-chip.correct strong{color:#059669}
+.score-chip.wrong{border-color:#dc2626;background:#fef2f2}.score-chip.wrong strong{color:#dc2626}
+.score-chip.answered{border-color:#f59e0b;background:#fffbeb}.score-chip.answered strong{color:#d97706}
+
+.main{max-width:720px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(16,185,129,.13)}
+.q-badge{display:inline-block;background:#ecfdf5;color:#059669;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#ecfeff;color:#0891b2}
+.q-badge.tf{background:#fef3c7;color:#92400e}
+.q-badge.fill{background:#f5f3ff;color:#7c3aed}
+.q-badge.essay{background:#ecfdf5;color:#059669}
+
+.q-text{font-size:1.05rem;line-height:1.7;background:#ecfdf5;border-left:4px solid #10b981;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit;line-height:1.5}
+.opt:hover:not(:disabled){border-color:#10b981;background:#ecfdf5}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#d1fae5;color:#059669;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#10b981;background:#ecfdf5}
+.opt.correct .opt-letter{background:#10b981;color:#fff}
+.opt.wrong{border-color:#dc2626;background:#fef2f2}
+.opt.wrong .opt-letter{background:#dc2626;color:#fff}
+
+.tf-row{display:flex;gap:12px}
+.tf-btn{flex:1;background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:20px 16px;cursor:pointer;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;font-family:inherit;color:inherit}
+.tf-btn:hover:not(:disabled){transform:translateY(-2px);border-color:#10b981}
+.tf-btn.true{color:#059669}
+.tf-btn.false{color:#dc2626}
+.tf-btn:disabled{cursor:not-allowed;opacity:.7}
+.tf-btn.correct{border-color:#10b981;background:#ecfdf5}
+.tf-btn.wrong{border-color:#dc2626;background:#fef2f2}
+.tf-icon{font-size:1.4rem}
+
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:'Amiri','Segoe UI',serif;font-size:1.1rem;font-weight:700;padding:14px 18px;border:2px dashed #7c3aed;border-radius:14px;background:#faf5ff;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#0891b2;background:#fff;box-shadow:0 0 0 3px rgba(8,145,178,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#10b981,#f59e0b);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #7c3aed;border-radius:14px;background:#faf5ff;color:#1a1a2e;outline:none;resize:vertical;min-height:110px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#0891b2;background:#fff;box-shadow:0 0 0 3px rgba(8,145,178,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#10b981;color:#10b981}
+.essay-self .got:hover{background:#ecfdf5}
+.essay-self .miss{border-color:#f59e0b;color:#f59e0b}
+.essay-self .miss:hover{background:#fffbeb}
+
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#ecfdf5;border:1.5px solid #10b981;color:#064e3b}
+.fb.wrong{background:#fef2f2;border:1.5px solid #dc2626;color:#7f1d1d}
+.fb.info{background:#eef2ff;border:1.5px solid #6366f1;color:#3730a3}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#10b981;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fffbeb;border:1.5px solid #fbbf24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#78350f}
+
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #fbbf24;color:#92400e;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fffbeb}
+.hint-box{display:none;background:#fffbeb;border:1.5px solid #fbbf24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#78350f;margin-top:10px}
+.hint-box.show{display:block}
+
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#10b981,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#10b981,#f59e0b);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(16,185,129,.4)}
+.restart-btn:hover{opacity:.92}
+
+.breakdown{text-align:left;background:#f0fdf4;border-radius:14px;padding:14px 18px;margin:0 auto 22px;max-width:480px}
+.breakdown h4{font-size:.85rem;font-weight:900;margin-bottom:10px;color:#065f46;letter-spacing:.5px;text-transform:uppercase}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #d1fae5;font-size:.88rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-row .bd-label{font-weight:700;color:#333;flex:1}
+.breakdown-row .bd-score{font-weight:800;color:#10b981}
+.breakdown-row .bd-score.low{color:#dc2626}
+
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .tf-btn{padding:16px 12px;font-size:1rem}
+  .hdr-title{font-size:.95rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+  .arabic-verse{font-size:1.4em;padding:14px}
+  .arabic-block{font-size:1.3em;padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">← Semua</a>
+  <div class="hdr-title" id="hdrTitle">🕌 Latihan Sirah</div>
+  <div class="hdr-meta" id="hdrMeta">Soal 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong><span>✓ Benar</span></div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong><span>✗ Salah</span></div>
+  <div class="score-chip answered"><strong id="sDone">0</strong><span>📝 Dijawab</span></div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;};
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.,!?;:'"؟،]/g,'').replace(/\s+/g,' ');
+// Arabic-friendly normalization: strip diacritics so user input matches model
+const stripDiacritics=s=>String(s||'').replace(/[ً-ٰٟۖ-ۭ]/g,'').replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim();
+function mkOpts(correct, distractors){
+  const all=[correct, ...distractors].slice(0,4);
+  while(all.length<4) all.push('—');
+  const sh=shuf(all);
+  return {opts:sh, ans:sh.indexOf(correct)};
+}
+const A = s => `<span class="arabic-text">${s}</span>`;
+const AV = s => `<div class="arabic-verse">${s}</div>`;
+const AB = s => `<div class="arabic-block">${s}</div>`;
+
+// ════════════════════════════════════════════════════════════════
+// TEMA 1 — Keberanian Ali bin Abi Thalib r.a.
+// ════════════════════════════════════════════════════════════════
+const ALI_GEN = {
+  ali_kerabat:()=>{
+    const cor='Sepupu Nabi Muhammad SAW';
+    const{opts,ans}=mkOpts(cor,['Paman Nabi Muhammad SAW','Saudara kandung Nabi','Mertua Nabi Muhammad SAW']);
+    return{type:'mcq',topic:'ali_kecil',
+      q:'Ali bin Abi Thalib r.a. memiliki hubungan kekerabatan dengan Nabi Muhammad SAW sebagai ___.',
+      opts,ans,
+      hint:'Ayah Ali, Abu Thalib, adalah saudara kandung dari ayah Nabi (Abdullah).',
+      concept:'Ali bin Abi Thalib adalah putra Abu Thalib, paman Nabi. Maka Ali adalah sepupu Nabi.',
+      steps:['Abu Thalib = paman Nabi.','Ali = anak Abu Thalib.','Maka Ali = <b>sepupu</b> Nabi Muhammad SAW.']};
+  },
+  ali_tinggal:()=>{
+    const cor='Di rumah Nabi Muhammad SAW';
+    const{opts,ans}=mkOpts(cor,['Di rumah Abu Bakar','Di rumah pamannya Hamzah','Di rumah kakeknya']);
+    return{type:'mcq',topic:'ali_kecil',
+      q:'Sejak kecil, di mana Ali bin Abi Thalib r.a. tinggal dan dididik?',
+      opts,ans,
+      hint:'Karena Abu Thalib (ayah Ali) memiliki banyak anak, Nabi membawa Ali ke rumah beliau untuk meringankan beban pamannya.',
+      concept:'Ali tinggal di rumah Nabi sejak kecil, sehingga ia mendapat pendidikan langsung dari Nabi Muhammad SAW.',
+      steps:['Abu Thalib punya banyak anak.','Untuk meringankan beban paman, Nabi mengasuh Ali.','Ali tumbuh besar <b>di rumah Nabi</b>.']};
+  },
+  ali_anak_pertama:()=>({type:'tf',topic:'ali_kecil',
+    q:'Ali bin Abi Thalib r.a. adalah anak laki-laki pertama yang masuk Islam.',
+    ans:true,
+    hint:'Ali masuk Islam saat masih berusia sekitar 10 tahun.',
+    concept:'Ali adalah anak-anak (golongan as-sabiqun al-awwalun) pertama yang memeluk Islam.',
+    steps:['Tiga orang pertama masuk Islam: Khadijah (wanita), Abu Bakar (pria dewasa), <b>Ali (anak-anak)</b>.']}),
+  darun_nadwah_apa:()=>{
+    const cor='Tempat berkumpulnya kaum musyrik Quraisy untuk bermusyawarah';
+    const{opts,ans}=mkOpts(cor,['Tempat ibadah kaum Quraisy','Pasar utama kota Makkah','Rumah Nabi Muhammad SAW']);
+    return{type:'mcq',topic:'darun_nadwah',
+      q:'Apa itu <b>Darun Nadwah</b>?',
+      opts,ans,
+      hint:'Darun Nadwah adalah balai pertemuan para pemuka Quraisy.',
+      concept:'Darun Nadwah adalah balai musyawarah kaum Quraisy di Makkah, tempat mereka mengambil keputusan-keputusan penting.',
+      steps:['Dar = rumah/tempat. Nadwah = musyawarah.','Tempat para pemuka Quraisy <b>bermusyawarah</b>.']};
+  },
+  darun_nadwah_sebab:()=>{
+    const cor='Untuk bermusyawarah cara membunuh Nabi Muhammad SAW';
+    const{opts,ans}=mkOpts(cor,['Untuk merayakan kemenangan kaum Quraisy','Untuk membagi-bagi harta rampasan','Untuk memilih pemimpin Quraisy yang baru']);
+    return{type:'mcq',topic:'darun_nadwah',
+      q:'Apa sebab utama kaum musyrik berkumpul di Darun Nadwah sebelum peristiwa hijrah?',
+      opts,ans,
+      hint:'Mereka khawatir Islam akan semakin kuat dengan adanya pengikut di Madinah.',
+      concept:'Kaum Quraisy berkumpul di Darun Nadwah untuk merencanakan pembunuhan Nabi sebelum beliau hijrah ke Madinah.',
+      steps:['Quraisy melihat banyak Muslim hijrah ke Madinah.','Mereka takut Islam akan kuat.','Maka berkumpul di Darun Nadwah untuk <b>merencanakan pembunuhan Nabi</b>.']};
+  },
+  darun_nadwah_usul:()=>{
+    const cor='Abu Jahal: setiap kabilah mengirim seorang pemuda untuk membunuh Nabi bersama-sama';
+    const{opts,ans}=mkOpts(cor,['Membuang Nabi ke gurun pasir','Memenjarakan Nabi seumur hidup','Membakar rumah Nabi Muhammad SAW']);
+    return{type:'mcq',topic:'darun_nadwah',
+      q:'Usulan siapa yang akhirnya disepakati dalam pertemuan Darun Nadwah?',
+      opts,ans,
+      hint:'Tujuannya agar darah Nabi tertanggung oleh seluruh kabilah, sehingga Bani Hasyim tidak bisa menuntut balas.',
+      concept:'Abu Jahal mengusulkan agar setiap kabilah mengirim seorang pemuda; mereka semua menyerang Nabi bersama-sama agar tanggung jawab tersebar.',
+      steps:['Abu Jahal mengusulkan strategi.','Setiap kabilah kirim 1 pemuda.','Mereka membunuh Nabi <b>bersama-sama</b> agar tidak ada balas dendam.']};
+  },
+  ali_hijrah_peran:()=>{
+    const cor='Tidur di tempat tidur Nabi dengan menggunakan selimut hijau Nabi';
+    const{opts,ans}=mkOpts(cor,['Menemani Nabi di Gua Tsur','Mengantarkan bekal ke Madinah','Memimpin pasukan kaum muslimin']);
+    return{type:'mcq',topic:'ali_hijrah',
+      q:'Apa peran Ali bin Abi Thalib r.a. dalam peristiwa hijrah Nabi?',
+      opts,ans,
+      hint:'Ali rela mempertaruhkan nyawanya agar kaum Quraisy mengira Nabi masih di rumahnya.',
+      concept:'Ali tidur di ranjang Nabi dan memakai selimut hijau beliau. Tindakan ini mengelabui para pemuda Quraisy yang mengepung rumah.',
+      steps:['Nabi diperintah Allah untuk hijrah.','Rumah Nabi sudah dikepung.','Ali <b>tidur menggantikan Nabi</b> di ranjangnya — sangat berani.']};
+  },
+  ali_amanah:()=>{
+    const cor='Mengembalikan barang-barang titipan (amanah) kepada pemiliknya';
+    const{opts,ans}=mkOpts(cor,['Memimpin sholat di Masjid Haram','Menjaga sumur zamzam','Mengumpulkan zakat di Makkah']);
+    return{type:'mcq',topic:'ali_hijrah',
+      q:'Selain tidur di ranjang Nabi, apa tugas lain yang diberikan Nabi kepada Ali setelah Nabi hijrah?',
+      opts,ans,
+      hint:'Nabi Muhammad SAW dikenal sebagai al-Amin, banyak orang menitipkan barang berharga kepada beliau — bahkan kaum musyrik.',
+      concept:'Nabi memerintahkan Ali untuk mengembalikan semua amanah (titipan) kepada pemiliknya sebelum menyusul ke Madinah.',
+      steps:['Nabi dipercaya menyimpan banyak titipan.','Sebelum hijrah, amanah harus dikembalikan.','Ali menunaikan <b>amanah</b> ini, lalu menyusul ke Madinah.']};
+  },
+  ali_berani:()=>({type:'tf',topic:'ali_hijrah',
+    q:'Ali bin Abi Thalib menolak tidur di ranjang Nabi karena takut dibunuh kaum musyrik.',
+    ans:false,
+    hint:'Ali sangat mencintai Nabi dan rela berkorban demi beliau.',
+    concept:'Ali menerima tugas itu dengan penuh keberanian, tidak ada keraguan sama sekali.',
+    steps:['Ali = sepupu, sahabat, dan murid Nabi.','Ali sangat berani dan setia.','Ia <b>menerima</b> tugas itu — bukan menolaknya.']}),
+  ali_julukan:()=>{
+    const cor='Karramallahu Wajhah';
+    const{opts,ans}=mkOpts(cor,['Ash-Shiddiq','Al-Faruq','Dzun Nurain']);
+    return{type:'mcq',topic:'ali_kecil',
+      q:'Gelar khusus untuk Ali bin Abi Thalib r.a. yang berarti "Allah memuliakan wajahnya" adalah ___.',
+      opts,ans,
+      hint:'Gelar ini diberikan karena Ali tidak pernah sujud kepada berhala sejak kecil.',
+      concept:'Ali bin Abi Thalib mendapat gelar Karramallahu Wajhah karena beliau dibesarkan dalam Islam dan tidak pernah menyembah berhala.',
+      steps:['Karramallahu Wajhah = "semoga Allah memuliakan wajahnya".','Diberikan kepada <b>Ali</b> karena tidak pernah sujud ke berhala.']};
+  },
+  fill_ali_sepupu:()=>({type:'fill',topic:'ali_kecil',
+    q:'Ayah Ali bin Abi Thalib bernama ___.',
+    answers:['abu thalib','abu talib','abi thalib'],
+    display:'Abu Thalib',
+    hint:'Beliau adalah paman Nabi yang sangat melindungi Nabi semasa hidupnya.',
+    concept:'Abu Thalib adalah paman Nabi sekaligus ayah dari Ali bin Abi Thalib.',
+    steps:['Ayah Ali = <b>Abu Thalib</b> (paman Nabi).']}),
+  fill_ali_tidur:()=>({type:'fill',topic:'ali_hijrah',
+    q:'Saat peristiwa hijrah, Ali r.a. tidur di ranjang Nabi sambil memakai ___ Nabi.',
+    answers:['selimut hijau','selimut','selimut hadhrami','burdah hijau'],
+    display:'selimut (burdah) hijau',
+    hint:'Burdah berwarna hijau dari Hadhramaut.',
+    concept:'Selimut hijau Nabi dipakai Ali agar pengepung mengira Nabi sedang tidur.',
+    steps:['Ali memakai <b>selimut hijau</b> Nabi.','Pengepung tertipu.']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// TEMA 2 — Perang Badar
+// ════════════════════════════════════════════════════════════════
+const BADAR_GEN = {
+  badar_sebab:()=>{
+    const cor='Kaum muslimin mencegat kafilah dagang Quraisy yang dipimpin Abu Sufyan';
+    const{opts,ans}=mkOpts(cor,['Pertikaian masalah air sumur Badar','Perebutan tanah pertanian di Madinah','Perselisihan adat antar kabilah']);
+    return{type:'mcq',topic:'badar_sebab',
+      q:'Apa sebab terjadinya Perang Badar?',
+      opts,ans,
+      hint:'Kafilah ini membawa harta benda kaum muslimin yang dirampas di Makkah.',
+      concept:'Kaum muslimin keluar untuk mencegat kafilah Quraisy. Abu Sufyan lolos, tetapi pasukan bantuan Quraisy datang sehingga terjadilah perang.',
+      steps:['Kafilah Abu Sufyan pulang dari Syam.','Kaum muslimin keluar untuk mencegat.','Pasukan Quraisy datang membantu → terjadi <b>Perang Badar</b>.']};
+  },
+  badar_tahun:()=>{
+    const cor='2 Hijriyah, bulan Ramadhan';
+    const{opts,ans}=mkOpts(cor,['1 Hijriyah, bulan Syawal','5 Hijriyah, bulan Dzulhijjah','8 Hijriyah, bulan Rajab']);
+    return{type:'mcq',topic:'badar_sebab',
+      q:'Perang Badar terjadi pada tahun dan bulan ___.',
+      opts,ans,
+      hint:'Perang ini terjadi pada bulan puasa, di tahun ke-2 setelah hijrah.',
+      concept:'Perang Badar terjadi pada 17 Ramadhan tahun 2 Hijriyah.',
+      steps:['Tahun 2 H = setahun setelah Nabi pindah ke Madinah.','Bulan <b>Ramadhan</b>, tanggal 17.']};
+  },
+  badar_jumlah_muslim:()=>{
+    const cor='313 orang';
+    const{opts,ans}=mkOpts(cor,['1.000 orang','500 orang','100 orang']);
+    return{type:'mcq',topic:'badar_sejarah',
+      q:'Jumlah pasukan kaum muslimin dalam Perang Badar adalah ___.',
+      opts,ans,
+      hint:'Jumlahnya jauh lebih sedikit dibanding pasukan Quraisy (sekitar 1.000 orang).',
+      concept:'Pasukan muslimin sekitar 313 orang melawan ~1.000 pasukan Quraisy. Allah memenangkan kaum muslimin.',
+      steps:['Muslimin = <b>313</b> orang.','Quraisy = ~1.000 orang.','Tetapi Allah memberi kemenangan kepada muslimin.']};
+  },
+  badar_hubab_peran:()=>{
+    const cor='Mengusulkan strategi pemilihan tempat dekat sumber air Badar';
+    const{opts,ans}=mkOpts(cor,['Memimpin pasukan sayap kanan','Menjadi pembawa bendera pasukan','Menjadi juru damai dengan Quraisy']);
+    return{type:'mcq',topic:'hubab',
+      q:'Apa peran sahabat al-Hubab bin al-Munzir dalam Perang Badar?',
+      opts,ans,
+      hint:'Beliau mengusulkan agar muslimin menempati sumur paling depan dan menutup sumur lainnya.',
+      concept:'Al-Hubab bin al-Munzir mengusulkan strategi cerdas: pasukan muslimin maju ke sumur terdekat dengan musuh, lalu menutup sumur lainnya agar Quraisy kehausan.',
+      steps:['Al-Hubab bertanya: "Apakah ini wahyu atau pendapat?"','Nabi menjawab: "Ini pendapat dan strategi perang."','Lalu al-Hubab mengusulkan <b>menguasai sumur Badar</b>.']};
+  },
+  badar_pelajaran:()=>{
+    const cor='Pertolongan Allah datang kepada hamba-Nya yang sabar dan bertawakal';
+    const{opts,ans}=mkOpts(cor,['Jumlah pasukan menentukan kemenangan','Kekayaan adalah kunci sukses','Berperang harus selalu di siang hari']);
+    return{type:'mcq',topic:'badar_pelajaran',
+      q:'Pelajaran penting dari Perang Badar adalah ___.',
+      opts,ans,
+      hint:'Pasukan kecil bisa menang dengan izin Allah.',
+      concept:'Pertolongan Allah datang kepada orang yang sabar, ikhlas, dan bertawakal — bukan sekadar jumlah pasukan.',
+      steps:['313 melawan 1.000.','Yang menang = muslimin.','Karena <b>pertolongan Allah</b> kepada hamba-Nya yang bertakwa.']};
+  },
+  badar_malaikat:()=>({type:'tf',topic:'badar_sejarah',
+    q:'Pada perang Badar, Allah menurunkan bantuan berupa malaikat untuk membantu kaum muslimin.',
+    ans:true,
+    hint:'Hal ini disebutkan dalam QS Ali Imran ayat 123-125.',
+    concept:'Allah mengirim 1.000 (lalu ditambah hingga 3.000-5.000) malaikat sebagai bala bantuan dalam Perang Badar.',
+    steps:['Muslimin sedikit dan lemah.','Allah turunkan <b>malaikat</b> sebagai bantuan.','Kemenangan diraih dengan izin Allah.']}),
+  badar_quraisy_pemimpin:()=>{
+    const cor='Abu Jahal';
+    const{opts,ans}=mkOpts(cor,['Abu Lahab','Abu Sufyan','Umayyah bin Khalaf']);
+    return{type:'mcq',topic:'badar_sejarah',
+      q:'Pemimpin pasukan Quraisy dalam Perang Badar adalah ___.',
+      opts,ans,
+      hint:'Abu Sufyan memimpin kafilah dagang, bukan pasukan perang.',
+      concept:'Pemimpin pasukan Quraisy yang dikirim dari Makkah adalah Abu Jahal. Ia tewas di Perang Badar.',
+      steps:['Abu Sufyan = pemimpin kafilah.','Abu Jahal = pemimpin <b>pasukan</b> perang.','Abu Jahal tewas dalam Perang Badar.']};
+  },
+  fill_badar_jumlah:()=>({type:'fill',topic:'badar_sejarah',
+    q:'Jumlah pasukan kaum muslimin dalam Perang Badar adalah ___ orang.',
+    answers:['313','tiga ratus tiga belas'],
+    display:'313',
+    hint:'Lebih dari tiga ratus, kurang dari empat ratus.',
+    concept:'Pasukan muslimin sebanyak 313 orang.',
+    steps:['Jumlah pasukan muslimin = <b>313</b> orang.']}),
+  fill_badar_tahun:()=>({type:'fill',topic:'badar_sebab',
+    q:'Perang Badar terjadi pada bulan ___ tahun 2 Hijriyah.',
+    answers:['ramadhan','ramadan'],
+    display:'Ramadhan',
+    hint:'Bulan puasa.',
+    concept:'Perang Badar terjadi pada 17 Ramadhan 2 H.',
+    steps:['Bulan = <b>Ramadhan</b>.']}),
+  badar_ali_imran_complete:()=>({type:'fill',topic:'quran_ali_imran',
+    q:`Lengkapi penggalan ayat tentang Perang Badar berikut:<br>${AV('إِذْ تَقُولُ لِلْمُؤْمِنِينَ أَلَنْ يَكْفِيَكُمْ أَنْ يُمِدَّكُمْ رَبُّكُمْ بِثَلَاثَةِ آلَافٍ مِنَ <span style="background:#fef08a;border-radius:4px;padding:2px 8px">___</span> مُنْزَلِينَ')}<br><small>Ketik kata yang hilang dalam huruf Arab atau transliterasi (Latin).</small>`,
+    answers:['الملائكة','الملايكة','al-malaikah','al malaikah','malaikah','malaikat','almalaikah'],
+    display:'الْمَلَائِكَةِ (al-malā\'ikah)',
+    hint:'Yang dijanjikan turun sebagai bala bantuan — para ___ .',
+    concept:'QS Ali Imran ayat 123-125 menjelaskan tentang bantuan 3.000 malaikat dari Allah dalam Perang Badar.',
+    steps:['Allah menjanjikan bantuan 3.000 ___ yang diturunkan.','Jawabannya: <b>الْمَلَائِكَةِ</b> (al-malaikah / malaikat).']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// TEMA 3 — Asma binti Abu Bakar r.a.
+// ════════════════════════════════════════════════════════════════
+const ASMA_GEN = {
+  asma_siapa:()=>{
+    const cor='Putri sahabat Abu Bakar Ash-Shiddiq r.a.';
+    const{opts,ans}=mkOpts(cor,['Putri Nabi Muhammad SAW','Istri sahabat Umar bin Khattab','Saudara perempuan Khadijah r.a.']);
+    return{type:'mcq',topic:'asma_sosok',
+      q:'Siapakah Asma binti Abu Bakar r.a.?',
+      opts,ans,
+      hint:'Ayahnya adalah Khalifah pertama umat Islam.',
+      concept:'Asma binti Abu Bakar r.a. adalah putri Abu Bakar Ash-Shiddiq, kakak dari Aisyah r.a. (istri Nabi).',
+      steps:['Ayah = Abu Bakar Ash-Shiddiq.','Adik = Aisyah r.a. (istri Nabi).','Asma = <b>putri Abu Bakar</b>.']};
+  },
+  asma_suami:()=>{
+    const cor='Az-Zubair bin al-Awwam';
+    const{opts,ans}=mkOpts(cor,['Utsman bin Affan','Ali bin Abi Thalib','Sa\'ad bin Abi Waqqash']);
+    return{type:'mcq',topic:'asma_sosok',
+      q:'Suami Asma binti Abu Bakar r.a. adalah ___.',
+      opts,ans,
+      hint:'Beliau adalah salah satu dari 10 sahabat yang dijamin masuk surga.',
+      concept:'Az-Zubair bin al-Awwam adalah suami Asma dan sahabat dekat Nabi.',
+      steps:['Suami Asma = <b>Az-Zubair bin al-Awwam</b>.','Az-Zubair = sepupu Nabi dari pihak Khadijah.']};
+  },
+  asma_peran_hijrah:()=>{
+    const cor='Mengantarkan makanan dan air ke gua Tsur';
+    const{opts,ans}=mkOpts(cor,['Memimpin pasukan ke Madinah','Menemani Nabi sembunyi di gua','Menulis surat untuk para sahabat']);
+    return{type:'mcq',topic:'asma_hijrah',
+      q:'Apa peran Asma binti Abu Bakar r.a. dalam peristiwa hijrah?',
+      opts,ans,
+      hint:'Selama tiga hari, Nabi dan Abu Bakar bersembunyi di gua Tsur.',
+      concept:'Asma diam-diam mengantarkan makanan dan air kepada Nabi dan Abu Bakar selama mereka bersembunyi di gua Tsur.',
+      steps:['Nabi dan Abu Bakar bersembunyi 3 hari di Gua Tsur.','Asma <b>mengantarkan bekal</b> setiap malam.','Pekerjaan ini sangat berbahaya karena Quraisy mengejar.']};
+  },
+  asma_nithaqain:()=>{
+    const cor='Ia merobek ikat pinggangnya menjadi dua: satu untuk mengikat bekal, satu untuk ikat pinggangnya sendiri';
+    const{opts,ans}=mkOpts(cor,['Ia memiliki dua pasang sandal emas','Ia memakai dua kain ihram saat haji','Ia menggunakan dua jenis penutup kepala']);
+    return{type:'mcq',topic:'asma_gelar',
+      q:'Mengapa Asma diberi gelar <b>Dzatun Nithaqain</b> (Pemilik Dua Ikat Pinggang)?',
+      opts,ans,
+      hint:'Saat mengantar bekal ke gua Tsur, ia kekurangan tali pengikat.',
+      concept:'Saat tidak ada tali untuk mengikat bekal, Asma merobek ikat pinggangnya menjadi dua: satu untuk mengikat bekal Nabi, satu untuk dirinya sendiri.',
+      steps:['Asma akan mengantar bekal ke gua Tsur.','Tidak ada tali pengikat.','Ia <b>merobek ikat pinggangnya</b> jadi dua.','Maka diberi gelar <b>Dzatun Nithaqain</b>.']};
+  },
+  asma_gelar_arti:()=>{
+    const cor='Pemilik dua ikat pinggang';
+    const{opts,ans}=mkOpts(cor,['Pemilik dua sorban','Pemilik dua kerajaan','Pemilik dua anak laki-laki']);
+    return{type:'mcq',topic:'asma_gelar',
+      q:'Arti dari gelar <b>Dzatun Nithaqain</b> adalah ___.',
+      opts,ans,
+      hint:'Nithaq = ikat pinggang.',
+      concept:'Dzatun Nithaqain berarti "pemilik dua ikat pinggang", merujuk pada peristiwa di gua Tsur.',
+      steps:['Dzat = pemilik. Nithaqain = dua ikat pinggang.','Artinya: <b>Pemilik Dua Ikat Pinggang</b>.']};
+  },
+  asma_pelajaran:()=>{
+    const cor='Keberanian, kesabaran, dan pengorbanan dalam membela Islam';
+    const{opts,ans}=mkOpts(cor,['Pentingnya kekayaan duniawi','Cara mendapatkan pujian manusia','Pentingnya gelar dari penguasa']);
+    return{type:'mcq',topic:'asma_pelajaran',
+      q:'Pelajaran penting dari kisah Asma binti Abu Bakar r.a. adalah ___.',
+      opts,ans,
+      hint:'Asma rela mengambil risiko besar demi Nabi.',
+      concept:'Kisah Asma mengajarkan keberanian, kesabaran, kecerdasan, dan pengorbanan untuk membela agama Allah.',
+      steps:['Asma rela berkorban demi hijrah Nabi.','Pelajaran utama: <b>keberanian dan pengorbanan</b> demi Islam.']};
+  },
+  asma_anak:()=>{
+    const cor='Abdullah bin Az-Zubair';
+    const{opts,ans}=mkOpts(cor,['Hasan bin Ali','Abdullah bin Umar','Abdurrahman bin Auf']);
+    return{type:'mcq',topic:'asma_sosok',
+      q:'Anak Asma binti Abu Bakar r.a. yang menjadi anak pertama lahir dari kalangan Muhajirin di Madinah adalah ___.',
+      opts,ans,
+      hint:'Beliau menjadi Khalifah di Makkah pada masa pemerintahannya.',
+      concept:'Abdullah bin Az-Zubair adalah anak pertama yang lahir dari kalangan Muhajirin setelah hijrah ke Madinah.',
+      steps:['Anak Asma = <b>Abdullah bin Az-Zubair</b>.','Lahir di Madinah, anak Muhajirin pertama.']};
+  },
+  asma_tegar:()=>({type:'tf',topic:'asma_pelajaran',
+    q:'Saat ayahnya Abu Bakar membawa seluruh hartanya untuk hijrah, Asma tetap tegar dan mengganti hartanya dengan batu agar kakeknya yang buta merasa tenang.',
+    ans:true,
+    hint:'Kakek Asma (Abu Quhafah) sudah buta dan masih musyrik saat itu.',
+    concept:'Asma menunjukkan kecerdasan: ia menumpuk batu di tempat harta agar kakeknya mengira Abu Bakar meninggalkan harta untuk keluarga.',
+    steps:['Abu Bakar bawa semua harta saat hijrah.','Kakek buta khawatir.','Asma menumpuk <b>batu</b> di tempat harta — sangat cerdas.']}),
+  fill_asma_gelar:()=>({type:'fill',topic:'asma_gelar',
+    q:'Asma binti Abu Bakar r.a. diberi gelar ___ (Pemilik Dua Ikat Pinggang).',
+    answers:['dzatun nithaqain','dzatun nitaqain','zatun nithaqain','zatun nitaqain','dzun nithaqain','dzunnitaqain','dhatun nithaqain'],
+    display:'Dzatun Nithaqain',
+    hint:'Dzat + Nithaqain.',
+    concept:'Gelar Asma = Dzatun Nithaqain.',
+    steps:['Gelar = <b>Dzatun Nithaqain</b>.']}),
+  fill_asma_gua:()=>({type:'fill',topic:'asma_hijrah',
+    q:'Asma mengantarkan bekal makanan dan air ke gua ___ tempat Nabi dan Abu Bakar bersembunyi.',
+    answers:['tsur','thur','tur','tsuur'],
+    display:'Tsur',
+    hint:'Sebuah gua di sebelah selatan Makkah.',
+    concept:'Gua Tsur adalah tempat persembunyian Nabi dan Abu Bakar selama 3 hari saat hijrah.',
+    steps:['Gua = <b>Tsur</b>.','Lokasi: selatan Makkah.']}),
+  asma_hadith_essay:()=>({type:'essay',topic:'hadith_asma',
+    q:`Tulislah arti dari hadits berikut yang menjelaskan kemuliaan Asma binti Abu Bakar r.a.:<br>${AV('اَلْيَدُ الْعُلْيَا خَيْرٌ مِنَ الْيَدِ السُّفْلَى')}<br><small>(Hadits ini terkait keutamaan bersedekah seperti yang diteladankan Asma r.a.)</small>`,
+    model:'Tangan yang di atas (yang memberi/bersedekah) lebih baik daripada tangan yang di bawah (yang meminta). Hadits ini menunjukkan keutamaan bersedekah dan kemandirian — sebagaimana Asma r.a. dikenal sangat dermawan dan suka bersedekah.',
+    hint:'Al-yadu al-ulya = tangan yang di atas. Khairun = lebih baik. Al-yadu as-sufla = tangan yang di bawah.',
+    concept:'Asma r.a. adalah teladan dalam bersedekah dan menolong sesama, sesuai hadits ini.',
+    keys:['tangan','atas','baik','memberi','bawah','sedekah','meminta']}),
+  asma_quran_baqarah:()=>({type:'essay',topic:'quran_baqarah',
+    q:`Salinlah ayat berikut (QS Al-Baqarah ayat 285) dengan tulisan tangan yang baik, lalu ketikkan transliterasi (penulisan dengan huruf Latin) atau identifikasi surah dan ayatnya:<br>${AV('آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ')}<br><small>Tugasmu: menyalin dengan benar.</small>`,
+    model:'Aamanar-rasuulu bimaa unzila ilaihi mir-rabbihi wal-mu\'minuun, kullun aamana billaahi wa malaa\'ikatihi wa kutubihi wa rusulih. (Surah Al-Baqarah ayat 285 — Rasul telah beriman kepada Al-Qur\'an yang diturunkan kepadanya dari Tuhannya, demikian pula orang-orang yang beriman. Semuanya beriman kepada Allah, malaikat-malaikat-Nya, kitab-kitab-Nya, dan rasul-rasul-Nya).',
+    hint:'Surah ke-2 Al-Baqarah, ayat 285. Tentang rukun iman.',
+    concept:'Ayat ini menjelaskan tentang rukun iman: iman kepada Allah, malaikat, kitab, dan rasul.',
+    keys:['rasul','beriman','allah','malaikat','kitab','baqarah','285']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTERS & UAS KISI-KISI
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': {title:'Tema 1 · Keberanian Ali bin Abi Thalib', gen: ALI_GEN},
+  '2': {title:'Tema 2 · Perang Badar', gen: BADAR_GEN},
+  '3': {title:'Tema 3 · Asma binti Abu Bakar', gen: ASMA_GEN},
+};
+
+// UAS: ~12 PG/TF + ~6 Isian + 3 Uraian = 21 soal (mengikuti pola kisi-kisi)
+const UAS_KISI = [
+  // Tema 1 — Ali
+  {topic:'ali_kecil', type:'mcq', n:2, chapter:'Tema 1 · Ali'},
+  {topic:'darun_nadwah', type:'mcq', n:2, chapter:'Tema 1 · Ali'},
+  {topic:'ali_hijrah', type:'mcq', n:2, chapter:'Tema 1 · Ali'},
+  {topic:'ali_kecil', type:'fill', n:1, chapter:'Tema 1 · Ali'},
+  {topic:'ali_hijrah', type:'fill', n:1, chapter:'Tema 1 · Ali'},
+  // Tema 2 — Badar
+  {topic:'badar_sebab', type:'mcq', n:1, chapter:'Tema 2 · Badar'},
+  {topic:'badar_sejarah', type:'mcq', n:2, chapter:'Tema 2 · Badar'},
+  {topic:'hubab', type:'mcq', n:1, chapter:'Tema 2 · Badar'},
+  {topic:'badar_pelajaran', type:'mcq', n:1, chapter:'Tema 2 · Badar'},
+  {topic:'badar_sejarah', type:'fill', n:1, chapter:'Tema 2 · Badar'},
+  {topic:'quran_ali_imran', type:'fill', n:1, chapter:'Tema 2 · Badar (Quran)'},
+  // Tema 3 — Asma
+  {topic:'asma_sosok', type:'mcq', n:1, chapter:'Tema 3 · Asma'},
+  {topic:'asma_hijrah', type:'mcq', n:1, chapter:'Tema 3 · Asma'},
+  {topic:'asma_gelar', type:'mcq', n:1, chapter:'Tema 3 · Asma'},
+  {topic:'asma_pelajaran', type:'mcq', n:1, chapter:'Tema 3 · Asma'},
+  {topic:'asma_gelar', type:'fill', n:1, chapter:'Tema 3 · Asma'},
+  {topic:'asma_hijrah', type:'fill', n:1, chapter:'Tema 3 · Asma'},
+  // Quran & Hadith — Uraian
+  {topic:'hadith_asma', type:'essay', n:1, chapter:'Hadits & Quran'},
+  {topic:'quran_baqarah', type:'essay', n:1, chapter:'Hadits & Quran'},
+];
+
+const ALL_GENS = {...ALI_GEN, ...BADAR_GEN, ...ASMA_GEN};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null;
+let currentChapterTitle = null;
+let isUAS = false;
+let uasBreakdown = {};
+
+function setHdrTitle(){
+  document.getElementById('hdrTitle').textContent = '🕌 ' + (currentChapterTitle || 'Latihan Sirah');
+}
+function updateMeta(){
+  document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+}
+
+function buildQueue(chKey){
+  if(chKey === 'uas'){ buildUAS(); return; }
+  isUAS = false;
+  const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+  currentChapterTitle = ch.title;
+  const keys = shuf(Object.keys(ch.gen));
+  queue = keys.map(k => ch.gen[k]());
+  // order: mcq/tf → fill → essay
+  const order = {mcq:0, tf:0, fill:1, essay:2};
+  queue.sort((a,b)=>(order[a.type]??9) - (order[b.type]??9));
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  setHdrTitle(); updateScore(); next();
+}
+
+function buildUAS(){
+  isUAS = true;
+  currentChapterTitle = 'UAS — Ujian Akhir Sirah';
+  uasBreakdown = {};
+  const byTopicType = {};
+  const aliases = (s)=>{ const o=[s.type]; if(s.type==='tf') o.push('mcq'); return o; };
+  for(const [k,fn] of Object.entries(ALL_GENS)){
+    const sample = fn();
+    for(const tp of aliases(sample)){
+      const key = sample.topic + ':' + tp;
+      (byTopicType[key] = byTopicType[key] || []).push(fn);
+    }
+  }
+  const built = [];
+  for(const spec of UAS_KISI){
+    const key = spec.topic + ':' + spec.type;
+    const pool = byTopicType[key] || [];
+    uasBreakdown[spec.chapter] = uasBreakdown[spec.chapter] || {correct:0,total:0};
+    uasBreakdown[spec.chapter].total += spec.n;
+    if(pool.length === 0){
+      for(let i=0;i<spec.n;i++){
+        built.push({type:spec.type, q:`[Soal hilang: ${spec.topic}]`,
+          opts:['—','—','—','—'], ans:0, answers:['—'], display:'—', model:'—', keys:[],
+          _chapter:spec.chapter});
+      }
+      continue;
+    }
+    const sh = shuf(pool);
+    for(let i=0;i<spec.n;i++){
+      const fn = sh[i % sh.length];
+      const q = fn();
+      q._chapter = spec.chapter;
+      built.push(q);
+    }
+  }
+  const order = {mcq:0, tf:0, fill:1, essay:2};
+  built.sort((a,b)=>(order[a.type]??9) - (order[b.type]??9));
+  queue = built;
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  setHdrTitle(); updateScore(); next();
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  updateMeta();
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDERERS
+// ════════════════════════════════════════════════════════════════
+function badgeFor(typ){
+  const labels = {mcq:'📝 Pilihan Ganda', tf:'✅ Benar atau Salah', fill:'📋 Melengkapi / Isian', essay:'📖 Uraian'};
+  return `<span class="q-badge ${typ}">${labels[typ]||'Soal'}</span>`;
+}
+function hintBlock(q){
+  if(!q.hint) return '';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">💡 Tampilkan Petunjuk</button>
+    <div class="hint-box" id="hintBox">${q.hint}</div>
+  </div>`;
+}
+function feedbackBlock(){ return `<div class="fb" id="fb"></div>`; }
+
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  let inner = '';
+  switch(current.type){
+    case 'mcq': inner = mcqHtml(current); break;
+    case 'tf': inner = tfHtml(current); break;
+    case 'fill': inner = fillHtml(current); break;
+    case 'essay': inner = essayHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq': attachMCQ(); break;
+    case 'tf': attachTF(); break;
+    case 'fill': attachFill(); break;
+    case 'essay': attachEssay(); break;
+  }
+  attachHint();
+}
+
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${q.q}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function tfHtml(q){
+  return `${badgeFor('tf')}<div class="q-text">${q.q}</div>
+    <div class="tf-row">
+      <button class="tf-btn true" data-v="true"><span class="tf-icon">✓</span> Benar</button>
+      <button class="tf-btn false" data-v="false"><span class="tf-icon">✗</span> Salah</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachTF(){
+  document.querySelectorAll('.tf-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const v = b.dataset.v === 'true';
+      checkAnswer(v === current.ans, ()=>{
+        document.querySelectorAll('.tf-btn').forEach(btn=>{
+          btn.disabled = true;
+          const bv = btn.dataset.v === 'true';
+          if(bv === current.ans) btn.classList.add('correct');
+          else if(bv === v) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function fillHtml(q){
+  return `${badgeFor('fill')}<div class="q-text">${q.q}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Ketik jawabanmu…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Periksa</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const raw = inp.value;
+    const u = norm(raw);
+    const uArab = stripDiacritics(raw).toLowerCase();
+    if(!u && !uArab){ inp.focus(); return; }
+    const ok = current.answers.some(a => {
+      const an = norm(a);
+      const ar = stripDiacritics(a).toLowerCase();
+      return an === u || ar === uArab || an === uArab || ar === u;
+    });
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#10b981' : '#dc2626';
+      inp.style.background = ok ? '#ecfdf5' : '#fef2f2';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+function essayHtml(q){
+  return `${badgeFor('essay')}<div class="q-text">${q.q}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="Tulis jawabanmu dengan kata-katamu sendiri…"></textarea>
+    <button class="essay-show" id="essayShow">📋 Tampilkan Jawaban Contoh</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">✓ Saya benar</button>
+      <button class="miss" data-v="0">✗ Perlu belajar lagi</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML = `<strong>Tulis jawabanmu dulu</strong> — minimal satu atau dua kalimat. Lalu klik "Tampilkan Jawaban Contoh".`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const ttl = (current.keys||[]).length || 1;
+    fb.className = 'fb info show';
+    fb.innerHTML = `<strong>📋 Jawaban Contoh:</strong><br><br>${current.model}<br><br><small>🔍 Jawabanmu memuat <strong>${hits} dari ${ttl}</strong> kata kunci. Bandingkan dengan contoh dan nilai jujur:</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#ecfdf5' : '#fffbeb';
+      registerResult(ok);
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${current.concept}</div>`;
+      }
+      setTimeout(()=>{ idx++; next(); }, 1500);
+    });
+  });
+}
+
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    btn.textContent = box.classList.contains('show') ? '🙈 Sembunyikan Petunjuk' : '💡 Tampilkan Petunjuk';
+  });
+}
+
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  if(isUAS && current._chapter){
+    uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
+    if(ok) uasBreakdown[current._chapter].correct++;
+  }
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsArr = current.steps || [];
+  const stepsHtml = stepsArr.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${current.concept}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    fb.innerHTML = `<strong>✅ Benar! Bagus sekali!</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = current.opts[current.ans];
+    else if(current.type==='tf') correctText = current.ans ? 'Benar' : 'Salah';
+    else if(current.type==='fill') correctText = current.display || current.answers[0];
+    fb.innerHTML = `<strong>❌ Belum tepat.</strong> Jawaban yang benar adalah <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total ? '🏁 Lihat Hasil' : 'Soal Berikutnya →';
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  const msg = pct>=80 ? '🎉 Masya Allah!' : pct>=60 ? '👍 Kerja bagus!' : pct>=40 ? '💪 Terus berlatih!' : '📚 Saatnya belajar lagi!';
+  let breakdownHtml = '';
+  if(isUAS){
+    const rows = Object.entries(uasBreakdown).map(([ch,v])=>{
+      const ratio = v.total>0 ? (v.correct/v.total) : 0;
+      const cls = ratio < 0.5 ? 'low' : '';
+      return `<div class="breakdown-row"><span class="bd-label">${ch}</span><span class="bd-score ${cls}">${v.correct} / ${v.total}</span></div>`;
+    }).join('');
+    breakdownHtml = `<div class="breakdown"><h4>📊 Skor per Tema</h4>${rows}</div>`;
+  }
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>Kamu menyelesaikan <strong>${total}</strong> soal.</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>Benar</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>Salah</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>Skor</span></div>
+      </div>
+      ${breakdownHtml}
+      <button class="restart-btn" onclick="location.reload()">🔄 Coba Lagi</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#10b981;font-weight:700;text-decoration:none">← Kembali ke daftar tema</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#10b981','#059669','#f59e0b','#fbbf24','#34d399','#fcd34d'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+buildQueue(chKey);
+</script>
+</body>
+</html>

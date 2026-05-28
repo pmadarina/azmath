@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Bahasa Arab — AzArabic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#ecfeff 0%,#d1fae5 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
+
+.arabic-text{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Traditional Arabic',serif;font-size:1.35em;line-height:1.9;direction:rtl;display:inline-block;font-weight:700;color:#0e7490}
+.arabic-block{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic',serif;font-size:1.6em;line-height:2.2;direction:rtl;text-align:center;font-weight:700;color:#0e7490;background:#ecfeff;border:1.5px solid #06b6d4;border-radius:12px;padding:18px 20px;margin:12px 0}
+.arabic-verse{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic',serif;font-size:1.8em;line-height:2.4;direction:rtl;text-align:center;font-weight:700;color:#064e3b;background:#fefce8;border:2px solid #fbbf24;border-radius:14px;padding:22px 24px;margin:14px 0}
+
+.hdr{background:linear-gradient(135deg,#06b6d4,#0891b2 60%,#10b981);color:#fff;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
+.hdr-back:hover{background:rgba(255,255,255,.28)}
+.hdr-title{font-size:1.05rem;font-weight:900;letter-spacing:-.3px;flex:1}
+.hdr-meta{font-size:.78rem;font-weight:700;opacity:.95;background:rgba(255,255,255,.18);padding:5px 12px;border-radius:16px}
+
+.progress-wrap{background:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.progress{display:flex;gap:4px;align-items:center}
+.progress-bar{flex:1;height:8px;background:#cffafe;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#06b6d4,#10b981);border-radius:5px;transition:width .35s ease}
+.progress-text{font-size:.78rem;font-weight:800;color:#0891b2;min-width:75px;text-align:right}
+
+.score-row{display:flex;gap:10px;margin:14px auto 0;max-width:720px;padding:0 16px;flex-wrap:wrap}
+.score-chip{flex:1;min-width:0;background:#fff;border-radius:14px;padding:10px 12px;text-align:center;border:1.5px solid #e8ecef;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#666}
+.score-chip strong{display:block;font-size:1.3rem;letter-spacing:-.5px;margin-bottom:2px;color:#1a1a2e;text-transform:none}
+.score-chip.correct{border-color:#06b6d4;background:#ecfeff}.score-chip.correct strong{color:#0891b2}
+.score-chip.wrong{border-color:#dc2626;background:#fef2f2}.score-chip.wrong strong{color:#dc2626}
+.score-chip.answered{border-color:#10b981;background:#ecfdf5}.score-chip.answered strong{color:#059669}
+
+.main{max-width:720px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.q-card{background:#fff;border-radius:24px;padding:30px 26px 24px;box-shadow:0 8px 32px rgba(6,182,212,.13)}
+.q-badge{display:inline-block;background:#ecfeff;color:#0891b2;font-size:.7rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:14px}
+.q-badge.mcq{background:#ecfeff;color:#0891b2}
+.q-badge.tf{background:#fef3c7;color:#92400e}
+.q-badge.fill{background:#f5f3ff;color:#7c3aed}
+.q-badge.essay{background:#ecfdf5;color:#059669}
+
+.q-text{font-size:1.05rem;line-height:1.7;background:#ecfeff;border-left:4px solid #06b6d4;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.q-text strong{font-weight:800}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:14px 18px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:14px;transition:all .15s;font-family:inherit;text-align:left;width:100%;color:inherit;line-height:1.5}
+.opt:hover:not(:disabled){border-color:#06b6d4;background:#ecfeff}
+.opt-letter{width:30px;height:30px;border-radius:50%;background:#cffafe;color:#0891b2;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#10b981;background:#ecfdf5}
+.opt.correct .opt-letter{background:#10b981;color:#fff}
+.opt.wrong{border-color:#dc2626;background:#fef2f2}
+.opt.wrong .opt-letter{background:#dc2626;color:#fff}
+.opt-arabic{font-family:'Amiri','Scheherazade New','Noto Naskh Arabic',serif;font-size:1.15em;font-weight:700;color:#0e7490;direction:rtl;display:inline-block}
+
+.tf-row{display:flex;gap:12px}
+.tf-btn{flex:1;background:#fff;border:2px solid #e8ecef;border-radius:14px;padding:20px 16px;cursor:pointer;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;font-family:inherit;color:inherit}
+.tf-btn:hover:not(:disabled){transform:translateY(-2px);border-color:#06b6d4}
+.tf-btn.true{color:#10b981}
+.tf-btn.false{color:#dc2626}
+.tf-btn:disabled{cursor:not-allowed;opacity:.7}
+.tf-btn.correct{border-color:#10b981;background:#ecfdf5}
+.tf-btn.wrong{border-color:#dc2626;background:#fef2f2}
+.tf-icon{font-size:1.4rem}
+
+.fill-row{display:flex;gap:10px;align-items:stretch}
+.fill-input{flex:1;font-family:'Amiri','Segoe UI',serif;font-size:1.15rem;font-weight:700;padding:14px 18px;border:2px dashed #7c3aed;border-radius:14px;background:#faf5ff;color:#1a1a2e;outline:none}
+.fill-input:focus{border-style:solid;border-color:#0891b2;background:#fff;box-shadow:0 0 0 3px rgba(8,145,178,.2)}
+.fill-input:disabled{opacity:.85;background:#f8f9fb}
+.fill-submit{background:linear-gradient(135deg,#06b6d4,#10b981);color:#fff;border:none;border-radius:14px;padding:0 24px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.fill-submit:hover:not(:disabled){opacity:.88}
+.fill-submit:disabled{cursor:not-allowed;opacity:.5}
+
+.essay-area{width:100%;font-family:inherit;font-size:.95rem;padding:14px 16px;border:2px dashed #7c3aed;border-radius:14px;background:#faf5ff;color:#1a1a2e;outline:none;resize:vertical;min-height:110px;line-height:1.5}
+.essay-area:focus{border-style:solid;border-color:#0891b2;background:#fff;box-shadow:0 0 0 3px rgba(8,145,178,.2)}
+.essay-area:disabled{opacity:.85;background:#f8f9fb}
+.essay-show{margin-top:12px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:14px;padding:11px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit}
+.essay-show:hover:not(:disabled){opacity:.88}
+.essay-self{display:none;gap:10px;margin-top:12px}
+.essay-self.show{display:flex}
+.essay-self button{flex:1;border:2px solid;border-radius:14px;padding:12px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:inherit;background:#fff}
+.essay-self .got{border-color:#10b981;color:#10b981}
+.essay-self .got:hover{background:#ecfdf5}
+.essay-self .miss{border-color:#f59e0b;color:#f59e0b}
+.essay-self .miss:hover{background:#fffbeb}
+
+.fb{border-radius:14px;padding:16px 18px;margin-top:16px;font-size:.92rem;line-height:1.6;display:none}
+.fb.show{display:block}
+.fb.correct{background:#ecfdf5;border:1.5px solid #10b981;color:#064e3b}
+.fb.wrong{background:#fef2f2;border:1.5px solid #dc2626;color:#7f1d1d}
+.fb.info{background:#eef2ff;border:1.5px solid #6366f1;color:#3730a3}
+.fb strong{font-weight:900}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.step-num{width:22px;height:22px;border-radius:50%;background:#06b6d4;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0}
+.concept-box{margin-top:12px;background:#fffbeb;border:1.5px solid #fbbf24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#78350f}
+
+.hint-row{margin-top:14px}
+.hint-btn{background:transparent;border:1.5px dashed #fbbf24;color:#92400e;font-family:inherit;font-size:.85rem;font-weight:800;padding:8px 16px;border-radius:14px;cursor:pointer}
+.hint-btn:hover{background:#fffbeb}
+.hint-box{display:none;background:#fffbeb;border:1.5px solid #fbbf24;border-radius:10px;padding:10px 14px;font-size:.86rem;color:#78350f;margin-top:10px}
+.hint-box.show{display:block}
+
+.done{text-align:center;padding:40px 20px}
+.done h2{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#06b6d4,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.done p{color:#666;margin-bottom:24px;line-height:1.6}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2.2rem;font-weight:900;color:#1a1a2e}
+.done-stat span{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:1px}
+.restart-btn{background:linear-gradient(135deg,#06b6d4,#10b981);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(6,182,212,.4)}
+.restart-btn:hover{opacity:.92}
+
+.breakdown{text-align:left;background:#ecfeff;border-radius:14px;padding:14px 18px;margin:0 auto 22px;max-width:480px}
+.breakdown h4{font-size:.85rem;font-weight:900;margin-bottom:10px;color:#0e7490;letter-spacing:.5px;text-transform:uppercase}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #cffafe;font-size:.88rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-row .bd-label{font-weight:700;color:#333;flex:1}
+.breakdown-row .bd-score{font-weight:800;color:#06b6d4}
+.breakdown-row .bd-score.low{color:#dc2626}
+
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
+
+@media(max-width:520px){
+  .q-card{padding:22px 18px 18px}
+  .q-text{font-size:.95rem;padding:12px 14px}
+  .opt{padding:12px 14px;font-size:.9rem}
+  .tf-btn{padding:16px 12px;font-size:1rem}
+  .hdr-title{font-size:.95rem}
+  .score-chip{font-size:.65rem;padding:8px}
+  .score-chip strong{font-size:1.1rem}
+  .fill-row{flex-direction:column}
+  .fill-submit{padding:12px}
+  .arabic-verse{font-size:1.45em;padding:14px}
+  .arabic-block{font-size:1.3em;padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <a class="hdr-back" href="../">← Semua</a>
+  <div class="hdr-title" id="hdrTitle">📜 Latihan Bahasa Arab</div>
+  <div class="hdr-meta" id="hdrMeta">Soal 1</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progText">0 / 0</div>
+  </div>
+</div>
+
+<div class="score-row">
+  <div class="score-chip correct"><strong id="sCorrect">0</strong><span>✓ Benar</span></div>
+  <div class="score-chip wrong"><strong id="sWrong">0</strong><span>✗ Salah</span></div>
+  <div class="score-chip answered"><strong id="sDone">0</strong><span>📝 Dijawab</span></div>
+</div>
+
+<div class="main">
+  <div id="quizSlot"></div>
+</div>
+
+<script>
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;};
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.,!?;:'"؟،]/g,'').replace(/\s+/g,' ');
+const stripDiacritics=s=>String(s||'').replace(/[ً-ٰٟۖ-ۭ]/g,'').replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim();
+function mkOpts(correct, distractors){
+  const all=[correct, ...distractors].slice(0,4);
+  while(all.length<4) all.push('—');
+  const sh=shuf(all);
+  return {opts:sh, ans:sh.indexOf(correct)};
+}
+const A = s => `<span class="arabic-text">${s}</span>`;
+const AV = s => `<div class="arabic-verse">${s}</div>`;
+const AB = s => `<div class="arabic-block">${s}</div>`;
+const OA = s => `<span class="opt-arabic">${s}</span>`;  // arabic inside option
+
+// ════════════════════════════════════════════════════════════════
+// BAB 6 — Mencintai Mesir (نُحِبُّ مِصْرَ)
+// ════════════════════════════════════════════════════════════════
+const BAB6_GEN = {
+  mesir_arti:()=>{
+    const cor='Kami mencintai Mesir';
+    const{opts,ans}=mkOpts(cor,['Kami pergi ke Mesir','Mesir kotaku','Kami belajar di Mesir']);
+    return{type:'mcq',topic:'bab6_mufradat',
+      q:`Apa arti dari kalimat ${A('نُحِبُّ مِصْرَ')} ?`,
+      opts,ans,
+      hint:'Nuhibbu = kami mencintai. Mishra = Mesir.',
+      concept:'نُحِبُّ مِصْرَ artinya "Kami mencintai Mesir" — judul tema Bab 6.',
+      steps:[`${A('نُحِبُّ')} = kami mencintai.`,`${A('مِصْرَ')} = Mesir.`,'Artinya: <b>Kami mencintai Mesir</b>.']};
+  },
+  mesir_watani:()=>{
+    const cor='Tanah airku';
+    const{opts,ans}=mkOpts(cor,['Rumahku','Sekolahku','Kotaku']);
+    return{type:'mcq',topic:'bab6_mufradat',
+      q:`Arti dari kata ${A('وَطَنِي')} adalah ___.`,
+      opts,ans,
+      hint:'Watan = tanah air; -i = milikku.',
+      concept:'وَطَنِي (wathani) artinya "tanah airku".',
+      steps:[`${A('وَطَن')} = tanah air.`,`Akhiran ${A('ي')} = -ku.`,'Artinya: <b>tanah airku</b>.']};
+  },
+  mesir_bilad:()=>{
+    const cor='Negeriku';
+    const{opts,ans}=mkOpts(cor,['Sekolahku','Kamarku','Pamanku']);
+    return{type:'mcq',topic:'bab6_mufradat',
+      q:`Arti dari ${A('بِلَادِي')} adalah ___.`,
+      opts,ans,
+      hint:'Bilad = negeri.',
+      concept:'بِلَادِي = negeriku.',
+      steps:[`${A('بِلَاد')} = negeri.`,'Artinya: <b>negeriku</b>.']};
+  },
+  mesir_nil:()=>{
+    const cor='Sungai Nil';
+    const{opts,ans}=mkOpts(cor,['Sungai Furat','Laut Merah','Gunung Sinai']);
+    return{type:'mcq',topic:'bab6_mufradat',
+      q:`${A('نَهْرُ النِّيْلِ')} dalam bahasa Indonesia berarti ___.`,
+      opts,ans,
+      hint:'An-Nil = nama sungai yang terkenal di Mesir.',
+      concept:'نَهْرُ النِّيلِ = Sungai Nil, sungai terpanjang yang mengalir di Mesir.',
+      steps:[`${A('نَهْر')} = sungai.`,`${A('النِّيل')} = (sungai) Nil.`,'Artinya: <b>Sungai Nil</b>.']};
+  },
+  mesir_ahram:()=>{
+    const cor='Piramida (al-Ahram)';
+    const{opts,ans}=mkOpts(cor,['Masjid Mesir','Pelabuhan Mesir','Pasar Mesir']);
+    return{type:'mcq',topic:'bab6_mufradat',
+      q:`Salah satu peninggalan bersejarah Mesir adalah ${A('الْأَهْرَام')}. Artinya adalah ___.`,
+      opts,ans,
+      hint:'Bangunan kuno berbentuk segitiga raksasa.',
+      concept:'الْأَهْرَام (al-Ahram) artinya piramida — peninggalan Mesir Kuno yang terkenal di dunia.',
+      steps:[`${A('الْأَهْرَام')} = piramida.`,'Bangunan ikonik Mesir.']};
+  },
+  mesir_qahirah:()=>{
+    const cor='Kairo';
+    const{opts,ans}=mkOpts(cor,['Iskandariyah','Aswan','Luxor']);
+    return{type:'mcq',topic:'bab6_mufradat',
+      q:`Ibu kota Mesir disebut dengan ${A('الْقَاهِرَة')}. Dalam bahasa Indonesia adalah ___.`,
+      opts,ans,
+      hint:'Ibu kota terbesar di Mesir.',
+      concept:'الْقَاهِرَة (al-Qahirah) = Kairo, ibu kota Mesir.',
+      steps:[`${A('الْقَاهِرَة')} = <b>Kairo</b>.`]};
+  },
+  syair_complete:()=>{
+    const cor='بِلَادِي';
+    const{opts,ans}=mkOpts(OA('بِلَادِي'),[OA('مَدْرَسَتِي'),OA('بَيْتِي'),OA('فَصْلِي')]);
+    return{type:'mcq',topic:'bab6_syair',
+      q:`Lanjutkan penggalan syair berikut:<br>${A('وَطَنِي مِصْرُ ___')}<br><small>(Tanah airku adalah Mesir, ___ ku)</small>`,
+      opts,ans,
+      hint:'Syair ini mengulang tema "tanah airku" / "negeriku".',
+      concept:'Penggalan syair: وَطَنِي مِصْرُ بِلَادِي (Tanah airku Mesir negeriku).',
+      steps:['Tema syair: cinta tanah air.','Kata yang cocok: <b>بِلَادِي</b> (negeriku).']};
+  },
+  syair_uhibbu:()=>{
+    const cor='Aku mencintai tanah airku';
+    const{opts,ans}=mkOpts(cor,['Aku belajar di sekolah','Aku berkunjung ke Mesir','Aku berbicara bahasa Arab']);
+    return{type:'mcq',topic:'bab6_syair',
+      q:`Arti dari syair ${A('أُحِبُّ وَطَنِي')} adalah ___.`,
+      opts,ans,
+      hint:'Uhibbu = aku mencintai.',
+      concept:'أُحِبُّ وَطَنِي = Aku mencintai tanah airku.',
+      steps:[`${A('أُحِبُّ')} = aku mencintai.`,`${A('وَطَنِي')} = tanah airku.`,'Artinya: <b>Aku mencintai tanah airku</b>.']};
+  },
+  mesir_tf_arab:()=>({type:'tf',topic:'bab6_mufradat',
+    q:`Bahasa resmi negara Mesir adalah bahasa Arab.`,
+    ans:true,
+    hint:'Mesir adalah negara Arab.',
+    concept:'Bahasa Arab adalah bahasa resmi Mesir.',
+    steps:['Mesir = negara Arab.','Bahasa resmi = <b>Bahasa Arab</b>.']}),
+  fill_mesir_nahr:()=>({type:'fill',topic:'bab6_mufradat',
+    q:`Lengkapi: ${A('نَهْرُ ___')} (Sungai Nil). Ketik kata Arab atau transliterasinya.`,
+    answers:['النيل','an-nil','annil','al-nil','nil','an nil'],
+    display:'النِّيْل',
+    hint:'Nama sungai panjang yang mengalir di Mesir.',
+    concept:'نَهْرُ النِّيلِ = Sungai Nil.',
+    steps:['Sungai = <b>النِّيْل</b>.']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// BAB 7 — Maf'ul Muthlaq (المَفْعُولُ المُطْلَق)
+// ════════════════════════════════════════════════════════════════
+const BAB7_GEN = {
+  maful_mutlaq_def:()=>{
+    const cor='Isim mashdar yang disebutkan setelah fi\'ilnya untuk menguatkan makna';
+    const{opts,ans}=mkOpts(cor,['Isim yang menunjukkan tempat terjadinya pekerjaan','Isim yang menjelaskan sebab terjadinya pekerjaan','Isim yang menunjukkan keadaan pelaku']);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Apa pengertian ${A('المَفْعُول المُطْلَق')} (Maf'ul Muthlaq)?`,
+      opts,ans,
+      hint:'Bentuknya berupa mashdar (kata dasar) dari fi\'ilnya.',
+      concept:'Maf\'ul Muthlaq adalah isim mashdar yang disebutkan setelah fi\'ilnya untuk menegaskan/menguatkan makna fi\'ilnya.',
+      steps:['Maf\'ul Muthlaq = isim <b>mashdar</b>.','Dari fi\'il yang sama.','Fungsinya menguatkan makna.']};
+  },
+  maful_bih_def:()=>{
+    const cor='Isim yang menjadi sasaran/obyek pekerjaan dari fi\'il';
+    const{opts,ans}=mkOpts(cor,['Mashdar yang menguatkan makna fi\'il','Isim yang menjelaskan alasan pekerjaan','Isim yang menjelaskan tempat']);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Apa pengertian ${A('المَفْعُول بِه')} (Maf'ul Bih)?`,
+      opts,ans,
+      hint:'Maf\'ul Bih = obyek perbuatan.',
+      concept:'Maf\'ul Bih adalah isim yang menjadi sasaran/obyek perbuatan dari fi\'il.',
+      steps:['Maf\'ul Bih = <b>obyek</b> perbuatan.','Yang dikenai pekerjaan.']};
+  },
+  maful_liajlih_def:()=>{
+    const cor='Mashdar yang menjelaskan sebab/alasan terjadinya pekerjaan';
+    const{opts,ans}=mkOpts(cor,['Mashdar yang menguatkan makna','Isim yang menjadi obyek','Isim yang menunjukkan waktu']);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Apa pengertian ${A('المَفْعُول لِأَجْلِه')} (Maf'ul Li'ajlih)?`,
+      opts,ans,
+      hint:'Menjawab pertanyaan "mengapa/untuk apa?"',
+      concept:'Maf\'ul Li\'ajlih adalah mashdar yang menjelaskan sebab atau tujuan dari perbuatan.',
+      steps:['Maf\'ul Li\'ajlih = <b>sebab/tujuan</b>.','Menjawab: "untuk apa?" "mengapa?"']};
+  },
+  identify_muthlaq:()=>{
+    const cor='قِرَاءَةً';
+    const{opts,ans}=mkOpts(OA('قِرَاءَةً'),[OA('التِّلْمِيذُ'),OA('القُرْآنَ'),OA('جَيِّدَةً')]);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Manakah ${A('المَفْعُول المُطْلَق')} dalam kalimat berikut?<br>${AB('قَرَأَ التِّلْمِيذُ القُرْآنَ قِرَاءَةً جَيِّدَةً')}<br><small>(Murid itu membaca Al-Qur\'an dengan bacaan yang baik)</small>`,
+      opts,ans,
+      hint:'Maf\'ul Muthlaq = mashdar dari fi\'il qara\'a (membaca) = qira\'atan.',
+      concept:'Maf\'ul Muthlaq = قِرَاءَةً (mashdar dari قَرَأَ).',
+      steps:['Fi\'il: قَرَأَ (membaca).','Mashdar-nya: قِرَاءَة.','Maf\'ul Muthlaq = <b>قِرَاءَةً</b>.']};
+  },
+  identify_muthlaq2:()=>{
+    const cor='ضَرْبًا';
+    const{opts,ans}=mkOpts(OA('ضَرْبًا'),[OA('زَيْدًا'),OA('شَدِيدًا'),OA('ضَرَبْتُ')]);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Manakah ${A('المَفْعُول المُطْلَق')} dalam kalimat berikut?<br>${AB('ضَرَبْتُ زَيْدًا ضَرْبًا شَدِيدًا')}<br><small>(Aku memukul Zaid dengan pukulan yang keras)</small>`,
+      opts,ans,
+      hint:'Cari mashdar dari fi\'il ضَرَبَ.',
+      concept:'Maf\'ul Muthlaq = ضَرْبًا (mashdar dari ضَرَبَ).',
+      steps:['Fi\'il: ضَرَبَ (memukul).','Mashdar: ضَرْب (pukulan).','Maf\'ul Muthlaq = <b>ضَرْبًا</b>.']};
+  },
+  identify_bih:()=>{
+    const cor='زَيْدًا';
+    const{opts,ans}=mkOpts(OA('زَيْدًا'),[OA('ضَرَبْتُ'),OA('ضَرْبًا'),OA('شَدِيدًا')]);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Manakah ${A('المَفْعُول بِه')} dalam kalimat:<br>${AB('ضَرَبْتُ زَيْدًا ضَرْبًا شَدِيدًا')}`,
+      opts,ans,
+      hint:'Maf\'ul Bih = obyek yang dikenai perbuatan.',
+      concept:'Maf\'ul Bih = زَيْدًا (Zaid yang dipukul).',
+      steps:['Yang dipukul = Zaid.','Maf\'ul Bih = <b>زَيْدًا</b>.']};
+  },
+  identify_liajlih:()=>{
+    const cor='رَغْبَةً';
+    const{opts,ans}=mkOpts(OA('رَغْبَةً'),[OA('سَافَرْتُ'),OA('إِلَى مِصْرَ'),OA('فِي العِلْمِ')]);
+    return{type:'mcq',topic:'bab7_kaidah',
+      q:`Manakah ${A('المَفْعُول لِأَجْلِه')} dalam kalimat:<br>${AB('سَافَرْتُ إِلَى مِصْرَ رَغْبَةً فِي العِلْمِ')}<br><small>(Aku bepergian ke Mesir karena keinginan menuntut ilmu)</small>`,
+      opts,ans,
+      hint:'Mashdar yang menunjukkan sebab/alasan.',
+      concept:'Maf\'ul Li\'ajlih = رَغْبَةً (alasan: karena ingin/menuntut ilmu).',
+      steps:['Sebab perjalanan = ingin menuntut ilmu.','Maf\'ul Li\'ajlih = <b>رَغْبَةً</b>.']};
+  },
+  fill_jenis_maful:()=>({type:'fill',topic:'bab7_kaidah',
+    q:`Tentukan jenis ${A('قِرَاءَةً')} dalam kalimat ${A('قَرَأَ الطَّالِبُ قِرَاءَةً')}: Maf'ul ___ .`,
+    answers:['mutlaq','muthlaq','mutlak','almuthlaq','al-muthlaq','المطلق'],
+    display:'Muthlaq (المُطْلَق)',
+    hint:'Mashdar yang menguatkan makna fi\'il.',
+    concept:'قِرَاءَةً adalah mashdar dari قَرَأَ → Maf\'ul Muthlaq.',
+    steps:['Mashdar dari fi\'il yang sama = Maf\'ul <b>Muthlaq</b>.']}),
+  fill_jenis_bih:()=>({type:'fill',topic:'bab7_kaidah',
+    q:`Tentukan jenis ${A('الكِتَابَ')} dalam kalimat ${A('قَرَأَ الوَلَدُ الكِتَابَ')}: Maf'ul ___ .`,
+    answers:['bih','bihi','bi','به','almafuul bih'],
+    display:'Bih (بِه)',
+    hint:'Obyek perbuatan.',
+    concept:'الكِتَابَ adalah obyek perbuatan → Maf\'ul Bih.',
+    steps:['Yang dibaca = kitab → Maf\'ul <b>Bih</b>.']}),
+  fill_jenis_liajlih:()=>({type:'fill',topic:'bab7_kaidah',
+    q:`Tentukan jenis ${A('خَوْفًا')} dalam kalimat ${A('قُمْتُ خَوْفًا مِنَ الأَسَدِ')} (Aku berdiri karena takut singa): Maf'ul ___ .`,
+    answers:['liajlih','li ajlih','li\'ajlih','liajlihi','لأجله','liajlih'],
+    display:'Li\'ajlih (لِأَجْلِه)',
+    hint:'Sebab/alasan perbuatan.',
+    concept:'خَوْفًا = sebab perbuatan (rasa takut) → Maf\'ul Li\'ajlih.',
+    steps:['Sebab berdiri = takut.','Maf\'ul <b>Li\'ajlih</b>.']}),
+  fill_mashdar:()=>({type:'fill',topic:'bab7_kaidah',
+    q:`Maf'ul Muthlaq adalah isim ___ (kata dasar dari fi'il) yang disebutkan untuk menguatkan makna.`,
+    answers:['mashdar','masdar','mashdar'],
+    display:'mashdar (مَصْدَر)',
+    hint:'Kata dasar dari fi\'il.',
+    concept:'Maf\'ul Muthlaq berbentuk mashdar.',
+    steps:['Bentuknya = <b>mashdar</b>.']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// BAB 8 — Dakwah Saling Mencintai (دَعْوَةُ التَّوَاصُلِ لِلْحُبِّ)
+// ════════════════════════════════════════════════════════════════
+const BAB8_GEN = {
+  dakwah_arti:()=>{
+    const cor='Dakwah saling mencintai';
+    const{opts,ans}=mkOpts(cor,['Pesan dari para nabi','Doa untuk teman dekat','Nasihat tentang ibadah']);
+    return{type:'mcq',topic:'bab8_mufradat',
+      q:`Apa arti dari ${A('دَعْوَةُ التَّوَاصُلِ لِلْحُبِّ')} ?`,
+      opts,ans,
+      hint:'Da\'wah = ajakan. Tawashul = saling berhubungan. Hubb = cinta.',
+      concept:'دَعْوَةُ التَّوَاصُلِ لِلْحُبِّ = "Dakwah/Ajakan saling berhubungan untuk cinta" → judul Bab 8.',
+      steps:[`${A('دَعْوَة')} = ajakan/dakwah.`,`${A('التَّوَاصُل')} = saling berhubungan.`,`${A('لِلْحُبّ')} = untuk cinta.`,'Artinya: <b>Dakwah saling mencintai</b>.']};
+  },
+  hadith_la_tabaghadhuu:()=>{
+    const cor='Jangan saling membenci';
+    const{opts,ans}=mkOpts(cor,['Jangan saling mendoakan','Jangan saling berdamai','Jangan saling memaafkan']);
+    return{type:'mcq',topic:'bab8_sinonim',
+      q:`Arti dari ${A('لَا تَبَاغَضُوا')} adalah ___.`,
+      opts,ans,
+      hint:'La = jangan. Tabaghadhu = saling membenci.',
+      concept:'لَا تَبَاغَضُوا = "Jangan saling membenci" (dari hadits Nabi).',
+      steps:[`${A('لَا')} = jangan.`,`${A('تَبَاغَضُوا')} = saling membenci.`,'Artinya: <b>Jangan saling membenci</b>.']};
+  },
+  hadith_la_tadabaru:()=>{
+    const cor='Jangan saling memutus hubungan';
+    const{opts,ans}=mkOpts(cor,['Jangan saling membantu','Jangan saling mengunjungi','Jangan saling mengejek']);
+    return{type:'mcq',topic:'bab8_sinonim',
+      q:`Arti dari ${A('لَا تَدَابَرُوا')} adalah ___.`,
+      opts,ans,
+      hint:'Tadabaru = saling membelakangi / memutus.',
+      concept:'لَا تَدَابَرُوا = "Jangan saling memutus hubungan / saling membelakangi".',
+      steps:[`${A('تَدَابَرُوا')} = saling membelakangi.`,'Artinya: <b>Jangan saling memutus hubungan</b>.']};
+  },
+  hadith_la_tahasadu:()=>{
+    const cor='Jangan saling iri/dengki';
+    const{opts,ans}=mkOpts(cor,['Jangan saling berdebat','Jangan saling membiarkan','Jangan saling membantah']);
+    return{type:'mcq',topic:'bab8_sinonim',
+      q:`Arti dari ${A('لَا تَحَاسَدُوا')} adalah ___.`,
+      opts,ans,
+      hint:'Hasad = iri/dengki.',
+      concept:'لَا تَحَاسَدُوا = "Jangan saling iri/dengki".',
+      steps:[`${A('تَحَاسَدُوا')} = saling dengki.`,'Artinya: <b>Jangan saling iri</b>.']};
+  },
+  ihwah:()=>{
+    const cor='Saudara-saudara';
+    const{opts,ans}=mkOpts(cor,['Teman-teman','Tetangga','Murid-murid']);
+    return{type:'mcq',topic:'bab8_mufradat',
+      q:`Dalam hadits ${A('وَكُونُوا عِبَادَ اللهِ إِخْوَانًا')}, kata ${A('إِخْوَانًا')} berarti ___.`,
+      opts,ans,
+      hint:'Ikhwah / Ikhwan = bentuk jamak dari "saudara".',
+      concept:'إِخْوَان = saudara-saudara (sesama muslim).',
+      steps:[`${A('إِخْوَانًا')} = (sebagai) <b>saudara-saudara</b>.`,'Hadits ini mengajak menjadi hamba Allah yang bersaudara.']};
+  },
+  hubb_arti:()=>{
+    const cor='Cinta / kasih sayang';
+    const{opts,ans}=mkOpts(cor,['Kemarahan','Kebencian','Permusuhan']);
+    return{type:'mcq',topic:'bab8_mufradat',
+      q:`Arti dari ${A('الْحُبّ')} adalah ___.`,
+      opts,ans,
+      hint:'Lawan kata dari kebencian.',
+      concept:'الْحُبّ = cinta / kasih sayang.',
+      steps:[`${A('الْحُبّ')} = <b>cinta</b>.`]};
+  },
+  tawashul:()=>{
+    const cor='Saling berhubungan / silaturahmi';
+    const{opts,ans}=mkOpts(cor,['Saling membenci','Saling menjauhi','Saling berdebat']);
+    return{type:'mcq',topic:'bab8_mufradat',
+      q:`Arti dari ${A('التَّوَاصُل')} adalah ___.`,
+      opts,ans,
+      hint:'Akar kata washl = sambung.',
+      concept:'التَّوَاصُل = saling berhubungan, menyambung silaturahmi.',
+      steps:[`${A('التَّوَاصُل')} = <b>saling berhubungan</b>.`]};
+  },
+  dakwah_pelajaran:()=>{
+    const cor='Sesama muslim harus saling mencintai dan tidak saling membenci';
+    const{opts,ans}=mkOpts(cor,['Boleh memutus hubungan jika tidak suka','Membenci adalah hal yang biasa','Mendengki tetangga itu wajar']);
+    return{type:'mcq',topic:'bab8_cerita',
+      q:'Pelajaran utama dari bab "Dakwah Saling Mencintai" adalah ___.',
+      opts,ans,
+      hint:'Mengikuti pesan hadits Nabi.',
+      concept:'Bab ini mengajarkan untuk saling mencintai, tidak saling membenci, dan tidak memutus hubungan antar muslim.',
+      steps:['Pesan Nabi: jangan saling membenci.','Pesan: jangan saling memutus hubungan.','Sesama muslim harus <b>saling mencintai</b>.']};
+  },
+  fill_la_tabaghadhuu:()=>({type:'fill',topic:'bab8_sinonim',
+    q:`${A('لَا تَبَاغَضُوا')} artinya: Jangan saling ___ .`,
+    answers:['membenci','benci','memarahi','mendengki'],
+    display:'membenci',
+    hint:'Dari kata bughd = benci.',
+    concept:'لَا تَبَاغَضُوا = jangan saling membenci.',
+    steps:['Artinya = jangan saling <b>membenci</b>.']}),
+  fill_la_tadabaru:()=>({type:'fill',topic:'bab8_sinonim',
+    q:`${A('لَا تَدَابَرُوا')} artinya: Jangan saling ___ (memutus hubungan).`,
+    answers:['memutus','memutuskan','memutus hubungan','membelakangi','memutuskan hubungan'],
+    display:'memutus hubungan',
+    hint:'Dari kata dubur = belakang.',
+    concept:'لَا تَدَابَرُوا = jangan saling memutus hubungan / membelakangi.',
+    steps:['Artinya = jangan saling <b>memutus hubungan</b>.']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// BAB 9 — Olahraga & Sportifitas (الرِّيَاضَةُ وَالتَّسَامُح)
+// ════════════════════════════════════════════════════════════════
+const BAB9_GEN = {
+  riyadhah:()=>{
+    const cor='Olahraga';
+    const{opts,ans}=mkOpts(cor,['Pelajaran','Liburan','Pekerjaan']);
+    return{type:'mcq',topic:'bab9_mufradat',
+      q:`Arti dari ${A('الرِّيَاضَة')} adalah ___.`,
+      opts,ans,
+      hint:'Aktivitas fisik untuk kesehatan.',
+      concept:'الرِّيَاضَة (ar-riyadhah) = olahraga.',
+      steps:[`${A('الرِّيَاضَة')} = <b>olahraga</b>.`]};
+  },
+  tasamuh:()=>{
+    const cor='Sportifitas / toleransi / lapang dada';
+    const{opts,ans}=mkOpts(cor,['Pertandingan','Kemenangan','Pelatihan']);
+    return{type:'mcq',topic:'bab9_mufradat',
+      q:`Arti dari ${A('التَّسَامُح')} adalah ___.`,
+      opts,ans,
+      hint:'Sikap mau menerima dan memaafkan.',
+      concept:'التَّسَامُح = sportifitas, toleransi, lapang dada.',
+      steps:[`${A('التَّسَامُح')} = <b>sportifitas/toleransi</b>.`]};
+  },
+  mushafahah:()=>{
+    const cor='Berjabat tangan';
+    const{opts,ans}=mkOpts(cor,['Berlari kencang','Menendang bola','Bertukar baju']);
+    return{type:'mcq',topic:'bab9_sinonim',
+      q:`Arti dari ${A('المُصَافَحَة')} adalah ___.`,
+      opts,ans,
+      hint:'Aktivitas saat bertemu/berkenalan.',
+      concept:'المُصَافَحَة = berjabat tangan.',
+      steps:[`${A('المُصَافَحَة')} = <b>berjabat tangan</b>.`]};
+  },
+  tasabuq:()=>{
+    const cor='Berlomba-lomba';
+    const{opts,ans}=mkOpts(cor,['Bertanya','Berdiskusi','Beristirahat']);
+    return{type:'mcq',topic:'bab9_sinonim',
+      q:`Arti dari ${A('التَّسَابُق')} adalah ___.`,
+      opts,ans,
+      hint:'Dari akar kata sabaqa = mendahului.',
+      concept:'التَّسَابُق = berlomba-lomba.',
+      steps:[`${A('التَّسَابُق')} = <b>berlomba-lomba</b>.`]};
+  },
+  musara:()=>{
+    const cor='Bersegera';
+    const{opts,ans}=mkOpts(cor,['Bermain','Beristirahat','Bersantai']);
+    return{type:'mcq',topic:'bab9_sinonim',
+      q:`Arti dari ${A('المُسَارَعَة')} adalah ___.`,
+      opts,ans,
+      hint:'Dari akar kata sari\'a = cepat.',
+      concept:'المُسَارَعَة = bersegera, bergegas.',
+      steps:[`${A('المُسَارَعَة')} = <b>bersegera</b>.`]};
+  },
+  ima:()=>{
+    const cor='Mengangguk';
+    const{opts,ans}=mkOpts(cor,['Mengedipkan mata','Mengangkat tangan','Menggelengkan kepala']);
+    return{type:'mcq',topic:'bab9_sinonim',
+      q:`Arti dari ${A('الإِيمَاء')} adalah ___.`,
+      opts,ans,
+      hint:'Isyarat kepala ke bawah sebagai tanda setuju.',
+      concept:'الإِيمَاء = mengangguk (isyarat dengan kepala).',
+      steps:[`${A('الإِيمَاء')} = <b>mengangguk</b>.`]};
+  },
+  tasjil_goal:()=>{
+    const cor='Mencetak gol';
+    const{opts,ans}=mkOpts(cor,['Menendang bola','Menjaga gawang','Mengoper bola']);
+    return{type:'mcq',topic:'bab9_sinonim',
+      q:`Arti dari ${A('تَسْجِيلُ الْهَدَف')} adalah ___.`,
+      opts,ans,
+      hint:'Hadaf = gol/sasaran.',
+      concept:'تَسْجِيلُ الْهَدَف = mencetak gol.',
+      steps:[`${A('تَسْجِيل')} = mencatat/mencetak.`,`${A('الْهَدَف')} = gol/sasaran.`,'Artinya: <b>mencetak gol</b>.']};
+  },
+  riyadhah_jenis:()=>{
+    const cor='كُرَة القَدَم';
+    const{opts,ans}=mkOpts(OA('كُرَة القَدَم'),[OA('المَطْبَخ'),OA('السُّوق'),OA('المَدْرَسَة')]);
+    return{type:'mcq',topic:'bab9_mufradat',
+      q:'Manakah yang termasuk jenis olahraga?',
+      opts,ans,
+      hint:'Kurah qadam = bola kaki.',
+      concept:'كُرَة القَدَم = sepak bola, salah satu olahraga.',
+      steps:[`${A('كُرَة القَدَم')} = <b>sepak bola</b>.`]};
+  },
+  riyadhah_pelajaran:()=>{
+    const cor='Sportifitas, kerja sama, dan menghormati lawan';
+    const{opts,ans}=mkOpts(cor,['Selalu menang dengan segala cara','Berdebat dengan wasit','Menyalahkan rekan setim']);
+    return{type:'mcq',topic:'bab9_mufradat',
+      q:'Pelajaran utama dari Bab 9 (Olahraga & Sportifitas) adalah ___.',
+      opts,ans,
+      hint:'Olahraga membentuk akhlak.',
+      concept:'Olahraga mengajarkan sportifitas, kerja sama, dan saling menghormati.',
+      steps:['Pelajaran utama = <b>sportifitas dan kerja sama</b>.']};
+  },
+  fill_mushafahah:()=>({type:'fill',topic:'bab9_sinonim',
+    q:`${A('المُصَافَحَة')} artinya ___ .`,
+    answers:['berjabat tangan','jabat tangan','salaman','bersalaman'],
+    display:'berjabat tangan',
+    hint:'Sapaan dengan tangan.',
+    concept:'المُصَافَحَة = berjabat tangan.',
+    steps:['Artinya: <b>berjabat tangan</b>.']}),
+  fill_tasabuq:()=>({type:'fill',topic:'bab9_sinonim',
+    q:`${A('التَّسَابُق')} artinya ___ .`,
+    answers:['berlomba','berlomba-lomba','berlomba lomba','perlombaan'],
+    display:'berlomba-lomba',
+    hint:'Saling mendahului.',
+    concept:'التَّسَابُق = berlomba-lomba.',
+    steps:['Artinya: <b>berlomba-lomba</b>.']}),
+  fill_musara:()=>({type:'fill',topic:'bab9_sinonim',
+    q:`${A('المُسَارَعَة')} artinya ___ .`,
+    answers:['bersegera','bergegas','tergesa','segera'],
+    display:'bersegera',
+    hint:'Cepat-cepat melakukan sesuatu.',
+    concept:'المُسَارَعَة = bersegera.',
+    steps:['Artinya: <b>bersegera</b>.']}),
+  fill_ima:()=>({type:'fill',topic:'bab9_sinonim',
+    q:`${A('الإِيمَاء')} artinya ___ .`,
+    answers:['mengangguk','angguk','menganggukkan kepala'],
+    display:'mengangguk',
+    hint:'Isyarat dengan kepala.',
+    concept:'الإِيمَاء = mengangguk.',
+    steps:['Artinya: <b>mengangguk</b>.']}),
+  fill_tasjil:()=>({type:'fill',topic:'bab9_sinonim',
+    q:`${A('تَسْجِيلُ الْهَدَف')} artinya ___ .`,
+    answers:['mencetak gol','cetak gol','gol','membuat gol'],
+    display:'mencetak gol',
+    hint:'Tujuan utama pemain sepak bola.',
+    concept:'تَسْجِيلُ الْهَدَف = mencetak gol.',
+    steps:['Artinya: <b>mencetak gol</b>.']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// BAB 10 — Mubtada' wal Khabar (المُبْتَدَأُ وَالْخَبَر)
+// ════════════════════════════════════════════════════════════════
+const BAB10_GEN = {
+  mubtada_def:()=>{
+    const cor='Isim marfu\' yang berada di awal kalimat (pokok kalimat)';
+    const{opts,ans}=mkOpts(cor,['Isim manshub yang menjadi obyek','Fi\'il di awal kalimat','Huruf jar yang menjarrkan isim']);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:`Apa pengertian ${A('المُبْتَدَأ')} (Mubtada')?`,
+      opts,ans,
+      hint:'Subjek/pokok kalimat ismiyah.',
+      concept:'Mubtada\' adalah isim marfu\' yang berada di awal kalimat dan menjadi pokok pembicaraan.',
+      steps:['Mubtada\' = <b>isim</b> marfu\'.','Letak: awal kalimat.','Fungsi: pokok kalimat.']};
+  },
+  khabar_def:()=>{
+    const cor='Isim marfu\' yang menjelaskan/menerangkan Mubtada\'';
+    const{opts,ans}=mkOpts(cor,['Isim manshub yang menjadi obyek','Fi\'il yang menerangkan subjek','Huruf yang mendahului isim']);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:`Apa pengertian ${A('الخَبَر')} (Khabar)?`,
+      opts,ans,
+      hint:'Predikat dari Mubtada\'.',
+      concept:'Khabar adalah isim marfu\' yang menjelaskan/menerangkan keadaan Mubtada\'.',
+      steps:['Khabar = <b>predikat</b>.','Menjelaskan Mubtada\'.']};
+  },
+  irab_marfu:()=>{
+    const cor='Marfu\' (dengan tanda dhammah)';
+    const{opts,ans}=mkOpts(cor,['Manshub (dengan fathah)','Majrur (dengan kasrah)','Majzum (dengan sukun)']);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:'Hukum I\'rab Mubtada\' dan Khabar adalah ___.',
+      opts,ans,
+      hint:'Tanda akhir kata pada keduanya adalah dhammah.',
+      concept:'Mubtada\' dan Khabar keduanya marfu\' dengan tanda dhammah.',
+      steps:['Mubtada\' = marfu\'.','Khabar = marfu\'.','Tanda = <b>dhammah</b>.']};
+  },
+  identify_mubtada1:()=>{
+    const cor='الكِتَابُ';
+    const{opts,ans}=mkOpts(OA('الكِتَابُ'),[OA('جَدِيدٌ'),OA('فِي'),OA('عَلَى')]);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:`Manakah ${A('المُبْتَدَأ')} dalam kalimat:<br>${AB('الكِتَابُ جَدِيدٌ')}<br><small>(Buku itu baru)</small>`,
+      opts,ans,
+      hint:'Kata pertama yang menjadi pokok kalimat.',
+      concept:'Mubtada\' = الكِتَابُ (pokok pembicaraan).',
+      steps:['Yang dibicarakan = kitab.','Mubtada\' = <b>الكِتَابُ</b>.','Khabar = جَدِيدٌ (baru).']};
+  },
+  identify_khabar1:()=>{
+    const cor='جَدِيدٌ';
+    const{opts,ans}=mkOpts(OA('جَدِيدٌ'),[OA('الكِتَابُ'),OA('فِي'),OA('عَلَى')]);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:`Manakah ${A('الخَبَر')} dalam kalimat:<br>${AB('الكِتَابُ جَدِيدٌ')}`,
+      opts,ans,
+      hint:'Yang menerangkan keadaan Mubtada\'.',
+      concept:'Khabar = جَدِيدٌ (sifat buku itu).',
+      steps:['Khabar = <b>جَدِيدٌ</b> (baru).']};
+  },
+  identify_mubtada2:()=>{
+    const cor='الوَلَدُ';
+    const{opts,ans}=mkOpts(OA('الوَلَدُ'),[OA('نَشِيطٌ'),OA('فِي'),OA('غُرْفَة')]);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:`Manakah ${A('المُبْتَدَأ')} dalam kalimat:<br>${AB('الوَلَدُ نَشِيطٌ')}<br><small>(Anak laki-laki itu rajin)</small>`,
+      opts,ans,
+      hint:'Kata pertama dengan akhiran dhammah.',
+      concept:'Mubtada\' = الوَلَدُ.',
+      steps:['Mubtada\' = <b>الوَلَدُ</b>.','Khabar = نَشِيطٌ.']};
+  },
+  tanda_dhammah:()=>{
+    const cor='Dhammah (ُ)';
+    const{opts,ans}=mkOpts(cor,['Fathah (َ)','Kasrah (ِ)','Sukun (ْ)']);
+    return{type:'mcq',topic:'bab10_kaidah',
+      q:`Tanda i'rab Mubtada' dalam kalimat ${A('الْمَسْجِدُ كَبِيْرٌ')} adalah ___.`,
+      opts,ans,
+      hint:'Lihat akhiran kata الْمَسْجِدُ.',
+      concept:'Mubtada\' marfu\' dengan tanda dhammah.',
+      steps:['الْمَسْجِدُ berakhir dengan tanda <b>dhammah</b> (ُ).','Karena Mubtada\' = marfu\'.']};
+  },
+  fill_tanda_mubtada:()=>({type:'fill',topic:'bab10_kaidah',
+    q:`Tentukan tanda I'rab Mubtada' dalam kalimat ${A('الوَلَدُ نَشِيطٌ')}: ___ .`,
+    answers:['dhammah','dammah','dhamma','damma','ضمة','dhomah','dhomah'],
+    display:'Dhammah (ُ)',
+    hint:'Tanda di akhir kata الوَلَدُ.',
+    concept:'Tanda i\'rab Mubtada\' marfu\' = dhammah.',
+    steps:['Mubtada\' = marfu\'.','Tanda = <b>dhammah</b>.']}),
+  fill_tanda_khabar:()=>({type:'fill',topic:'bab10_kaidah',
+    q:`Tentukan tanda I'rab Khabar dalam kalimat ${A('الْمَدْرَسَةُ جَمِيلَةٌ')}: ___ .`,
+    answers:['dhammah','dammah','dhamma','damma','ضمة','tanwin dhammah','dhammahtain'],
+    display:'Dhammah (ٌ tanwin)',
+    hint:'Lihat akhiran kata جَمِيلَةٌ.',
+    concept:'Khabar marfu\' dengan dhammah (di sini berupa tanwin dhammah).',
+    steps:['Khabar = marfu\'.','Tanda = <b>dhammah</b> (tanwin).']}),
+  fill_mubtada_kalimat:()=>({type:'fill',topic:'bab10_kaidah',
+    q:`Sebutkan Mubtada' dalam kalimat ${A('الْبَيْتُ كَبِيرٌ')}: ___ . (ketik dengan huruf Arab atau Latin)`,
+    answers:['البيت','al-bait','al bait','al-bayt','al bayt','albait','albayt','baitu'],
+    display:'الْبَيْتُ',
+    hint:'Kata pertama yang menjadi pokok.',
+    concept:'Mubtada\' = الْبَيْتُ (rumah itu).',
+    steps:['Mubtada\' = <b>الْبَيْتُ</b>.']}),
+  fill_khabar_kalimat:()=>({type:'fill',topic:'bab10_kaidah',
+    q:`Sebutkan Khabar dalam kalimat ${A('الْبَيْتُ كَبِيرٌ')}: ___ .`,
+    answers:['كبير','kabirun','kabir','kabīr','kabiir','besar'],
+    display:'كَبِيرٌ',
+    hint:'Kata yang menerangkan Mubtada\'.',
+    concept:'Khabar = كَبِيرٌ (besar).',
+    steps:['Khabar = <b>كَبِيرٌ</b>.']}),
+  mulk_essay:()=>({type:'essay',topic:'bab10_mulk',
+    q:`Salinlah QS Al-Mulk ayat 1 berikut dengan Khat Naskhi yang baik, lalu tuliskan transliterasi Latin atau artinya:<br>${AV('تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ')}`,
+    model:'Tabarakal-ladzii biyadihil-mulku wa huwa \'alaa kulli syai\'in qodiir. Artinya: "Maha Suci Allah yang di tangan-Nya-lah segala kerajaan, dan Dia Maha Kuasa atas segala sesuatu." (QS Al-Mulk ayat 1).',
+    hint:'Surah Al-Mulk, ayat pertama, tentang kekuasaan Allah.',
+    concept:'Ayat ini adalah pembuka Surah Al-Mulk (surah ke-67) tentang kebesaran Allah yang Maha Kuasa.',
+    keys:['tabaraka','maha suci','tangan','kerajaan','kuasa','mulk','qadir','67','al-mulk']}),
+};
+
+// ════════════════════════════════════════════════════════════════
+// CHAPTERS & UAS KISI-KISI
+// ════════════════════════════════════════════════════════════════
+const CHAPTERS = {
+  '1': {title:'Bab 6 · Mencintai Mesir', gen: BAB6_GEN},
+  '2': {title:'Bab 7 · Maf\'ul Muthlaq', gen: BAB7_GEN},
+  '3': {title:'Bab 8 · Dakwah Saling Mencintai', gen: BAB8_GEN},
+  '4': {title:'Bab 9 · Olahraga & Sportifitas', gen: BAB9_GEN},
+  '5': {title:'Bab 10 · Mubtada\' wal Khabar', gen: BAB10_GEN},
+};
+
+// UAS: 20 PG + 10 Isian + 5 Uraian = 35 mengikuti kisi-kisi PDF
+// Distribusi (dari PDF): Bab 6: 5 PG + 2 Isian; Bab 7: 3 PG + 1 Isian + 1 Uraian (kaidah);
+// Bab 8: 2 PG + 1 Isian + 1 Uraian; Bab 9: 4 PG + 3 Isian + 1 Uraian;
+// Bab 10: 4 PG + 2 Isian + 1 Uraian; Al-Mulk: 1 Uraian (menyalin)
+// Total: 18 PG + 9 Isian + 5 Uraian = 32 (mendekati 35; tambahan ada di campuran)
+const UAS_KISI = [
+  // Bab 6 — Mencintai Mesir
+  {topic:'bab6_mufradat', type:'mcq', n:3, chapter:'Bab 6 · Mesir'},
+  {topic:'bab6_syair', type:'mcq', n:2, chapter:'Bab 6 · Mesir'},
+  {topic:'bab6_mufradat', type:'fill', n:2, chapter:'Bab 6 · Mesir'},
+  // Bab 7 — Maf'ul Muthlaq (Isian heavy)
+  {topic:'bab7_kaidah', type:'mcq', n:2, chapter:'Bab 7 · Maf\'ul'},
+  {topic:'bab7_kaidah', type:'fill', n:1, chapter:'Bab 7 · Maf\'ul'},
+  // Bab 8 — Dakwah saling mencintai
+  {topic:'bab8_mufradat', type:'mcq', n:1, chapter:'Bab 8 · Dakwah'},
+  {topic:'bab8_sinonim', type:'mcq', n:1, chapter:'Bab 8 · Dakwah'},
+  {topic:'bab8_sinonim', type:'fill', n:1, chapter:'Bab 8 · Dakwah'},
+  // Bab 9 — Olahraga & Sportifitas
+  {topic:'bab9_mufradat', type:'mcq', n:1, chapter:'Bab 9 · Olahraga'},
+  {topic:'bab9_sinonim', type:'mcq', n:3, chapter:'Bab 9 · Olahraga'},
+  {topic:'bab9_sinonim', type:'fill', n:3, chapter:'Bab 9 · Olahraga'},
+  // Bab 10 — Mubtada' wal Khabar
+  {topic:'bab10_kaidah', type:'mcq', n:4, chapter:'Bab 10 · Mubtada'},
+  {topic:'bab10_kaidah', type:'fill', n:2, chapter:'Bab 10 · Mubtada'},
+  // Bab 10 — Uraian (Al-Mulk + lainnya)
+  {topic:'bab10_mulk', type:'essay', n:1, chapter:'Al-Mulk (Uraian)'},
+  // Uraian campuran kaidah dari bab-bab (gunakan essay placeholder via fill berukuran besar)
+];
+
+const ALL_GENS = {...BAB6_GEN, ...BAB7_GEN, ...BAB8_GEN, ...BAB9_GEN, ...BAB10_GEN};
+
+let queue=[], current=null, idx=0, total=0;
+let stats={correct:0, wrong:0, done:0};
+let lastResult=null;
+let currentChapterTitle = null;
+let isUAS = false;
+let uasBreakdown = {};
+
+function setHdrTitle(){
+  document.getElementById('hdrTitle').textContent = '📜 ' + (currentChapterTitle || 'Latihan Bahasa Arab');
+}
+function updateMeta(){
+  document.getElementById('hdrMeta').textContent = 'Soal ' + Math.min(idx+1,total) + ' dari ' + total;
+}
+
+function buildQueue(chKey){
+  if(chKey === 'uas'){ buildUAS(); return; }
+  isUAS = false;
+  const ch = CHAPTERS[chKey] || CHAPTERS['1'];
+  currentChapterTitle = ch.title;
+  const keys = shuf(Object.keys(ch.gen));
+  queue = keys.map(k => ch.gen[k]());
+  const order = {mcq:0, tf:0, fill:1, essay:2};
+  queue.sort((a,b)=>(order[a.type]??9) - (order[b.type]??9));
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  setHdrTitle(); updateScore(); next();
+}
+
+function buildUAS(){
+  isUAS = true;
+  currentChapterTitle = 'UAS — Ujian Akhir Bahasa Arab';
+  uasBreakdown = {};
+  const byTopicType = {};
+  const aliases = (s)=>{ const o=[s.type]; if(s.type==='tf') o.push('mcq'); return o; };
+  for(const [k,fn] of Object.entries(ALL_GENS)){
+    const sample = fn();
+    for(const tp of aliases(sample)){
+      const key = sample.topic + ':' + tp;
+      (byTopicType[key] = byTopicType[key] || []).push(fn);
+    }
+  }
+  const built = [];
+  for(const spec of UAS_KISI){
+    const key = spec.topic + ':' + spec.type;
+    const pool = byTopicType[key] || [];
+    uasBreakdown[spec.chapter] = uasBreakdown[spec.chapter] || {correct:0,total:0};
+    uasBreakdown[spec.chapter].total += spec.n;
+    if(pool.length === 0){
+      for(let i=0;i<spec.n;i++){
+        built.push({type:spec.type, q:`[Soal hilang: ${spec.topic}]`,
+          opts:['—','—','—','—'], ans:0, answers:['—'], display:'—', model:'—', keys:[],
+          _chapter:spec.chapter});
+      }
+      continue;
+    }
+    const sh = shuf(pool);
+    for(let i=0;i<spec.n;i++){
+      const fn = sh[i % sh.length];
+      const q = fn();
+      q._chapter = spec.chapter;
+      built.push(q);
+    }
+  }
+  const order = {mcq:0, tf:0, fill:1, essay:2};
+  built.sort((a,b)=>(order[a.type]??9) - (order[b.type]??9));
+  queue = built;
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  setHdrTitle(); updateScore(); next();
+}
+
+function updateScore(){
+  document.getElementById('sCorrect').textContent = stats.correct;
+  document.getElementById('sWrong').textContent = stats.wrong;
+  document.getElementById('sDone').textContent = stats.done;
+  const pct = total>0 ? (stats.done/total)*100 : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = `${stats.done} / ${total}`;
+  updateMeta();
+}
+
+function next(){
+  if(idx >= total){ renderDone(); return; }
+  current = queue[idx];
+  lastResult = null;
+  renderQuestion();
+  updateScore();
+}
+
+function badgeFor(typ){
+  const labels = {mcq:'📝 Pilihan Ganda', tf:'✅ Benar atau Salah', fill:'📋 Isian Singkat', essay:'📖 Uraian (Menyalin Ayat)'};
+  return `<span class="q-badge ${typ}">${labels[typ]||'Soal'}</span>`;
+}
+function hintBlock(q){
+  if(!q.hint) return '';
+  return `<div class="hint-row">
+    <button class="hint-btn" id="hintBtn">💡 Tampilkan Petunjuk</button>
+    <div class="hint-box" id="hintBox">${q.hint}</div>
+  </div>`;
+}
+function feedbackBlock(){ return `<div class="fb" id="fb"></div>`; }
+
+function renderQuestion(){
+  const slot = document.getElementById('quizSlot');
+  let inner = '';
+  switch(current.type){
+    case 'mcq': inner = mcqHtml(current); break;
+    case 'tf': inner = tfHtml(current); break;
+    case 'fill': inner = fillHtml(current); break;
+    case 'essay': inner = essayHtml(current); break;
+  }
+  slot.innerHTML = `<div class="q-card">${inner}</div>`;
+  switch(current.type){
+    case 'mcq': attachMCQ(); break;
+    case 'tf': attachTF(); break;
+    case 'fill': attachFill(); break;
+    case 'essay': attachEssay(); break;
+  }
+  attachHint();
+}
+
+function mcqHtml(q){
+  const letters=['A','B','C','D'];
+  const opts = q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`).join('');
+  return `${badgeFor('mcq')}<div class="q-text">${q.q}</div><div class="opts">${opts}</div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMCQ(){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i);
+      checkAnswer(i === current.ans, ()=>{
+        document.querySelectorAll('.opt').forEach((btn,j)=>{
+          btn.disabled = true;
+          if(j === current.ans) btn.classList.add('correct');
+          else if(j === i) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function tfHtml(q){
+  return `${badgeFor('tf')}<div class="q-text">${q.q}</div>
+    <div class="tf-row">
+      <button class="tf-btn true" data-v="true"><span class="tf-icon">✓</span> Benar</button>
+      <button class="tf-btn false" data-v="false"><span class="tf-icon">✗</span> Salah</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachTF(){
+  document.querySelectorAll('.tf-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const v = b.dataset.v === 'true';
+      checkAnswer(v === current.ans, ()=>{
+        document.querySelectorAll('.tf-btn').forEach(btn=>{
+          btn.disabled = true;
+          const bv = btn.dataset.v === 'true';
+          if(bv === current.ans) btn.classList.add('correct');
+          else if(bv === v) btn.classList.add('wrong');
+        });
+      });
+    });
+  });
+}
+
+function fillHtml(q){
+  return `${badgeFor('fill')}<div class="q-text">${q.q}</div>
+    <div class="fill-row">
+      <input type="text" class="fill-input" id="fillInp" placeholder="Ketik jawabanmu…" autocomplete="off"/>
+      <button class="fill-submit" id="fillSub">Periksa</button>
+    </div>${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachFill(){
+  const inp = document.getElementById('fillInp');
+  const sub = document.getElementById('fillSub');
+  inp.focus();
+  const submit = ()=>{
+    const raw = inp.value;
+    const u = norm(raw);
+    const uArab = stripDiacritics(raw).toLowerCase();
+    if(!u && !uArab){ inp.focus(); return; }
+    const ok = current.answers.some(a => {
+      const an = norm(a);
+      const ar = stripDiacritics(a).toLowerCase();
+      return an === u || ar === uArab || an === uArab || ar === u;
+    });
+    checkAnswer(ok, ()=>{
+      inp.disabled = true; sub.disabled = true;
+      inp.style.borderColor = ok ? '#10b981' : '#dc2626';
+      inp.style.background = ok ? '#ecfdf5' : '#fef2f2';
+    });
+  };
+  sub.addEventListener('click', submit);
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+function essayHtml(q){
+  return `${badgeFor('essay')}<div class="q-text">${q.q}</div>
+    <textarea class="essay-area" id="essayInp" placeholder="Tulis jawabanmu dengan kata-katamu sendiri…"></textarea>
+    <button class="essay-show" id="essayShow">📋 Tampilkan Jawaban Contoh</button>
+    <div class="essay-self" id="essaySelf">
+      <button class="got" data-v="1">✓ Saya benar</button>
+      <button class="miss" data-v="0">✗ Perlu belajar lagi</button>
+    </div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachEssay(){
+  const area = document.getElementById('essayInp');
+  const show = document.getElementById('essayShow');
+  const self = document.getElementById('essaySelf');
+  const fb = document.getElementById('fb');
+  show.addEventListener('click', ()=>{
+    if(area.value.trim().length < 5){
+      fb.className='fb info show';
+      fb.innerHTML = `<strong>Tulis jawabanmu dulu</strong> — minimal satu atau dua kalimat. Lalu klik "Tampilkan Jawaban Contoh".`;
+      return;
+    }
+    area.disabled = true;
+    show.style.display = 'none';
+    const u = norm(area.value);
+    const hits = (current.keys||[]).filter(k => u.includes(norm(k))).length;
+    const ttl = (current.keys||[]).length || 1;
+    fb.className = 'fb info show';
+    fb.innerHTML = `<strong>📋 Jawaban Contoh:</strong><br><br>${current.model}<br><br><small>🔍 Jawabanmu memuat <strong>${hits} dari ${ttl}</strong> kata kunci. Bandingkan dengan contoh dan nilai jujur:</small>`;
+    self.classList.add('show');
+  });
+  self.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const ok = b.dataset.v === '1';
+      self.querySelectorAll('button').forEach(x=>x.disabled=true);
+      b.style.background = ok ? '#ecfdf5' : '#fffbeb';
+      registerResult(ok);
+      if(current.concept){
+        fb.innerHTML += `<div class="concept-box">💡 ${current.concept}</div>`;
+      }
+      setTimeout(()=>{ idx++; next(); }, 1500);
+    });
+  });
+}
+
+function attachHint(){
+  const btn = document.getElementById('hintBtn');
+  const box = document.getElementById('hintBox');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    box.classList.toggle('show');
+    btn.textContent = box.classList.contains('show') ? '🙈 Sembunyikan Petunjuk' : '💡 Tampilkan Petunjuk';
+  });
+}
+
+function registerResult(ok){
+  if(lastResult !== null) return;
+  lastResult = ok ? 'correct' : 'wrong';
+  if(ok) stats.correct++; else stats.wrong++;
+  stats.done++;
+  if(isUAS && current._chapter){
+    uasBreakdown[current._chapter] = uasBreakdown[current._chapter] || {correct:0,total:0};
+    if(ok) uasBreakdown[current._chapter].correct++;
+  }
+  updateScore();
+}
+
+function checkAnswer(ok, lockFn){
+  registerResult(ok);
+  if(lockFn) lockFn();
+  const fb = document.getElementById('fb');
+  const stepsArr = current.steps || [];
+  const stepsHtml = stepsArr.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptHtml = current.concept ? `<div class="concept-box">💡 ${current.concept}</div>` : '';
+  if(ok){
+    fb.className = 'fb correct show';
+    fb.innerHTML = `<strong>✅ Benar! Bagus sekali!</strong>${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+    if(stats.correct>0 && stats.correct%3===0) confetti();
+  } else {
+    fb.className = 'fb wrong show';
+    let correctText = '';
+    if(current.type==='mcq') correctText = current.opts[current.ans];
+    else if(current.type==='tf') correctText = current.ans ? 'Benar' : 'Salah';
+    else if(current.type==='fill') correctText = current.display || current.answers[0];
+    fb.innerHTML = `<strong>❌ Belum tepat.</strong> Jawaban yang benar adalah <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
+  }
+  setTimeout(()=>{
+    const nxt = document.createElement('button');
+    nxt.className = 'restart-btn';
+    nxt.style.marginTop = '16px';
+    nxt.style.padding = '10px 24px';
+    nxt.style.fontSize = '.88rem';
+    nxt.textContent = idx+1 >= total ? '🏁 Lihat Hasil' : 'Soal Berikutnya →';
+    nxt.onclick = ()=>{ idx++; next(); };
+    fb.appendChild(nxt);
+  }, 300);
+}
+
+function renderDone(){
+  const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
+  const msg = pct>=80 ? '🎉 Mumtaz! (Luar biasa!)' : pct>=60 ? '👍 Jayyid jiddan!' : pct>=40 ? '💪 Terus berlatih!' : '📚 Saatnya belajar lagi!';
+  let breakdownHtml = '';
+  if(isUAS){
+    const rows = Object.entries(uasBreakdown).map(([ch,v])=>{
+      const ratio = v.total>0 ? (v.correct/v.total) : 0;
+      const cls = ratio < 0.5 ? 'low' : '';
+      return `<div class="breakdown-row"><span class="bd-label">${ch}</span><span class="bd-score ${cls}">${v.correct} / ${v.total}</span></div>`;
+    }).join('');
+    breakdownHtml = `<div class="breakdown"><h4>📊 Skor per Bab</h4>${rows}</div>`;
+  }
+  document.getElementById('quizSlot').innerHTML = `
+    <div class="q-card done">
+      <h2>${msg}</h2>
+      <p>Kamu menyelesaikan <strong>${total}</strong> soal.</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${stats.correct}</strong><span>Benar</span></div>
+        <div class="done-stat"><strong>${stats.wrong}</strong><span>Salah</span></div>
+        <div class="done-stat"><strong>${pct}%</strong><span>Skor</span></div>
+      </div>
+      ${breakdownHtml}
+      <button class="restart-btn" onclick="location.reload()">🔄 Coba Lagi</button>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#06b6d4;font-weight:700;text-decoration:none">← Kembali ke daftar bab</a></p>
+    </div>`;
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+}
+
+function confetti(){
+  const colors=['#06b6d4','#10b981','#0891b2','#34d399','#fbbf24','#67e8f9'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*200;
+    const dur=1500+Math.random()*1000;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
+}
+
+const params = new URLSearchParams(location.search);
+const chKey = params.get('ch') || '1';
+buildQueue(chKey);
+</script>
+</body>
+</html>

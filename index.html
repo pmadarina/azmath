@@ -3,83 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AzLearn — Grade 5 Practice</title>
+<title>AzLearn — Grade 5 Practice Hub</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#f6f8ff 0%,#eef7f4 100%);min-height:100vh;display:flex;flex-direction:column}
 
 /* Hero */
-.hero{background:linear-gradient(135deg,#4f8ef7 0%,#6c5ce7 40%,#00b894 100%);color:#fff;padding:64px 24px 96px;text-align:center;position:relative;overflow:hidden}
+.hero{background:linear-gradient(135deg,#4f8ef7 0%,#6c5ce7 30%,#00b894 65%,#f59e0b 100%);color:#fff;padding:64px 24px 96px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
 .hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);border-radius:20px;font-size:.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:6px 18px;margin-bottom:22px;position:relative}
 .hero h1{font-size:3.4rem;font-weight:900;letter-spacing:-2.5px;line-height:1;margin-bottom:14px;position:relative}
-.hero p{font-size:1.05rem;opacity:.9;max-width:440px;margin:0 auto;line-height:1.6;position:relative;font-weight:500}
+.hero p{font-size:1.05rem;opacity:.9;max-width:480px;margin:0 auto;line-height:1.6;position:relative;font-weight:500}
 
 /* Main */
-.main{max-width:760px;margin:-56px auto 0;padding:0 22px 80px;width:100%;position:relative}
-.subject-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-@media(max-width:620px){.subject-grid{grid-template-columns:1fr;gap:18px}}
+.main{max-width:920px;margin:-56px auto 0;padding:0 22px 80px;width:100%;position:relative}
+
+/* Section label */
+.section-label{font-size:.72rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#999;padding:2px 2px;margin-bottom:14px;margin-top:34px}
+.section-label:first-of-type{margin-top:0}
+
+/* Subject grid (responsive) */
+.subject-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media(min-width:720px){.subject-grid{grid-template-columns:repeat(4,1fr)}}
 
 /* Subject cards */
-.subject{background:#fff;border-radius:28px;padding:36px 28px 30px;text-decoration:none;display:block;position:relative;overflow:hidden;transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;cursor:pointer}
-.subject:hover{transform:translateY(-8px) scale(1.01)}
+.subject{background:#fff;border-radius:22px;padding:22px 18px 18px;text-decoration:none;display:block;position:relative;overflow:hidden;transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;cursor:pointer;color:inherit}
+.subject:hover{transform:translateY(-6px) scale(1.02)}
 
-.subject.math{box-shadow:0 12px 40px rgba(79,142,247,.18)}
-.subject.math:hover{box-shadow:0 24px 60px rgba(79,142,247,.32)}
-.subject.science{box-shadow:0 12px 40px rgba(0,184,148,.18)}
-.subject.science:hover{box-shadow:0 24px 60px rgba(0,184,148,.32)}
+.subject::before{content:'';position:absolute;top:0;left:0;right:0;height:5px}
+.subject::after{content:'';position:absolute;bottom:-50px;right:-30px;width:140px;height:140px;border-radius:50%;opacity:.08;transition:transform .4s,opacity .22s}
+.subject:hover::after{transform:scale(1.4);opacity:.14}
 
-.subject::before{content:'';position:absolute;top:0;left:0;right:0;height:6px}
-.subject.math::before{background:linear-gradient(90deg,#4f8ef7,#6c5ce7,#a29bfe)}
-.subject.science::before{background:linear-gradient(90deg,#00b894,#0ea5e9,#6366f1)}
+.subject-icon{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:18px;font-size:1.9rem;margin-bottom:12px;position:relative;box-shadow:0 6px 14px rgba(0,0,0,.07)}
+.subject h2{font-size:1.1rem;font-weight:900;letter-spacing:-.5px;margin-bottom:4px;color:#1a1a2e;position:relative}
+.subject-tagline{font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;position:relative}
+.subject p{font-size:.78rem;color:#666;line-height:1.5;margin-bottom:12px;position:relative}
+.subject-stats{display:flex;gap:5px;flex-wrap:wrap;position:relative}
+.stat-pill{font-size:.62rem;font-weight:800;padding:3px 9px;border-radius:11px;letter-spacing:.3px}
 
-.subject::after{content:'';position:absolute;bottom:-60px;right:-40px;width:200px;height:200px;border-radius:50%;opacity:.08;transition:transform .4s,opacity .22s}
+/* PER-SUBJECT colors */
+.subject.math{box-shadow:0 8px 28px rgba(79,142,247,.16)}
+.subject.math:hover{box-shadow:0 18px 44px rgba(79,142,247,.28)}
+.subject.math::before{background:linear-gradient(90deg,#4f8ef7,#6c5ce7)}
 .subject.math::after{background:radial-gradient(circle,#4f8ef7,#6c5ce7)}
-.subject.science::after{background:radial-gradient(circle,#00b894,#0ea5e9)}
-.subject:hover::after{transform:scale(1.4);opacity:.12}
-
-.subject-icon{display:inline-flex;align-items:center;justify-content:center;width:74px;height:74px;border-radius:22px;font-size:2.4rem;margin-bottom:18px;position:relative;box-shadow:0 8px 20px rgba(0,0,0,.08)}
 .subject.math .subject-icon{background:linear-gradient(135deg,#eef3ff,#f0eeff);color:#4f8ef7}
-.subject.science .subject-icon{background:linear-gradient(135deg,#e8fff8,#e0f2fe);color:#00b894}
-
-.subject h2{font-size:1.55rem;font-weight:900;letter-spacing:-.8px;margin-bottom:6px;position:relative}
-.subject.math h2{color:#1a1a2e}
-.subject.science h2{color:#1a1a2e}
-.subject-tagline{font-size:.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;position:relative}
 .subject.math .subject-tagline{color:#6c5ce7}
-.subject.science .subject-tagline{color:#00b894}
-.subject p{font-size:.92rem;color:#555;line-height:1.6;margin-bottom:20px;position:relative}
-
-.subject-stats{display:flex;gap:8px;flex-wrap:wrap;position:relative}
-.stat-pill{font-size:.72rem;font-weight:800;padding:5px 12px;border-radius:14px;letter-spacing:.3px}
 .subject.math .stat-pill{background:#eef3ff;color:#4f8ef7}
+
+.subject.science{box-shadow:0 8px 28px rgba(0,184,148,.16)}
+.subject.science:hover{box-shadow:0 18px 44px rgba(0,184,148,.28)}
+.subject.science::before{background:linear-gradient(90deg,#00b894,#0ea5e9)}
+.subject.science::after{background:radial-gradient(circle,#00b894,#0ea5e9)}
+.subject.science .subject-icon{background:linear-gradient(135deg,#e8fff8,#e0f2fe);color:#00b894}
+.subject.science .subject-tagline{color:#00b894}
 .subject.science .stat-pill{background:#e8fff8;color:#00b894}
 
-.subject-cta{position:absolute;top:32px;right:28px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;transition:transform .22s,background .22s}
-.subject.math .subject-cta{background:#eef3ff;color:#4f8ef7}
-.subject.science .subject-cta{background:#e8fff8;color:#00b894}
-.subject:hover .subject-cta{transform:translateX(4px) scale(1.1)}
-.subject.math:hover .subject-cta{background:#4f8ef7;color:#fff}
-.subject.science:hover .subject-cta{background:#00b894;color:#fff}
+.subject.english{box-shadow:0 8px 28px rgba(236,72,153,.16)}
+.subject.english:hover{box-shadow:0 18px 44px rgba(236,72,153,.28)}
+.subject.english::before{background:linear-gradient(90deg,#ec4899,#f97316)}
+.subject.english::after{background:radial-gradient(circle,#ec4899,#f97316)}
+.subject.english .subject-icon{background:linear-gradient(135deg,#fce7f3,#ffedd5);color:#ec4899}
+.subject.english .subject-tagline{color:#ec4899}
+.subject.english .stat-pill{background:#fce7f3;color:#be185d}
+
+.subject.bindo{box-shadow:0 8px 28px rgba(220,38,38,.16)}
+.subject.bindo:hover{box-shadow:0 18px 44px rgba(220,38,38,.28)}
+.subject.bindo::before{background:linear-gradient(90deg,#dc2626,#ea580c)}
+.subject.bindo::after{background:radial-gradient(circle,#dc2626,#ea580c)}
+.subject.bindo .subject-icon{background:linear-gradient(135deg,#fee2e2,#ffedd5);color:#dc2626}
+.subject.bindo .subject-tagline{color:#dc2626}
+.subject.bindo .stat-pill{background:#fee2e2;color:#b91c1c}
+
+.subject.ips{box-shadow:0 8px 28px rgba(217,119,6,.16)}
+.subject.ips:hover{box-shadow:0 18px 44px rgba(217,119,6,.28)}
+.subject.ips::before{background:linear-gradient(90deg,#d97706,#92400e)}
+.subject.ips::after{background:radial-gradient(circle,#d97706,#92400e)}
+.subject.ips .subject-icon{background:linear-gradient(135deg,#fef3c7,#fed7aa);color:#92400e}
+.subject.ips .subject-tagline{color:#92400e}
+.subject.ips .stat-pill{background:#fef3c7;color:#92400e}
+
+.subject.pancasila{box-shadow:0 8px 28px rgba(220,38,38,.16)}
+.subject.pancasila:hover{box-shadow:0 18px 44px rgba(220,38,38,.28)}
+.subject.pancasila::before{background:linear-gradient(90deg,#dc2626,#7f1d1d)}
+.subject.pancasila::after{background:radial-gradient(circle,#dc2626,#7f1d1d)}
+.subject.pancasila .subject-icon{background:linear-gradient(135deg,#fee2e2,#fef9c3);color:#dc2626}
+.subject.pancasila .subject-tagline{color:#dc2626}
+.subject.pancasila .stat-pill{background:#fef9c3;color:#a16207}
+
+.subject.islamic{box-shadow:0 8px 28px rgba(16,185,129,.16)}
+.subject.islamic:hover{box-shadow:0 18px 44px rgba(16,185,129,.28)}
+.subject.islamic::before{background:linear-gradient(90deg,#10b981,#f59e0b)}
+.subject.islamic::after{background:radial-gradient(circle,#10b981,#f59e0b)}
+.subject.islamic .subject-icon{background:linear-gradient(135deg,#d1fae5,#fef3c7);color:#047857}
+.subject.islamic .subject-tagline{color:#047857}
+.subject.islamic .stat-pill{background:#d1fae5;color:#047857}
+
+.subject.arabic{box-shadow:0 8px 28px rgba(6,182,212,.16)}
+.subject.arabic:hover{box-shadow:0 18px 44px rgba(6,182,212,.28)}
+.subject.arabic::before{background:linear-gradient(90deg,#06b6d4,#10b981)}
+.subject.arabic::after{background:radial-gradient(circle,#06b6d4,#10b981)}
+.subject.arabic .subject-icon{background:linear-gradient(135deg,#cffafe,#d1fae5);color:#0891b2}
+.subject.arabic .subject-tagline{color:#0891b2}
+.subject.arabic .stat-pill{background:#cffafe;color:#0e7490}
+
+.subject-cta{position:absolute;top:20px;right:18px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;transition:transform .22s,background .22s;color:#999;background:#f5f7fa}
+.subject:hover .subject-cta{transform:translateX(4px) scale(1.1);color:#fff}
+.subject.math:hover .subject-cta{background:#4f8ef7}
+.subject.science:hover .subject-cta{background:#00b894}
+.subject.english:hover .subject-cta{background:#ec4899}
+.subject.bindo:hover .subject-cta{background:#dc2626}
+.subject.ips:hover .subject-cta{background:#d97706}
+.subject.pancasila:hover .subject-cta{background:#dc2626}
+.subject.islamic:hover .subject-cta{background:#10b981}
+.subject.arabic:hover .subject-cta{background:#06b6d4}
 
 /* Footer */
 .footer{margin-top:auto;text-align:center;padding:28px;color:#999;font-size:.78rem}
-.footer span{font-weight:800}
-.footer .m{color:#6c5ce7}
-.footer .s{color:#00b894}
+.footer span{font-weight:800;color:#6c5ce7}
 
 @media(max-width:620px){
   .hero{padding:48px 18px 80px}
   .hero h1{font-size:2.6rem;letter-spacing:-1.8px}
   .hero p{font-size:.95rem}
   .hero-badge{font-size:.7rem;padding:5px 14px}
-  .main{padding:0 16px 60px;margin-top:-44px}
-  .subject{padding:28px 22px 22px;border-radius:24px}
-  .subject-icon{width:62px;height:62px;font-size:2rem;margin-bottom:14px}
-  .subject h2{font-size:1.3rem}
-  .subject-tagline{font-size:.72rem}
-  .subject p{font-size:.85rem;margin-bottom:16px}
-  .subject-cta{width:36px;height:36px;top:24px;right:22px}
+  .main{padding:0 14px 60px;margin-top:-44px}
+  .subject{padding:18px 14px 14px;border-radius:18px}
+  .subject-icon{width:50px;height:50px;font-size:1.6rem;margin-bottom:10px}
+  .subject h2{font-size:1rem}
+  .subject p{font-size:.74rem}
+  .subject-cta{width:28px;height:28px;top:16px;right:14px;font-size:.85rem}
 }
 </style>
 </head>
@@ -88,23 +140,23 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 <div class="hero">
   <div class="hero-badge">Grade 5 · Practice Hub</div>
   <h1>📚 AzLearn</h1>
-  <p>Two subjects, one place. Pick what you want to practise today.</p>
+  <p>Eight subjects, one place. Practise for the Grade 5 Final Test (UAS) — Math, Science, Languages, Religion &amp; Civics.</p>
 </div>
 
 <div class="main">
 
+  <div class="section-label">🎓 Core Academics</div>
   <div class="subject-grid">
 
     <a class="subject math" href="math/">
       <span class="subject-cta">→</span>
       <div class="subject-icon">📐</div>
-      <div class="subject-tagline">Mathematics</div>
+      <div class="subject-tagline">Math</div>
       <h2>AzMath</h2>
-      <p>Fractions, decimals, percentages, ratio, BODMAS, data handling, Venn &amp; Carroll diagrams — plus interactive practice tools.</p>
+      <p>Fractions, decimals, ratio, data handling, BODMAS.</p>
       <div class="subject-stats">
-        <span class="stat-pill">10 chapters</span>
-        <span class="stat-pill">40+ topics</span>
-        <span class="stat-pill">Interactive</span>
+        <span class="stat-pill">13 ch</span>
+        <span class="stat-pill">UAS</span>
       </div>
     </a>
 
@@ -113,11 +165,87 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
       <div class="subject-icon">🔬</div>
       <div class="subject-tagline">Science</div>
       <h2>AzScience</h2>
-      <p>Cambridge Primary Stage 5: Sound, Magnets, Atmosphere &amp; Water Cycle, Pollution, and Movement of Earth — bilingual EN/ID.</p>
+      <p>Sound, Magnets, Atmosphere, Pollution, Earth.</p>
       <div class="subject-stats">
-        <span class="stat-pill">5 chapters</span>
-        <span class="stat-pill">UAS mode</span>
-        <span class="stat-pill">EN / ID</span>
+        <span class="stat-pill">5 ch</span>
+        <span class="stat-pill">UAS · 35</span>
+      </div>
+    </a>
+
+    <a class="subject ips" href="ips/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🌍</div>
+      <div class="subject-tagline">IPS</div>
+      <h2>IPS</h2>
+      <p>Peran Ekonomi, Perubahan Kenampakan Alam.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">2 bab</span>
+        <span class="stat-pill">UAS · 35</span>
+      </div>
+    </a>
+
+    <a class="subject pancasila" href="pancasila/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🇮🇩</div>
+      <div class="subject-tagline">Pancasila</div>
+      <h2>Pancasila</h2>
+      <p>Keragaman, Persatuan &amp; Kesatuan.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">2 bab</span>
+        <span class="stat-pill">UAS · 35</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">🗣️ Languages</div>
+  <div class="subject-grid">
+
+    <a class="subject bindo" href="bindo/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">📖</div>
+      <div class="subject-tagline">B. Indonesia</div>
+      <h2>B. Indonesia</h2>
+      <p>Mencintai Indonesia, Menyayangi Bumi.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">2 bab</span>
+        <span class="stat-pill">UAS · 35</span>
+      </div>
+    </a>
+
+    <a class="subject english" href="english/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🇬🇧</div>
+      <div class="subject-tagline">English</div>
+      <h2>English</h2>
+      <p>Modules 7-10: grammar, vocab, reported speech.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">4 mod</span>
+        <span class="stat-pill">UAS · 35</span>
+      </div>
+    </a>
+
+    <a class="subject arabic" href="arabic/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🕌</div>
+      <div class="subject-tagline">Arabic</div>
+      <h2>Arabic</h2>
+      <p>Bab 6-10: Maf'ul Muthlaq, Mubtada' wal Khabar.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">5 bab</span>
+        <span class="stat-pill">RTL · Arabic</span>
+      </div>
+    </a>
+
+    <a class="subject islamic" href="islamic/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">☪️</div>
+      <div class="subject-tagline">Islamic</div>
+      <h2>Islamic</h2>
+      <p>Ali bin Abi Thalib, Perang Badar, Asma binti Abu Bakar.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">3 tema</span>
+        <span class="stat-pill">+ Quran</span>
       </div>
     </a>
 
@@ -125,7 +253,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 
 </div>
 
-<div class="footer">Built with ❤️ for <span class="m">young mathematicians</span> &amp; <span class="s">curious scientists</span></div>
+<div class="footer">AzLearn · Grade 5 Final Test (UAS) <span>Juni 2026</span> · 8 subjects ready 🎯</div>
 
 </body>
 </html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzArabic — Latihan Bahasa Arab Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#ecfeff;min-height:100vh;display:flex;flex-direction:column}
+
+.hero{background:linear-gradient(135deg,#06b6d4 0%,#0891b2 50%,#10b981 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M40 10c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9zm0 35c-8 0-15 7-15 15h30c0-8-7-15-15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative}
+.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px;position:relative}
+.hero p{font-size:1rem;opacity:.92;max-width:420px;margin:0 auto;line-height:1.6;position:relative}
+.hero .arabic-hero{font-family:'Amiri','Noto Naskh Arabic',serif;font-size:1.6rem;margin-top:12px;opacity:.95;direction:rtl;position:relative;font-weight:700}
+.back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+.main{max-width:780px;margin:-44px auto 0;padding:0 20px 60px;width:100%;position:relative}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.card{background:#fff;border-radius:24px;padding:28px 24px 24px;box-shadow:0 8px 32px rgba(6,182,212,.15);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
+.card.cyan::after{background:#06b6d4}
+.card.teal::after{background:#0d9488}
+.card.emerald::after{background:#10b981}
+.card.indigo::after{background:#6366f1}
+.card.rose::after{background:#e11d48}
+.card.gold::after{background:#fbbf24}
+.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(6,182,212,.25)}
+
+.card-accent{height:5px;border-radius:3px;margin-bottom:20px}
+.card.cyan .card-accent{background:linear-gradient(90deg,#06b6d4,#67e8f9)}
+.card.teal .card-accent{background:linear-gradient(90deg,#0d9488,#5eead4)}
+.card.emerald .card-accent{background:linear-gradient(90deg,#10b981,#6ee7b7)}
+.card.indigo .card-accent{background:linear-gradient(90deg,#6366f1,#a5b4fc)}
+.card.rose .card-accent{background:linear-gradient(90deg,#e11d48,#fda4af)}
+.card.gold .card-accent{background:linear-gradient(90deg,#fbbf24,#fef3c7)}
+
+.card-icon{font-size:2.4rem;margin-bottom:12px;display:block}
+.card h3{font-size:1.02rem;font-weight:900;color:#1a1a2e;margin-bottom:6px;letter-spacing:-.3px}
+.card .arabic-sub{font-family:'Amiri','Noto Naskh Arabic',serif;font-size:1.2rem;color:#0891b2;direction:rtl;text-align:right;margin-bottom:10px;font-weight:700;line-height:1.6}
+.card p{font-size:.82rem;color:#666;line-height:1.55;margin-bottom:14px}
+
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
+.card.cyan .pill{background:#cffafe;color:#0e7490}
+.card.teal .pill{background:#ccfbf1;color:#0d9488}
+.card.emerald .pill{background:#d1fae5;color:#065f46}
+.card.indigo .pill{background:#eef2ff;color:#4338ca}
+.card.rose .pill{background:#ffe4e6;color:#9f1239}
+.card.gold .pill{background:#fef9c3;color:#a16207}
+
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:24px}
+.card-arrow{position:absolute;top:24px;right:22px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
+.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
+
+.uas-card{background:linear-gradient(135deg,#fffbe8 0%,#fff5d6 100%);border:2px solid #fbbf24;position:relative}
+.uas-card h3{color:#7c5e02}
+.uas-card .card-icon{filter:drop-shadow(0 2px 4px rgba(251,191,36,.4))}
+
+.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
+.footer span{color:#06b6d4;font-weight:700}
+
+@media(max-width:520px){
+  .hero{padding:40px 18px 72px}
+  .hero h1{font-size:2.4rem;letter-spacing:-1.5px}
+  .hero p{font-size:.88rem}
+  .main{padding:0 14px 40px}
+  .grid{gap:13px}
+  .card{padding:22px 18px 18px}
+  .card-icon{font-size:2rem;margin-bottom:8px}
+  .card h3{font-size:.95rem}
+  .card p{font-size:.78rem}
+  .pill{font-size:.62rem;padding:3px 8px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back-btn" href="../">← Subjects</a>
+  <div class="hero-badge">Kelas 5 · Bahasa Arab</div>
+  <h1>📜 AzArabic</h1>
+  <p>Buku Arabic Kelas 5 — latihan Pilihan Ganda, Isian Kaidah, dan Menyalin Ayat dari Bab 6 sampai 10.</p>
+  <div class="arabic-hero">اللغة العربية</div>
+</div>
+
+<div class="main">
+
+  <div class="section-label">📚 Latihan Bab</div>
+  <div class="grid">
+
+    <a class="card cyan" href="quiz/?ch=1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🏛️</span>
+      <h3>Bab 6 · Mencintai Mesir</h3>
+      <div class="arabic-sub">نُحِبُّ مِصْرَ</div>
+      <p>Soal cerita Mencintai Mesir, kaidah sastra, dan melanjutkan syair.</p>
+      <div class="pill-row">
+        <span class="pill">Mufradat</span>
+        <span class="pill">Syair</span>
+      </div>
+    </a>
+
+    <a class="card teal" href="quiz/?ch=2">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">📐</span>
+      <h3>Bab 7 · Maf'ul Muthlaq</h3>
+      <div class="arabic-sub">المَفْعُولُ المُطْلَق</div>
+      <p>Menentukan Maf'ul Muthlaq, Maf'ul Bih, dan Maf'ul Li'ajlih dalam kalimat.</p>
+      <div class="pill-row">
+        <span class="pill">Nahwu</span>
+        <span class="pill">I'rab</span>
+      </div>
+    </a>
+
+    <a class="card emerald" href="quiz/?ch=3">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🤝</span>
+      <h3>Bab 8 · Dakwah Saling Mencintai</h3>
+      <div class="arabic-sub">دَعْوَةُ التَّوَاصُلِ لِلْحُبِّ</div>
+      <p>Soal cerita Dakwah saling mencintai dan sinonim kata (jangan saling membenci, jangan memutus hubungan).</p>
+      <div class="pill-row">
+        <span class="pill">Mufradat</span>
+        <span class="pill">Sinonim</span>
+      </div>
+    </a>
+
+    <a class="card indigo" href="quiz/?ch=4">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">⚽</span>
+      <h3>Bab 9 · Olahraga &amp; Sportifitas</h3>
+      <div class="arabic-sub">الرِّيَاضَةُ وَالتَّسَامُح</div>
+      <p>Soal cerita Olahraga &amp; Sportifitas, sinonim kata (Berjabat tangan, berlomba-lomba, Bersegera, Mengangguk, Mencetak gol).</p>
+      <div class="pill-row">
+        <span class="pill">Mufradat</span>
+        <span class="pill">Sportif</span>
+      </div>
+    </a>
+
+    <a class="card rose" href="quiz/?ch=5" style="grid-column:1/-1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">📖</span>
+      <h3>Bab 10 · Mubtada' wal Khabar</h3>
+      <div class="arabic-sub">المُبْتَدَأُ وَالْخَبَر</div>
+      <p>Menentukan tanda I'rab Mubtada' dan Khabar (dhammah, fathah, kasrah) — plus menyalin QS Al-Mulk ayat 1.</p>
+      <div class="pill-row">
+        <span class="pill">Nahwu</span>
+        <span class="pill">Tanda I'rab</span>
+        <span class="pill">Al-Mulk</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">🏆 Ujian Akhir</div>
+  <div class="grid">
+    <a class="card gold uas-card" href="quiz/?ch=uas" style="grid-column:1/-1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🎓</span>
+      <h3>UAS — Ujian Akhir Semester</h3>
+      <p>Format resmi: 20 PG, 10 Isian, 5 Uraian. Mengikuti kisi-kisi resmi Bab 6–10 + Al-Mulk ayat 1.</p>
+      <div class="pill-row">
+        <span class="pill">35 Soal</span>
+        <span class="pill">PG + Isian + Uraian</span>
+        <span class="pill">Bab 6–10</span>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<div class="footer">AzArabic · Dibuat dengan 📜 untuk <span>pelajar bahasa Arab</span></div>
+
+</body>
+</html>

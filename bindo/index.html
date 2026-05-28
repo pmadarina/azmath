@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzBahasa — Latihan Bahasa Indonesia Kelas 5</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#fff7f0;min-height:100vh;display:flex;flex-direction:column}
+
+.hero{background:linear-gradient(135deg,#dc2626 0%,#ea580c 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Ccircle cx='50' cy='10' r='2'/%3E%3Ccircle cx='10' cy='50' r='2'/%3E%3Ccircle cx='50' cy='50' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative}
+.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px;position:relative}
+.hero p{font-size:1rem;opacity:.9;max-width:420px;margin:0 auto;line-height:1.6;position:relative}
+.back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+.main{max-width:780px;margin:-44px auto 0;padding:0 20px 60px;width:100%;position:relative}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.card{background:#fff;border-radius:24px;padding:28px 24px 24px;box-shadow:0 8px 32px rgba(220,38,38,.13);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
+.card.red::after{background:#dc2626}
+.card.orange::after{background:#ea580c}
+.card.gold::after{background:#f9ca24}
+.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(220,38,38,.25)}
+
+.card-accent{height:5px;border-radius:3px;margin-bottom:20px}
+.card.red .card-accent{background:linear-gradient(90deg,#dc2626,#fca5a5)}
+.card.orange .card-accent{background:linear-gradient(90deg,#ea580c,#fdba74)}
+.card.gold .card-accent{background:linear-gradient(90deg,#f9ca24,#fde68a)}
+
+.card-icon{font-size:2.4rem;margin-bottom:12px;display:block}
+.card h3{font-size:1.05rem;font-weight:900;color:#1a1a2e;margin-bottom:8px;letter-spacing:-.3px}
+.card p{font-size:.82rem;color:#666;line-height:1.55;margin-bottom:14px}
+
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
+.card.red .pill{background:#fee2e2;color:#991b1b}
+.card.orange .pill{background:#ffedd5;color:#9a3412}
+.card.gold .pill{background:#fef9c3;color:#a16207}
+
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:24px}
+
+.card-arrow{position:absolute;top:24px;right:22px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
+.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
+
+.uas-card{background:linear-gradient(135deg,#fffbe8 0%,#fff5d6 100%);border:2px solid #f9ca24;position:relative}
+.uas-card h3{color:#7c5e02}
+.uas-card .card-icon{filter:drop-shadow(0 2px 4px rgba(249,202,36,.4))}
+
+.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
+.footer span{color:#dc2626;font-weight:700}
+
+@media(max-width:520px){
+  .hero{padding:40px 18px 72px}
+  .hero h1{font-size:2.4rem;letter-spacing:-1.5px}
+  .hero p{font-size:.88rem}
+  .hero-badge{font-size:.68rem;padding:4px 13px}
+  .main{padding:0 14px 40px}
+  .grid{gap:13px}
+  .card{padding:22px 18px 18px}
+  .card-icon{font-size:2rem;margin-bottom:8px}
+  .card h3{font-size:.95rem}
+  .card p{font-size:.78rem}
+  .pill{font-size:.62rem;padding:3px 8px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back-btn" href="../">← Mata Pelajaran</a>
+  <div class="hero-badge">Kelas 5 · Bahasa Indonesia</div>
+  <h1>📖 AzBahasa</h1>
+  <p>Buku ESPS Kelas 5 — latihan BAB 5 &amp; BAB 6 dengan pilihan ganda, isian singkat, dan uraian.</p>
+</div>
+
+<div class="main">
+
+  <div class="section-label">📝 Latihan Bab</div>
+  <div class="grid">
+
+    <a class="card red" href="quiz/?ch=1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🇮🇩</span>
+      <h3>BAB 5 · Mencintai Indonesia</h3>
+      <p>Penulisan kapital, angka, dan bilangan; teks narasi sejarah dan deskripsi; kalimat perintah/ajakan/harapan/larangan; brosur, pengumuman, dan surat undangan; sebab-akibat dalam teks.</p>
+      <div class="pill-row">
+        <span class="pill">Kapital</span>
+        <span class="pill">Brosur</span>
+        <span class="pill">Sebab-akibat</span>
+      </div>
+    </a>
+
+    <a class="card orange" href="quiz/?ch=2">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🌏</span>
+      <h3>BAB 6 · Menyayangi Bumi</h3>
+      <p>Kalimat majemuk bertingkat; imbuhan pe-an; teks eksposisi; informasi dari media daring &amp; cetak; cerita bergambar.</p>
+      <div class="pill-row">
+        <span class="pill">Majemuk</span>
+        <span class="pill">Pe-an</span>
+        <span class="pill">Eksposisi</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">🏆 Ujian Akhir Semester</div>
+  <div class="grid">
+    <a class="card gold uas-card" href="quiz/?ch=uas" style="grid-column:1/-1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🎓</span>
+      <h3>UAS — Ujian Akhir</h3>
+      <p>Format ujian sesungguhnya: 20 Pilihan Ganda + 10 Isian + 5 Uraian. Mencakup BAB 5 &amp; 6 sesuai kisi-kisi resmi.</p>
+      <div class="pill-row">
+        <span class="pill">Semua bab</span>
+        <span class="pill">PG + Isian + Uraian</span>
+        <span class="pill">35 soal</span>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<div class="footer">AzBahasa · Dibuat dengan ❤️ untuk <span>pelajar Indonesia</span></div>
+
+</body>
+</html>

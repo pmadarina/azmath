@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzIslamic — Latihan Sirah Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4fff7;min-height:100vh;display:flex;flex-direction:column}
+
+.hero{background:linear-gradient(135deg,#10b981 0%,#059669 50%,#f59e0b 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpolygon points='30,5 35,25 55,25 40,38 45,58 30,46 15,58 20,38 5,25 25,25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative}
+.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px;position:relative}
+.hero p{font-size:1rem;opacity:.92;max-width:420px;margin:0 auto;line-height:1.6;position:relative}
+.hero .arabic-hero{font-family:'Amiri','Noto Naskh Arabic',serif;font-size:1.5rem;margin-top:10px;opacity:.85;direction:rtl;position:relative}
+.back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+.main{max-width:780px;margin:-44px auto 0;padding:0 20px 60px;width:100%;position:relative}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.card{background:#fff;border-radius:24px;padding:28px 24px 24px;box-shadow:0 8px 32px rgba(16,185,129,.15);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
+.card.green::after{background:#10b981}
+.card.emerald::after{background:#059669}
+.card.amber::after{background:#f59e0b}
+.card.gold::after{background:#fbbf24}
+.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(16,185,129,.25)}
+
+.card-accent{height:5px;border-radius:3px;margin-bottom:20px}
+.card.green .card-accent{background:linear-gradient(90deg,#10b981,#6ee7b7)}
+.card.emerald .card-accent{background:linear-gradient(90deg,#059669,#34d399)}
+.card.amber .card-accent{background:linear-gradient(90deg,#f59e0b,#fcd34d)}
+.card.gold .card-accent{background:linear-gradient(90deg,#fbbf24,#fef3c7)}
+
+.card-icon{font-size:2.4rem;margin-bottom:12px;display:block}
+.card h3{font-size:1.05rem;font-weight:900;color:#1a1a2e;margin-bottom:6px;letter-spacing:-.3px}
+.card .arabic-sub{font-family:'Amiri','Noto Naskh Arabic',serif;font-size:1.1rem;color:#059669;direction:rtl;text-align:right;margin-bottom:10px;font-weight:700}
+.card p{font-size:.82rem;color:#666;line-height:1.55;margin-bottom:14px}
+
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
+.card.green .pill{background:#d1fae5;color:#065f46}
+.card.emerald .pill{background:#d1fae5;color:#047857}
+.card.amber .pill{background:#fef3c7;color:#92400e}
+.card.gold .pill{background:#fef9c3;color:#a16207}
+
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:24px}
+.card-arrow{position:absolute;top:24px;right:22px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
+.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
+
+.uas-card{background:linear-gradient(135deg,#fffbe8 0%,#fff5d6 100%);border:2px solid #fbbf24;position:relative}
+.uas-card h3{color:#7c5e02}
+.uas-card .card-icon{filter:drop-shadow(0 2px 4px rgba(251,191,36,.4))}
+
+.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
+.footer span{color:#10b981;font-weight:700}
+
+@media(max-width:520px){
+  .hero{padding:40px 18px 72px}
+  .hero h1{font-size:2.4rem;letter-spacing:-1.5px}
+  .hero p{font-size:.88rem}
+  .main{padding:0 14px 40px}
+  .grid{gap:13px}
+  .card{padding:22px 18px 18px}
+  .card-icon{font-size:2rem;margin-bottom:8px}
+  .card h3{font-size:.95rem}
+  .card p{font-size:.78rem}
+  .pill{font-size:.62rem;padding:3px 8px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back-btn" href="../">← Subjects</a>
+  <div class="hero-badge">Kelas 5 · Sirah</div>
+  <h1>🕌 AzIslamic</h1>
+  <p>Buku Sirah Kelas 5 — latihan Benar/Salah, Pilihan Ganda, Melengkapi Ayat, dan Uraian.</p>
+  <div class="arabic-hero">السيرة النبوية</div>
+</div>
+
+<div class="main">
+
+  <div class="section-label">📖 Latihan Tema</div>
+  <div class="grid">
+
+    <a class="card green" href="quiz/?ch=1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">⚔️</span>
+      <h3>Tema 1 · Keberanian Ali bin Abi Thalib</h3>
+      <div class="arabic-sub">شجاعة علي بن أبي طالب</div>
+      <p>Masa kecil Ali, peristiwa Darun Nadwah, dan peran Ali dalam hijrah Nabi.</p>
+      <div class="pill-row">
+        <span class="pill">Masa kecil</span>
+        <span class="pill">Hijrah</span>
+      </div>
+    </a>
+
+    <a class="card emerald" href="quiz/?ch=2">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🗡️</span>
+      <h3>Tema 2 · Perang Badar</h3>
+      <div class="arabic-sub">غزوة بدر الكبرى</div>
+      <p>Sebab perang Badar, jalannya peristiwa, peran al-Hubab bin al-Munzir, dan pelajaran.</p>
+      <div class="pill-row">
+        <span class="pill">Sebab</span>
+        <span class="pill">Pelajaran</span>
+      </div>
+    </a>
+
+    <a class="card amber" href="quiz/?ch=3" style="grid-column:1/-1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🌟</span>
+      <h3>Tema 3 · Asma binti Abu Bakar</h3>
+      <div class="arabic-sub">أسماء بنت أبي بكر</div>
+      <p>Sosok Asma, perannya dalam hijrah, gelar Dzatun Nithaqain, dan pelajaran dari kisahnya.</p>
+      <div class="pill-row">
+        <span class="pill">Dzatun Nithaqain</span>
+        <span class="pill">Hijrah</span>
+        <span class="pill">Pelajaran</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">🏆 Ujian Akhir</div>
+  <div class="grid">
+    <a class="card gold uas-card" href="quiz/?ch=uas" style="grid-column:1/-1">
+      <span class="card-arrow">→</span>
+      <div class="card-accent"></div>
+      <span class="card-icon">🎓</span>
+      <h3>UAS — Ujian Akhir Semester</h3>
+      <p>Format resmi: PG dulu, lalu Isian (Melengkapi Ayat), lalu Uraian (Arti Hadits & Menyalin Ayat). Mengikuti kisi-kisi resmi.</p>
+      <div class="pill-row">
+        <span class="pill">Semua tema</span>
+        <span class="pill">PG + Isian + Uraian</span>
+        <span class="pill">Quran & Hadits</span>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<div class="footer">AzIslamic · Dibuat dengan 🕌 untuk <span>generasi Qurani</span></div>
+
+</body>
+</html>
