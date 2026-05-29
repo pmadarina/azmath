@@ -46,6 +46,36 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 .q-badge.fill_bank{background:#fff0f5;color:#d6336c}
 .q-badge.multi_check{background:#e8f4ff;color:#1971c2}
 .q-badge.scenario{background:#fff8e8;color:#b7760a}
+.q-badge.match_pairs{background:#f0eeff;color:#6c5ce7}
+.q-badge.cycle_diagram{background:#e8f9ff;color:#0ea5e9}
+
+/* Match pairs */
+.mp-instr{font-size:.85rem;color:#666;font-weight:700;margin-bottom:10px}
+.mp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mp-col-title{font-size:.72rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#6c5ce7;margin-bottom:6px;text-align:center}
+.mp-card{background:#fff;border:2px solid #e8ecef;border-radius:12px;padding:10px 12px;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .15s;text-align:left;font-family:inherit;color:inherit;display:block;width:100%;margin-bottom:8px;line-height:1.4}
+.mp-card:hover:not(:disabled){border-color:#6c5ce7;background:#faf9ff;transform:translateY(-1px)}
+.mp-card.selected{border-color:#6c5ce7;background:#eef2ff;box-shadow:0 0 0 3px rgba(108,92,231,.18)}
+.mp-card.matched{border-color:#00b894;background:#f0fff8;cursor:not-allowed;opacity:.85}
+.mp-card.matched::before{content:'✓ ';color:#00b894;font-weight:900}
+.mp-card.shake{animation:mp-shake .35s ease}
+.mp-card:disabled{cursor:not-allowed}
+@keyframes mp-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.mp-progress{font-size:.78rem;font-weight:800;color:#6c5ce7;text-align:center;margin-top:10px}
+
+/* Cycle diagram */
+.cd-wrap{background:#f8faff;border:1.5px solid #d8e4ff;border-radius:14px;padding:14px;margin-bottom:12px}
+.cd-svg{display:block;margin:0 auto;width:100%;max-width:460px;height:auto}
+.cd-node{fill:#fff;stroke:#0ea5e9;stroke-width:2.5}
+.cd-node.blank{fill:#fff8e8;stroke:#f9ca24;stroke-dasharray:6 4}
+.cd-node.filled{fill:#f0fff8;stroke:#00b894;stroke-dasharray:none}
+.cd-node.wrong{fill:#fff5f5;stroke:#d63031;stroke-dasharray:none}
+.cd-node.active{stroke-width:4;filter:drop-shadow(0 0 6px rgba(249,202,36,.6))}
+.cd-label{font-family:'Segoe UI',system-ui,sans-serif;font-size:11px;font-weight:700;fill:#1a1a2e;pointer-events:none}
+.cd-label.placeholder{fill:#b7760a;font-style:italic}
+.cd-arrow-label{font-family:'Segoe UI',system-ui,sans-serif;font-size:10px;font-weight:800;fill:#6366f1;pointer-events:none}
+.cd-hit{fill:transparent;cursor:pointer}
+.cd-hit.locked{cursor:not-allowed}
 
 /* Word bank chips */
 .bank-wrap{background:#fff8e8;border:1.5px solid #f9ca24;border-radius:14px;padding:12px 14px;margin-bottom:14px}
@@ -1442,6 +1472,132 @@ const ATMOS_GEN = {
              id:'Dari luar angkasa, Bumi terlihat biru karena lautan menutupi ~71% permukaannya.'},
     steps:{en:['Oceans cover most of Earth → it looks <b>blue</b> from space.'],
            id:['Lautan menutupi sebagian besar Bumi → terlihat <b>biru</b> dari luar angkasa.']}}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW — Cambridge daily test Ch 9 & 10 patterns
+  // ─────────────────────────────────────────────────────────────
+  planet_oxygen:()=>{
+    const cor={en:'Earth',id:'Bumi'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Mercury',id:'Merkurius'},
+      {en:'Venus',id:'Venus'},
+      {en:'Mars',id:'Mars'}]);
+    return{type:'mcq',topic:'atmosphere',
+      q:{en:'Which planet has the <b>highest percentage of oxygen</b> in its atmosphere?',
+         id:'Planet mana yang memiliki <b>persentase oksigen tertinggi</b> di atmosfernya?'},
+      opts,ans,
+      hint:{en:'It is the planet we live on.',id:'Planet tempat kita tinggal.'},
+      concept:{en:'Only Earth\'s atmosphere has about 21% oxygen — that\'s why living things can breathe here.',
+               id:'Hanya atmosfer Bumi yang memiliki sekitar 21% oksigen — itulah sebabnya makhluk hidup bisa bernapas di sini.'},
+      steps:{en:['Mercury, Venus, Mars have very little or no oxygen.','<b>Earth</b> has ~21% oxygen → highest in the solar system.'],
+             id:['Merkurius, Venus, Mars hampir tidak memiliki oksigen.','<b>Bumi</b> memiliki ~21% oksigen → tertinggi di tata surya.']}};
+  },
+  fauzah_temperature:()=>{
+    // Table-based MCQ — table shown as HTML inside q.q
+    const cor={en:'C',id:'C'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'A',id:'A'},
+      {en:'B',id:'B'},
+      {en:'D',id:'D'}]);
+    const tableEn = `<div style="margin:10px 0"><table style="width:100%;border-collapse:collapse;font-size:.85rem;background:#fff;border:1.5px solid #b7d8c5;border-radius:8px;overflow:hidden">
+      <thead><tr style="background:#e8f4ef"><th style="padding:8px;border:1px solid #b7d8c5"></th><th style="padding:8px;border:1px solid #b7d8c5">Air temperature <b>before</b> rain (°C)</th><th style="padding:8px;border:1px solid #b7d8c5">Air temperature <b>after</b> rain (°C)</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">A</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">26</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">31</td></tr>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">B</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">30</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">30</td></tr>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">C</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">32</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">28</td></tr>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">D</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">34</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">39</td></tr>
+      </tbody></table></div>`;
+    const tableId = `<div style="margin:10px 0"><table style="width:100%;border-collapse:collapse;font-size:.85rem;background:#fff;border:1.5px solid #b7d8c5;border-radius:8px;overflow:hidden">
+      <thead><tr style="background:#e8f4ef"><th style="padding:8px;border:1px solid #b7d8c5"></th><th style="padding:8px;border:1px solid #b7d8c5">Suhu udara <b>sebelum</b> hujan (°C)</th><th style="padding:8px;border:1px solid #b7d8c5">Suhu udara <b>setelah</b> hujan (°C)</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">A</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">26</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">31</td></tr>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">B</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">30</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">30</td></tr>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">C</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">32</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">28</td></tr>
+        <tr><td style="padding:8px;border:1px solid #b7d8c5;font-weight:800">D</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">34</td><td style="padding:8px;border:1px solid #b7d8c5;text-align:center">39</td></tr>
+      </tbody></table></div>`;
+    return{type:'mcq',topic:'water_cycle',
+      q:{en:'Fauzah investigated the effect of the water cycle on temperature. She measured the temperature of the air <b>before and after rain</b>. Which row shows the temperatures correctly?'+tableEn,
+         id:'Fauzah menyelidiki pengaruh siklus air pada suhu. Dia mengukur suhu udara <b>sebelum dan setelah hujan</b>. Baris mana yang menunjukkan suhu dengan benar?'+tableId},
+      opts,ans,
+      hint:{en:'Rain absorbs heat — does the air get warmer or cooler?',
+            id:'Hujan menyerap panas — apakah udara menjadi lebih hangat atau lebih dingin?'},
+      concept:{en:'Rain cools the air because water absorbs heat as it falls and evaporates from surfaces.',
+               id:'Hujan mendinginkan udara karena air menyerap panas saat jatuh dan menguap dari permukaan.'},
+      steps:{en:['Before rain: warmer air.','Rain falls → absorbs heat → air cools.','So <b>after</b> rain is <b>cooler than before</b>: 32 → 28 (row C).'],
+             id:['Sebelum hujan: udara lebih hangat.','Hujan turun → menyerap panas → udara mendingin.','Jadi <b>setelah</b> hujan <b>lebih dingin daripada sebelum</b>: 32 → 28 (baris C).']}};
+  },
+  water_cycle_importance:()=>{
+    const cor={en:'It ensures a constant supply of fresh water for living things.',
+               id:'Memastikan pasokan air tawar yang terus-menerus bagi makhluk hidup.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'It provides energy for plants to make food.',
+       id:'Memberi energi pada tumbuhan untuk membuat makanan.'},
+      {en:'It provides moisture present in the water bodies.',
+       id:'Menyediakan kelembapan yang ada di perairan.'},
+      {en:'It kills bacteria in water.',
+       id:'Membunuh bakteri di dalam air.'}]);
+    return{type:'mcq',topic:'water_cycle',
+      q:{en:'What is the <b>importance</b> of the water cycle?',
+         id:'Apa <b>pentingnya</b> siklus air?'},
+      opts,ans,
+      hint:{en:'Without it, our taps and rivers would run dry.',
+            id:'Tanpa siklus ini, keran dan sungai akan mengering.'},
+      concept:{en:'The water cycle recycles water, keeping fresh water always available for plants, animals and people.',
+               id:'Siklus air mendaur ulang air, sehingga air tawar selalu tersedia untuk tumbuhan, hewan, dan manusia.'},
+      steps:{en:['Water keeps moving: evaporation → condensation → precipitation → collection.','This <b>recycles</b> water → fresh water stays available.'],
+             id:['Air terus bergerak: evaporasi → kondensasi → presipitasi → pengumpulan.','Hal ini <b>mendaur ulang</b> air → air tawar tetap tersedia.']}};
+  },
+  // ── TRUE/FALSE on water cycle ──
+  tf_condensation_part:()=>({type:'tf',topic:'water_cycle',
+    q:{en:'Condensation is part of the water cycle.',
+       id:'Kondensasi adalah bagian dari siklus air.'},
+    ans:true,
+    hint:{en:'It is one of the four main stages.',id:'Salah satu dari empat tahap utama.'},
+    concept:{en:'The water cycle: evaporation, condensation, precipitation, collection.',
+             id:'Siklus air: evaporasi, kondensasi, presipitasi, pengumpulan.'},
+    steps:{en:['Condensation = water vapour → liquid droplets (clouds).','It is one of the four main stages of the water cycle.'],
+           id:['Kondensasi = uap air → titik-titik air (awan).','Salah satu dari empat tahap utama siklus air.']}}),
+  tf_evaporation_is_precip:()=>({type:'tf',topic:'water_cycle',
+    q:{en:'The process of water changing into a gas is called precipitation.',
+       id:'Proses perubahan air menjadi gas disebut presipitasi.'},
+    ans:false,
+    hint:{en:'Liquid → gas has a different name.',id:'Cair → gas namanya berbeda.'},
+    concept:{en:'Water → gas is evaporation. Precipitation is water falling from clouds.',
+             id:'Air → gas adalah evaporasi. Presipitasi adalah air yang jatuh dari awan.'},
+    steps:{en:['Liquid → gas = <b>evaporation</b>.','Precipitation = rain, snow, sleet, hail falling from clouds.'],
+           id:['Cair → gas = <b>evaporasi</b>.','Presipitasi = hujan, salju, es yang jatuh dari awan.']}}),
+  tf_falls_called_evap:()=>({type:'tf',topic:'water_cycle',
+    q:{en:'Water falls back to the ground in a process called evaporation.',
+       id:'Air jatuh kembali ke tanah dalam proses yang disebut evaporasi.'},
+    ans:false,
+    hint:{en:'Falling from clouds has a different name.',id:'Jatuh dari awan punya nama lain.'},
+    concept:{en:'Water falling from clouds is precipitation, not evaporation.',
+             id:'Air yang jatuh dari awan adalah presipitasi, bukan evaporasi.'},
+    steps:{en:['Falling rain/snow = <b>precipitation</b>.','Evaporation = water turning into vapour.'],
+           id:['Hujan/salju yang jatuh = <b>presipitasi</b>.','Evaporasi = air berubah menjadi uap.']}}),
+
+  // ── CYCLE DIAGRAM — water cycle ──
+  water_cycle_diagram:()=>({type:'cycle_diagram',topic:'water_cycle',
+    q:{en:'Complete the <b>water cycle diagram</b>. Pick a word from the bank, then click a "?" box to fill it.',
+       id:'Lengkapi <b>diagram siklus air</b>. Pilih kata dari daftar, lalu klik kotak "?" untuk mengisinya.'},
+    bank:{en:['clouds','rain or snow','water in water bodies and the ground','water vapour in the air'],
+          id:['awan','hujan atau salju','air di badan air dan tanah','uap air di udara']},
+    nodes:[
+      {pos:'top',    label:{en:'water in water bodies and the ground', id:'air di badan air dan tanah'}, blank:true},
+      {pos:'right',  label:{en:'water vapour in the air', id:'uap air di udara'}, blank:false},
+      {pos:'bottom', label:{en:'clouds', id:'awan'}, blank:true},
+      {pos:'left',   label:{en:'rain or snow', id:'hujan atau salju'}, blank:true},
+    ],
+    arrows:[
+      {from:0,to:1,label:{en:'evaporation',id:'evaporasi'}},
+      {from:1,to:2,label:{en:'condensation',id:'kondensasi'}},
+      {from:2,to:3,label:{en:'precipitation',id:'presipitasi'}},
+      {from:3,to:0,label:{en:'collection',id:'pengumpulan'}},
+    ],
+    hint:{en:'Follow the arrows. Evaporation makes vapour. Condensation makes clouds. Precipitation makes rain.',
+          id:'Ikuti panah. Evaporasi membuat uap. Kondensasi membuat awan. Presipitasi membuat hujan.'},
+    concept:{en:'The water cycle: water bodies → (evaporation) → vapour → (condensation) → clouds → (precipitation) → rain/snow → back to water bodies.',
+             id:'Siklus air: badan air → (evaporasi) → uap → (kondensasi) → awan → (presipitasi) → hujan/salju → kembali ke badan air.'}}),
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -1656,6 +1812,211 @@ const POLL_GEN = {
     concept:{en:'Different pollution = different causes, all reducible by 3R.',
              id:'Polusi berbeda = penyebab berbeda, semua dapat dikurangi dengan 3R.'},
     keys:['air','water','land','noise','light','recycle','reduce','reuse','udara','air','tanah','suara','cahaya','daur','kurangi','pakai ulang']}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW — Cambridge daily test Ch 10 patterns
+  // ─────────────────────────────────────────────────────────────
+  not_pollutant:()=>{
+    const cor={en:'The air we breathe out.',id:'Udara yang kita hembuskan.'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Plastic waste',id:'Sampah plastik'},
+      {en:'Litter on the ground',id:'Sampah di tanah'},
+      {en:'Gases released from vehicles',id:'Gas yang dikeluarkan kendaraan'}]);
+    return{type:'mcq',topic:'pollution_env',
+      q:{en:'Which of these substances is <b>NOT a pollutant</b>?',
+         id:'Manakah berikut ini yang <b>BUKAN polutan</b>?'},
+      opts,ans,
+      hint:{en:'A pollutant harms living things or the environment.',
+            id:'Polutan adalah zat yang membahayakan makhluk hidup atau lingkungan.'},
+      concept:{en:'A pollutant is a harmful substance. The air we breathe out (mostly CO₂ and water vapour) is natural and not considered a pollutant.',
+               id:'Polutan adalah zat yang berbahaya. Udara yang kita hembuskan (sebagian besar CO₂ dan uap air) bersifat alami dan bukan polutan.'},
+      steps:{en:['Plastic, litter, vehicle gases = harmful → pollutants.','Breath = natural process → <b>not a pollutant</b>.'],
+             id:['Plastik, sampah, gas kendaraan = berbahaya → polutan.','Napas = proses alami → <b>bukan polutan</b>.']}};
+  },
+  causes_air_pollution:()=>{
+    const cor={en:'Burning fossil fuels',id:'Membakar bahan bakar fosil'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Oil spills',id:'Tumpahan minyak'},
+      {en:'Throwing rubbish into the bin',id:'Membuang sampah ke tempatnya'},
+      {en:'Releasing waste into lakes, seas and rivers',
+       id:'Membuang limbah ke danau, laut, dan sungai'}]);
+    return{type:'mcq',topic:'pollution_types',
+      q:{en:'Which of these <b>causes air pollution</b>?',
+         id:'Manakah yang <b>menyebabkan polusi udara</b>?'},
+      opts,ans,
+      hint:{en:'Look for something that makes smoke.',id:'Cari yang menghasilkan asap.'},
+      concept:{en:'Burning fossil fuels (coal, oil, petrol) releases smoke and harmful gases into the air.',
+               id:'Membakar bahan bakar fosil (batu bara, minyak, bensin) melepas asap dan gas berbahaya ke udara.'},
+      steps:{en:['Oil spills → water pollution.','Waste in rivers → water pollution.','Burning fossil fuels → smoke → <b>air pollution</b>.'],
+             id:['Tumpahan minyak → polusi air.','Limbah ke sungai → polusi air.','Membakar bahan bakar fosil → asap → <b>polusi udara</b>.']}};
+  },
+  avg_temp_rise:()=>{
+    const cor={en:'global warming',id:'pemanasan global'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'acid rain',id:'hujan asam'},
+      {en:'landfill',id:'tempat pembuangan akhir'},
+      {en:'climate change',id:'perubahan iklim'}]);
+    return{type:'mcq',topic:'pollution_env',
+      q:{en:'The rise of the <b>average temperature</b> occurring on the Earth is called __________.',
+         id:'Kenaikan <b>suhu rata-rata</b> yang terjadi di Bumi disebut __________.'},
+      opts,ans,
+      hint:{en:'Two words — about heating, not weather change.',
+            id:'Dua kata — tentang pemanasan, bukan perubahan cuaca.'},
+      concept:{en:'Global warming = the rise in Earth\'s average temperature. Climate change is the wider effect that follows (storms, droughts, ice melt).',
+               id:'Pemanasan global = kenaikan suhu rata-rata Bumi. Perubahan iklim adalah dampak yang lebih luas (badai, kekeringan, es mencair).'},
+      steps:{en:['Earth\'s average temperature is rising → this rise is called <b>global warming</b>.','Climate change is what then happens because of it.'],
+             id:['Suhu rata-rata Bumi naik → kenaikan ini disebut <b>pemanasan global</b>.','Perubahan iklim adalah akibat dari pemanasan global tersebut.']}};
+  },
+  factory_picture:()=>{
+    const cor={en:'Air pollution and water pollution',id:'Polusi udara dan polusi air'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Air pollution only',id:'Hanya polusi udara'},
+      {en:'Land pollution',id:'Polusi tanah'},
+      {en:'Water pollution only',id:'Hanya polusi air'}]);
+    // Simple inline SVG: factory smokestacks + river with dead fish
+    const diagram = `<svg class="scenario-diagram" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="320" height="160" fill="#f0f7ff"/>
+      <!-- factory -->
+      <rect x="40" y="70" width="90" height="60" fill="#9aa3b2" stroke="#5a6573" stroke-width="1.5"/>
+      <rect x="55" y="40" width="14" height="35" fill="#5a6573"/>
+      <rect x="100" y="35" width="14" height="40" fill="#5a6573"/>
+      <!-- smoke -->
+      <ellipse cx="62" cy="30" rx="14" ry="9" fill="#6b6b6b" opacity=".7"/>
+      <ellipse cx="50" cy="18" rx="16" ry="10" fill="#7a7a7a" opacity=".6"/>
+      <ellipse cx="107" cy="25" rx="14" ry="9" fill="#6b6b6b" opacity=".7"/>
+      <ellipse cx="118" cy="14" rx="16" ry="10" fill="#7a7a7a" opacity=".6"/>
+      <!-- river -->
+      <rect x="0" y="130" width="320" height="30" fill="#7faed1"/>
+      <path d="M0,135 Q40,142 80,135 T160,135 T240,135 T320,135" stroke="#5a8db5" stroke-width="1.5" fill="none"/>
+      <!-- dead fish (×) -->
+      <text x="170" y="150" font-size="14" fill="#1a1a2e" font-weight="800">✕</text>
+      <text x="195" y="148" font-size="12" fill="#1a1a2e" font-weight="800">✕</text>
+      <text x="225" y="152" font-size="14" fill="#1a1a2e" font-weight="800">✕</text>
+      <text x="255" y="148" font-size="12" fill="#1a1a2e" font-weight="800">✕</text>
+      <!-- waste pipe -->
+      <rect x="125" y="115" width="40" height="6" fill="#4a4a4a"/>
+      <ellipse cx="170" cy="128" rx="10" ry="4" fill="#5a3a1a" opacity=".7"/>
+    </svg>`;
+    return{type:'mcq',topic:'pollution_types',
+      q:{en:'Look at the picture. A factory near a river releases smoke from its chimneys and waste into the river — and animals in the river are dying. Which <b>types of pollution</b> may occur in this environment?',
+         id:'Perhatikan gambar. Sebuah pabrik dekat sungai mengeluarkan asap dari cerobong dan limbah ke sungai — dan hewan di sungai mati. <b>Jenis polusi</b> apa yang terjadi di lingkungan ini?'},
+      diagram,
+      opts,ans,
+      hint:{en:'Two things are polluted: the sky and the river.',
+            id:'Dua hal yang tercemar: langit dan sungai.'},
+      concept:{en:'A single source can cause more than one type of pollution at once.',
+               id:'Satu sumber dapat menyebabkan lebih dari satu jenis polusi sekaligus.'},
+      steps:{en:['Smoke from chimneys → <b>air pollution</b>.','Waste in river kills fish → <b>water pollution</b>.','So: <b>air and water pollution</b>.'],
+             id:['Asap dari cerobong → <b>polusi udara</b>.','Limbah di sungai membunuh ikan → <b>polusi air</b>.','Jadi: <b>polusi udara dan air</b>.']}};
+  },
+  four_students_pollution:()=>{
+    const cor={en:'Hana and Musa',id:'Hana dan Musa'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'Hana and Akhtar',id:'Hana dan Akhtar'},
+      {en:'Akhtar and Musa',id:'Akhtar dan Musa'},
+      {en:'Akhtar and Nayla',id:'Akhtar dan Nayla'}]);
+    return{type:'mcq',topic:'pollution_env',
+      q:{en:`Class 5 students are talking about pollution.<br><br>
+        <b>Hana:</b> "Pollution can cause global warming which results in climate change."<br>
+        <b>Akhtar:</b> "Substances released from factories do not cause acid rain."<br>
+        <b>Musa:</b> "The waste on land can pollute the water."<br>
+        <b>Nayla:</b> "Wastewater from my home does not pollute the water."<br><br>
+        Which <b>two students</b> are correct?`,
+         id:`Siswa kelas 5 berbicara tentang polusi.<br><br>
+        <b>Hana:</b> "Polusi dapat menyebabkan pemanasan global yang berujung pada perubahan iklim."<br>
+        <b>Akhtar:</b> "Zat yang dikeluarkan pabrik tidak menyebabkan hujan asam."<br>
+        <b>Musa:</b> "Sampah di tanah dapat mencemari air."<br>
+        <b>Nayla:</b> "Air limbah dari rumahku tidak mencemari air."<br><br>
+        <b>Dua siswa</b> manakah yang benar?`},
+      opts,ans,
+      hint:{en:'Two of the statements have a wrong word like "do not" or "does not".',
+            id:'Dua pernyataan memiliki kata yang salah seperti "tidak".'},
+      concept:{en:'Factories DO cause acid rain. Wastewater DOES pollute. Pollution DOES lead to climate change. Land waste CAN seep into groundwater.',
+               id:'Pabrik MEMANG menyebabkan hujan asam. Air limbah MEMANG mencemari air. Polusi MEMANG menyebabkan perubahan iklim. Sampah di tanah BISA meresap ke air tanah.'},
+      steps:{en:['Hana ✓ — pollution → global warming → climate change.',
+                 'Akhtar ✗ — factory gases DO cause acid rain.',
+                 'Musa ✓ — waste on land seeps into groundwater.',
+                 'Nayla ✗ — wastewater DOES pollute water.',
+                 'Correct: <b>Hana and Musa</b>.'],
+             id:['Hana ✓ — polusi → pemanasan global → perubahan iklim.',
+                 'Akhtar ✗ — gas pabrik MEMANG menyebabkan hujan asam.',
+                 'Musa ✓ — sampah di tanah meresap ke air tanah.',
+                 'Nayla ✗ — air limbah MEMANG mencemari air.',
+                 'Yang benar: <b>Hana dan Musa</b>.']}};
+  },
+  tf_all_pollutants_gas:()=>({type:'tf',topic:'pollution_env',
+    q:{en:'All pollutants are gases.',id:'Semua polutan adalah gas.'},
+    ans:false,
+    hint:{en:'Plastic and oil are pollutants too.',id:'Plastik dan minyak juga polutan.'},
+    concept:{en:'Pollutants can be gases (smoke), liquids (oil) or solids (plastic, litter).',
+             id:'Polutan dapat berupa gas (asap), cairan (minyak), atau padat (plastik, sampah).'},
+    steps:{en:['Gas pollutants: car exhaust, factory smoke.','Liquid pollutants: oil spills, wastewater.','Solid pollutants: plastic, glass, metal.','So <b>not</b> all pollutants are gases.'],
+           id:['Polutan gas: knalpot, asap pabrik.','Polutan cair: tumpahan minyak, air limbah.','Polutan padat: plastik, kaca, logam.','Jadi <b>tidak</b> semua polutan adalah gas.']}}),
+  tf_oil_spills_only_animals:()=>({type:'tf',topic:'pollution_env',
+    q:{en:'Oil spills harm only animals.',id:'Tumpahan minyak hanya membahayakan hewan.'},
+    ans:false,
+    hint:{en:'Think about plants and water too.',id:'Pikirkan juga tumbuhan dan air.'},
+    concept:{en:'Oil spills harm animals, sea plants, the water itself, and people who depend on the sea.',
+             id:'Tumpahan minyak membahayakan hewan, tumbuhan laut, airnya sendiri, dan manusia yang bergantung pada laut.'},
+    steps:{en:['Oil blocks sunlight → sea plants die.','Oil poisons water → unsafe for everything.','So oil spills harm <b>much more</b> than just animals.'],
+           id:['Minyak menghalangi sinar matahari → tumbuhan laut mati.','Minyak meracuni air → tidak aman untuk apa pun.','Jadi tumpahan minyak membahayakan <b>lebih dari sekadar</b> hewan.']}}),
+
+  // ── FILL_BANK set sharing one bank: pollution vocabulary ──
+  fb_pollution_pure:()=>({type:'fill_bank',topic:'pollution_env',
+    q:{en:'Water that does not contain any other substances is __________.',
+       id:'Air yang tidak mengandung zat lain disebut __________.'},
+    bank:['Condense','vapour','pure','environment','pollution','water','poisonous','precipitation','dirty'],
+    answers:['pure','murni'],
+    display:{en:'pure',id:'pure (murni)'},
+    hint:{en:'Means "clean and only water".',id:'Berarti "bersih dan hanya air".'},
+    concept:{en:'Pure water is water with no other substances mixed in.',
+             id:'Air murni adalah air tanpa zat lain yang tercampur.'},
+    steps:{en:['Only water + nothing else = <b>pure</b>.'],
+           id:['Hanya air + tidak ada yang lain = <b>pure (murni)</b>.']}}),
+  fb_pollution_precip:()=>({type:'fill_bank',topic:'pollution_env',
+    q:{en:'Water that falls from clouds onto the Earth, especially as rain or snow, is __________.',
+       id:'Air yang jatuh dari awan ke Bumi, terutama berupa hujan atau salju, disebut __________.'},
+    bank:['Condense','vapour','pure','environment','pollution','water','poisonous','precipitation','dirty'],
+    answers:['precipitation','presipitasi'],
+    display:{en:'precipitation',id:'precipitation (presipitasi)'},
+    hint:{en:'Rain or snow falling.',id:'Hujan atau salju yang jatuh.'},
+    concept:{en:'Precipitation = water falling from clouds in any form.',
+             id:'Presipitasi = air yang jatuh dari awan dalam bentuk apa pun.'},
+    steps:{en:['Rain + snow + hail falling from clouds = <b>precipitation</b>.'],
+           id:['Hujan + salju + es yang jatuh dari awan = <b>precipitation</b>.']}}),
+  fb_pollution_def:()=>({type:'fill_bank',topic:'pollution_env',
+    q:{en:'__________ happens when harmful substances are introduced into the environment.',
+       id:'__________ terjadi ketika zat berbahaya masuk ke dalam lingkungan.'},
+    bank:['Condense','vapour','pure','environment','pollution','water','poisonous','precipitation','dirty'],
+    answers:['pollution','polusi'],
+    display:{en:'Pollution',id:'Pollution (polusi)'},
+    hint:{en:'The main topic of this chapter.',id:'Topik utama bab ini.'},
+    concept:{en:'Pollution = harmful substances added to the environment.',
+             id:'Polusi = zat berbahaya yang masuk ke lingkungan.'},
+    steps:{en:['Harmful substances + environment = <b>Pollution</b>.'],
+           id:['Zat berbahaya + lingkungan = <b>Pollution</b>.']}}),
+  fb_pollution_poisonous:()=>({type:'fill_bank',topic:'pollution_env',
+    q:{en:'Substances that are harmful are called __________.',
+       id:'Zat-zat yang berbahaya disebut __________.'},
+    bank:['Condense','vapour','pure','environment','pollution','water','poisonous','precipitation','dirty'],
+    answers:['poisonous','beracun'],
+    display:{en:'poisonous',id:'poisonous (beracun)'},
+    hint:{en:'Means "contains poison".',id:'Berarti "mengandung racun".'},
+    concept:{en:'Poisonous substances cause harm to living things.',
+             id:'Zat beracun membahayakan makhluk hidup.'},
+    steps:{en:['Harmful = <b>poisonous</b>.'],
+           id:['Berbahaya = <b>poisonous</b>.']}}),
+  fb_pollution_env:()=>({type:'fill_bank',topic:'pollution_env',
+    q:{en:'Pollution affects the __________ around us.',
+       id:'Polusi memengaruhi __________ di sekitar kita.'},
+    bank:['Condense','vapour','pure','environment','pollution','water','poisonous','precipitation','dirty'],
+    answers:['environment','lingkungan'],
+    display:{en:'environment',id:'environment (lingkungan)'},
+    hint:{en:'The natural world around us.',id:'Dunia alami di sekitar kita.'},
+    concept:{en:'Environment = everything around us (air, water, land, plants, animals).',
+             id:'Environment = segala sesuatu di sekitar kita (udara, air, tanah, tumbuhan, hewan).'},
+    steps:{en:['Around us = <b>environment</b>.'],
+           id:['Di sekitar kita = <b>environment</b>.']}}),
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -1824,6 +2185,138 @@ const EARTH_GEN = {
     concept:{en:'Tilt causes seasons; equator gets steady sunlight.',
              id:'Kemiringan menyebabkan musim; khatulistiwa mendapat sinar Matahari yang tetap.'},
     keys:['tilt','axis','equator','sun','season','miring','sumbu','khatulistiwa','matahari','musim']}),
+
+  // ─────────────────────────────────────────────────────────────
+  // NEW — Cambridge daily test Ch 11 patterns
+  // ─────────────────────────────────────────────────────────────
+  match_terms_earth:()=>({type:'match_pairs',topic:'earth_orbit',
+    q:{en:'Match each <b>term</b> with its correct <b>meaning</b>.',
+       id:'Pasangkan setiap <b>istilah</b> dengan <b>artinya</b> yang benar.'},
+    pairs:[
+      {term:{en:'axis',id:'sumbu'},
+       meaning:{en:'an imaginary line that goes through the centre of Earth',
+                id:'garis khayal yang melewati pusat Bumi'}},
+      {term:{en:'equator',id:'khatulistiwa'},
+       meaning:{en:'an imaginary line around the middle of Earth',
+                id:'garis khayal di sekitar tengah Bumi'}},
+      {term:{en:'Northern Hemisphere',id:'Belahan Bumi Utara'},
+       meaning:{en:'the top half of Earth that lies above the equator',
+                id:'setengah bagian atas Bumi yang berada di atas khatulistiwa'}},
+      {term:{en:'orbit',id:'orbit'},
+       meaning:{en:'the path of movement of an object around another',
+                id:'lintasan gerak suatu benda mengelilingi benda lain'}},
+    ],
+    hint:{en:'Axis goes through Earth; equator goes around it. Orbit is a path.',
+          id:'Sumbu melewati Bumi; khatulistiwa mengelilingi Bumi. Orbit adalah lintasan.'},
+    concept:{en:'Earth spins on its axis, divided by the equator into Northern and Southern Hemispheres, and orbits the Sun.',
+             id:'Bumi berputar pada sumbunya, dibagi oleh khatulistiwa menjadi Belahan Utara dan Selatan, serta mengorbit Matahari.'}}),
+  earth_spins_axis:()=>({type:'fill_bank',topic:'earth_orbit',
+    q:{en:'The Earth spins on its __________ as it moves around the Sun.',
+       id:'Bumi berputar pada __________-nya saat bergerak mengelilingi Matahari.'},
+    bank:['axis','orbit','ellipse'],
+    answers:['axis','sumbu','poros'],
+    display:{en:'axis',id:'axis (sumbu)'},
+    hint:{en:'The imaginary line through Earth\'s centre.',
+          id:'Garis khayal yang melewati pusat Bumi.'},
+    concept:{en:'Earth rotates on its axis once every 24 hours.',
+             id:'Bumi berputar pada sumbunya sekali tiap 24 jam.'},
+    steps:{en:['Spin on the line through its centre = rotate on its <b>axis</b>.'],
+           id:['Berputar pada garis di tengahnya = berotasi pada <b>axis (sumbu)</b>.']}}),
+  earth_orbit_shape:()=>{
+    const cor={en:'slight ellipse',id:'elips yang sedikit lonjong'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'circular',id:'lingkaran'},
+      {en:'straight line',id:'garis lurus'},
+      {en:'wavy line',id:'garis bergelombang'}]);
+    return{type:'mcq',topic:'earth_orbit',
+      q:{en:'Earth takes 365¼ days to move around the Sun. What is the <b>shape</b> of the path it takes?',
+         id:'Bumi memerlukan 365¼ hari untuk mengelilingi Matahari. Apa <b>bentuk</b> lintasan yang ditempuhnya?'},
+      opts,ans,
+      hint:{en:'Almost a circle, but slightly stretched.',
+            id:'Hampir bulat, tetapi sedikit lonjong.'},
+      concept:{en:'Earth\'s orbit is a slight ellipse — an oval shape, not a perfect circle.',
+               id:'Orbit Bumi adalah elips yang sedikit lonjong — bentuk oval, bukan lingkaran sempurna.'},
+      steps:{en:['Planets orbit in ellipses (oval paths).','Earth\'s ellipse is very close to a circle, so we say "<b>slight ellipse</b>".'],
+             id:['Planet mengorbit dalam bentuk elips (lintasan oval).','Elips Bumi sangat mendekati lingkaran, jadi disebut "<b>elips yang sedikit lonjong</b>".']}};
+  },
+  natural_satellite:()=>{
+    const cor={en:'The Moon',id:'Bulan'};
+    const{opts,ans}=mkOpts(cor,[
+      {en:'The Hubble Space Telescope',id:'Teleskop Luar Angkasa Hubble'},
+      {en:'The International Space Station',id:'Stasiun Luar Angkasa Internasional (ISS)'},
+      {en:'Mars',id:'Mars'}]);
+    return{type:'mcq',topic:'satellites',
+      q:{en:'There are thousands of satellites orbiting Earth. Which of these is a <b>natural satellite</b> of Earth?',
+         id:'Ada ribuan satelit yang mengorbit Bumi. Manakah yang merupakan <b>satelit alami</b> Bumi?'},
+      opts,ans,
+      hint:{en:'Natural = not made by humans.',id:'Alami = bukan buatan manusia.'},
+      concept:{en:'Earth\'s only natural satellite is the Moon. Hubble and ISS are man-made (artificial).',
+               id:'Satelit alami Bumi hanya Bulan. Hubble dan ISS adalah buatan manusia (artifisial).'},
+      steps:{en:['Hubble & ISS = built by humans → artificial.','Mars = a planet, not a satellite of Earth.','<b>Moon</b> = natural satellite of Earth.'],
+             id:['Hubble & ISS = dibuat manusia → buatan.','Mars = planet, bukan satelit Bumi.','<b>Bulan</b> = satelit alami Bumi.']}};
+  },
+  southern_summer_essay:()=>({type:'essay',topic:'earth_orbit',
+    q:{en:'Describe what causes the <b>Southern Hemisphere</b> to experience summer.',
+       id:'Jelaskan apa yang menyebabkan <b>Belahan Bumi Selatan</b> mengalami musim panas.'},
+    model:{en:`Earth's axis is <b>tilted</b> at about 23.5°. As Earth orbits the Sun, sometimes the <b>South Pole tilts toward the Sun</b>. When this happens, the Southern Hemisphere receives more <b>direct sunlight</b> and longer daylight hours, so it experiences summer. This happens around <b>December–February</b> in Earth's orbit. At the same time, the Northern Hemisphere tilts away from the Sun and has winter.`,
+           id:`Sumbu Bumi <b>miring</b> sekitar 23,5°. Saat Bumi mengorbit Matahari, terkadang <b>Kutub Selatan condong ke arah Matahari</b>. Ketika ini terjadi, Belahan Bumi Selatan menerima <b>sinar Matahari yang lebih langsung</b> dan siang yang lebih panjang, sehingga mengalami musim panas. Hal ini terjadi sekitar <b>Desember–Februari</b> dalam orbit Bumi. Saat yang sama, Belahan Utara menjauh dari Matahari dan mengalami musim dingin.`},
+    hint:{en:'Tilted axis + South Pole leaning toward the Sun.',
+          id:'Sumbu miring + Kutub Selatan condong ke Matahari.'},
+    concept:{en:'Seasons are caused by Earth\'s tilted axis as it orbits the Sun.',
+             id:'Musim disebabkan oleh sumbu Bumi yang miring saat mengelilingi Matahari.'},
+    keys:['tilt','south','sun','sunlight','december','miring','selatan','matahari','desember']}),
+  satellite_cloze:()=>({type:'scenario',topic:'satellites',
+    q:{en:'Humans launch thousands of human-made satellites into space. Complete the sentences about these satellites using the word bank.',
+       id:'Manusia meluncurkan ribuan satelit buatan ke luar angkasa. Lengkapi kalimat berikut tentang satelit itu menggunakan daftar kata.'},
+    bank:['information','light','measure','observe','pictures','predict','research'],
+    parts:[
+      {kind:'fill',
+       q:{en:'(a) These satellites __________ and study Earth and space.',
+          id:'(a) Satelit ini __________ dan mempelajari Bumi dan luar angkasa.'},
+       answers:['observe','mengamati'],
+       display:{en:'observe',id:'observe (mengamati)'}},
+      {kind:'fill',
+       q:{en:'(b) They send __________ to scientists on Earth.',
+          id:'(b) Satelit mengirim __________ kepada para ilmuwan di Bumi.'},
+       answers:['information','informasi'],
+       display:{en:'information',id:'information (informasi)'}},
+      {kind:'fill',
+       q:{en:'(c) They can also take __________ of objects in space.',
+          id:'(c) Satelit juga dapat mengambil __________ benda-benda di luar angkasa.'},
+       answers:['pictures','gambar','foto'],
+       display:{en:'pictures',id:'pictures (gambar)'}},
+      {kind:'fill',
+       q:{en:'(d) This allows scientists to carry out __________ on space.',
+          id:'(d) Hal ini memungkinkan para ilmuwan melakukan __________ tentang luar angkasa.'},
+       answers:['research','penelitian','riset'],
+       display:{en:'research',id:'research (penelitian)'}},
+    ],
+    hint:{en:'Use each word at most once. Think about what satellites actually do.',
+          id:'Pakai tiap kata paling banyak sekali. Pikirkan apa yang sebenarnya dilakukan satelit.'},
+    concept:{en:'Artificial satellites observe Earth and space, send back information and pictures, and help scientists do research.',
+             id:'Satelit buatan mengamati Bumi dan luar angkasa, mengirim informasi dan gambar, serta membantu ilmuwan melakukan penelitian.'}}),
+  hubble_two_correct:()=>{
+    const opts = [
+      {en:'It helps scientists make observations about space.',
+       id:'Membantu ilmuwan melakukan pengamatan tentang luar angkasa.'},
+      {en:'It is a natural satellite of Earth.',
+       id:'Hubble adalah satelit alami Bumi.'},
+      {en:'It takes about 95 minutes to orbit Earth once.',
+       id:'Hubble memerlukan sekitar 95 menit untuk satu kali mengorbit Bumi.'},
+      {en:'It can land on the Moon.',
+       id:'Hubble dapat mendarat di Bulan.'},
+    ];
+    return{type:'multi_check',topic:'satellites',
+      q:{en:'The <b>Hubble Space Telescope</b> is a large telescope orbiting Earth. Which sentences about it are correct? Tick the <b>TWO</b> correct answers.',
+         id:'<b>Teleskop Luar Angkasa Hubble</b> adalah teleskop besar yang mengorbit Bumi. Pernyataan mana yang benar tentang Hubble? Centang <b>DUA</b> jawaban yang benar.'},
+      opts, correctIdx:[0,2], require:2,
+      hint:{en:'Hubble is human-made and takes pictures of space.',
+            id:'Hubble buatan manusia dan mengambil gambar luar angkasa.'},
+      concept:{en:'Hubble is an artificial satellite that orbits Earth in about 95 minutes and helps scientists observe distant galaxies.',
+               id:'Hubble adalah satelit buatan yang mengorbit Bumi sekitar 95 menit dan membantu ilmuwan mengamati galaksi yang jauh.'},
+      steps:{en:['Hubble is <b>man-made</b>, not natural.','It <b>cannot land</b> — it orbits Earth.','It <b>observes space</b> ✓ and orbits Earth in ~<b>95 minutes</b> ✓.'],
+             id:['Hubble <b>buatan manusia</b>, bukan alami.','Hubble <b>tidak bisa mendarat</b> — ia mengorbit Bumi.','Hubble <b>mengamati luar angkasa</b> ✓ dan mengorbit Bumi sekitar <b>95 menit</b> ✓.']}};
+  },
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -1905,7 +2398,7 @@ function buildQueue(chKey){
   const keys = shuf(Object.keys(ch.gen));
   let qs = keys.map(k => ({key:k, gen:ch.gen[k]}));
   if(chKey === 'all'){
-    const typeOrder = {mcq:0, multi_check:0, tf:1, fill:2, fill_bank:2, essay:3, scenario:3};
+    const typeOrder = {mcq:0, multi_check:0, match_pairs:0, tf:1, fill:2, fill_bank:2, cycle_diagram:2, essay:3, scenario:3};
     qs = qs.map(q => ({...q, _t: q.gen().type}));
     qs.sort((a,b)=>(typeOrder[a._t]??9) - (typeOrder[b._t]??9));
   }
@@ -1931,6 +2424,8 @@ function buildUAS(){
     const out = [s.type];
     if(s.type === 'fill_bank') out.push('fill');
     if(s.type === 'multi_check') out.push('mcq');
+    if(s.type === 'match_pairs') out.push('mcq');
+    if(s.type === 'cycle_diagram') out.push('fill');
     if(s.type === 'scenario'){
       out.push('essay');
       if(s.parts && s.parts[0] && s.parts[0].kind === 'mcq') out.push('mcq');
@@ -1974,7 +2469,7 @@ function buildUAS(){
   }
 
   // Order: MCQ → FILL → ESSAY (chapter order preserved within each block)
-  const typeOrder = {mcq:0, multi_check:0, fill:1, fill_bank:1, essay:2, scenario:2, tf:3};
+  const typeOrder = {mcq:0, multi_check:0, match_pairs:0, fill:1, fill_bank:1, cycle_diagram:1, essay:2, scenario:2, tf:3};
   built.sort((a,b)=> (typeOrder[a.type]??9) - (typeOrder[b.type]??9));
 
   queue = built;
@@ -2153,6 +2648,8 @@ function renderQuestion(){
     case 'fill_bank':   inner = fillBankHtml(current); break;
     case 'multi_check': inner = multiCheckHtml(current); break;
     case 'scenario':    inner = scenarioHtml(current); break;
+    case 'match_pairs': inner = matchPairsHtml(current); break;
+    case 'cycle_diagram': inner = cycleDiagramHtml(current); break;
   }
   slot.innerHTML = `<div class="q-card">${inner}</div>`;
   switch(current.type){
@@ -2163,6 +2660,8 @@ function renderQuestion(){
     case 'fill_bank':   attachFillBank(); break;
     case 'multi_check': attachMultiCheck(); break;
     case 'scenario':    attachScenario(); break;
+    case 'match_pairs': attachMatchPairs(); break;
+    case 'cycle_diagram': attachCycleDiagram(); break;
   }
   attachHint();
 }
@@ -2175,7 +2674,9 @@ function badgeFor(typ){
     essay:{en:'📖 Short Answer',id:'📖 Uraian Singkat'},
     fill_bank:{en:'🗂️ Word Bank Fill',id:'🗂️ Isian dengan Daftar Kata'},
     multi_check:{en:'☑️ Tick Multiple',id:'☑️ Centang Beberapa'},
-    scenario:{en:'🔬 Scenario',id:'🔬 Skenario'}
+    scenario:{en:'🔬 Scenario',id:'🔬 Skenario'},
+    match_pairs:{en:'🔗 Match Pairs',id:'🔗 Pasangkan'},
+    cycle_diagram:{en:'🔄 Cycle Diagram',id:'🔄 Diagram Siklus'}
   };
   return `<span class="q-badge ${typ}">${t(labels[typ])}</span>`;
 }
@@ -2556,6 +3057,306 @@ function attachScenario(){
   });
 }
 
+// ── MATCH_PAIRS ─────────────────────────────────────────────────
+function matchPairsHtml(q){
+  const pairs = q.pairs || [];
+  // Render meanings in a shuffled order (terms in given order on the left).
+  // Use a stable shuffle stored per-render so checking is consistent.
+  const order = q._meaningOrder || shuf(pairs.map((_,i)=>i));
+  q._meaningOrder = order;
+  const colTerm = lang==='en' ? 'Term' : 'Istilah';
+  const colMean = lang==='en' ? 'Meaning' : 'Arti';
+  const instr = lang==='en'
+    ? 'Click a <b>term</b>, then click its matching <b>meaning</b>.'
+    : 'Klik sebuah <b>istilah</b>, lalu klik <b>arti</b> yang cocok.';
+  const total = pairs.length;
+  const progressLbl = lang==='en' ? `Matched: <span id="mpMatched">0</span> / ${total}` : `Cocok: <span id="mpMatched">0</span> / ${total}`;
+  const terms = pairs.map((p,i)=>`<button type="button" class="mp-card mp-term" data-i="${i}">${t(p.term)}</button>`).join('');
+  const meanings = order.map(origIdx => `<button type="button" class="mp-card mp-mean" data-i="${origIdx}">${t(pairs[origIdx].meaning)}</button>`).join('');
+  return `${badgeFor('match_pairs')}<div class="q-text">${t(q.q)}</div>
+    <div class="mp-instr">${instr}</div>
+    <div class="mp-grid">
+      <div>
+        <div class="mp-col-title">${colTerm}</div>
+        ${terms}
+      </div>
+      <div>
+        <div class="mp-col-title">${colMean}</div>
+        ${meanings}
+      </div>
+    </div>
+    <div class="mp-progress">${progressLbl}</div>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachMatchPairs(){
+  const total = (current.pairs||[]).length;
+  let matched = 0;
+  let wrongCount = 0;
+  let selTerm = null, selMean = null;
+  const matchedSet = new Set();
+  const matchedLbl = document.getElementById('mpMatched');
+
+  function clearSel(){
+    document.querySelectorAll('.mp-card.selected').forEach(c=>c.classList.remove('selected'));
+    selTerm = null; selMean = null;
+  }
+  function tryMatch(){
+    if(selTerm == null || selMean == null) return;
+    const termEl = document.querySelector(`.mp-term[data-i="${selTerm}"]`);
+    const meanEl = document.querySelector(`.mp-mean[data-i="${selMean}"]`);
+    if(selTerm === selMean){
+      // Correct pair
+      termEl.classList.remove('selected'); meanEl.classList.remove('selected');
+      termEl.classList.add('matched'); meanEl.classList.add('matched');
+      termEl.disabled = true; meanEl.disabled = true;
+      matchedSet.add(selTerm);
+      matched++;
+      if(matchedLbl) matchedLbl.textContent = matched;
+      selTerm = null; selMean = null;
+      if(matched >= total){
+        // Done — score as correct only if no wrong attempts; partial credit allowed.
+        const ok = wrongCount === 0;
+        checkAnswer(ok, ()=>{
+          document.querySelectorAll('.mp-card').forEach(c=>c.disabled=true);
+        });
+      }
+    } else {
+      // Wrong pair — shake and reset
+      wrongCount++;
+      [termEl, meanEl].forEach(el=>{
+        el.classList.add('shake');
+        setTimeout(()=>el.classList.remove('shake'), 400);
+      });
+      setTimeout(clearSel, 250);
+    }
+  }
+  document.querySelectorAll('.mp-term').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.disabled) return;
+      // Toggle off existing term selection
+      document.querySelectorAll('.mp-term.selected').forEach(x=>x.classList.remove('selected'));
+      selTerm = parseInt(b.dataset.i);
+      b.classList.add('selected');
+      tryMatch();
+    });
+  });
+  document.querySelectorAll('.mp-mean').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.disabled) return;
+      document.querySelectorAll('.mp-mean.selected').forEach(x=>x.classList.remove('selected'));
+      selMean = parseInt(b.dataset.i);
+      b.classList.add('selected');
+      tryMatch();
+    });
+  });
+}
+
+// ── CYCLE_DIAGRAM ───────────────────────────────────────────────
+function cycleDiagramHtml(q){
+  const bankTitle = lang==='en' ? 'Word Bank' : 'Daftar Kata';
+  const subBtn = lang==='en' ? '✓ Check Answers' : '✓ Periksa Jawaban';
+  const bankWords = t(q.bank);
+  const chips = bankWords.map((w,i)=>`<button type="button" class="bank-chip cd-chip" data-w="${w.replace(/"/g,'&quot;')}" data-i="${i}">${w}</button>`).join('');
+  // SVG layout: 4 boxes at top/right/bottom/left of a 460x340 viewBox
+  const positions = {
+    top:    {x:230, y:50,  ax:230, ay:50},
+    right:  {x:380, y:170, ax:380, ay:170},
+    bottom: {x:230, y:290, ax:230, ay:290},
+    left:   {x:80,  y:170, ax:80,  ay:170},
+  };
+  const boxW = 140, boxH = 56;
+  const nodes = q.nodes || [];
+  let svgNodes = '';
+  nodes.forEach((n,i)=>{
+    const p = positions[n.pos];
+    const x = p.x - boxW/2, y = p.y - boxH/2;
+    const isBlank = n.blank;
+    const labelTxt = isBlank ? '?' : t(n.label);
+    // wrap text into up to 3 lines (rough word-wrap)
+    const words = String(labelTxt).split(' ');
+    const lines = [];
+    let cur = '';
+    const maxLine = 18;
+    for(const w of words){
+      if((cur + ' ' + w).trim().length > maxLine){ if(cur) lines.push(cur); cur = w; }
+      else cur = (cur + ' ' + w).trim();
+    }
+    if(cur) lines.push(cur);
+    const lh = 12;
+    const startY = p.y - ((lines.length-1)*lh)/2 + 4;
+    const tspans = lines.map((ln,k)=>`<tspan x="${p.x}" y="${startY + k*lh}">${ln.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</tspan>`).join('');
+    const cls = isBlank ? 'cd-node blank' : 'cd-node';
+    const lblCls = isBlank ? 'cd-label placeholder' : 'cd-label';
+    svgNodes += `<g data-node="${i}">
+      <rect class="${cls}" data-node-rect="${i}" x="${x}" y="${y}" width="${boxW}" height="${boxH}" rx="10"/>
+      <text class="${lblCls}" data-node-label="${i}" text-anchor="middle">${tspans}</text>
+      ${isBlank ? `<rect class="cd-hit" data-blank="${i}" x="${x}" y="${y}" width="${boxW}" height="${boxH}" rx="10"/>` : ''}
+    </g>`;
+  });
+  // Arrows: simple curved arcs labelled with process name
+  const arrowPath = (fromIdx, toIdx) => {
+    const f = positions[nodes[fromIdx].pos], t2 = positions[nodes[toIdx].pos];
+    // Control point biased toward the centre creates a curve
+    const cx = (f.x + t2.x)/2 + (f.y - t2.y) * 0.25;
+    const cy = (f.y + t2.y)/2 + (t2.x - f.x) * 0.25;
+    return `M${f.x},${f.y} Q${cx},${cy} ${t2.x},${t2.y}`;
+  };
+  // Mid-point of curve for label placement
+  const arrowMid = (fromIdx, toIdx) => {
+    const f = positions[nodes[fromIdx].pos], t2 = positions[nodes[toIdx].pos];
+    const cx = (f.x + t2.x)/2 + (f.y - t2.y) * 0.25;
+    const cy = (f.y + t2.y)/2 + (t2.x - f.x) * 0.25;
+    // Quadratic midpoint
+    return {x: 0.25*f.x + 0.5*cx + 0.25*t2.x, y: 0.25*f.y + 0.5*cy + 0.25*t2.y};
+  };
+  let svgArrows = '';
+  (q.arrows||[]).forEach((a,i)=>{
+    const d = arrowPath(a.from, a.to);
+    const m = arrowMid(a.from, a.to);
+    svgArrows += `<path d="${d}" fill="none" stroke="#6366f1" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#cdArrow)" opacity=".7"/>
+      <rect x="${m.x-38}" y="${m.y-9}" width="76" height="18" rx="9" fill="#fff" stroke="#6366f1" stroke-width="1" opacity=".95"/>
+      <text class="cd-arrow-label" x="${m.x}" y="${m.y+4}" text-anchor="middle">${t(a.label)}</text>`;
+  });
+  return `${badgeFor('cycle_diagram')}<div class="q-text">${t(q.q)}</div>
+    <div class="bank-wrap">
+      <div class="bank-title">📦 ${bankTitle}</div>
+      <div class="bank-chips">${chips}</div>
+    </div>
+    <div class="cd-wrap">
+      <svg class="cd-svg" viewBox="0 0 460 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="cdArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+          </marker>
+        </defs>
+        ${svgArrows}
+        ${svgNodes}
+      </svg>
+    </div>
+    <button class="scenario-check-all" id="cdSub">${subBtn}</button>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachCycleDiagram(){
+  const nodes = current.nodes || [];
+  // Map node index → filled word (or null if not yet filled)
+  const fills = nodes.map(n => n.blank ? null : t(n.label));
+  let activeChip = null; // current selected word from bank
+  let activeBlankIdx = null;
+
+  function setNodeText(i, text, cls){
+    const rect = document.querySelector(`[data-node-rect="${i}"]`);
+    const label = document.querySelector(`[data-node-label="${i}"]`);
+    if(rect){
+      rect.setAttribute('class', cls || 'cd-node filled');
+    }
+    if(label){
+      label.setAttribute('class', 'cd-label');
+      // Re-wrap text
+      const words = String(text).split(' ');
+      const lines = [];
+      let cur = '';
+      const maxLine = 18;
+      for(const w of words){
+        if((cur + ' ' + w).trim().length > maxLine){ if(cur) lines.push(cur); cur = w; }
+        else cur = (cur + ' ' + w).trim();
+      }
+      if(cur) lines.push(cur);
+      const lh = 12;
+      // positions
+      const posMap = {top:{x:230,y:50},right:{x:380,y:170},bottom:{x:230,y:290},left:{x:80,y:170}};
+      const p = posMap[nodes[i].pos];
+      const startY = p.y - ((lines.length-1)*lh)/2 + 4;
+      label.innerHTML = lines.map((ln,k)=>`<tspan x="${p.x}" y="${startY + k*lh}">${ln.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</tspan>`).join('');
+    }
+  }
+
+  function clearActiveChip(){
+    if(activeChip){
+      activeChip.style.background = '';
+      activeChip.style.boxShadow = '';
+    }
+    activeChip = null;
+  }
+
+  document.querySelectorAll('.cd-chip').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if(c.disabled) return;
+      if(activeChip === c){ clearActiveChip(); return; }
+      clearActiveChip();
+      activeChip = c;
+      c.style.background = '#fff3c4';
+      c.style.boxShadow = '0 0 0 3px rgba(249,202,36,.4)';
+    });
+  });
+
+  document.querySelectorAll('.cd-hit').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      if(h.classList.contains('locked')) return;
+      const i = parseInt(h.dataset.blank);
+      if(activeChip){
+        // Fill this blank with the active chip's word
+        const w = activeChip.dataset.w;
+        // If this blank was previously filled, free that chip
+        if(fills[i] != null){
+          const prev = document.querySelector(`.cd-chip[data-w="${fills[i].replace(/"/g,'&quot;')}"]`);
+          if(prev){ prev.classList.remove('used'); prev.disabled = false; }
+        }
+        fills[i] = w;
+        setNodeText(i, w, 'cd-node filled');
+        activeChip.classList.add('used');
+        activeChip.disabled = true;
+        clearActiveChip();
+      } else {
+        // Clicking a filled blank without an active chip → un-fill (return word to bank)
+        if(fills[i] != null){
+          const w = fills[i];
+          const chip = document.querySelector(`.cd-chip[data-w="${w.replace(/"/g,'&quot;')}"]`);
+          if(chip){ chip.classList.remove('used'); chip.disabled = false; }
+          fills[i] = null;
+          setNodeText(i, '?', 'cd-node blank');
+        }
+      }
+    });
+  });
+
+  document.getElementById('cdSub').addEventListener('click', ()=>{
+    // Check that all blanks are filled
+    const blanksIdx = nodes.map((n,i)=>n.blank?i:-1).filter(i=>i>=0);
+    const unfilled = blanksIdx.filter(i=>fills[i]==null);
+    if(unfilled.length){
+      const fb = document.getElementById('fb');
+      fb.className='fb info show';
+      fb.innerHTML = lang==='en'
+        ? `<strong>Fill all the blanks first.</strong>`
+        : `<strong>Isi semua kotak kosong dulu.</strong>`;
+      return;
+    }
+    // Score each blank
+    let okAll = true;
+    blanksIdx.forEach(i=>{
+      const exp = norm(t(nodes[i].label));
+      const got = norm(fills[i]);
+      const correct = exp === got;
+      if(!correct) okAll = false;
+      setNodeText(i, fills[i], correct ? 'cd-node filled' : 'cd-node wrong');
+      // Lock hit area
+      const h = document.querySelector(`[data-blank="${i}"]`);
+      if(h) h.classList.add('locked');
+    });
+    document.querySelectorAll('.cd-chip').forEach(c=>c.disabled=true);
+    document.getElementById('cdSub').disabled = true;
+    // If wrong, show correct labels next to wrong ones
+    if(!okAll){
+      blanksIdx.forEach(i=>{
+        if(norm(fills[i]) !== norm(t(nodes[i].label))){
+          setTimeout(()=>setNodeText(i, t(nodes[i].label), 'cd-node filled'), 800);
+        }
+      });
+    }
+    checkAnswer(okAll, ()=>{});
+  });
+}
+
 function attachHint(){
   const btn = document.getElementById('hintBtn');
   const box = document.getElementById('hintBox');
@@ -2617,6 +3418,8 @@ function checkAnswer(ok, lockFn){
     else if(current.type==='tf') correctText = current.ans ? (lang==='en'?'True':'Benar') : (lang==='en'?'False':'Salah');
     else if(current.type==='fill' || current.type==='fill_bank') correctText = current.display ? t(current.display) : current.answers[0];
     else if(current.type==='multi_check') correctText = current.correctIdx.map(i=>t(current.opts[i])).join(' + ');
+    else if(current.type==='match_pairs') correctText = (current.pairs||[]).map(p=>`${t(p.term)} ↔ ${t(p.meaning)}`).join('; ');
+    else if(current.type==='cycle_diagram') correctText = (current.nodes||[]).filter(n=>n.blank).map(n=>t(n.label)).join(' / ');
     const lbl = lang==='en' ? '❌ Not quite.' : '❌ Belum tepat.';
     const isLbl = lang==='en' ? 'The correct answer is' : 'Jawaban yang benar adalah';
     fb.innerHTML = `<strong>${lbl}</strong> ${isLbl} <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
