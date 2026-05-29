@@ -1165,6 +1165,12 @@ function checkAnswer(ok, lockFn){
     else if(current.type==='fill') correctText = current.display ? t(current.display) : current.answers[0];
     fb.innerHTML = `<strong>❌ Belum tepat.</strong> Jawaban yang benar adalah <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
   }
+  // ── Mastery reached during weak-practice → auto-finish ──
+  if(isWeakPractice && smartScore >= 100){
+    if(typeof confetti === 'function') confetti();
+    setTimeout(()=>{ window.scrollTo({top:0,behavior:'smooth'}); renderDone(); }, 1600);
+    return;
+  }
   setTimeout(()=>{
     const nxt = document.createElement('button');
     nxt.className = 'restart-btn';

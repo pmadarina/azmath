@@ -1477,6 +1477,12 @@ function checkAnswer(ok, lockFn){
     const isLbl = lang==='en' ? 'The correct answer is' : 'Jawaban yang benar adalah';
     fb.innerHTML = `<strong>${lbl}</strong> ${isLbl} <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
   }
+  // ── Mastery reached during weak-practice → auto-finish (math pattern) ──
+  if(isWeakPractice && smartScore >= 100){
+    if(typeof confetti === 'function') confetti();
+    setTimeout(()=>{ window.scrollTo({top:0,behavior:'smooth'}); renderDone(); }, 1600);
+    return;
+  }
   setTimeout(()=>{
     const nxt = document.createElement('button');
     nxt.className = 'restart-btn';

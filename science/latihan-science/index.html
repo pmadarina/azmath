@@ -2621,14 +2621,18 @@ function checkAnswer(ok, lockFn){
     const isLbl = lang==='en' ? 'The correct answer is' : 'Jawaban yang benar adalah';
     fb.innerHTML = `<strong>${lbl}</strong> ${isLbl} <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
   }
+  // ── Mastery reached during weak-practice → auto-finish (math pattern) ──
+  if(isWeakPractice && smartScore >= 100){
+    confetti();
+    setTimeout(()=>{ window.scrollTo({top:0,behavior:'smooth'}); renderDone(); }, 1600);
+    return;
+  }
   setTimeout(()=>{
     const nxt = document.createElement('button');
     nxt.className = 'restart-btn';
     nxt.style.marginTop = '16px';
     nxt.style.padding = '10px 24px';
     nxt.style.fontSize = '.88rem';
-    // In weak-practice mode the loop continues until SmartScore 100,
-    // so always show "Next Question" (we refill on the fly).
     const willContinue = isWeakPractice && smartScore < 100;
     nxt.textContent = (idx+1 >= total && !willContinue)
       ? (lang==='en' ? '🏁 See Results' : '🏁 Lihat Hasil')
