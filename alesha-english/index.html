@@ -41,10 +41,10 @@ body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xm
 .map-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(236,72,153,.18),transparent 40%),radial-gradient(circle at 80% 70%,rgba(6,182,212,.18),transparent 40%);pointer-events:none}
 .map-svg{display:block;width:100%;height:auto;position:relative;z-index:1}
 .node-group{cursor:pointer}
-.node-circle,.node-icon{transform-origin:center;transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
-.node-group:hover .node-bob{animation-play-state:paused}
-.node-group:hover .node-circle{transform:scale(1.1)}
-.node-group:hover .node-icon{transform:scale(1.1)}
+.node-hit{fill:transparent;pointer-events:all}
+.node-circle{transition:filter .35s ease,stroke .35s ease}
+.node-group:hover .node-circle{filter:drop-shadow(0 0 14px rgba(255,255,255,.85)) drop-shadow(0 4px 10px rgba(0,0,0,.4));stroke:#fde68a}
+.node-group:hover .node-label,.node-group:hover .node-topic{fill:#fde68a}
 .node-circle{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
 .node-icon{font-size:26px;pointer-events:none;user-select:none}
 .node-label{font-size:10px;font-weight:900;fill:#fff;text-anchor:middle;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.8)}
@@ -255,6 +255,7 @@ function renderMap(){
     const done = save.worldsCompleted.includes(w.ch);
     const status = done ? '✓' : '▶️';
     h += `<g class="node-group" data-ch="${w.ch}" transform="translate(${w.x},${w.y})">
+      <circle class="node-hit" r="44"/>
       <g class="node-bob" style="animation-delay:${i*0.3}s">
         <circle class="node-circle" r="32" fill="url(#${w.grad})" stroke="#fff" stroke-width="3" opacity="0.95"/>
         <text class="node-icon" text-anchor="middle" dy="9">${w.icon}</text>
