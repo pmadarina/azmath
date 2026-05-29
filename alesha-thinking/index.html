@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alesha's Thinking Lab — Critical Thinking Practice</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#0f172a 0%,#1e1b4b 100%);min-height:100vh;display:flex;flex-direction:column;color:#e2e8f0}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#0f172a 0%,#312e81 40%,#1e293b 100%);color:#fff;padding:60px 24px 90px;text-align:center;position:relative;overflow:hidden;border-bottom:2px solid #f59e0b}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbbf24' fill-opacity='0.05'%3E%3Ccircle cx='40' cy='40' r='14' stroke='%23fbbf24' stroke-width='1.5' fill='none'/%3E%3Cpath d='M52 52 L65 65' stroke='%23fbbf24' stroke-width='2' fill='none'/%3E%3Ccircle cx='15' cy='15' r='1.5'/%3E%3Ccircle cx='65' cy='15' r='1.5'/%3E%3Ccircle cx='15' cy='65' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");opacity:.8}
+.hero-badge{display:inline-block;background:rgba(251,191,36,.15);border:1.5px solid rgba(251,191,36,.5);color:#fbbf24;border-radius:20px;font-size:.72rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative;font-family:'SF Mono','Menlo',monospace}
+.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:14px;position:relative;color:#fff}
+.hero h1 .accent{color:#fbbf24}
+.hero p{font-size:1rem;opacity:.85;max-width:420px;margin:0 auto;line-height:1.6;position:relative;color:#cbd5e1}
+.back-btn{position:absolute;top:16px;left:20px;background:rgba(251,191,36,.15);border:1.5px solid rgba(251,191,36,.5);color:#fbbf24;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
+.back-btn:hover{background:rgba(251,191,36,.28)}
+
+/* Cards */
+.main{max-width:780px;margin:-50px auto 0;padding:0 20px 60px;width:100%;position:relative;z-index:2}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.card{background:#1e293b;border-radius:20px;padding:26px 22px 22px;box-shadow:0 12px 36px rgba(0,0,0,.45);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden;border:1.5px solid #334155;color:#e2e8f0}
+.card::before{content:'CASE FILE';position:absolute;top:10px;right:14px;font-family:'SF Mono','Menlo',monospace;font-size:.55rem;font-weight:900;letter-spacing:2px;color:#475569;opacity:.7}
+.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.08}
+.card.amber{border-color:rgba(251,191,36,.4)}
+.card.amber::after{background:#fbbf24}
+.card.violet{border-color:rgba(139,92,246,.45)}
+.card.violet::after{background:#8b5cf6}
+.card.rose{border-color:rgba(244,63,94,.45)}
+.card.rose::after{background:#f43f5e}
+.card.cyan{border-color:rgba(34,211,238,.45)}
+.card.cyan::after{background:#22d3ee}
+.card.gold{border-color:rgba(251,191,36,.7)}
+.card.gold::after{background:#fbbf24}
+.card:hover{transform:translateY(-5px) rotate(-.4deg);box-shadow:0 18px 44px rgba(251,191,36,.18)}
+
+.card-accent{height:4px;border-radius:3px;margin-bottom:18px}
+.card.amber .card-accent{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.card.violet .card-accent{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.card.rose .card-accent{background:linear-gradient(90deg,#e11d48,#fb7185)}
+.card.cyan .card-accent{background:linear-gradient(90deg,#0891b2,#67e8f9)}
+.card.gold .card-accent{background:linear-gradient(90deg,#f59e0b,#fde68a)}
+
+.card-icon{font-size:2.4rem;margin-bottom:12px;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+.card h3{font-size:1.05rem;font-weight:900;color:#fbbf24;margin-bottom:8px;letter-spacing:-.2px}
+.card p{font-size:.82rem;color:#cbd5e1;line-height:1.55;margin-bottom:14px}
+
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.65rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.4px;font-family:'SF Mono','Menlo',monospace;text-transform:uppercase}
+.card.amber .pill{background:rgba(251,191,36,.15);color:#fbbf24}
+.card.violet .pill{background:rgba(139,92,246,.18);color:#c4b5fd}
+.card.rose .pill{background:rgba(244,63,94,.18);color:#fda4af}
+.card.cyan .pill{background:rgba(34,211,238,.18);color:#67e8f9}
+.card.gold .pill{background:rgba(251,191,36,.22);color:#fde68a}
+
+.section-label{font-size:.7rem;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:#64748b;padding:2px 2px;margin-bottom:10px;margin-top:24px;font-family:'SF Mono','Menlo',monospace}
+
+.card-arrow{position:absolute;bottom:18px;right:20px;font-size:1.2rem;opacity:.35;transition:opacity .18s,transform .18s;color:#fbbf24}
+.card:hover .card-arrow{opacity:1;transform:translateX(4px)}
+
+.mix-card{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 60%,#1e293b 100%);position:relative;grid-column:span 2}
+@media(max-width:520px){.mix-card{grid-column:span 1}}
+.mix-card h3{color:#fde68a}
+.mix-card .card-icon{filter:drop-shadow(0 2px 6px rgba(251,191,36,.5))}
+
+/* Rank badge */
+.rank-row{margin-top:30px;background:#1e293b;border:1.5px dashed #f59e0b;border-radius:16px;padding:16px 20px;text-align:center}
+.rank-row .rank-label{font-size:.68rem;font-weight:900;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace;margin-bottom:6px}
+.rank-row .rank-name{font-size:1.1rem;font-weight:900;color:#fbbf24;letter-spacing:-.3px}
+.rank-row .rank-sub{font-size:.78rem;color:#94a3b8;margin-top:4px}
+
+/* Lang toggle */
+.lang-toggle{position:absolute;top:16px;right:20px;background:rgba(251,191,36,.15);border:1.5px solid rgba(251,191,36,.5);color:#fbbf24;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:inherit;z-index:2}
+.lang-toggle:hover{background:rgba(251,191,36,.28)}
+
+.footer{margin-top:auto;text-align:center;padding:24px;color:#475569;font-size:.74rem;font-family:'SF Mono','Menlo',monospace;letter-spacing:1px}
+.footer span{color:#fbbf24;font-weight:700}
+
+@media(max-width:520px){
+  .hero{padding:48px 18px 80px}
+  .hero h1{font-size:2.3rem;letter-spacing:-1.5px}
+  .hero p{font-size:.88rem}
+  .hero-badge{font-size:.66rem;padding:4px 13px}
+  .main{padding:0 14px 40px}
+  .grid{gap:13px}
+  .card{padding:22px 18px 18px}
+  .card-icon{font-size:2rem;margin-bottom:8px}
+  .card h3{font-size:.95rem}
+  .card p{font-size:.78rem}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back-btn" href="../">← Subjects</a>
+  <button class="lang-toggle" id="langBtn" onclick="toggleLang()">🌐 ID</button>
+  <div class="hero-badge" id="heroBadge">🕵️ CRITICAL THINKING · STAGE 5</div>
+  <h1><span id="heroTitle">Alesha's</span> <span class="accent" id="heroTitleAccent">Thinking Lab</span></h1>
+  <p id="heroSub">Detective school for sharper minds — train your deduction, spot the flaws, crack the puzzles.</p>
+</div>
+
+<div class="main">
+
+  <div class="section-label" id="lblChapters">📋 4 SKILL TRACKS</div>
+
+  <div class="grid">
+
+    <a class="card amber" href="quiz/?ch=1">
+      <div class="card-accent"></div>
+      <span class="card-icon">🕵️</span>
+      <h3 data-en="Ch 1 · Detective Lab" data-id="Bab 1 · Lab Detektif">Ch 1 · Detective Lab</h3>
+      <p data-en="Crack mystery cases and logic grids. Use clues to eliminate suspects and find the truth."
+         data-id="Pecahkan kasus misteri dan teka-teki logika. Pakai petunjuk untuk menyingkirkan tersangka dan temukan kebenaran.">Crack mystery cases and logic grids. Use clues to eliminate suspects and find the truth.</p>
+      <div class="pill-row">
+        <span class="pill" data-en="MYSTERY" data-id="MISTERI">MYSTERY</span>
+        <span class="pill" data-en="DEDUCTION" data-id="DEDUKSI">DEDUCTION</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="card violet" href="quiz/?ch=2">
+      <div class="card-accent"></div>
+      <span class="card-icon">🧩</span>
+      <h3 data-en="Ch 2 · Brain Puzzles" data-id="Bab 2 · Puzzle Otak">Ch 2 · Brain Puzzles</h3>
+      <p data-en="Number sequences, shape patterns, analogies, and odd-one-outs. Train your pattern radar."
+         data-id="Deret angka, pola bentuk, analogi, dan mana yang beda. Asah radar polamu.">Number sequences, shape patterns, analogies, and odd-one-outs. Train your pattern radar.</p>
+      <div class="pill-row">
+        <span class="pill" data-en="PATTERN" data-id="POLA">PATTERN</span>
+        <span class="pill" data-en="ANALOGY" data-id="ANALOGI">ANALOGY</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="card rose" href="quiz/?ch=3">
+      <div class="card-accent"></div>
+      <span class="card-icon">🤔</span>
+      <h3 data-en="Ch 3 · Argument Detective" data-id="Bab 3 · Detektif Argumen">Ch 3 · Argument Detective</h3>
+      <p data-en="Find the hidden assumption. Spot fallacies. Evaluate arguments. Don't get fooled."
+         data-id="Temukan asumsi tersembunyi. Kenali kekeliruan logika. Nilai argumen. Jangan mau dibohongi.">Find the hidden assumption. Spot fallacies. Evaluate arguments. Don't get fooled.</p>
+      <div class="pill-row">
+        <span class="pill" data-en="LOGIC" data-id="LOGIKA">LOGIC</span>
+        <span class="pill" data-en="FALLACY" data-id="KEKELIRUAN">FALLACY</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="card cyan" href="quiz/?ch=4">
+      <div class="card-accent"></div>
+      <span class="card-icon">⚓</span>
+      <h3 data-en="Ch 4 · Strategy Lab" data-id="Bab 4 · Lab Strategi">Ch 4 · Strategy Lab</h3>
+      <p data-en="River crossings, weighing puzzles, escape sequences, lateral thinking riddles."
+         data-id="Menyeberangi sungai, teka-teki menimbang, urutan melarikan diri, teka-teki berpikir lateral.">River crossings, weighing puzzles, escape sequences, lateral thinking riddles.</p>
+      <div class="pill-row">
+        <span class="pill" data-en="STRATEGY" data-id="STRATEGI">STRATEGY</span>
+        <span class="pill" data-en="LATERAL" data-id="LATERAL">LATERAL</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="card gold mix-card" href="quiz/?ch=mix">
+      <div class="card-accent"></div>
+      <span class="card-icon">🎯</span>
+      <h3 data-en="Mixed Cases — 20 Random" data-id="Kasus Campuran — 20 Acak">Mixed Cases — 20 Random</h3>
+      <p data-en="One bonus round across all 4 skills. 20 hand-picked random questions. Test what you've mastered."
+         data-id="Satu ronde bonus dari semua 4 keterampilan. 20 soal acak terpilih. Uji apa yang sudah kamu kuasai.">One bonus round across all 4 skills. 20 hand-picked random questions. Test what you've mastered.</p>
+      <div class="pill-row">
+        <span class="pill" data-en="ALL CHAPTERS" data-id="SEMUA BAB">ALL CHAPTERS</span>
+        <span class="pill" data-en="20 QUESTIONS" data-id="20 SOAL">20 QUESTIONS</span>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+  </div>
+
+  <div class="rank-row">
+    <div class="rank-label" data-en="DETECTIVE RANK" data-id="PANGKAT DETEKTIF">DETECTIVE RANK</div>
+    <div class="rank-name" id="rankName">🔍 Recruit</div>
+    <div class="rank-sub" id="rankSub" data-en="Solve cases to advance your rank." data-id="Pecahkan kasus untuk naik pangkat.">Solve cases to advance your rank.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>🕵️</span> ALESHA · CASE NO. 2026
+</div>
+
+<script>
+let lang = localStorage.getItem('azth_lang') || 'en';
+
+function applyLang(){
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    el.textContent = el.dataset[lang];
+  });
+  document.getElementById('langBtn').textContent = lang==='en' ? '🌐 ID' : '🌐 EN';
+  document.getElementById('heroTitle').textContent = lang==='en' ? "Alesha's" : "Lab Berpikir";
+  document.getElementById('heroTitleAccent').textContent = lang==='en' ? 'Thinking Lab' : 'Alesha';
+  document.getElementById('heroSub').textContent = lang==='en'
+    ? "Detective school for sharper minds — train your deduction, spot the flaws, crack the puzzles."
+    : "Sekolah detektif untuk pikiran yang tajam — latih deduksi, kenali kekeliruan, pecahkan teka-teki.";
+  document.getElementById('heroBadge').textContent = lang==='en' ? '🕵️ CRITICAL THINKING · STAGE 5' : '🕵️ BERPIKIR KRITIS · TINGKAT 5';
+  document.getElementById('lblChapters').textContent = lang==='en' ? '📋 4 SKILL TRACKS' : '📋 4 JALUR KETERAMPILAN';
+}
+
+function toggleLang(){
+  lang = lang==='en' ? 'id' : 'en';
+  localStorage.setItem('azth_lang', lang);
+  applyLang();
+  updateRank();
+}
+
+function updateRank(){
+  let solved = 0;
+  try { solved = parseInt(localStorage.getItem('azth_solved')||'0',10) || 0; } catch(e){}
+  const ranks = lang==='en' ? [
+    {n:'🔍 Recruit', sub:'Solve cases to advance.', min:0},
+    {n:'🕵️ Junior Detective', sub:'Nice work — keep cracking cases.', min:10},
+    {n:'🕵️‍♀️ Detective', sub:'You read clues like a pro.', min:30},
+    {n:'🎖️ Senior Detective', sub:'Few cases stump you now.', min:60},
+    {n:'🏆 Master Detective', sub:'No puzzle is safe from you.', min:100}
+  ] : [
+    {n:'🔍 Calon Detektif', sub:'Pecahkan kasus untuk naik pangkat.', min:0},
+    {n:'🕵️ Detektif Junior', sub:'Bagus — terus pecahkan kasus.', min:10},
+    {n:'🕵️‍♀️ Detektif', sub:'Kamu baca petunjuk seperti pro.', min:30},
+    {n:'🎖️ Detektif Senior', sub:'Sedikit kasus yang bisa menjebakmu.', min:60},
+    {n:'🏆 Detektif Master', sub:'Tidak ada teka-teki yang aman darimu.', min:100}
+  ];
+  let cur = ranks[0];
+  for(const r of ranks) if(solved >= r.min) cur = r;
+  document.getElementById('rankName').textContent = cur.n + '  ·  ' + solved + (lang==='en'?' solved':' selesai');
+  document.getElementById('rankSub').textContent = cur.sub;
+}
+
+applyLang();
+updateRank();
+</script>
+</body>
+</html>

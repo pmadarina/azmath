@@ -114,6 +114,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 .subject.alesha .subject-tagline{color:#7c3aed}
 .subject.alesha .stat-pill{background:#ede9fe;color:#6d28d9}
 
+.subject.thinking{box-shadow:0 8px 28px rgba(15,23,42,.25);background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%);color:#e2e8f0}
+.subject.thinking:hover{box-shadow:0 18px 44px rgba(251,191,36,.35)}
+.subject.thinking::before{background:linear-gradient(90deg,#fbbf24,#dc2626)}
+.subject.thinking::after{background:radial-gradient(circle,#fbbf24,#dc2626)}
+.subject.thinking h2{color:#fbbf24}
+.subject.thinking p{color:#cbd5e1}
+.subject.thinking .subject-icon{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fbbf24;box-shadow:0 6px 16px rgba(251,191,36,.3)}
+.subject.thinking .subject-tagline{color:#fbbf24}
+.subject.thinking .stat-pill{background:rgba(251,191,36,.18);color:#fde68a;border:1px solid rgba(251,191,36,.3)}
+.subject.thinking .subject-cta{background:rgba(251,191,36,.15);color:#fbbf24}
+
 .subject-cta{position:absolute;top:20px;right:18px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;transition:transform .22s,background .22s;color:#999;background:#f5f7fa}
 .subject:hover .subject-cta{transform:translateX(4px) scale(1.1);color:#fff}
 .subject.math:hover .subject-cta{background:#4f8ef7}
@@ -125,6 +136,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 .subject.islamic:hover .subject-cta{background:#10b981}
 .subject.arabic:hover .subject-cta{background:#06b6d4}
 .subject.alesha:hover .subject-cta{background:#a78bfa}
+.subject.thinking:hover .subject-cta{background:#fbbf24;color:#0f172a}
 
 /* Footer */
 .footer{margin-top:auto;text-align:center;padding:28px;color:#999;font-size:.78rem}
@@ -263,16 +275,28 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
   <div class="section-label">⭐ Personal Library (Beyond School)</div>
   <div class="subject-grid">
 
-    <a class="subject alesha" href="alesha-english/" style="grid-column:span 2">
+    <a class="subject alesha" href="alesha-english/">
       <span class="subject-cta">→</span>
       <div class="subject-icon">📚</div>
-      <div class="subject-tagline">Alesha's Library</div>
-      <h2>Alesha's English Library</h2>
-      <p>Cambridge Stage 5 skills — past perfect, second conditional, although, reading comprehension, inferencing, vocab, punctuation, and writing prompts. Built for Alesha. ✨</p>
+      <div class="subject-tagline">English Library</div>
+      <h2>English Library</h2>
+      <p>Past perfect, second conditional, comprehension, inferencing, vocab, writing prompts. Cambridge Stage 5. ✨</p>
       <div class="subject-stats">
         <span class="stat-pill">8 chapters</span>
         <span class="stat-pill">Learning Now ⭐</span>
-        <span class="stat-pill">Cambridge Stage 5</span>
+      </div>
+    </a>
+
+    <a class="subject thinking" href="alesha-thinking/">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🕵️</div>
+      <div class="subject-tagline">Thinking Lab</div>
+      <h2>Thinking Lab</h2>
+      <p>Detective mysteries, brain puzzles, argument flaws, strategy &amp; logic. Train sharper minds. 🔍</p>
+      <div class="subject-stats">
+        <span class="stat-pill">4 chapters</span>
+        <span class="stat-pill">48 puzzles</span>
+        <span class="stat-pill">Bilingual</span>
       </div>
     </a>
 
