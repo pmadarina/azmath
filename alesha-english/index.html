@@ -45,6 +45,7 @@ body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xm
 .node-circle{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
 .node-icon{font-size:26px;pointer-events:none;user-select:none}
 .node-label{font-size:10px;font-weight:900;fill:#fff;text-anchor:middle;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.node-topic{font-size:8.5px;font-weight:700;fill:#fde68a;text-anchor:middle;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.85);letter-spacing:.3px}
 .node-status{font-size:14px;pointer-events:none}
 .node-bob{animation:nodeBob 3s ease-in-out infinite}
 @keyframes nodeBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
@@ -202,14 +203,14 @@ const BADGES = [
 ];
 
 const WORLDS = [
-  {ch:'1', name:'Time Travel Tower', icon:'⏳', x:100, y:90, grad:'nodeGrad1'},
-  {ch:'2', name:'Imagination Island', icon:'🌴', x:240, y:170, grad:'nodeGrad2'},
-  {ch:'3', name:'Contrast Castle', icon:'🏰', x:390, y:110, grad:'nodeGrad3'},
-  {ch:'4', name:'Story Forest', icon:'🌲', x:540, y:200, grad:'nodeGrad4'},
-  {ch:'5', name:'Vocab Cavern', icon:'💎', x:560, y:340, grad:'nodeGrad5'},
-  {ch:'6', name:'Quotation Quarry', icon:'💬', x:400, y:400, grad:'nodeGrad2'},
-  {ch:'7', name:'Hidden Clue Caves', icon:'🔍', x:230, y:380, grad:'nodeGrad1'},
-  {ch:'8', name:"Writer's Workshop", icon:'✒️', x:110, y:260, grad:'nodeGrad3'}
+  {ch:'1', name:'Time Travel Tower',    topic:'Past Perfect',           icon:'⏳', x:100, y:90,  grad:'nodeGrad1'},
+  {ch:'2', name:'Imagination Island',   topic:'Second Conditional',     icon:'🌴', x:240, y:170, grad:'nodeGrad2'},
+  {ch:'3', name:'Contrast Castle',      topic:'Although / Even Though', icon:'🏰', x:390, y:110, grad:'nodeGrad3'},
+  {ch:'4', name:'Story Forest',         topic:'Reading Comprehension',  icon:'🌲', x:540, y:200, grad:'nodeGrad4'},
+  {ch:'5', name:'Vocab Cavern',         topic:'Vocab in Context',       icon:'💎', x:560, y:340, grad:'nodeGrad5'},
+  {ch:'6', name:'Quotation Quarry',     topic:'Direct Speech',          icon:'💬', x:400, y:400, grad:'nodeGrad2'},
+  {ch:'7', name:'Hidden Clue Caves',    topic:'Inferencing',            icon:'🔍', x:230, y:380, grad:'nodeGrad1'},
+  {ch:'8', name:"Writer's Workshop",    topic:'Writing Prompts',        icon:'✒️', x:110, y:260, grad:'nodeGrad3'}
 ];
 
 // ════════════════════════════════════════════════════════════════
@@ -254,6 +255,7 @@ function renderMap(){
       <circle class="node-circle" r="32" fill="url(#${w.grad})" stroke="#fff" stroke-width="3" opacity="0.95"/>
       <text class="node-icon" text-anchor="middle" dy="9">${w.icon}</text>
       <text class="node-label" y="55">${w.name}</text>
+      <text class="node-topic" y="69">${w.topic}</text>
       <text class="node-status" x="22" y="-22" text-anchor="middle">${status}</text>
     </g>`;
   });
