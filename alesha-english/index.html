@@ -3,230 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alesha's English Library</title>
+<title>Alesha's English Adventure</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#f5f3ff 0%,#ffffff 100%);min-height:100vh;display:flex;flex-direction:column}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 30%,#581c87 70%,#1e1b4b 100%);min-height:100vh;color:#fff;overflow-x:hidden;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cg fill='%23fff' opacity='0.4'%3E%3Ccircle cx='20' cy='30' r='1'/%3E%3Ccircle cx='80' cy='15' r='1.5'/%3E%3Ccircle cx='140' cy='40' r='1'/%3E%3Ccircle cx='180' cy='80' r='1.2'/%3E%3Ccircle cx='40' cy='110' r='1'/%3E%3Ccircle cx='110' cy='130' r='1.4'/%3E%3Ccircle cx='160' cy='170' r='1'/%3E%3Ccircle cx='60' cy='180' r='1.2'/%3E%3Ccircle cx='100' cy='70' r='0.8'/%3E%3Ccircle cx='30' cy='160' r='0.9'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;z-index:0;animation:sparkle 12s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:.5}50%{opacity:1}}
 
-/* Hero */
-.hero{background:linear-gradient(135deg,#a78bfa 0%,#818cf8 40%,#06b6d4 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Ccircle cx='50' cy='10' r='2'/%3E%3Ccircle cx='10' cy='50' r='2'/%3E%3Ccircle cx='50' cy='50' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative}
-.hero h1{font-size:2.8rem;font-weight:900;letter-spacing:-1.5px;line-height:1.05;margin-bottom:10px;position:relative}
-.hero p{font-size:1rem;opacity:.92;max-width:460px;margin:0 auto;line-height:1.6;position:relative}
-.back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
-.back-btn:hover{background:rgba(255,255,255,.28)}
+/* HEADER */
+.hero{background:linear-gradient(135deg,#a78bfa 0%,#ec4899 30%,#06b6d4 70%,#8b5cf6 100%);color:#fff;padding:18px 18px 22px;text-align:center;position:relative;overflow:hidden;box-shadow:0 6px 28px rgba(167,139,250,.5);z-index:1}
+.hero-back{position:absolute;top:12px;left:14px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:5px 12px;border-radius:16px;font-size:.72rem;font-weight:800;cursor:pointer;text-decoration:none;z-index:2}
+.hero-back:hover{background:rgba(255,255,255,.35)}
+.hero h1{font-size:1.6rem;font-weight:900;letter-spacing:-.5px;margin-top:18px}
+.hero-sub{font-size:.78rem;opacity:.95;margin-top:4px;font-weight:600}
 
-.main{max-width:820px;margin:-44px auto 0;padding:0 20px 60px;width:100%;position:relative}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:520px){.grid{grid-template-columns:1fr}}
+/* PLAYER BAR */
+.player-bar{background:rgba(15,12,40,.85);backdrop-filter:blur(10px);border-bottom:2px solid rgba(167,139,250,.4);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative;z-index:1}
+.avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 4px 14px rgba(251,191,36,.5);flex-shrink:0;animation:bob 2.5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.player-info{flex:1;min-width:140px}
+.player-name{font-size:1rem;font-weight:900;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.level-badge{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:900;letter-spacing:.5px;box-shadow:0 2px 8px rgba(251,191,36,.5)}
+.xp-bar-wrap{margin-top:6px;background:rgba(255,255,255,.12);height:10px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.18)}
+.xp-bar{height:100%;background:linear-gradient(90deg,#06b6d4,#a78bfa,#ec4899);border-radius:6px;transition:width .6s ease;box-shadow:0 0 10px rgba(167,139,250,.7)}
+.xp-text{font-size:.7rem;font-weight:700;opacity:.85;margin-top:3px}
+.stat-pill{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:14px;padding:6px 12px;font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.stat-pill.streak{background:linear-gradient(135deg,rgba(251,146,60,.3),rgba(239,68,68,.3));border-color:rgba(251,146,60,.6)}
+.stat-pill.trophy{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(245,158,11,.3));border-color:rgba(251,191,36,.6)}
 
-.card{background:#fff;border-radius:24px;padding:28px 24px 24px;box-shadow:0 8px 32px rgba(167,139,250,.18);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
-.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.07}
-.card.lavender::after{background:#a78bfa}
-.card.indigo::after{background:#818cf8}
-.card.teal::after{background:#06b6d4}
-.card.sky::after{background:#38bdf8}
-.card.mint::after{background:#2dd4bf}
-.card.violet::after{background:#8b5cf6}
-.card.gold::after{background:#f59e0b}
-.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(167,139,250,.28)}
+/* MAIN */
+.main{max-width:880px;margin:0 auto;padding:18px 16px 60px;width:100%;position:relative;z-index:1;flex:1}
 
-.card-accent{height:5px;border-radius:3px;margin-bottom:20px}
-.card.lavender .card-accent{background:linear-gradient(90deg,#a78bfa,#ddd6fe)}
-.card.indigo .card-accent{background:linear-gradient(90deg,#818cf8,#c7d2fe)}
-.card.teal .card-accent{background:linear-gradient(90deg,#06b6d4,#a5f3fc)}
-.card.sky .card-accent{background:linear-gradient(90deg,#38bdf8,#bae6fd)}
-.card.mint .card-accent{background:linear-gradient(90deg,#2dd4bf,#99f6e4)}
-.card.violet .card-accent{background:linear-gradient(90deg,#8b5cf6,#ddd6fe)}
-.card.gold .card-accent{background:linear-gradient(90deg,#f59e0b,#fde68a)}
+.section-label{font-size:.72rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#fbbf24;margin:18px 0 10px;text-shadow:0 2px 6px rgba(0,0,0,.4)}
 
-.card-icon{font-size:2.4rem;margin-bottom:12px;display:block}
-.card h3{font-size:1.05rem;font-weight:900;color:#1a1a2e;margin-bottom:8px;letter-spacing:-.3px}
-.card p{font-size:.82rem;color:#666;line-height:1.55;margin-bottom:14px}
+/* MAP */
+.map-wrap{background:rgba(15,12,40,.6);border:2px solid rgba(167,139,250,.35);border-radius:24px;padding:14px;position:relative;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.4)}
+.map-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(236,72,153,.18),transparent 40%),radial-gradient(circle at 80% 70%,rgba(6,182,212,.18),transparent 40%);pointer-events:none}
+.map-svg{display:block;width:100%;height:auto;position:relative;z-index:1}
+.node-group{cursor:pointer;transition:transform .25s}
+.node-group:hover{transform:scale(1.12)}
+.node-circle{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.node-icon{font-size:26px;pointer-events:none;user-select:none}
+.node-label{font-size:10px;font-weight:900;fill:#fff;text-anchor:middle;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.node-status{font-size:14px;pointer-events:none}
+.node-bob{animation:nodeBob 3s ease-in-out infinite}
+@keyframes nodeBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.path-line{stroke:rgba(251,191,36,.55);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:pathFlow 30s linear infinite}
+@keyframes pathFlow{to{stroke-dashoffset:-200}}
 
-.pill-row{display:flex;gap:6px;flex-wrap:wrap}
-.pill{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
-.card.lavender .pill{background:#ede9fe;color:#6d28d9}
-.card.indigo .pill{background:#e0e7ff;color:#4338ca}
-.card.teal .pill{background:#cffafe;color:#0e7490}
-.card.sky .pill{background:#e0f2fe;color:#0369a1}
-.card.mint .pill{background:#ccfbf1;color:#0f766e}
-.card.violet .pill{background:#ede9fe;color:#5b21b6}
-.card.gold .pill{background:#fef3c7;color:#92400e}
+/* TROPHY WALL */
+.trophy-wall{background:rgba(15,12,40,.6);border:2px solid rgba(251,191,36,.4);border-radius:20px;padding:16px;margin-top:18px}
+.trophy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-top:10px}
+.trophy{aspect-ratio:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;transition:transform .2s}
+.trophy.unlocked{background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(245,158,11,.15));border-color:rgba(251,191,36,.65);box-shadow:0 4px 12px rgba(251,191,36,.3)}
+.trophy.unlocked:hover{transform:scale(1.08)}
+.trophy-icon{font-size:1.7rem;filter:grayscale(1) opacity(.35)}
+.trophy.unlocked .trophy-icon{filter:none}
+.trophy-name{font-size:.6rem;font-weight:800;text-align:center;opacity:.7;line-height:1.1}
+.trophy.unlocked .trophy-name{opacity:1;color:#fbbf24}
 
-.now-badge{position:absolute;top:14px;right:14px;background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff;font-size:.64rem;font-weight:900;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:12px;box-shadow:0 3px 10px rgba(245,158,11,.4);z-index:2}
+/* MINI-GAMES */
+.minigames-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.minigame{background:linear-gradient(135deg,rgba(236,72,153,.25),rgba(139,92,246,.25));border:2px solid rgba(236,72,153,.5);border-radius:20px;padding:18px 16px;text-decoration:none;color:#fff;transition:transform .2s,box-shadow .2s;cursor:pointer;display:block;position:relative;overflow:hidden}
+.minigame:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 10px 26px rgba(236,72,153,.4)}
+.minigame.speed{background:linear-gradient(135deg,rgba(251,146,60,.3),rgba(239,68,68,.25));border-color:rgba(251,146,60,.6)}
+.minigame.match{background:linear-gradient(135deg,rgba(6,182,212,.3),rgba(59,130,246,.25));border-color:rgba(6,182,212,.6)}
+.minigame.builder{background:linear-gradient(135deg,rgba(34,197,94,.3),rgba(16,185,129,.25));border-color:rgba(34,197,94,.6)}
+.minigame-icon{font-size:2.4rem;margin-bottom:6px;display:block}
+.minigame h3{font-size:1rem;font-weight:900;margin-bottom:4px}
+.minigame p{font-size:.78rem;opacity:.9;line-height:1.4}
+.best-pill{display:inline-block;margin-top:8px;background:rgba(0,0,0,.3);padding:3px 10px;border-radius:10px;font-size:.7rem;font-weight:800}
 
-.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#a78bfa;padding:2px 2px;margin-bottom:10px;margin-top:24px}
-
-.card-arrow{position:absolute;top:24px;right:22px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
-.card.priority .card-arrow{top:42px}
-.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
-
-.card.priority{border:2px solid #a78bfa;box-shadow:0 10px 36px rgba(167,139,250,.28)}
-
-.mix-card{background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 50%,#ede9fe 100%);border:2px solid #f59e0b;position:relative}
-.mix-card h3{color:#7c2d12}
-
-.footer{margin-top:auto;text-align:center;padding:24px;color:#aaa;font-size:.76rem}
-.footer span{color:#a78bfa;font-weight:700}
+.footer{margin-top:auto;text-align:center;padding:18px;color:rgba(255,255,255,.5);font-size:.72rem;position:relative;z-index:1}
+.footer span{color:#fbbf24;font-weight:700}
 
 @media(max-width:520px){
-  .hero{padding:40px 18px 72px}
-  .hero h1{font-size:2.1rem;letter-spacing:-1px}
-  .hero p{font-size:.88rem}
-  .hero-badge{font-size:.68rem;padding:4px 13px}
-  .main{padding:0 14px 40px}
-  .grid{gap:13px}
-  .card{padding:22px 18px 18px}
-  .card-icon{font-size:2rem;margin-bottom:8px}
-  .card h3{font-size:.95rem}
-  .card p{font-size:.78rem}
-  .pill{font-size:.62rem;padding:3px 8px}
+  .hero h1{font-size:1.3rem}
+  .avatar{width:46px;height:46px;font-size:1.6rem}
+  .player-name{font-size:.92rem}
+  .stat-pill{font-size:.72rem;padding:5px 10px}
+  .map-wrap{padding:8px}
+  .trophy-grid{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px}
+  .trophy-icon{font-size:1.4rem}
+  .trophy-name{font-size:.55rem}
 }
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <a class="back-btn" href="../">&larr; Subjects</a>
-  <div class="hero-badge">Cambridge Primary &middot; Stage 5</div>
-  <h1>📖 Alesha's English Library</h1>
-  <p>Your own practice library — grammar, comprehension, vocabulary and creative writing. Built just for you.</p>
+  <a class="hero-back" href="../">&larr; Subjects</a>
+  <h1>🗺️ Alesha's English Adventure</h1>
+  <div class="hero-sub">Cambridge Stage 5 &middot; Quest Mode</div>
+</div>
+
+<div class="player-bar">
+  <div class="avatar">🦊</div>
+  <div class="player-info">
+    <div class="player-name">Alesha <span class="level-badge" id="levelBadge">Lv 1</span></div>
+    <div class="xp-bar-wrap"><div class="xp-bar" id="xpBar" style="width:0%"></div></div>
+    <div class="xp-text" id="xpText">0 / 100 XP</div>
+  </div>
+  <div class="stat-pill streak">🔥 <span id="streakNum">0</span></div>
+  <div class="stat-pill trophy">🏆 <span id="trophyNum">0</span></div>
 </div>
 
 <div class="main">
 
-  <div class="section-label">⭐ Learning Now</div>
-  <div class="grid">
-
-    <a class="card lavender priority" href="quiz/?ch=1">
-      <span class="now-badge">Learning Now ⭐</span>
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">⏪</span>
-      <h3>Ch 1 · Past Perfect</h3>
-      <p>Use <i>had + verb</i> to talk about something that happened before another past event.</p>
-      <div class="pill-row">
-        <span class="pill">had + verb</span>
-        <span class="pill">before / by the time</span>
-      </div>
-    </a>
-
-    <a class="card indigo priority" href="quiz/?ch=2">
-      <span class="now-badge">Learning Now ⭐</span>
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🌟</span>
-      <h3>Ch 2 · Second Conditional</h3>
-      <p>Imagine "what if" situations with <i>If + past, would + verb</i>.</p>
-      <div class="pill-row">
-        <span class="pill">if + past</span>
-        <span class="pill">would</span>
-      </div>
-    </a>
-
-    <a class="card teal priority" href="quiz/?ch=3" style="grid-column:1/-1">
-      <span class="now-badge">Learning Now ⭐</span>
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔀</span>
-      <h3>Ch 3 · Although &amp; Even Though</h3>
-      <p>Show contrast between two ideas — but remember: never pair "although" with "but"!</p>
-      <div class="pill-row">
-        <span class="pill">although</span>
-        <span class="pill">even though</span>
-        <span class="pill">no "but"</span>
-      </div>
-    </a>
-
+  <div class="section-label">🗺️ The Overworld Map</div>
+  <div class="map-wrap">
+    <svg class="map-svg" viewBox="0 0 700 500" preserveAspectRatio="xMidYMid meet" id="mapSvg">
+      <defs>
+        <radialGradient id="nodeGrad1" cx="50%" cy="50%"><stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#a78bfa"/></radialGradient>
+        <radialGradient id="nodeGrad2" cx="50%" cy="50%"><stop offset="0%" stop-color="#fce7f3"/><stop offset="100%" stop-color="#ec4899"/></radialGradient>
+        <radialGradient id="nodeGrad3" cx="50%" cy="50%"><stop offset="0%" stop-color="#cffafe"/><stop offset="100%" stop-color="#06b6d4"/></radialGradient>
+        <radialGradient id="nodeGrad4" cx="50%" cy="50%"><stop offset="0%" stop-color="#dcfce7"/><stop offset="100%" stop-color="#22c55e"/></radialGradient>
+        <radialGradient id="nodeGrad5" cx="50%" cy="50%"><stop offset="0%" stop-color="#fef3c7"/><stop offset="100%" stop-color="#f59e0b"/></radialGradient>
+      </defs>
+      <!-- winding path -->
+      <path class="path-line" d="M 90,80 Q 200,40 280,120 T 470,160 Q 580,220 540,310 T 360,380 Q 240,430 130,360 Q 80,300 120,230" />
+      <g id="mapNodes"></g>
+    </svg>
   </div>
 
-  <div class="section-label">📚 Cambridge Stage 5 Skills</div>
-  <div class="grid">
-
-    <a class="card sky" href="quiz/?ch=4">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">📖</span>
-      <h3>Ch 4 · Reading Comprehension</h3>
-      <p>Read short passages and answer questions about what happens — and what it means.</p>
-      <div class="pill-row">
-        <span class="pill">passages</span>
-        <span class="pill">literal + inference</span>
-      </div>
+  <div class="section-label">⚡ Mini-Games</div>
+  <div class="minigames-grid">
+    <a class="minigame speed" href="quiz/?game=speed">
+      <span class="minigame-icon">⚡</span>
+      <h3>Lightning Tournament</h3>
+      <p>60 seconds. Smash as many questions as you can!</p>
+      <span class="best-pill">Best: <span id="bestSpeed">0</span></span>
     </a>
-
-    <a class="card mint" href="quiz/?ch=5">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">💬</span>
-      <h3>Ch 5 · Vocabulary in Context</h3>
-      <p>Use clues from the sentence to find the closest meaning of new words.</p>
-      <div class="pill-row">
-        <span class="pill">synonyms</span>
-        <span class="pill">context clues</span>
-      </div>
+    <a class="minigame match" href="quiz/?game=match">
+      <span class="minigame-icon">🃏</span>
+      <h3>Memory Match</h3>
+      <p>Flip cards. Match word ↔ meaning. Beat your time!</p>
+      <span class="best-pill">Best: <span id="bestMatch">—</span></span>
     </a>
-
-    <a class="card violet" href="quiz/?ch=6">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">💭</span>
-      <h3>Ch 6 · Direct Speech &amp; Punctuation</h3>
-      <p>Quotation marks, commas, capitals — write what characters say correctly.</p>
-      <div class="pill-row">
-        <span class="pill">"quotes"</span>
-        <span class="pill">capitals</span>
-      </div>
+    <a class="minigame builder" href="quiz/?game=builder">
+      <span class="minigame-icon">🧩</span>
+      <h3>Sentence Puzzle Cove</h3>
+      <p>Drag the jumbled words into the right order!</p>
+      <span class="best-pill">New mode</span>
     </a>
-
-    <a class="card lavender" href="quiz/?ch=7">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🔍</span>
-      <h3>Ch 7 · Inferencing</h3>
-      <p>Read between the lines — figure out feelings from clues in the text.</p>
-      <div class="pill-row">
-        <span class="pill">feelings</span>
-        <span class="pill">evidence</span>
-      </div>
-    </a>
-
-    <a class="card teal" href="quiz/?ch=8" style="grid-column:1/-1">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">✍️</span>
-      <h3>Ch 8 · Writing Prompts</h3>
-      <p>Story starters and creative prompts — write your own short stories with strong openings, middles and endings.</p>
-      <div class="pill-row">
-        <span class="pill">stories</span>
-        <span class="pill">description</span>
-        <span class="pill">paragraphs</span>
-      </div>
-    </a>
-
   </div>
 
   <div class="section-label">🎯 Mixed Review</div>
-  <div class="grid">
-    <a class="card gold mix-card" href="quiz/?ch=mix" style="grid-column:1/-1">
-      <span class="card-arrow">→</span>
-      <div class="card-accent"></div>
-      <span class="card-icon">🎯</span>
+  <div class="minigames-grid">
+    <a class="minigame" href="quiz/?ch=mix" style="background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(245,158,11,.25));border-color:rgba(251,191,36,.65)">
+      <span class="minigame-icon">🎯</span>
       <h3>Cambridge Stage 5 Mix</h3>
-      <p>A random mix of questions from every chapter — grammar, vocab, comprehension and writing. Great for revising!</p>
-      <div class="pill-row">
-        <span class="pill">All chapters</span>
-        <span class="pill">Random</span>
-        <span class="pill">~20 questions</span>
-      </div>
+      <p>20 random questions from every world. The ultimate test!</p>
     </a>
+  </div>
+
+  <div class="trophy-wall">
+    <div class="section-label" style="margin-top:0">🏆 Trophy Wall</div>
+    <div class="trophy-grid" id="trophyGrid"></div>
   </div>
 
 </div>
 
-<div class="footer">Alesha's English Library &middot; Built with 💜 for <span>brilliant readers</span></div>
+<div class="footer">Alesha's English Adventure &middot; Built with 💜 for <span>brilliant adventurers</span></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// SAVE
+// ════════════════════════════════════════════════════════════════
+const SAVE_KEY = 'alesha_save_v1';
+const DEFAULT_SAVE = {
+  xp:0, level:1, totalCorrect:0, totalAnswered:0,
+  badges:[], dailyStreak:0, longestStreak:0, lastPlayDate:null,
+  bestSpeedScore:0, bestMatchTime:0, worldsCompleted:[]
+};
+function loadSave(){
+  try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); return s?{...DEFAULT_SAVE,...s}:{...DEFAULT_SAVE}; }
+  catch(e){ return {...DEFAULT_SAVE}; }
+}
+function xpForLevel(n){ return (n*(n+1)/2)*100; } // sum(1..n)*100
+function levelFromXp(xp){ let lv=1; while(xpForLevel(lv) <= xp) lv++; return lv; }
+
+const BADGES = [
+  {id:'first_correct', icon:'⭐', name:'First Star'},
+  {id:'streak_5', icon:'🔥', name:'5 Combo'},
+  {id:'streak_10', icon:'🌋', name:'10 Combo'},
+  {id:'perfect_chapter', icon:'💯', name:'Perfect World'},
+  {id:'time_traveler', icon:'⏳', name:'Time Traveler'},
+  {id:'dreamer', icon:'🌴', name:'Dreamer'},
+  {id:'contrast_master', icon:'🏰', name:'Contrast Master'},
+  {id:'forest_explorer', icon:'🌲', name:'Forest Explorer'},
+  {id:'wordsmith', icon:'💎', name:'Wordsmith'},
+  {id:'inference_pro', icon:'🔍', name:'Inference Pro'},
+  {id:'daily_3', icon:'📅', name:'3-Day Streak'},
+  {id:'daily_7', icon:'🗓️', name:'Week Warrior'},
+  {id:'daily_30', icon:'👑', name:'Monthly Hero'},
+  {id:'speed_demon', icon:'⚡', name:'Speed Demon'},
+  {id:'memory_master', icon:'🃏', name:'Memory Master'}
+];
+
+const WORLDS = [
+  {ch:'1', name:'Time Travel Tower', icon:'⏳', x:100, y:90, grad:'nodeGrad1'},
+  {ch:'2', name:'Imagination Island', icon:'🌴', x:240, y:170, grad:'nodeGrad2'},
+  {ch:'3', name:'Contrast Castle', icon:'🏰', x:390, y:110, grad:'nodeGrad3'},
+  {ch:'4', name:'Story Forest', icon:'🌲', x:540, y:200, grad:'nodeGrad4'},
+  {ch:'5', name:'Vocab Cavern', icon:'💎', x:560, y:340, grad:'nodeGrad5'},
+  {ch:'6', name:'Quotation Quarry', icon:'💬', x:400, y:400, grad:'nodeGrad2'},
+  {ch:'7', name:'Hidden Clue Caves', icon:'🔍', x:230, y:380, grad:'nodeGrad1'},
+  {ch:'8', name:"Writer's Workshop", icon:'✒️', x:110, y:260, grad:'nodeGrad3'}
+];
+
+// ════════════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════════════
+const save = loadSave();
+save.level = levelFromXp(save.xp);
+
+// Daily streak check (display only — game increments on play)
+(function checkDailyDisplay(){
+  if(!save.lastPlayDate) return;
+  const today = new Date().toISOString().slice(0,10);
+  const last = save.lastPlayDate;
+  if(last === today) return;
+  const d1 = new Date(today), d2 = new Date(last);
+  const diffDays = Math.round((d1-d2)/(1000*60*60*24));
+  if(diffDays > 1){ save.dailyStreak = 0; localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
+})();
+
+function renderPlayer(){
+  document.getElementById('levelBadge').textContent = 'Lv ' + save.level;
+  const xpStart = xpForLevel(save.level-1);
+  const xpEnd = xpForLevel(save.level);
+  const need = xpEnd - xpStart;
+  const have = save.xp - xpStart;
+  const pct = Math.max(0, Math.min(100, (have/need)*100));
+  document.getElementById('xpBar').style.width = pct + '%';
+  document.getElementById('xpText').textContent = `${have} / ${need} XP`;
+  document.getElementById('streakNum').textContent = save.dailyStreak;
+  document.getElementById('trophyNum').textContent = save.badges.length;
+  document.getElementById('bestSpeed').textContent = save.bestSpeedScore;
+  document.getElementById('bestMatch').textContent = save.bestMatchTime ? save.bestMatchTime + 's' : '—';
+}
+
+function renderMap(){
+  const g = document.getElementById('mapNodes');
+  let h = '';
+  WORLDS.forEach((w,i)=>{
+    const done = save.worldsCompleted.includes(w.ch);
+    const status = done ? '✓' : '▶️';
+    h += `<g class="node-group node-bob" style="animation-delay:${i*0.3}s" data-ch="${w.ch}" transform="translate(${w.x},${w.y})">
+      <circle class="node-circle" r="32" fill="url(#${w.grad})" stroke="#fff" stroke-width="3" opacity="0.95"/>
+      <text class="node-icon" text-anchor="middle" dy="9">${w.icon}</text>
+      <text class="node-label" y="55">${w.name}</text>
+      <text class="node-status" x="22" y="-22" text-anchor="middle">${status}</text>
+    </g>`;
+  });
+  g.innerHTML = h;
+  g.querySelectorAll('.node-group').forEach(node=>{
+    node.addEventListener('click', ()=>{ location.href = 'quiz/?ch=' + node.dataset.ch; });
+  });
+}
+
+function renderTrophies(){
+  const grid = document.getElementById('trophyGrid');
+  grid.innerHTML = BADGES.map(b=>{
+    const unlocked = save.badges.includes(b.id);
+    return `<div class="trophy ${unlocked?'unlocked':''}" title="${b.name}">
+      <div class="trophy-icon">${b.icon}</div>
+      <div class="trophy-name">${b.name}</div>
+    </div>`;
+  }).join('');
+}
+
+renderPlayer();
+renderMap();
+renderTrophies();
+</script>
 
 </body>
 </html>

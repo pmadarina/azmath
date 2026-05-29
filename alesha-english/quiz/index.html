@@ -9,7 +9,7 @@
 body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180deg,#f5f3ff 0%,#ecfeff 100%);min-height:100vh;display:flex;flex-direction:column;color:#1a1a2e}
 
 /* Header */
-.hdr{background:linear-gradient(135deg,#a78bfa 0%,#818cf8 40%,#06b6d4 100%);color:#fff;padding:18px 20px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hdr{background:linear-gradient(135deg,#a78bfa 0%,#ec4899 30%,#06b6d4 70%,#8b5cf6 100%);color:#fff;padding:14px 18px;position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .hdr-back{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 12px;border-radius:18px;font-size:.78rem;font-weight:800;text-decoration:none}
 .hdr-back:hover{background:rgba(255,255,255,.28)}
 .hdr-title{font-size:1.1rem;font-weight:900;letter-spacing:-.3px;flex:1}
@@ -170,6 +170,52 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 /* Confetti */
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000}
 
+/* GAME UI */
+.game-pill{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.45);border-radius:14px;padding:5px 11px;font-size:.75rem;font-weight:900;display:flex;align-items:center;gap:5px;color:#fff;white-space:nowrap}
+.game-pill.streak{background:linear-gradient(135deg,rgba(251,146,60,.5),rgba(239,68,68,.5));animation:streakPulse 1.4s ease-in-out infinite}
+@keyframes streakPulse{0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,.6)}50%{box-shadow:0 0 0 6px rgba(251,146,60,0)}}
+.xp-float{position:fixed;font-size:1.4rem;font-weight:900;color:#fbbf24;text-shadow:0 2px 6px rgba(0,0,0,.4);pointer-events:none;z-index:9999;animation:xpFloat 1.4s ease-out forwards}
+@keyframes xpFloat{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1;transform:translateY(-20px) scale(1.2)}100%{opacity:0;transform:translateY(-110px) scale(1)}}
+.level-up-overlay{position:fixed;inset:0;background:radial-gradient(circle,rgba(251,191,36,.4),rgba(15,12,40,.92));display:flex;align-items:center;justify-content:center;z-index:9998;animation:fadeOverlay .4s ease}
+@keyframes fadeOverlay{from{opacity:0}to{opacity:1}}
+.level-up-card{background:linear-gradient(135deg,#fbbf24,#ec4899,#8b5cf6);color:#fff;padding:36px 50px;border-radius:28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:levelPop .7s cubic-bezier(.34,1.56,.64,1)}
+@keyframes levelPop{0%{transform:scale(.3) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.level-up-card h2{font-size:2.4rem;font-weight:900;margin-bottom:10px;letter-spacing:-1px}
+.level-up-card .big-lv{font-size:4.5rem;font-weight:900;line-height:1;margin:8px 0;text-shadow:0 4px 12px rgba(0,0,0,.3)}
+.badge-toast{position:fixed;top:14px;right:14px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 24px rgba(251,191,36,.5);z-index:9997;display:flex;align-items:center;gap:10px;animation:badgeIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes badgeIn{from{transform:translateX(120%) scale(.7)}to{transform:translateX(0) scale(1)}}
+.badge-toast .badge-icon{font-size:1.8rem}
+.badge-toast .badge-text{font-size:.8rem}
+.badge-toast .badge-text strong{display:block;font-size:.95rem}
+
+/* SPEED GAME */
+.speed-arena{text-align:center}
+.speed-timer{font-size:4rem;font-weight:900;background:linear-gradient(135deg,#ec4899,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.speed-timer.warn{animation:timerWarn .5s ease-in-out infinite alternate}
+@keyframes timerWarn{from{transform:scale(1)}to{transform:scale(1.08);filter:hue-rotate(-30deg)}}
+.speed-score{font-size:1.1rem;font-weight:800;color:#7c3aed;margin:6px 0 18px}
+.speed-shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* MATCH GAME */
+.match-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.match-card{aspect-ratio:1;background:linear-gradient(135deg,#a78bfa,#06b6d4);border-radius:14px;border:none;cursor:pointer;color:#fff;font-weight:800;font-size:.85rem;padding:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:inherit;transition:transform .2s,opacity .2s;line-height:1.2}
+.match-card.flipped{background:#fff;color:#1a1a2e;border:2.5px solid #a78bfa;box-shadow:0 4px 14px rgba(167,139,250,.3)}
+.match-card.matched{background:linear-gradient(135deg,#06b6d4,#2dd4bf);color:#fff;border-color:transparent;opacity:.6;cursor:default}
+.match-card:not(.matched):not(.flipped):hover{transform:scale(1.05)}
+.match-card.shake{animation:shake .35s}
+.match-hud{display:flex;justify-content:space-around;font-weight:900;font-size:1rem;margin-bottom:10px}
+.match-hud span{color:#7c3aed}
+@media(max-width:520px){.match-card{font-size:.72rem}}
+
+/* BUILDER */
+.builder-target{background:#fffbeb;border:2px dashed #f59e0b;border-radius:14px;padding:14px;min-height:64px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px}
+.builder-bank{background:#f5f3ff;border:2px solid #a78bfa;border-radius:14px;padding:14px;display:flex;flex-wrap:wrap;gap:6px;min-height:64px;margin-bottom:12px}
+.builder-chip{background:#fff;border:2px solid #a78bfa;color:#5b21b6;padding:8px 14px;border-radius:14px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.95rem;transition:transform .15s}
+.builder-chip:hover{transform:translateY(-2px);background:#ede9fe}
+.builder-chip.placed{background:#fef3c7;border-color:#f59e0b;color:#7c2d12}
+.builder-label{font-size:.7rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#92400e;margin-bottom:6px}
+
 @media(max-width:520px){
   .q-card{padding:22px 18px 18px}
   .q-text{font-size:.95rem;padding:12px 14px}
@@ -186,8 +232,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 <body>
 
 <div class="hdr">
-  <a class="hdr-back" href="../">&larr; Library</a>
+  <a class="hdr-back" href="../">&larr; Map</a>
   <div class="hdr-title" id="hdrTitle">📖 English Practice</div>
+  <div class="game-pill" id="lvlPill">Lv <span id="hLv">1</span></div>
+  <div class="game-pill streak" id="streakPill" style="display:none">🔥 <span id="hStreak">0</span></div>
+  <div class="game-pill" id="xpPill">⭐ <span id="hXp">0</span> XP</div>
   <div class="hdr-meta" id="hdrMeta">Question 1</div>
 </div>
 
@@ -222,6 +271,140 @@ function mkOpts(correct, distractors){
   while(all.length<4) all.push('—');
   const sh = shuf(all);
   return { opts: sh, ans: sh.indexOf(correct) };
+}
+
+// ════════════════════════════════════════════════════════════════
+// SAVE / GAMIFICATION
+// ════════════════════════════════════════════════════════════════
+const SAVE_KEY = 'alesha_save_v1';
+const DEFAULT_SAVE = { xp:0, level:1, totalCorrect:0, totalAnswered:0, badges:[], dailyStreak:0, longestStreak:0, lastPlayDate:null, bestSpeedScore:0, bestMatchTime:0, worldsCompleted:[] };
+function loadSave(){ try{const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');return s?{...DEFAULT_SAVE,...s}:{...DEFAULT_SAVE};}catch(e){return {...DEFAULT_SAVE};} }
+function saveSave(){ localStorage.setItem(SAVE_KEY, JSON.stringify(SAVE)); }
+function xpForLevel(n){ return (n*(n+1)/2)*100; }
+function levelFromXp(xp){ let lv=1; while(xpForLevel(lv) <= xp) lv++; return lv; }
+const SAVE = loadSave();
+SAVE.level = levelFromXp(SAVE.xp);
+
+let sessionCombo = 0;
+
+function tickDailyStreak(){
+  const today = new Date().toISOString().slice(0,10);
+  if(SAVE.lastPlayDate === today){ saveSave(); return; }
+  if(!SAVE.lastPlayDate){ SAVE.dailyStreak = 1; }
+  else {
+    const diff = Math.round((new Date(today) - new Date(SAVE.lastPlayDate))/86400000);
+    if(diff === 1) SAVE.dailyStreak++;
+    else SAVE.dailyStreak = 1;
+  }
+  if(SAVE.dailyStreak > SAVE.longestStreak) SAVE.longestStreak = SAVE.dailyStreak;
+  SAVE.lastPlayDate = today;
+  if(SAVE.dailyStreak >= 3) unlockBadge('daily_3');
+  if(SAVE.dailyStreak >= 7) unlockBadge('daily_7');
+  if(SAVE.dailyStreak >= 30) unlockBadge('daily_30');
+  saveSave();
+}
+
+function unlockBadge(id){
+  if(SAVE.badges.includes(id)) return;
+  SAVE.badges.push(id);
+  saveSave();
+  const meta = ({
+    first_correct:{icon:'⭐',name:'First Star!'},
+    streak_5:{icon:'🔥',name:'5 Combo!'},
+    streak_10:{icon:'🌋',name:'10 Combo!'},
+    perfect_chapter:{icon:'💯',name:'Perfect World!'},
+    time_traveler:{icon:'⏳',name:'Time Traveler'},
+    dreamer:{icon:'🌴',name:'Dreamer'},
+    contrast_master:{icon:'🏰',name:'Contrast Master'},
+    forest_explorer:{icon:'🌲',name:'Forest Explorer'},
+    wordsmith:{icon:'💎',name:'Wordsmith'},
+    inference_pro:{icon:'🔍',name:'Inference Pro'},
+    daily_3:{icon:'📅',name:'3-Day Streak'},
+    daily_7:{icon:'🗓️',name:'Week Warrior'},
+    daily_30:{icon:'👑',name:'Monthly Hero'},
+    speed_demon:{icon:'⚡',name:'Speed Demon'},
+    memory_master:{icon:'🃏',name:'Memory Master'}
+  })[id] || {icon:'🏆', name:id};
+  const t = document.createElement('div');
+  t.className = 'badge-toast';
+  t.innerHTML = `<div class="badge-icon">${meta.icon}</div><div class="badge-text">Badge Unlocked!<strong>${meta.name}</strong></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.transition='all .4s'; t.style.opacity='0'; t.style.transform='translateX(120%)'; setTimeout(()=>t.remove(),400); }, 2800);
+}
+
+function awardXp(base, isCorrect){
+  if(!isCorrect){ sessionCombo = 0; updateHeaderGame(); return 0; }
+  sessionCombo++;
+  let mult = 1;
+  if(sessionCombo >= 10) mult = 3;
+  else if(sessionCombo >= 5) mult = 2;
+  else if(sessionCombo >= 3) mult = 1.5;
+  const gained = Math.round(base * mult);
+  const prevLv = SAVE.level;
+  SAVE.xp += gained;
+  SAVE.totalCorrect++;
+  SAVE.level = levelFromXp(SAVE.xp);
+  if(SAVE.totalCorrect === 1) unlockBadge('first_correct');
+  if(sessionCombo === 5) unlockBadge('streak_5');
+  if(sessionCombo === 10) unlockBadge('streak_10');
+  saveSave();
+  showXpFloat(gained, mult);
+  if(SAVE.level > prevLv) showLevelUp(SAVE.level);
+  updateHeaderGame();
+  return gained;
+}
+
+function showXpFloat(xp, mult){
+  const f = document.createElement('div');
+  f.className = 'xp-float';
+  f.textContent = mult>1 ? `+${xp} XP ×${mult}!` : `+${xp} XP`;
+  f.style.left = (window.innerWidth/2 - 50 + (Math.random()-0.5)*100) + 'px';
+  f.style.top = (window.innerHeight/2) + 'px';
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(), 1500);
+}
+
+function showLevelUp(lv){
+  const o = document.createElement('div');
+  o.className = 'level-up-overlay';
+  o.innerHTML = `<div class="level-up-card"><h2>LEVEL UP!</h2><div class="big-lv">Lv ${lv}</div><p style="font-weight:800;letter-spacing:1px">You're getting stronger! 🚀</p></div>`;
+  document.body.appendChild(o);
+  for(let i=0;i<5;i++) setTimeout(goldConfetti, i*180);
+  o.addEventListener('click', ()=>o.remove());
+  setTimeout(()=>{ if(o.parentNode) o.remove(); }, 2800);
+}
+
+function updateHeaderGame(){
+  const hLv = document.getElementById('hLv');
+  const hXp = document.getElementById('hXp');
+  const hStr = document.getElementById('hStreak');
+  const strPill = document.getElementById('streakPill');
+  if(hLv) hLv.textContent = SAVE.level;
+  if(hXp) hXp.textContent = SAVE.xp;
+  if(hStr) hStr.textContent = sessionCombo;
+  if(strPill) strPill.style.display = sessionCombo >= 2 ? 'flex' : 'none';
+}
+
+function goldConfetti(){
+  const colors=['#fbbf24','#f59e0b','#ec4899','#a78bfa','#06b6d4','#ffffff'];
+  for(let i=0;i<40;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.background=pick(colors);
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.top='-20px';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    c.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    c.style.width = (8 + Math.random()*8) + 'px';
+    c.style.height = c.style.width;
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*400;
+    const dur=1800+Math.random()*1200;
+    c.animate([{transform:c.style.transform,opacity:1,top:'-20px'},
+               {transform:`translate(${dx}px,${window.innerHeight+40}px) rotate(${Math.random()*1080}deg)`,opacity:0,top:`${window.innerHeight+40}px`}],
+              {duration:dur,easing:'cubic-bezier(.3,.7,.4,1)'});
+    setTimeout(()=>c.remove(),dur);
+  }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -333,6 +516,20 @@ const CH1_GEN = {
     hint:'Use "by the time" + past simple, then "had" + past participle.',
     concept:'Past perfect describes the action completed BEFORE another past action.',
     keys:['had','by the time']
+  }),
+  pp_build_before: () => ({ type:'sentence_builder', topic:'past_perfect',
+    prompt:'Build a sentence with past perfect using "before":',
+    words:['Before','she','arrived',',','I','had','left','.'],
+    answer:'Before she arrived , I had left .',
+    hint:'Start with "Before".',
+    concept:'Past perfect (had left) shows the earlier of two past actions.'
+  }),
+  pp_build_train: () => ({ type:'sentence_builder', topic:'past_perfect',
+    prompt:'Build the past perfect sentence (about a train):',
+    words:['By','the','time','we','got','to','the','station',',','the','train','had','left','.'],
+    answer:'By the time we got to the station , the train had left .',
+    hint:'Start with "By the time".',
+    concept:'"By the time" is a classic past perfect trigger.'
   })
 };
 
@@ -446,6 +643,20 @@ const CH2_GEN = {
     hint:'Use "would" in both sentences.',
     concept:'2nd conditional helps us talk about dreams and possibilities.',
     keys:['would','if']
+  }),
+  sc_build_bird: () => ({ type:'sentence_builder', topic:'second_conditional',
+    prompt:'Build a second-conditional sentence about being a bird:',
+    words:['If','I','were','a','bird',',','I','would','fly','.'],
+    answer:'If I were a bird , I would fly .',
+    hint:'Start with "If".',
+    concept:'2nd conditional: If + past (were), would + verb.'
+  }),
+  sc_build_lottery: () => ({ type:'sentence_builder', topic:'second_conditional',
+    prompt:'Build a sentence about winning the lottery:',
+    words:['If','we','won','the','lottery',',','we','would','buy','a','house','.'],
+    answer:'If we won the lottery , we would buy a house .',
+    hint:'Past simple in the if-clause; would in the main clause.',
+    concept:'If + past simple, would + base verb.'
   })
 };
 
@@ -548,6 +759,20 @@ const CH3_GEN = {
     hint:'Pattern: Although/Even though + clause, main clause.',
     concept:'Contrast sentences make writing more interesting and grown-up.',
     keys:['although','even though']
+  }),
+  alt_build_rain: () => ({ type:'sentence_builder', topic:'although',
+    prompt:'Build a contrast sentence using "Although":',
+    words:['Although','it','was','raining',',','we','went','out','.'],
+    answer:'Although it was raining , we went out .',
+    hint:'No "but"! Just one contrast word.',
+    concept:'Although + clause, main clause — never add "but".'
+  }),
+  alt_build_tired: () => ({ type:'sentence_builder', topic:'although',
+    prompt:'Build a sentence with "Even though":',
+    words:['Even','though','she','was','tired',',','she','finished','the','race','.'],
+    answer:'Even though she was tired , she finished the race .',
+    hint:'"Even though" is the strongest contrast.',
+    concept:'Even though + clause, main clause.'
   })
 };
 
@@ -981,14 +1206,14 @@ When we reached her front gate, she squeezed my hand and said, "You are very kin
 // CHAPTERS
 // ════════════════════════════════════════════════════════════════
 const CHAPTERS = {
-  '1': { title:'⏪ Ch 1 · Past Perfect', gen: CH1_GEN },
-  '2': { title:'🌟 Ch 2 · Second Conditional', gen: CH2_GEN },
-  '3': { title:'🔀 Ch 3 · Although & Even Though', gen: CH3_GEN },
-  '4': { title:'📖 Ch 4 · Reading Comprehension', gen: CH4_GEN },
-  '5': { title:'💬 Ch 5 · Vocabulary in Context', gen: CH5_GEN },
-  '6': { title:'💭 Ch 6 · Direct Speech & Punctuation', gen: CH6_GEN },
-  '7': { title:'🔍 Ch 7 · Inferencing', gen: CH7_GEN },
-  '8': { title:'✍️ Ch 8 · Writing Prompts', gen: CH8_GEN }
+  '1': { title:'⏳ Time Travel Tower', gen: CH1_GEN, badge:'time_traveler' },
+  '2': { title:'🌴 Imagination Island', gen: CH2_GEN, badge:'dreamer' },
+  '3': { title:'🏰 Contrast Castle', gen: CH3_GEN, badge:'contrast_master' },
+  '4': { title:'🌲 Story Forest', gen: CH4_GEN, badge:'forest_explorer' },
+  '5': { title:'💎 Vocab Cavern', gen: CH5_GEN, badge:'wordsmith' },
+  '6': { title:'💬 Quotation Quarry', gen: CH6_GEN, badge:null },
+  '7': { title:'🔍 Hidden Clue Caves', gen: CH7_GEN, badge:'inference_pro' },
+  '8': { title:"✒️ Writer's Workshop", gen: CH8_GEN, badge:null }
 };
 
 const ALL_GENS = { ...CH1_GEN, ...CH2_GEN, ...CH3_GEN, ...CH4_GEN, ...CH5_GEN, ...CH6_GEN, ...CH7_GEN, ...CH8_GEN };
@@ -1000,8 +1225,10 @@ let queue=[], current=null, idx=0, total=0;
 let stats={correct:0, wrong:0, done:0};
 let lastResult=null;
 let currentChapterTitle=null;
+let currentChapterKey=null;
 
 function buildQueue(chKey){
+  currentChapterKey = chKey;
   if(chKey === 'mix'){
     currentChapterTitle = '🎯 Cambridge Stage 5 Mix';
     const all = Object.keys(ALL_GENS);
@@ -1016,7 +1243,10 @@ function buildQueue(chKey){
   total = queue.length;
   idx = 0;
   stats = {correct:0, wrong:0, done:0};
+  sessionCombo = 0;
+  tickDailyStreak();
   updateHeader();
+  updateHeaderGame();
   updateScore();
   next();
 }
@@ -1057,6 +1287,7 @@ function renderQuestion(){
     case 'fill_bank':   inner = fillBankHtml(current); break;
     case 'multi_check': inner = multiCheckHtml(current); break;
     case 'scenario':    inner = scenarioHtml(current); break;
+    case 'sentence_builder': inner = builderHtml(current); break;
   }
   slot.innerHTML = `<div class="q-card">${inner}</div>`;
   switch(current.type){
@@ -1067,6 +1298,7 @@ function renderQuestion(){
     case 'fill_bank':   attachFillBank(); break;
     case 'multi_check': attachMultiCheck(); break;
     case 'scenario':    attachScenario(); break;
+    case 'sentence_builder': attachBuilder(); break;
   }
   attachHint();
 }
@@ -1075,9 +1307,48 @@ function badgeFor(typ){
   const labels = {
     mcq:'📝 Multiple Choice', tf:'✅ True or False', fill:'📋 Fill in the Blank',
     essay:'📖 Short Answer', fill_bank:'🗂️ Word Bank Fill',
-    multi_check:'☑️ Tick Multiple', scenario:'📚 Passage / Scenario'
+    multi_check:'☑️ Tick Multiple', scenario:'📚 Passage / Scenario',
+    sentence_builder:'🧩 Sentence Puzzle'
   };
   return `<span class="q-badge ${typ}">${labels[typ]}</span>`;
+}
+
+// ── SENTENCE BUILDER ────────────────────────────────────────────
+function builderHtml(q){
+  const shuffled = shuf(q.words.map((w,i)=>({w,i})));
+  current._builderShuffled = shuffled;
+  const chips = shuffled.map((o,j)=>`<button type="button" class="builder-chip" data-orig="${o.i}" data-pos="${j}">${o.w}</button>`).join('');
+  return `${badgeFor('sentence_builder')}<div class="q-text">${q.prompt}</div>
+    <div class="builder-label">📝 Your sentence (click to remove)</div>
+    <div class="builder-target" id="builderTarget"></div>
+    <div class="builder-label">📦 Word bank (click to add)</div>
+    <div class="builder-bank" id="builderBank">${chips}</div>
+    <button class="fill-submit" id="builderCheck" style="width:100%;padding:14px">✓ Check Sentence</button>
+    ${hintBlock(q)}${feedbackBlock()}`;
+}
+function attachBuilder(){
+  const bank = document.getElementById('builderBank');
+  const tgt = document.getElementById('builderTarget');
+  bank.addEventListener('click', e=>{
+    const c = e.target.closest('.builder-chip');
+    if(!c || c.disabled) return;
+    if(c.parentNode === bank){ tgt.appendChild(c); c.classList.add('placed'); }
+    else { bank.appendChild(c); c.classList.remove('placed'); }
+  });
+  tgt.addEventListener('click', e=>{
+    const c = e.target.closest('.builder-chip');
+    if(!c || c.disabled) return;
+    bank.appendChild(c); c.classList.remove('placed');
+  });
+  document.getElementById('builderCheck').addEventListener('click', ()=>{
+    const built = Array.from(tgt.querySelectorAll('.builder-chip')).map(c=>c.textContent).join(' ').trim();
+    const ok = norm(built) === norm(current.answer);
+    checkAnswer(ok, ()=>{
+      tgt.querySelectorAll('.builder-chip').forEach(c=>c.disabled=true);
+      bank.querySelectorAll('.builder-chip').forEach(c=>c.disabled=true);
+      document.getElementById('builderCheck').disabled = true;
+    });
+  });
 }
 
 function hintBlock(q){
@@ -1426,6 +1697,8 @@ function registerResult(ok){
   lastResult = ok ? 'correct' : 'wrong';
   if(ok) stats.correct++; else stats.wrong++;
   stats.done++;
+  SAVE.totalAnswered++;
+  awardXp(10, ok);
   updateScore();
 }
 
@@ -1447,6 +1720,7 @@ function checkAnswer(ok, lockFn){
     else if(current.type==='tf') correctText = current.ans ? 'True' : 'False';
     else if(current.type==='fill' || current.type==='fill_bank') correctText = current.display || current.answers[0];
     else if(current.type==='multi_check') correctText = current.correctIdx.map(i=>current.opts[i]).join(' + ');
+    else if(current.type==='sentence_builder') correctText = current.answer;
     fb.innerHTML = `<strong>❌ Not quite.</strong> The correct answer is <strong>${correctText}</strong>.${stepsHtml?`<div class="steps">${stepsHtml}</div>`:''}${conceptHtml}`;
   }
   setTimeout(()=>{
@@ -1467,6 +1741,14 @@ function checkAnswer(ok, lockFn){
 function renderDone(){
   const pct = total>0 ? Math.round((stats.correct/total)*100) : 0;
   const msg = pct>=80 ? '🎉 Outstanding!' : pct>=60 ? '👍 Great job!' : pct>=40 ? '💪 Keep practising!' : '📚 Time to review!';
+  // Award world completion + badges
+  if(currentChapterKey && currentChapterKey !== 'mix'){
+    if(!SAVE.worldsCompleted.includes(currentChapterKey)) SAVE.worldsCompleted.push(currentChapterKey);
+    const chMeta = CHAPTERS[currentChapterKey];
+    if(chMeta && chMeta.badge && pct >= 60) unlockBadge(chMeta.badge);
+    if(pct === 100) unlockBadge('perfect_chapter');
+    saveSave();
+  }
   document.getElementById('quizSlot').innerHTML = `
     <div class="q-card done">
       <h2>${msg}</h2>
@@ -1475,11 +1757,12 @@ function renderDone(){
         <div class="done-stat"><strong>${stats.correct}</strong><span>Correct</span></div>
         <div class="done-stat"><strong>${stats.wrong}</strong><span>Wrong</span></div>
         <div class="done-stat"><strong>${pct}%</strong><span>Score</span></div>
+        <div class="done-stat"><strong>Lv ${SAVE.level}</strong><span>${SAVE.xp} XP</span></div>
       </div>
       <button class="restart-btn" onclick="location.reload()">🔄 Try Again</button>
-      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#7c3aed;font-weight:700;text-decoration:none">← Back to library</a></p>
+      <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#7c3aed;font-weight:700;text-decoration:none">← Back to map</a></p>
     </div>`;
-  if(pct>=70) for(let i=0;i<3;i++) setTimeout(confetti, i*250);
+  if(pct>=70) for(let i=0;i<3;i++) setTimeout(goldConfetti, i*250);
 }
 
 function confetti(){
@@ -1503,11 +1786,180 @@ function confetti(){
 }
 
 // ════════════════════════════════════════════════════════════════
+// MINI-GAME: SPEED CHALLENGE (60s)
+// ════════════════════════════════════════════════════════════════
+function startSpeedGame(){
+  currentChapterTitle = '⚡ Lightning Tournament';
+  currentChapterKey = null;
+  sessionCombo = 0;
+  tickDailyStreak();
+  updateHeader();
+  updateHeaderGame();
+  document.querySelector('.progress-wrap').style.display='none';
+  document.querySelector('.score-row').style.display='none';
+  let timeLeft = 60, score = 0, qIdx = 0;
+  const mcqGens = Object.values(ALL_GENS).filter(g => { try{const x=g();return x.type==='mcq'||x.type==='tf';}catch(e){return false;} });
+  const slot = document.getElementById('quizSlot');
+  slot.innerHTML = `<div class="q-card speed-arena">
+    <div class="speed-timer" id="spTimer">60</div>
+    <div class="speed-score">Score: <span id="spScore">0</span> &nbsp;·&nbsp; Best: ${SAVE.bestSpeedScore}</div>
+    <div id="spQuestion"></div>
+  </div>`;
+  function loadQ(){
+    const q = pick(mcqGens)();
+    const box = document.getElementById('spQuestion');
+    if(q.type === 'tf'){
+      box.innerHTML = `<div class="q-text">${q.q}</div><div class="tf-row">
+        <button class="tf-btn true" data-v="true">✓ True</button>
+        <button class="tf-btn false" data-v="false">✗ False</button></div>`;
+      box.querySelectorAll('.tf-btn').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const v = b.dataset.v === 'true';
+          if(v === q.ans){ score++; document.getElementById('spScore').textContent = score; loadQ(); }
+          else { box.classList.add('speed-shake'); setTimeout(()=>box.classList.remove('speed-shake'),350); loadQ(); }
+        });
+      });
+    } else {
+      const letters=['A','B','C','D'];
+      box.innerHTML = `<div class="q-text">${q.q}</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`).join('')}</div>`;
+      box.querySelectorAll('.opt').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const i = parseInt(b.dataset.i);
+          if(i === q.ans){ score++; document.getElementById('spScore').textContent = score; loadQ(); }
+          else { box.classList.add('speed-shake'); setTimeout(()=>box.classList.remove('speed-shake'),350); loadQ(); }
+        });
+      });
+    }
+  }
+  loadQ();
+  const timer = setInterval(()=>{
+    timeLeft--;
+    const t = document.getElementById('spTimer');
+    if(t){ t.textContent = timeLeft; if(timeLeft <= 10) t.classList.add('warn'); }
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      if(score > SAVE.bestSpeedScore){ SAVE.bestSpeedScore = score; saveSave(); }
+      if(score >= 20) unlockBadge('speed_demon');
+      slot.innerHTML = `<div class="q-card done">
+        <h2>⚡ Time's Up!</h2>
+        <p>You smashed <strong>${score}</strong> questions!</p>
+        <p style="margin-bottom:18px">Personal best: <strong>${SAVE.bestSpeedScore}</strong></p>
+        <button class="restart-btn" onclick="location.reload()">🔄 Play Again</button>
+        <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#7c3aed;font-weight:700;text-decoration:none">← Back to map</a></p>
+      </div>`;
+      if(score >= 15) for(let i=0;i<3;i++) setTimeout(goldConfetti, i*250);
+    }
+  }, 1000);
+}
+
+// ════════════════════════════════════════════════════════════════
+// MINI-GAME: MEMORY MATCH
+// ════════════════════════════════════════════════════════════════
+const MATCH_PAIRS = [
+  ['carefully','cautiously'],
+  ['exhausted','very tired'],
+  ['enormous','very large'],
+  ['whispered','spoke softly'],
+  ['ancient','very old'],
+  ['furious','very angry'],
+  ['sprinted','ran fast'],
+  ['delighted','very pleased'],
+  ['tiny','very small'],
+  ['silent','completely quiet']
+];
+function startMatchGame(){
+  currentChapterTitle = '🃏 Memory Match';
+  currentChapterKey = null;
+  sessionCombo = 0;
+  tickDailyStreak();
+  updateHeader();
+  updateHeaderGame();
+  document.querySelector('.progress-wrap').style.display='none';
+  document.querySelector('.score-row').style.display='none';
+  const pairs = shuf(MATCH_PAIRS).slice(0,6);
+  const cards = [];
+  pairs.forEach((p,i)=>{ cards.push({txt:p[0], pair:i}); cards.push({txt:p[1], pair:i}); });
+  const deck = shuf(cards);
+  const slot = document.getElementById('quizSlot');
+  let elapsed = 0, matches = 0, flipped = [], locked = false;
+  slot.innerHTML = `<div class="q-card">
+    <div class="match-hud"><div>⏱️ <span id="mTime">0</span>s</div><div>🃏 <span id="mMatch">0</span>/6</div><div>🏆 Best: ${SAVE.bestMatchTime?SAVE.bestMatchTime+'s':'—'}</div></div>
+    <div class="match-grid" id="mGrid">${deck.map((c,i)=>`<button class="match-card" data-i="${i}" data-pair="${c.pair}">?</button>`).join('')}</div>
+  </div>`;
+  const timer = setInterval(()=>{ elapsed++; const t=document.getElementById('mTime'); if(t) t.textContent = elapsed; else clearInterval(timer); }, 1000);
+  document.getElementById('mGrid').addEventListener('click', e=>{
+    const c = e.target.closest('.match-card');
+    if(!c || locked || c.classList.contains('matched') || c.classList.contains('flipped')) return;
+    const i = parseInt(c.dataset.i);
+    c.classList.add('flipped');
+    c.textContent = deck[i].txt;
+    flipped.push(c);
+    if(flipped.length === 2){
+      locked = true;
+      const [a,b] = flipped;
+      if(a.dataset.pair === b.dataset.pair){
+        setTimeout(()=>{
+          a.classList.add('matched'); b.classList.add('matched');
+          matches++;
+          document.getElementById('mMatch').textContent = matches;
+          flipped = []; locked = false;
+          if(matches === 6){
+            clearInterval(timer);
+            if(!SAVE.bestMatchTime || elapsed < SAVE.bestMatchTime){ SAVE.bestMatchTime = elapsed; saveSave(); }
+            if(elapsed <= 30) unlockBadge('memory_master');
+            setTimeout(()=>{
+              slot.innerHTML = `<div class="q-card done">
+                <h2>🃏 All Matched!</h2>
+                <p>Time: <strong>${elapsed}s</strong></p>
+                <p style="margin-bottom:18px">Best: <strong>${SAVE.bestMatchTime}s</strong></p>
+                <button class="restart-btn" onclick="location.reload()">🔄 Play Again</button>
+                <p style="margin-top:18px;font-size:.85rem"><a href="../" style="color:#7c3aed;font-weight:700;text-decoration:none">← Back to map</a></p>
+              </div>`;
+              for(let i=0;i<3;i++) setTimeout(goldConfetti, i*250);
+            }, 300);
+          }
+        }, 350);
+      } else {
+        a.classList.add('shake'); b.classList.add('shake');
+        setTimeout(()=>{
+          a.classList.remove('flipped','shake'); a.textContent='?';
+          b.classList.remove('flipped','shake'); b.textContent='?';
+          flipped = []; locked = false;
+        }, 900);
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// MINI-GAME: SENTENCE BUILDER (uses sentence_builder gens)
+// ════════════════════════════════════════════════════════════════
+function startBuilderGame(){
+  currentChapterTitle = '🧩 Sentence Puzzle Cove';
+  currentChapterKey = null;
+  const builderGens = Object.values(ALL_GENS).filter(g => { try{return g().type==='sentence_builder';}catch(e){return false;} });
+  queue = shuf(builderGens.map(g=>g()));
+  total = queue.length;
+  idx = 0;
+  stats = {correct:0, wrong:0, done:0};
+  sessionCombo = 0;
+  tickDailyStreak();
+  updateHeader();
+  updateHeaderGame();
+  updateScore();
+  next();
+}
+
+// ════════════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════════════
 const params = new URLSearchParams(location.search);
-const chKey = params.get('ch') || '1';
-buildQueue(chKey);
+const game = params.get('game');
+updateHeaderGame();
+if(game === 'speed') startSpeedGame();
+else if(game === 'match') startMatchGame();
+else if(game === 'builder') startBuilderGame();
+else { const chKey = params.get('ch') || '1'; buildQueue(chKey); }
 </script>
 </body>
 </html>
