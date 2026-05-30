@@ -193,6 +193,36 @@ body.mode-algorithm .accent{background:linear-gradient(90deg,#f472b6,#ec4899)}
   .hdr-title{font-size:.95rem}
   .level-title{font-size:1rem}
 }
+
+/* ── Tutorial overlay ── */
+.tutorial-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.75);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .25s ease}
+.tutorial-backdrop.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.tutorial-card{background:#fff;border-radius:28px;max-width:480px;width:100%;padding:30px 28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.tut-skip{position:absolute;top:14px;right:18px;background:transparent;border:none;color:#94a3b8;font-size:.82rem;font-weight:800;cursor:pointer;padding:6px 10px;border-radius:10px;transition:color .15s,background .15s}
+.tut-skip:hover{color:#475569;background:#f1f5f9}
+.tut-owl{font-size:3.4rem;display:block;text-align:center;margin-bottom:8px;animation:owlBob 2.5s ease-in-out infinite}
+@keyframes owlBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+.tut-title{font-size:1.35rem;font-weight:900;text-align:center;color:#1e293b;margin-bottom:6px;letter-spacing:-.4px}
+.tut-step-label{font-size:.72rem;font-weight:900;color:#fbbf24;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.tut-body{background:#f8fafc;border-radius:16px;padding:18px 18px;margin-bottom:18px;font-size:.95rem;line-height:1.55;color:#334155;font-weight:500}
+.tut-body strong{color:#1e293b;font-weight:800}
+.tut-body code{background:#1e293b;color:#fbbf24;font-family:'SF Mono','Menlo',monospace;font-size:.84em;padding:2px 7px;border-radius:6px}
+.tut-body kbd{background:#fff;border:1.5px solid #cbd5e1;border-bottom-width:2.5px;border-radius:7px;padding:3px 8px;font-family:'SF Mono','Menlo',monospace;font-size:.8em;font-weight:800;color:#334155}
+.tut-emoji-row{font-size:2rem;text-align:center;letter-spacing:14px;margin:8px 0 4px}
+.tut-dots{display:flex;justify-content:center;gap:7px;margin-bottom:14px}
+.tut-dot{width:9px;height:9px;border-radius:50%;background:#cbd5e1;transition:background .2s,transform .2s}
+.tut-dot.active{background:#fbbf24;transform:scale(1.3)}
+.tut-actions{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.tut-btn{font-family:inherit;font-weight:800;font-size:.92rem;padding:11px 22px;border-radius:14px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.tut-btn.prev{background:#f1f5f9;color:#64748b}
+.tut-btn.prev:hover:not(:disabled){background:#e2e8f0}
+.tut-btn.prev:disabled{opacity:.4;cursor:not-allowed}
+.tut-btn.next{background:linear-gradient(135deg,#fbbf24,#f97316);color:#fff;box-shadow:0 6px 16px rgba(251,146,60,.4);flex:1;max-width:200px}
+.tut-btn.next:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(251,146,60,.5)}
+.tut-replay-btn{position:fixed;bottom:18px;right:18px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f97316);color:#fff;border:none;font-size:1.4rem;cursor:pointer;box-shadow:0 6px 18px rgba(251,146,60,.5);z-index:90;transition:transform .2s}
+.tut-replay-btn:hover{transform:scale(1.1) rotate(15deg)}
 </style>
 </head>
 <body>
@@ -205,6 +235,25 @@ body.mode-algorithm .accent{background:linear-gradient(90deg,#f472b6,#ec4899)}
 </div>
 
 <div class="main" id="main"></div>
+
+<!-- Tutorial overlay -->
+<div class="tutorial-backdrop" id="tutBackdrop">
+  <div class="tutorial-card">
+    <button class="tut-skip" id="tutSkip">Skip ✕</button>
+    <span class="tut-owl">🦉</span>
+    <div class="tut-title" id="tutTitle">Welcome!</div>
+    <div class="tut-step-label" id="tutStepLabel">Step 1 of 4</div>
+    <div class="tut-body" id="tutBody"></div>
+    <div class="tut-dots" id="tutDots"></div>
+    <div class="tut-actions">
+      <button class="tut-btn prev" id="tutPrev">← Prev</button>
+      <button class="tut-btn next" id="tutNext">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Replay tutorial button (shown after dismissal) -->
+<button class="tut-replay-btn" id="tutReplay" title="Show tutorial" style="display:none">🦉</button>
 
 <script>
 // ════════════════════════════════════════════════════════════════
@@ -1541,7 +1590,133 @@ function render(){
   }
 }
 
+// ════════════════════════════════════════════════════════════════
+// TUTORIAL SYSTEM
+// ════════════════════════════════════════════════════════════════
+const TUTORIALS = {
+  robot: {
+    title: {en:"🐢 Robot Programmer", id:"🐢 Programmer Robot"},
+    steps: [
+      {en:`Help the <strong>turtle</strong> reach the <strong>target tile</strong> 🚩. You write the plan; the turtle does what you say.`,
+       id:`Bantu <strong>kura-kura</strong> sampai ke <strong>kotak target</strong> 🚩. Kamu yang buat rencana; kura-kura ikut perintah kamu.`},
+      {en:`Click the command buttons (like <kbd>⬆️ Forward</kbd>, <kbd>↪️ Turn Right</kbd>) to add them to your <strong>program</strong>. Order matters!`,
+       id:`Klik tombol perintah (<kbd>⬆️ Maju</kbd>, <kbd>↪️ Belok Kanan</kbd>) buat masuk ke <strong>program</strong>. Urutan penting!`},
+      {en:`Press <kbd>▶️ Run</kbd> to watch the turtle execute your program step by step. Use <kbd>🔄 Reset</kbd> if it goes wrong.`,
+       id:`Pencet <kbd>▶️ Jalankan</kbd> untuk lihat kura-kura jalan langkah demi langkah. <kbd>🔄 Reset</kbd> kalau salah.`},
+      {en:`From Level 6 you'll learn <strong>loops</strong> 🔁, then <strong>functions</strong> 📦, then <strong>conditionals</strong> 🔍. Shorter program = better!`,
+       id:`Mulai Level 6 kamu pelajari <strong>loop</strong> 🔁, lalu <strong>function</strong> 📦, lalu <strong>kondisi</strong> 🔍. Program pendek = lebih bagus!`},
+    ]
+  },
+  bug: {
+    title: {en:"🐛 Bug Hunt", id:"🐛 Berburu Bug"},
+    steps: [
+      {en:`You're a <strong>code detective</strong> 🕵️. Each puzzle shows a small piece of buggy code.`,
+       id:`Kamu jadi <strong>detektif kode</strong> 🕵️. Tiap teka-teki ada potongan kode yang ada bug-nya.`},
+      {en:`Compare <strong>Expected Output</strong> with <strong>Actual Output</strong>. The difference tells you something is wrong!`,
+       id:`Bandingkan <strong>Output Diharapkan</strong> dengan <strong>Output Sebenarnya</strong>. Bedanya kasih petunjuk ada yang salah!`},
+      {en:`Pick which <strong>line number</strong> contains the bug, or choose the description that matches the error.`,
+       id:`Pilih <strong>nomor baris</strong> yang ada bug-nya, atau pilih deskripsi yang cocok sama errornya.`},
+      {en:`After answering you'll see <strong>why</strong> it was wrong — a great way to spot the same bug next time! 💡`,
+       id:`Setelah jawab kamu lihat <strong>kenapa</strong> salahnya — biar kamu kenali bug yang sama lain kali! 💡`},
+    ]
+  },
+  gates: {
+    title: {en:"🔀 Logic Gates", id:"🔀 Gerbang Logika"},
+    steps: [
+      {en:`Each puzzle is a tiny electric circuit. Your job: make the <strong>bulb 💡 light up</strong> (or stay off, depending on the goal).`,
+       id:`Tiap soal adalah rangkaian listrik kecil. Tugas kamu: bikin <strong>lampu 💡 nyala</strong> (atau tetap mati, tergantung tujuan).`},
+      {en:`<strong>Input switches</strong> on the left can be <code>TRUE</code> or <code>FALSE</code>. Click them to toggle.`,
+       id:`<strong>Saklar input</strong> di kiri bisa <code>TRUE</code> atau <code>FALSE</code>. Klik untuk ganti.`},
+      {en:`Gates do simple jobs:<br>• <strong>AND ∧</strong> = both must be true<br>• <strong>OR ∨</strong> = at least one true<br>• <strong>NOT ¬</strong> = flip the value<br>• <strong>XOR ⊕</strong> = exactly one true`,
+       id:`Gerbang punya tugas sederhana:<br>• <strong>AND ∧</strong> = dua-duanya harus true<br>• <strong>OR ∨</strong> = minimal satu true<br>• <strong>NOT ¬</strong> = balik nilai<br>• <strong>XOR ⊕</strong> = hanya satu yang true`},
+      {en:`<strong>Yellow glowing wires</strong> mean "true" flowing through. Trace the path from input to bulb to predict the result!`,
+       id:`<strong>Kabel kuning menyala</strong> berarti "true" lagi mengalir. Telusuri dari input ke lampu buat tebak hasilnya!`},
+    ]
+  },
+  algorithm: {
+    title: {en:"🦊 Algorithm Lab", id:"🦊 Lab Algoritma"},
+    steps: [
+      {en:`Train your <strong>algorithm thinking</strong> 🧠 with 4 classic challenges: <strong>Bubble Sort</strong>, <strong>Binary Search</strong>, <strong>Shortest Path</strong>, and <strong>Pattern Detection</strong>.`,
+       id:`Latih <strong>cara berpikir algoritma</strong> 🧠 lewat 4 tantangan klasik: <strong>Bubble Sort</strong>, <strong>Binary Search</strong>, <strong>Shortest Path</strong>, dan <strong>Pola Bilangan</strong>.`},
+      {en:`<strong>Bubble Sort</strong>: click two <strong>adjacent</strong> cards to swap them. Keep swapping until the row is sorted from small to big. Try to use as few swaps as possible!`,
+       id:`<strong>Bubble Sort</strong>: klik dua kartu yang <strong>bersebelahan</strong> buat tukar. Lanjut tukar sampai urut dari kecil ke besar. Sesedikit mungkin tukar!`},
+      {en:`<strong>Binary Search</strong>: I think of a number. After each guess I say "too high" or "too low". Smart strategy: always <strong>guess the middle</strong> of the possible range!`,
+       id:`<strong>Binary Search</strong>: aku pikir satu angka. Tiap tebakan aku bilang "terlalu tinggi" atau "terlalu rendah". Strategi pintar: selalu <strong>tebak tengah</strong> range yang tersisa!`},
+      {en:`<strong>Shortest Path</strong>: click tiles to make a path from start to finish. Goal: use the <strong>fewest tiles</strong> possible. Click a tile again to undo.`,
+       id:`<strong>Shortest Path</strong>: klik kotak buat bikin jalur dari start ke finish. Tujuan: pakai <strong>kotak sesedikit mungkin</strong>. Klik ulang untuk batal.`},
+    ]
+  }
+};
+
+let tutStep = 0;
+let tutMode = null;
+
+function showTutorial(force){
+  tutMode = MODE;
+  if(!TUTORIALS[tutMode]) return;
+  // If not forced and already seen, skip
+  if(!force && localStorage.getItem('alesha_code_tut_seen_'+tutMode) === '1'){
+    document.getElementById('tutReplay').style.display = 'block';
+    return;
+  }
+  tutStep = 0;
+  document.getElementById('tutBackdrop').classList.add('show');
+  renderTutorial();
+}
+
+function renderTutorial(){
+  const tut = TUTORIALS[tutMode];
+  const total = tut.steps.length;
+  document.getElementById('tutTitle').innerHTML = t(tut.title);
+  document.getElementById('tutStepLabel').textContent =
+    (lang==='en' ? 'Step ' : 'Langkah ') + (tutStep+1) +
+    (lang==='en' ? ' of ' : ' dari ') + total;
+  document.getElementById('tutBody').innerHTML = t(tut.steps[tutStep]);
+  // Dots
+  document.getElementById('tutDots').innerHTML =
+    tut.steps.map((_,i)=>`<span class="tut-dot${i===tutStep?' active':''}"></span>`).join('');
+  // Buttons
+  document.getElementById('tutPrev').disabled = tutStep === 0;
+  document.getElementById('tutPrev').textContent = lang==='en' ? '← Prev' : '← Kembali';
+  const nxt = document.getElementById('tutNext');
+  if(tutStep === total - 1){
+    nxt.textContent = lang==='en' ? "🚀 Let's go!" : '🚀 Mulai!';
+  } else {
+    nxt.textContent = lang==='en' ? 'Next →' : 'Lanjut →';
+  }
+  document.getElementById('tutSkip').textContent = lang==='en' ? 'Skip ✕' : 'Lewati ✕';
+}
+
+function closeTutorial(){
+  document.getElementById('tutBackdrop').classList.remove('show');
+  if(tutMode) localStorage.setItem('alesha_code_tut_seen_'+tutMode, '1');
+  document.getElementById('tutReplay').style.display = 'block';
+}
+
+document.getElementById('tutSkip').onclick = closeTutorial;
+document.getElementById('tutPrev').onclick = ()=>{ if(tutStep>0){ tutStep--; renderTutorial(); } };
+document.getElementById('tutNext').onclick = ()=>{
+  const total = TUTORIALS[tutMode].steps.length;
+  if(tutStep < total - 1){ tutStep++; renderTutorial(); }
+  else closeTutorial();
+};
+document.getElementById('tutReplay').onclick = ()=>{
+  document.getElementById('tutReplay').style.display = 'none';
+  showTutorial(true);
+};
+
+// Wrap render() so language toggle also updates tutorial in place
+const originalRender = render;
+render = function(){
+  originalRender();
+  // If tutorial is visible during a lang toggle, re-render its text
+  if(document.getElementById('tutBackdrop').classList.contains('show')){
+    renderTutorial();
+  }
+};
+
 render();
+showTutorial(false);
 </script>
 </body>
 </html>
