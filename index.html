@@ -125,6 +125,14 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 .subject.thinking .stat-pill{background:rgba(251,191,36,.18);color:#fde68a;border:1px solid rgba(251,191,36,.3)}
 .subject.thinking .subject-cta{background:rgba(251,191,36,.15);color:#fbbf24}
 
+.subject.code{box-shadow:0 8px 28px rgba(16,185,129,.18)}
+.subject.code:hover{box-shadow:0 18px 44px rgba(16,185,129,.35)}
+.subject.code::before{background:linear-gradient(90deg,#34d399,#fbbf24,#f97316,#ec4899)}
+.subject.code::after{background:radial-gradient(circle,#10b981,#f97316)}
+.subject.code .subject-icon{background:linear-gradient(135deg,#d1fae5,#ffedd5);color:#059669}
+.subject.code .subject-tagline{color:#059669}
+.subject.code .stat-pill{background:#d1fae5;color:#047857}
+
 .subject-cta{position:absolute;top:20px;right:18px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;transition:transform .22s,background .22s;color:#999;background:#f5f7fa}
 .subject:hover .subject-cta{transform:translateX(4px) scale(1.1);color:#fff}
 .subject.math:hover .subject-cta{background:#4f8ef7}
@@ -137,6 +145,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
 .subject.arabic:hover .subject-cta{background:#06b6d4}
 .subject.alesha:hover .subject-cta{background:#a78bfa}
 .subject.thinking:hover .subject-cta{background:#fbbf24;color:#0f172a}
+.subject.code:hover .subject-cta{background:#10b981}
 
 /* Footer */
 .footer{margin-top:auto;text-align:center;padding:28px;color:#999;font-size:.78rem}
@@ -296,6 +305,19 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(180d
       <div class="subject-stats">
         <span class="stat-pill">4 chapters</span>
         <span class="stat-pill">48 puzzles</span>
+        <span class="stat-pill">Bilingual</span>
+      </div>
+    </a>
+
+    <a class="subject code" href="alesha-code/" style="grid-column:span 2">
+      <span class="subject-cta">→</span>
+      <div class="subject-icon">🎮</div>
+      <div class="subject-tagline">Code Lab</div>
+      <h2>Alesha's Code Lab</h2>
+      <p>Belajar logika coding bareng teman binatang lucu — Robot Programmer 🐢, Bug Hunt 🐛, Logic Gates 🐱, Algorithm Lab 🦊.</p>
+      <div class="subject-stats">
+        <span class="stat-pill">4 modes</span>
+        <span class="stat-pill">48 levels</span>
         <span class="stat-pill">Bilingual</span>
       </div>
     </a>

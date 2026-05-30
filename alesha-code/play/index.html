@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alesha's Code Lab — Play</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(180deg,#fef3c7 0%,#e0f2fe 50%,#fce7f3 100%);min-height:100vh;color:#1f2937;display:flex;flex-direction:column}
+
+/* Header */
+.hdr{background:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.06);border-bottom:3px solid #fbbf24}
+.hdr-back{background:#fef3c7;border:2px solid #fbbf24;color:#b45309;padding:6px 14px;border-radius:18px;font-size:.78rem;font-weight:900;text-decoration:none}
+.hdr-back:hover{background:#fde68a}
+.hdr-title{font-size:1.1rem;font-weight:900;letter-spacing:-.4px;flex:1;color:#1f2937}
+.hdr-meta{font-size:.72rem;font-weight:900;background:#f3f4f6;color:#475569;padding:5px 12px;border-radius:14px;font-family:'SF Mono','Menlo',monospace;letter-spacing:1px}
+.lang-toggle{background:#ede9fe;border:2px solid #8b5cf6;color:#6d28d9;padding:6px 14px;border-radius:18px;font-size:.78rem;font-weight:900;cursor:pointer;font-family:inherit}
+.lang-toggle:hover{background:#ddd6fe}
+
+/* Mode accent strip */
+.accent{height:6px}
+body.mode-robot .accent{background:linear-gradient(90deg,#34d399,#10b981)}
+body.mode-bug .accent{background:linear-gradient(90deg,#fb923c,#f97316)}
+body.mode-gates .accent{background:linear-gradient(90deg,#a78bfa,#8b5cf6)}
+body.mode-algorithm .accent{background:linear-gradient(90deg,#f472b6,#ec4899)}
+
+/* Main */
+.main{max-width:820px;margin:18px auto 0;padding:0 16px 80px;width:100%}
+.card{background:#fff;border-radius:24px;padding:24px 22px;box-shadow:0 10px 30px rgba(0,0,0,.08);border:3px solid #e5e7eb;margin-bottom:16px}
+
+.level-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.level-badge{background:#fef3c7;color:#b45309;font-size:.7rem;font-weight:900;letter-spacing:1.5px;padding:5px 12px;border-radius:14px;font-family:'SF Mono','Menlo',monospace;text-transform:uppercase}
+.level-title{font-size:1.2rem;font-weight:900;letter-spacing:-.4px;flex:1;min-width:200px}
+.level-desc{font-size:.94rem;color:#475569;line-height:1.5;margin-bottom:14px;font-weight:600}
+
+/* ───── ROBOT PROGRAMMER ───── */
+.robot-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.robot-layout{grid-template-columns:1fr}}
+.grid-wrap{background:#f0fdf4;border:3px solid #10b981;border-radius:18px;padding:12px;display:flex;justify-content:center;align-items:center}
+.grid-board{position:relative;background:#fff;border-radius:12px;overflow:hidden;box-shadow:inset 0 2px 8px rgba(0,0,0,.06)}
+.grid-tile{position:absolute;border:1px solid #d1fae5;background:#ecfdf5}
+.grid-tile.wall{background:#1f2937;border-color:#111827}
+.grid-tile.target{background:#fef3c7;border-color:#fbbf24}
+.grid-tile.lit{background:#fde68a;box-shadow:inset 0 0 10px rgba(251,191,36,.6)}
+.grid-tile.tolight{background:#dbeafe;border-color:#60a5fa}
+.grid-char{position:absolute;font-size:32px;display:flex;align-items:center;justify-content:center;transition:left .3s ease,top .3s ease,transform .25s ease;z-index:5;line-height:1}
+.grid-target-icon{position:absolute;font-size:24px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3}
+
+.cmd-panel{display:flex;flex-direction:column;gap:12px}
+.cmd-section-title{font-size:.74rem;font-weight:900;letter-spacing:1.5px;color:#475569;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace}
+.cmd-palette{display:flex;flex-wrap:wrap;gap:6px}
+.cmd-btn{background:#fff;border:2px solid #10b981;color:#047857;padding:8px 12px;border-radius:14px;font-size:.84rem;font-weight:900;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:transform .12s}
+.cmd-btn:hover{transform:translateY(-2px);background:#ecfdf5}
+.cmd-btn:active{transform:translateY(0)}
+.cmd-btn.loop{border-color:#8b5cf6;color:#6d28d9}
+.cmd-btn.proc{border-color:#ec4899;color:#be185d}
+.cmd-btn.cond{border-color:#f97316;color:#c2410c}
+
+.queue{background:#f9fafb;border:2px dashed #d1d5db;border-radius:14px;padding:12px;min-height:80px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.queue:empty::before{content:attr(data-empty);color:#9ca3af;font-size:.84rem;font-weight:700;align-self:center;width:100%;text-align:center}
+.queue-chip{background:#fff;border:2px solid #10b981;color:#047857;padding:6px 10px;border-radius:12px;font-size:.78rem;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:inherit}
+.queue-chip:hover{background:#fee2e2;border-color:#ef4444;color:#b91c1c}
+.queue-chip:hover::after{content:'✕';margin-left:3px}
+.queue-chip.loop{border-color:#8b5cf6;color:#6d28d9}
+.queue-chip.proc{border-color:#ec4899;color:#be185d}
+.queue-chip.cond{border-color:#f97316;color:#c2410c}
+.queue-chip.running{background:#fef3c7;border-color:#fbbf24;color:#b45309;animation:pulse .5s}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+.run-row{display:flex;gap:8px;flex-wrap:wrap}
+.run-btn{flex:1;min-width:90px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:14px;padding:11px 14px;font-size:.92rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(16,185,129,.3);letter-spacing:.5px}
+.run-btn:hover:not(:disabled){opacity:.92}
+.run-btn:disabled{opacity:.5;cursor:not-allowed}
+.run-btn.reset{background:linear-gradient(135deg,#6b7280,#4b5563);box-shadow:0 4px 12px rgba(107,114,128,.3)}
+.run-btn.hint{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 4px 12px rgba(251,191,36,.3);color:#78350f}
+
+.proc-block{background:#fdf2f8;border:2px solid #ec4899;border-radius:12px;padding:10px;margin-top:6px}
+.proc-label{font-size:.7rem;font-weight:900;color:#be185d;letter-spacing:1.5px;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace;margin-bottom:6px}
+
+.feedback{margin-top:14px;padding:14px 16px;border-radius:14px;font-size:.92rem;font-weight:700;line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#ecfdf5;border:2px solid #10b981;color:#047857}
+.feedback.bad{background:#fef2f2;border:2px solid #ef4444;color:#b91c1c}
+.feedback.info{background:#eff6ff;border:2px solid #60a5fa;color:#1e40af}
+
+.concept-box{margin-top:12px;background:#fef3c7;border:2px solid #fbbf24;border-radius:12px;padding:11px 14px;font-size:.86rem;color:#78350f;font-weight:700}
+.concept-box b{color:#451a03}
+
+/* ───── BUG HUNT ───── */
+.code-block{background:#1e293b;border-radius:14px;padding:14px;font-family:'SF Mono','Menlo',monospace;font-size:.92rem;color:#e2e8f0;margin-bottom:14px;overflow-x:auto;line-height:1.7}
+.code-line{display:flex;gap:14px;padding:2px 6px;border-radius:6px}
+.code-line:hover{background:rgba(251,191,36,.08)}
+.line-num{color:#64748b;width:24px;text-align:right;font-weight:700;user-select:none;flex-shrink:0}
+.line-body{flex:1;white-space:pre}
+.code-line.bug{background:rgba(239,68,68,.12)}
+.code-line.bug .line-num{color:#f87171}
+
+.io-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:560px){.io-row{grid-template-columns:1fr}}
+.io-box{background:#f9fafb;border:2px solid #d1d5db;border-radius:12px;padding:10px 14px}
+.io-label{font-size:.7rem;font-weight:900;letter-spacing:1.5px;color:#6b7280;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace;margin-bottom:4px}
+.io-val{font-family:'SF Mono','Menlo',monospace;font-size:.92rem;color:#1f2937;font-weight:700;white-space:pre-wrap}
+.io-box.expected{border-color:#10b981;background:#ecfdf5}
+.io-box.expected .io-label{color:#047857}
+.io-box.actual{border-color:#ef4444;background:#fef2f2}
+.io-box.actual .io-label{color:#b91c1c}
+
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{background:#fff;border:2px solid #e5e7eb;border-radius:14px;padding:12px 14px;cursor:pointer;font-size:.92rem;display:flex;align-items:center;gap:12px;font-family:inherit;text-align:left;width:100%;color:#1f2937;font-weight:700;transition:all .12s}
+.opt:hover:not(:disabled){border-color:#f97316;background:#fff7ed}
+.opt-letter{width:28px;height:28px;border-radius:50%;background:#fff7ed;color:#c2410c;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;font-family:'SF Mono','Menlo',monospace}
+.opt:disabled{cursor:not-allowed}
+.opt.correct{border-color:#10b981;background:#ecfdf5}
+.opt.correct .opt-letter{background:#10b981;color:#fff}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.wrong .opt-letter{background:#ef4444;color:#fff}
+
+/* ───── LOGIC GATES ───── */
+.circuit{background:#0f172a;border:3px solid #8b5cf6;border-radius:18px;padding:16px;margin-bottom:14px}
+.circuit svg{width:100%;height:auto;display:block}
+.input-sw{cursor:pointer}
+.input-sw circle{transition:fill .2s}
+.wire{stroke-width:3;fill:none;transition:stroke .25s}
+.wire.on{stroke:#fbbf24;filter:drop-shadow(0 0 4px #fbbf24)}
+.wire.off{stroke:#475569}
+.gate-shape{fill:#1e293b;stroke:#a78bfa;stroke-width:2}
+.gate-label{fill:#e9d5ff;font-weight:900;font-size:14px;font-family:'SF Mono',monospace;text-anchor:middle;dominant-baseline:middle}
+.bulb{transition:fill .25s,filter .25s}
+.bulb.on{fill:#fbbf24;filter:drop-shadow(0 0 12px #fbbf24)}
+.bulb.off{fill:#334155}
+.node-label{fill:#cbd5e1;font-family:'SF Mono',monospace;font-size:13px;font-weight:900;text-anchor:middle;dominant-baseline:middle}
+
+/* ───── ALGORITHM LAB ───── */
+.bars{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:200px;background:#fdf2f8;border:3px solid #ec4899;border-radius:14px;padding:10px;margin-bottom:14px}
+.bar{flex:0 0 50px;background:linear-gradient(180deg,#f472b6,#ec4899);border-radius:8px 8px 4px 4px;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-weight:900;font-family:'SF Mono',monospace;padding-top:6px;font-size:.86rem;transition:transform .35s ease,background .25s;cursor:pointer;border:2px solid transparent}
+.bar:hover{transform:translateY(-4px)}
+.bar.selected{background:linear-gradient(180deg,#fde047,#f59e0b);color:#78350f;border-color:#f59e0b}
+.bar.locked{cursor:default;opacity:.7}
+.swap-btn{display:block;margin:0 auto 10px;background:linear-gradient(135deg,#ec4899,#be185d);color:#fff;border:none;border-radius:14px;padding:9px 18px;font-weight:900;font-family:inherit;cursor:pointer;font-size:.88rem}
+.swap-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.bs-display{background:#fdf2f8;border:3px solid #ec4899;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
+.bs-range{font-family:'SF Mono',monospace;font-weight:900;color:#be185d;font-size:1rem;margin-bottom:10px}
+.bs-input{width:120px;padding:10px 14px;font-size:1.2rem;font-weight:900;font-family:'SF Mono',monospace;border:2px solid #ec4899;border-radius:12px;text-align:center;color:#1f2937;outline:none}
+.bs-input:focus{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+.bs-guess-btn{margin-left:6px;background:#ec4899;color:#fff;border:none;border-radius:12px;padding:10px 18px;font-weight:900;font-family:inherit;cursor:pointer}
+.bs-history{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.bs-guess{padding:5px 10px;border-radius:10px;font-size:.82rem;font-weight:900;font-family:'SF Mono',monospace;background:#fff;border:2px solid #d1d5db;color:#374151}
+.bs-guess.high{border-color:#ef4444;color:#b91c1c;background:#fef2f2}
+.bs-guess.low{border-color:#60a5fa;color:#1d4ed8;background:#eff6ff}
+.bs-guess.win{border-color:#10b981;color:#047857;background:#ecfdf5}
+
+.maze-grid{display:grid;gap:3px;background:#fdf2f8;border:3px solid #ec4899;border-radius:14px;padding:10px;margin:0 auto 14px;width:fit-content}
+.maze-cell{width:44px;height:44px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.maze-cell.wall{background:#374151;cursor:default}
+.maze-cell.start{background:#bbf7d0;border-color:#10b981}
+.maze-cell.end{background:#fde68a;border-color:#fbbf24}
+.maze-cell.path{background:#fce7f3;border-color:#ec4899}
+
+.pattern-display{background:#fdf2f8;border:3px solid #ec4899;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
+.pattern-seq{font-size:1.4rem;font-weight:900;font-family:'SF Mono',monospace;color:#be185d;letter-spacing:4px;margin-bottom:12px}
+.pattern-inputs{display:flex;gap:8px;justify-content:center}
+.pattern-input{width:60px;padding:8px;font-size:1.1rem;font-weight:900;font-family:'SF Mono',monospace;border:2px solid #ec4899;border-radius:10px;text-align:center;outline:none}
+.pattern-input:focus{border-color:#f59e0b}
+
+.algo-stats{display:flex;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.algo-stat{background:#fdf2f8;border:2px solid #ec4899;color:#be185d;padding:6px 14px;border-radius:14px;font-size:.78rem;font-weight:900;font-family:'SF Mono',monospace}
+
+/* Done screen */
+.done{text-align:center;padding:28px 18px;background:#fff;border-radius:24px;border:3px solid #fbbf24;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.done h2{font-size:2.2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,#34d399,#fbbf24,#f97316,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px}
+.done p{color:#475569;margin-bottom:18px;font-weight:600;line-height:1.5}
+.done-stats{display:flex;justify-content:center;gap:20px;margin-bottom:22px;flex-wrap:wrap}
+.done-stat{text-align:center}
+.done-stat strong{display:block;font-size:2rem;font-weight:900;color:#f97316}
+.done-stat span{font-size:.7rem;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px}
+.restart-btn{background:linear-gradient(135deg,#fbbf24,#f97316);color:#fff;border:none;border-radius:24px;padding:12px 28px;font-size:.95rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(251,146,60,.35);margin:4px}
+.restart-btn.alt{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 6px 16px rgba(139,92,246,.35)}
+.restart-btn:hover{opacity:.92}
+
+/* Confetti */
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:1000;border-radius:2px}
+
+.hint-btn{background:transparent;border:2px dashed #fbbf24;color:#b45309;font-family:inherit;font-size:.84rem;font-weight:900;padding:7px 14px;border-radius:14px;cursor:pointer;margin-top:10px}
+.hint-btn:hover{background:#fef3c7}
+.hint-box{display:none;background:#fef3c7;border:2px solid #fbbf24;border-radius:12px;padding:10px 14px;font-size:.86rem;color:#78350f;margin-top:10px;font-weight:700}
+.hint-box.show{display:block}
+
+.next-btn{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:14px;padding:11px 24px;font-size:.92rem;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(16,185,129,.3);margin-top:12px;letter-spacing:.5px}
+.next-btn:hover{opacity:.92}
+
+@media(max-width:520px){
+  .hdr-title{font-size:.95rem}
+  .level-title{font-size:1rem}
+}
+</style>
+</head>
+<body>
+<div class="accent"></div>
+<div class="hdr">
+  <a class="hdr-back" href="../" id="backBtn">← Back</a>
+  <div class="hdr-title" id="hdrTitle">Alesha's Code Lab</div>
+  <div class="hdr-meta" id="hdrMeta">—</div>
+  <button class="lang-toggle" id="langBtn" onclick="toggleLang()">🌐 ID</button>
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// SHARED HELPERS
+// ════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const MODE = params.get('mode') || 'robot';
+document.body.classList.add('mode-'+MODE);
+
+let lang = localStorage.getItem('alesha_code_lang') || 'en';
+function t(obj){
+  if(obj==null) return '';
+  if(typeof obj==='string') return obj;
+  if(typeof obj==='object' && ('en' in obj || 'id' in obj)) return obj[lang] || obj.en || obj.id || '';
+  return String(obj);
+}
+function toggleLang(){
+  lang = lang==='en' ? 'id' : 'en';
+  localStorage.setItem('alesha_code_lang', lang);
+  document.getElementById('langBtn').textContent = lang==='en' ? '🌐 ID' : '🌐 EN';
+  render();
+}
+
+const MODE_TITLES = {
+  robot: {en:'🐢 Robot Programmer', id:'🐢 Programmer Robot'},
+  bug: {en:'🐛 Bug Hunt', id:'🐛 Berburu Bug'},
+  gates: {en:'🔀 Logic Gates', id:'🔀 Gerbang Logika'},
+  algorithm: {en:'🦊 Algorithm Lab', id:'🦊 Lab Algoritma'},
+};
+
+function setHeader(meta){
+  document.getElementById('hdrTitle').textContent = t(MODE_TITLES[MODE]);
+  document.getElementById('hdrMeta').textContent = meta || '';
+  document.getElementById('langBtn').textContent = lang==='en' ? '🌐 ID' : '🌐 EN';
+  document.getElementById('backBtn').textContent = lang==='en' ? '← Back' : '← Kembali';
+}
+
+function confetti(){
+  const colors=['#fbbf24','#f97316','#ec4899','#10b981','#8b5cf6','#60a5fa'];
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-20px';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.transform='rotate('+Math.random()*360+'deg)';
+    document.body.appendChild(c);
+    const dx=(Math.random()-0.5)*300;
+    const dy=window.innerHeight+50;
+    const dur=2000+Math.random()*1500;
+    c.animate([
+      {transform:c.style.transform, opacity:1},
+      {transform:`translate(${dx}px,${dy}px) rotate(${Math.random()*720}deg)`, opacity:0}
+    ],{duration:dur, easing:'cubic-bezier(.2,.6,.4,1)'}).onfinish=()=>c.remove();
+  }
+}
+
+function saveProgress(key, id){
+  const arr = JSON.parse(localStorage.getItem(key)||'[]');
+  if(!arr.includes(id)){ arr.push(id); localStorage.setItem(key, JSON.stringify(arr)); }
+}
+function getProgress(key){
+  return JSON.parse(localStorage.getItem(key)||'[]');
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODE 1: ROBOT PROGRAMMER
+// ════════════════════════════════════════════════════════════════
+const ROBOT_LEVELS = [
+  // ── Tier 1: Basic sequencing ──
+  {id:1, title:{en:'First Steps',id:'Langkah Pertama'},
+    description:{en:'Walk the turtle forward to the lily pad!',id:'Jalankan kura-kura ke daun teratai!'},
+    grid:{cols:5,rows:1}, start:{x:0,y:0,dir:'east'}, target:{x:4,y:0}, walls:[], tilesToLight:[],
+    available:['forward'], hintMinSteps:4,
+    concept:{en:'A <b>sequence</b> is a list of commands run one after another.',id:'<b>Urutan</b> adalah daftar perintah yang dijalankan satu per satu.'}},
+  {id:2, title:{en:'Take a Turn',id:'Berbelok'},
+    description:{en:'Move forward, then turn right and reach the target.',id:'Maju, lalu belok kanan dan capai target.'},
+    grid:{cols:4,rows:4}, start:{x:0,y:0,dir:'east'}, target:{x:3,y:3}, walls:[], tilesToLight:[],
+    available:['forward','turnRight'], hintMinSteps:7,
+    concept:{en:'Each <b>turn</b> rotates the turtle 90°.',id:'Setiap <b>belokan</b> memutar kura-kura 90°.'}},
+  {id:3, title:{en:'Zig Zag',id:'Zig Zag'},
+    description:{en:'Make two turns to reach the flag.',id:'Buat dua belokan untuk capai bendera.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:0,dir:'east'}, target:{x:4,y:4}, walls:[], tilesToLight:[],
+    available:['forward','turnRight','turnLeft'], hintMinSteps:8,
+    concept:{en:'Use <b>turnLeft</b> and <b>turnRight</b> to change direction.',id:'Pakai <b>belokKiri</b> dan <b>belokKanan</b> untuk ubah arah.'}},
+  {id:4, title:{en:'Light the Tile',id:'Nyalakan Ubin'},
+    description:{en:'Reach the blue tile and light it up!',id:'Capai ubin biru dan nyalakan!'},
+    grid:{cols:4,rows:1}, start:{x:0,y:0,dir:'east'}, target:null, tilesToLight:[{x:3,y:0}], walls:[],
+    available:['forward','light'], hintMinSteps:4,
+    concept:{en:'The <b>light</b> command interacts with the tile you stand on.',id:'Perintah <b>nyalakan</b> berinteraksi dengan ubin tempatmu berdiri.'}},
+  {id:5, title:{en:'L-Shape',id:'Bentuk L'},
+    description:{en:'Take an L-shaped path to the goal.',id:'Ambil jalur bentuk L menuju target.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:4,dir:'east'}, target:{x:4,y:0}, walls:[], tilesToLight:[],
+    available:['forward','turnRight','turnLeft'], hintMinSteps:9,
+    concept:{en:'Plan your turns BEFORE pressing run.',id:'Rencanakan belokanmu SEBELUM tekan jalan.'}},
+
+  // ── Tier 2: Loops ──
+  {id:6, title:{en:'Long Walk',id:'Jalan Panjang'},
+    description:{en:'Far target! Try using a loop to repeat forward.',id:'Target jauh! Coba pakai loop untuk ulangi maju.'},
+    grid:{cols:7,rows:1}, start:{x:0,y:0,dir:'east'}, target:{x:6,y:0}, walls:[], tilesToLight:[],
+    available:['forward','loop'], hintMinSteps:2,
+    concept:{en:'A <b>loop</b> repeats a command many times.',id:'Sebuah <b>loop</b> mengulang perintah berkali-kali.'}},
+  {id:7, title:{en:'Square Walk',id:'Jalan Persegi'},
+    description:{en:'Walk in a square back to start. Use a loop!',id:'Jalan persegi kembali ke awal. Pakai loop!'},
+    grid:{cols:4,rows:4}, start:{x:0,y:3,dir:'east'}, target:{x:0,y:3}, walls:[], tilesToLight:[{x:3,y:3},{x:3,y:0},{x:0,y:0}],
+    available:['forward','turnLeft','light','loop'], hintMinSteps:4,
+    concept:{en:'Loops save you from writing the same code over and over.',id:'Loop menghindarkanmu menulis kode yang sama berulang.'}},
+  {id:8, title:{en:'Light Four',id:'Nyalakan Empat'},
+    description:{en:'Light up all 4 highlighted tiles using a loop.',id:'Nyalakan 4 ubin biru pakai loop.'},
+    grid:{cols:5,rows:1}, start:{x:0,y:0,dir:'east'}, target:null, tilesToLight:[{x:1,y:0},{x:2,y:0},{x:3,y:0},{x:4,y:0}], walls:[],
+    available:['forward','light','loop'], hintMinSteps:3,
+    concept:{en:'Loop body can have several commands.',id:'Isi loop bisa berisi beberapa perintah.'}},
+  {id:9, title:{en:'Perimeter',id:'Keliling'},
+    description:{en:'Walk the outer edge of the grid.',id:'Jalan di tepi luar grid.'},
+    grid:{cols:4,rows:4}, start:{x:0,y:3,dir:'east'}, target:{x:0,y:3}, walls:[], tilesToLight:[{x:3,y:3},{x:3,y:0},{x:0,y:0}],
+    available:['forward','turnLeft','loop','light'], hintMinSteps:5,
+    concept:{en:'A loop with 4 repeats is great for squares.',id:'Loop 4× cocok untuk bentuk persegi.'}},
+  {id:10, title:{en:'Light Path',id:'Jalan Bercahaya'},
+    description:{en:'Light all blue tiles in your path.',id:'Nyalakan semua ubin biru di jalurmu.'},
+    grid:{cols:6,rows:1}, start:{x:0,y:0,dir:'east'}, target:null, tilesToLight:[{x:1,y:0},{x:3,y:0},{x:5,y:0}], walls:[],
+    available:['forward','light','loop'], hintMinSteps:4,
+    concept:{en:'Pattern: forward, forward, light — repeat 3 times.',id:'Pola: maju, maju, nyalakan — ulang 3 kali.'}},
+
+  // ── Tier 3: Procedures ──
+  {id:11, title:{en:'Tiny Helper',id:'Pembantu Kecil'},
+    description:{en:'Define proc() = forward, forward, turnRight. Then call it 4 times!',id:'Tulis proc() = maju, maju, belokKanan. Lalu panggil 4 kali!'},
+    grid:{cols:5,rows:5}, start:{x:0,y:4,dir:'east'}, target:{x:0,y:4}, walls:[], tilesToLight:[{x:2,y:4},{x:4,y:2},{x:2,y:0},{x:0,y:2}],
+    available:['forward','turnRight','light','loop','proc'], hintMinSteps:5,
+    concept:{en:'A <b>procedure</b> is a helper you give a name, then call again.',id:'<b>Prosedur</b> adalah pembantu yang kamu beri nama, lalu panggil ulang.'}},
+  {id:12, title:{en:'Helper + Loop',id:'Pembantu + Loop'},
+    description:{en:'Combine your procedure with a loop.',id:'Gabungkan prosedurmu dengan loop.'},
+    grid:{cols:6,rows:1}, start:{x:0,y:0,dir:'east'}, target:{x:5,y:0}, walls:[], tilesToLight:[],
+    available:['forward','turnRight','loop','proc'], hintMinSteps:3,
+    concept:{en:'Procedures + loops are super powerful together.',id:'Prosedur + loop sangat kuat digabung.'}},
+  {id:13, title:{en:'Stair Step',id:'Anak Tangga'},
+    description:{en:'Stairs! Same motion repeats.',id:'Tangga! Gerakan sama berulang.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:4,dir:'east'}, target:{x:4,y:0}, walls:[], tilesToLight:[],
+    available:['forward','turnRight','turnLeft','loop','proc'], hintMinSteps:4,
+    concept:{en:'Stairs = (forward, turnLeft, forward, turnRight) repeated.',id:'Tangga = (maju, kiri, maju, kanan) berulang.'}},
+  {id:14, title:{en:'Light & Move',id:'Nyalakan & Maju'},
+    description:{en:'Procedure: light + move forward 2. Repeat across grid.',id:'Prosedur: nyalakan + maju 2 ubin. Ulang di grid.'},
+    grid:{cols:6,rows:1}, start:{x:0,y:0,dir:'east'}, target:null, tilesToLight:[{x:0,y:0},{x:2,y:0},{x:4,y:0}], walls:[],
+    available:['forward','light','loop','proc'], hintMinSteps:3,
+    concept:{en:'Notice the repeating pattern — that is your procedure.',id:'Cari pola berulang — itulah prosedurmu.'}},
+  {id:15, title:{en:'Double Square',id:'Dua Persegi'},
+    description:{en:'Walk a small square pattern twice.',id:'Jalan persegi kecil dua kali.'},
+    grid:{cols:4,rows:4}, start:{x:0,y:3,dir:'east'}, target:{x:0,y:3}, walls:[], tilesToLight:[{x:1,y:3},{x:1,y:2}],
+    available:['forward','turnLeft','turnRight','loop','proc','light'], hintMinSteps:6,
+    concept:{en:'Reuse procedures wherever you see a repeated motif.',id:'Pakai ulang prosedur saat ada pola berulang.'}},
+
+  // ── Tier 4: Conditionals ──
+  {id:16, title:{en:'Wall Ahead!',id:'Ada Tembok!'},
+    description:{en:'If wall ahead, turn right; else forward.',id:'Kalau ada tembok, belok kanan; kalau tidak, maju.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:0,dir:'east'}, target:{x:4,y:4},
+    walls:[{x:2,y:0},{x:2,y:1},{x:2,y:2}], tilesToLight:[],
+    available:['forward','turnRight','turnLeft','loop','if_wall'], hintMinSteps:6,
+    concept:{en:'A <b>conditional</b> picks an action based on what is true.',id:'<b>Bersyarat</b> memilih aksi berdasarkan kondisi.'}},
+  {id:17, title:{en:'Snake Path',id:'Jalan Ular'},
+    description:{en:'Wind around walls to reach the goal.',id:'Berkelok lewati tembok menuju target.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:0,dir:'east'}, target:{x:4,y:4},
+    walls:[{x:2,y:0},{x:2,y:1},{x:2,y:3},{x:2,y:4}], tilesToLight:[],
+    available:['forward','turnRight','turnLeft','loop','if_wall'], hintMinSteps:8,
+    concept:{en:'if_wall: check before moving.',id:'if_wall: periksa sebelum bergerak.'}},
+  {id:18, title:{en:'Light Maze',id:'Maze Cahaya'},
+    description:{en:'Light all blue tiles in the maze.',id:'Nyalakan semua ubin biru di maze.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:0,dir:'east'}, target:null,
+    walls:[{x:2,y:1},{x:2,y:2}], tilesToLight:[{x:4,y:0},{x:4,y:4},{x:0,y:4}],
+    available:['forward','turnRight','turnLeft','loop','light','if_wall'], hintMinSteps:10,
+    concept:{en:'Plan: visit each blue tile, then light it.',id:'Rencana: kunjungi setiap ubin biru, lalu nyalakan.'}},
+  {id:19, title:{en:'Maze Master',id:'Master Maze'},
+    description:{en:'Bigger maze with walls in the middle.',id:'Maze lebih besar dengan tembok di tengah.'},
+    grid:{cols:6,rows:6}, start:{x:0,y:0,dir:'east'}, target:{x:5,y:5},
+    walls:[{x:2,y:1},{x:2,y:2},{x:2,y:3},{x:3,y:3},{x:4,y:3}], tilesToLight:[],
+    available:['forward','turnRight','turnLeft','loop','if_wall'], hintMinSteps:11,
+    concept:{en:'Combine loops + conditions for smart movement.',id:'Gabung loop + kondisi untuk gerakan cerdas.'}},
+  {id:20, title:{en:'Code Wizard',id:'Penyihir Kode'},
+    description:{en:'Final challenge — light all tiles!',id:'Tantangan akhir — nyalakan semua ubin!'},
+    grid:{cols:5,rows:5}, start:{x:0,y:0,dir:'east'}, target:null,
+    walls:[{x:2,y:2}], tilesToLight:[{x:4,y:0},{x:4,y:4},{x:0,y:4},{x:2,y:0}],
+    available:['forward','turnRight','turnLeft','loop','light','proc','if_wall'], hintMinSteps:14,
+    concept:{en:'You did it! You used sequences, loops, procedures and conditions.',id:'Kamu berhasil! Kamu pakai urutan, loop, prosedur dan kondisi.'}},
+];
+
+const ROBOT_CMD_META = {
+  forward:    {emoji:'⬆️', label:{en:'forward', id:'maju'},        cls:''},
+  turnRight:  {emoji:'↪️', label:{en:'right', id:'kanan'},          cls:''},
+  turnLeft:   {emoji:'↩️', label:{en:'left', id:'kiri'},            cls:''},
+  light:      {emoji:'💡', label:{en:'light', id:'nyalakan'},       cls:''},
+  loop:       {emoji:'🔁', label:{en:'loop ×N', id:'loop ×N'},      cls:'loop'},
+  proc:       {emoji:'📦', label:{en:'call proc', id:'panggil proc'}, cls:'proc'},
+  if_wall:    {emoji:'🔍', label:{en:'if wall?', id:'if tembok?'},  cls:'cond'},
+};
+
+const ROBOT_STATE = {
+  level:0,
+  queue:[],          // top-level program: array of {cmd, n?, body?}
+  proc:[],           // procedure body
+  running:false,
+  pos:null,
+  dir:'east',
+  lit:new Set(),     // x,y key of lit tiles
+};
+
+function renderRobot(){
+  const lvl = ROBOT_LEVELS[ROBOT_STATE.level];
+  if(!lvl){ renderDone('robot'); return; }
+  setHeader((lang==='en'?'Level ':'Level ')+(ROBOT_STATE.level+1)+'/'+ROBOT_LEVELS.length);
+
+  ROBOT_STATE.pos = {x:lvl.start.x, y:lvl.start.y};
+  ROBOT_STATE.dir = lvl.start.dir;
+  ROBOT_STATE.lit = new Set();
+
+  const tileSize = lvl.grid.cols > 5 ? 50 : 60;
+  const w = lvl.grid.cols * tileSize;
+  const h = lvl.grid.rows * tileSize;
+
+  let tilesHtml = '';
+  for(let y=0; y<lvl.grid.rows; y++){
+    for(let x=0; x<lvl.grid.cols; x++){
+      const isWall = lvl.walls.some(w=>w.x===x&&w.y===y);
+      const isTarget = lvl.target && lvl.target.x===x && lvl.target.y===y;
+      const isToLight = lvl.tilesToLight.some(p=>p.x===x&&p.y===y);
+      let cls='grid-tile';
+      if(isWall) cls+=' wall';
+      else if(isTarget) cls+=' target';
+      else if(isToLight) cls+=' tolight';
+      tilesHtml += `<div class="${cls}" data-x="${x}" data-y="${y}" style="left:${x*tileSize}px;top:${y*tileSize}px;width:${tileSize}px;height:${tileSize}px"></div>`;
+    }
+  }
+  // Target icon
+  let targetIcon = '';
+  if(lvl.target){
+    targetIcon = `<div class="grid-target-icon" style="left:${lvl.target.x*tileSize}px;top:${lvl.target.y*tileSize}px;width:${tileSize}px;height:${tileSize}px">🚩</div>`;
+  }
+
+  const dirAngle = {east:0, south:90, west:180, north:270}[lvl.start.dir];
+  const charHtml = `<div class="grid-char" id="grid-char" style="left:${lvl.start.x*tileSize}px;top:${lvl.start.y*tileSize}px;width:${tileSize}px;height:${tileSize}px;transform:rotate(${dirAngle}deg)">🐢</div>`;
+
+  // Command palette
+  const paletteHtml = lvl.available.map(cmd=>{
+    const m = ROBOT_CMD_META[cmd];
+    return `<button class="cmd-btn ${m.cls}" onclick="addCmd('${cmd}')">${m.emoji} ${t(m.label)}</button>`;
+  }).join('');
+
+  const procSection = lvl.available.includes('proc') ? `
+    <div>
+      <div class="cmd-section-title">📦 ${lang==='en'?'Procedure body':'Isi prosedur'}</div>
+      <div class="proc-block">
+        <div class="proc-label">${lang==='en'?'proc() =':'proc() ='}</div>
+        <div class="queue" id="proc-queue" data-empty="${lang==='en'?'Define the procedure body, then add commands here':'Isi prosedur, lalu tambah perintah di sini'}"></div>
+      </div>
+      <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+        ${lvl.available.filter(c=>c!=='proc'&&c!=='loop'&&c!=='if_wall').map(cmd=>{
+          const m = ROBOT_CMD_META[cmd];
+          return `<button class="cmd-btn ${m.cls}" onclick="addCmd('${cmd}', true)" style="padding:5px 9px;font-size:.76rem">${m.emoji} ${t(m.label)}</button>`;
+        }).join('')}
+      </div>
+    </div>` : '';
+
+  document.getElementById('main').innerHTML = `
+    <div class="card">
+      <div class="level-head">
+        <span class="level-badge">${lang==='en'?'LEVEL ':'LEVEL '}${ROBOT_STATE.level+1}</span>
+        <div class="level-title">${t(lvl.title)}</div>
+      </div>
+      <div class="level-desc">${t(lvl.description)}</div>
+      <div class="robot-layout">
+        <div class="grid-wrap">
+          <div class="grid-board" style="width:${w}px;height:${h}px">${tilesHtml}${targetIcon}${charHtml}</div>
+        </div>
+        <div class="cmd-panel">
+          <div>
+            <div class="cmd-section-title">🎯 ${lang==='en'?'Commands':'Perintah'}</div>
+            <div class="cmd-palette">${paletteHtml}</div>
+          </div>
+          <div>
+            <div class="cmd-section-title">📝 ${lang==='en'?'Your program':'Programmu'}</div>
+            <div class="queue" id="main-queue" data-empty="${lang==='en'?'Click commands above to build your program':'Klik perintah di atas untuk bangun program'}"></div>
+          </div>
+          ${procSection}
+          <div class="run-row">
+            <button class="run-btn" id="runBtn" onclick="runProgram()">▶️ ${lang==='en'?'Run':'Jalan'}</button>
+            <button class="run-btn reset" onclick="resetRobot()">🔄 ${lang==='en'?'Reset':'Ulang'}</button>
+            <button class="run-btn hint" onclick="showHint()">💡 ${lang==='en'?'Hint':'Petunjuk'}</button>
+          </div>
+          <div class="hint-box" id="hint-box">${lang==='en'?'Optimal solution uses about ':'Solusi optimal pakai sekitar '}<b>${lvl.hintMinSteps}</b>${lang==='en'?' commands.':' perintah.'}</div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  ROBOT_STATE.queue = [];
+  ROBOT_STATE.proc = [];
+  refreshQueues();
+}
+
+function refreshQueues(){
+  const mainQ = document.getElementById('main-queue');
+  const procQ = document.getElementById('proc-queue');
+  if(mainQ) mainQ.innerHTML = ROBOT_STATE.queue.map((it,i)=>chipHtml(it,i,'main')).join('');
+  if(procQ) procQ.innerHTML = ROBOT_STATE.proc.map((it,i)=>chipHtml(it,i,'proc')).join('');
+}
+function chipHtml(it,i,where){
+  const m = ROBOT_CMD_META[it.cmd];
+  let label = m.emoji + ' ' + t(m.label);
+  if(it.cmd==='loop') label = '🔁 ×'+it.n;
+  return `<button class="queue-chip ${m.cls}" onclick="removeChip(${i}, '${where}')">${label}</button>`;
+}
+function removeChip(i, where){
+  const arr = where==='proc' ? ROBOT_STATE.proc : ROBOT_STATE.queue;
+  arr.splice(i,1);
+  refreshQueues();
+}
+function addCmd(cmd, toProc=false){
+  let item = {cmd};
+  if(cmd==='loop'){
+    const n = prompt(lang==='en'?'Repeat how many times? (2-9)':'Ulang berapa kali? (2-9)', '3');
+    const nn = parseInt(n,10);
+    if(!nn || nn<2 || nn>9) return;
+    item.n = nn;
+  }
+  const arr = toProc ? ROBOT_STATE.proc : ROBOT_STATE.queue;
+  arr.push(item);
+  refreshQueues();
+}
+function resetRobot(){
+  if(ROBOT_STATE.running) return;
+  ROBOT_STATE.queue = [];
+  ROBOT_STATE.proc = [];
+  document.getElementById('feedback').classList.remove('show');
+  refreshQueues();
+  // reset char to start
+  const lvl = ROBOT_LEVELS[ROBOT_STATE.level];
+  const tileSize = lvl.grid.cols > 5 ? 50 : 60;
+  ROBOT_STATE.pos = {x:lvl.start.x, y:lvl.start.y};
+  ROBOT_STATE.dir = lvl.start.dir;
+  ROBOT_STATE.lit = new Set();
+  const ch = document.getElementById('grid-char');
+  ch.style.left = lvl.start.x*tileSize+'px';
+  ch.style.top  = lvl.start.y*tileSize+'px';
+  const dirAngle = {east:0,south:90,west:180,north:270}[lvl.start.dir];
+  ch.style.transform = `rotate(${dirAngle}deg)`;
+  document.querySelectorAll('.grid-tile.lit').forEach(el=>el.classList.remove('lit'));
+}
+function showHint(){
+  document.getElementById('hint-box').classList.toggle('show');
+}
+
+function expandProgram(items, depth=0){
+  if(depth>50) return [];
+  const out = [];
+  for(const it of items){
+    if(it.cmd==='loop'){
+      // Next single command/proc is "body"; for simplicity loop wraps proc call or single forward etc.
+      // We'll interpret loop as: repeat ALL following commands N times within its own scope.
+      // Simpler: loop wraps next item only.
+      // To keep usable, treat loop ×N as: repeat the NEXT item N times. But user-friendly: treat as repeat next single token.
+    } else if(it.cmd==='proc'){
+      out.push(...expandProgram(ROBOT_STATE.proc, depth+1));
+    } else {
+      out.push(it);
+    }
+  }
+  return out;
+}
+// Better expand: loop wraps the NEXT command only (or next proc call).
+function expandQueue(items, depth=0){
+  if(depth>40) return [];
+  const out = [];
+  for(let i=0; i<items.length; i++){
+    const it = items[i];
+    if(it.cmd==='loop'){
+      const next = items[i+1];
+      if(!next){ continue; }
+      for(let r=0; r<it.n; r++){
+        if(next.cmd==='proc'){
+          out.push(...expandQueue(ROBOT_STATE.proc, depth+1));
+        } else if(next.cmd==='loop'){
+          // nested loop: expand sub-sequence
+          out.push(...expandQueue([next, items[i+2]].filter(Boolean), depth+1));
+        } else {
+          out.push(next);
+        }
+      }
+      i++; // skip the wrapped command
+    } else if(it.cmd==='proc'){
+      out.push(...expandQueue(ROBOT_STATE.proc, depth+1));
+    } else {
+      out.push(it);
+    }
+  }
+  return out;
+}
+
+function isWallAhead(){
+  const lvl = ROBOT_LEVELS[ROBOT_STATE.level];
+  const dx = {east:1,west:-1,north:0,south:0}[ROBOT_STATE.dir];
+  const dy = {east:0,west:0,north:-1,south:1}[ROBOT_STATE.dir];
+  const nx = ROBOT_STATE.pos.x + dx;
+  const ny = ROBOT_STATE.pos.y + dy;
+  if(nx<0||ny<0||nx>=lvl.grid.cols||ny>=lvl.grid.rows) return true;
+  if(lvl.walls.some(w=>w.x===nx&&w.y===ny)) return true;
+  return false;
+}
+
+async function runProgram(){
+  if(ROBOT_STATE.running) return;
+  ROBOT_STATE.running = true;
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('feedback').classList.remove('show');
+  resetCharOnly();
+
+  // Build expanded sequence; handle if_wall as runtime decision (skip-next on false)
+  const program = ROBOT_STATE.queue.slice();
+  const expanded = expandQueue(program);
+
+  const lvl = ROBOT_LEVELS[ROBOT_STATE.level];
+  const tileSize = lvl.grid.cols > 5 ? 50 : 60;
+  const ch = document.getElementById('grid-char');
+
+  for(let i=0; i<expanded.length && i<200; i++){
+    const it = expanded[i];
+    await sleep(420);
+
+    if(it.cmd==='forward'){
+      if(isWallAhead()){
+        showFeedback('bad', lang==='en'?'💥 Bonk! The turtle hit a wall. Try again!':'💥 Aduh! Kura-kura kena tembok. Coba lagi!');
+        ROBOT_STATE.running = false;
+        document.getElementById('runBtn').disabled = false;
+        return;
+      }
+      const dx = {east:1,west:-1,north:0,south:0}[ROBOT_STATE.dir];
+      const dy = {east:0,west:0,north:-1,south:1}[ROBOT_STATE.dir];
+      ROBOT_STATE.pos.x += dx;
+      ROBOT_STATE.pos.y += dy;
+      ch.style.left = ROBOT_STATE.pos.x*tileSize+'px';
+      ch.style.top  = ROBOT_STATE.pos.y*tileSize+'px';
+    } else if(it.cmd==='turnRight'){
+      const order=['east','south','west','north'];
+      ROBOT_STATE.dir = order[(order.indexOf(ROBOT_STATE.dir)+1)%4];
+      ch.style.transform = `rotate(${ {east:0,south:90,west:180,north:270}[ROBOT_STATE.dir] }deg)`;
+    } else if(it.cmd==='turnLeft'){
+      const order=['east','north','west','south'];
+      ROBOT_STATE.dir = order[(order.indexOf(ROBOT_STATE.dir)+1)%4];
+      ch.style.transform = `rotate(${ {east:0,south:90,west:180,north:270}[ROBOT_STATE.dir] }deg)`;
+    } else if(it.cmd==='light'){
+      const key = ROBOT_STATE.pos.x+','+ROBOT_STATE.pos.y;
+      ROBOT_STATE.lit.add(key);
+      const tileEl = document.querySelector(`.grid-tile[data-x="${ROBOT_STATE.pos.x}"][data-y="${ROBOT_STATE.pos.y}"]`);
+      if(tileEl) tileEl.classList.add('lit');
+    } else if(it.cmd==='if_wall'){
+      // peek next; execute if wall, else skip next
+      const next = expanded[i+1];
+      if(!next) continue;
+      if(!isWallAhead()){
+        i++; // skip next
+      }
+    }
+  }
+
+  // Check win
+  const lvlNow = ROBOT_LEVELS[ROBOT_STATE.level];
+  let win = true;
+  if(lvlNow.target){
+    if(ROBOT_STATE.pos.x !== lvlNow.target.x || ROBOT_STATE.pos.y !== lvlNow.target.y) win = false;
+  }
+  if(lvlNow.tilesToLight.length){
+    for(const tl of lvlNow.tilesToLight){
+      if(!ROBOT_STATE.lit.has(tl.x+','+tl.y)){ win=false; break; }
+    }
+  }
+
+  ROBOT_STATE.running = false;
+  document.getElementById('runBtn').disabled = false;
+
+  if(win){
+    saveProgress('alesha_code_robot_progress', lvlNow.id);
+    confetti();
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'You did it!':'Berhasil!'}</strong> ${t(lvlNow.concept)}<br>
+       <button class="next-btn" onclick="nextRobot()">${lang==='en'?'Next Level →':'Level Berikut →'}</button>`);
+  } else {
+    showFeedback('bad', lang==='en'?'😿 Not quite. Check your path and try again!':'😿 Belum tepat. Cek jalurmu dan coba lagi!');
+  }
+}
+function nextRobot(){
+  ROBOT_STATE.level++;
+  render();
+}
+function resetCharOnly(){
+  const lvl = ROBOT_LEVELS[ROBOT_STATE.level];
+  const tileSize = lvl.grid.cols > 5 ? 50 : 60;
+  ROBOT_STATE.pos = {x:lvl.start.x, y:lvl.start.y};
+  ROBOT_STATE.dir = lvl.start.dir;
+  ROBOT_STATE.lit = new Set();
+  const ch = document.getElementById('grid-char');
+  ch.style.left = lvl.start.x*tileSize+'px';
+  ch.style.top  = lvl.start.y*tileSize+'px';
+  ch.style.transform = `rotate(${ {east:0,south:90,west:180,north:270}[lvl.start.dir] }deg)`;
+  document.querySelectorAll('.grid-tile.lit').forEach(el=>el.classList.remove('lit'));
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function showFeedback(kind, html){
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show '+kind;
+  fb.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODE 2: BUG HUNT
+// ════════════════════════════════════════════════════════════════
+const BUG_LEVELS = [
+  {id:1,
+    title:{en:'Off by One', id:'Lebih Satu'},
+    code:[
+      'for i = 1 to 4 do',
+      '  print(i * 2)',
+      'end'
+    ],
+    expected:'2\n4\n6\n8\n10', actual:'2\n4\n6\n8',
+    question:{en:'The loop stops one number too early. Which line has the bug?', id:'Loop berhenti satu angka terlalu cepat. Baris mana yang bermasalah?'},
+    options:[
+      {en:'Line 1 — loop should go to 5', id:'Baris 1 — loop seharusnya ke 5'},
+      {en:'Line 2 — should be i*3', id:'Baris 2 — seharusnya i*3'},
+      {en:'Line 3 — missing "stop"', id:'Baris 3 — kurang "berhenti"'},
+      {en:'No bug at all', id:'Tidak ada bug'},
+    ], ans:0, bugLine:0,
+    concept:{en:'<b>Off-by-one</b> bugs happen when a loop runs one too few or too many times.', id:'<b>Off-by-one</b> terjadi saat loop berjalan kurang atau lebih satu kali.'}},
+  {id:2,
+    title:{en:'Wrong Comparison', id:'Perbandingan Salah'},
+    code:[
+      'score = 70',
+      'if score > 70 then',
+      '  print("Pass")',
+      'end'
+    ],
+    expected:'Pass', actual:'(nothing)',
+    question:{en:'Score is exactly 70 but nothing prints. Which line is wrong?', id:'Nilai tepat 70 tapi tidak muncul. Baris mana yang salah?'},
+    options:[
+      {en:'Line 1 — score should be 71', id:'Baris 1 — seharusnya 71'},
+      {en:'Line 2 — should be >= not >', id:'Baris 2 — seharusnya >= bukan >'},
+      {en:'Line 3 — print is wrong', id:'Baris 3 — print salah'},
+      {en:'Line 4 — extra "end"', id:'Baris 4 — kelebihan "end"'},
+    ], ans:1, bugLine:1,
+    concept:{en:'<b>></b> means "greater than" — it does NOT include the number itself. Use <b>>=</b> to include it.', id:'<b>></b> berarti "lebih besar dari" — TIDAK termasuk angkanya. Pakai <b>>=</b> untuk memasukkannya.'}},
+  {id:3,
+    title:{en:'Typo Trouble', id:'Salah Ketik'},
+    code:[
+      'a = 5',
+      'b = 3',
+      'total = a + b',
+      'print(totl)'
+    ],
+    expected:'8', actual:'Error: totl is undefined',
+    question:{en:'The program crashes. What is the bug?', id:'Program error. Apa bug-nya?'},
+    options:[
+      {en:'Line 4 — typo "totl" should be "total"', id:'Baris 4 — salah ketik "totl" seharusnya "total"'},
+      {en:'Line 3 — wrong operator', id:'Baris 3 — operator salah'},
+      {en:'Line 1 — a should be a string', id:'Baris 1 — a seharusnya string'},
+      {en:'No bug', id:'Tidak ada bug'},
+    ], ans:0, bugLine:3,
+    concept:{en:'A <b>typo</b> in a variable name makes the computer not know what you mean.', id:'<b>Salah ketik</b> nama variabel bikin komputer tidak paham maksudmu.'}},
+  {id:4,
+    title:{en:'Wrong Order', id:'Urutan Salah'},
+    code:[
+      'print(message)',
+      'message = "Hello!"'
+    ],
+    expected:'Hello!', actual:'Error: message is undefined',
+    question:{en:'It prints before the value is set. What is the fix?', id:'Print sebelum nilai diisi. Apa perbaikannya?'},
+    options:[
+      {en:'Swap line 1 and line 2', id:'Tukar baris 1 dan baris 2'},
+      {en:'Delete line 2', id:'Hapus baris 2'},
+      {en:'Change "Hello!" to "Hi"', id:'Ubah "Hello!" jadi "Hi"'},
+      {en:'Nothing — it is fine', id:'Tidak ada — sudah benar'},
+    ], ans:0, bugLine:0,
+    concept:{en:'Code runs <b>top to bottom</b>. Assign before you use.', id:'Kode jalan dari <b>atas ke bawah</b>. Isi dulu, baru pakai.'}},
+  {id:5,
+    title:{en:'Missing Return', id:'Lupa Return'},
+    code:[
+      'function double(x)',
+      '  result = x * 2',
+      'end',
+      'print(double(5))'
+    ],
+    expected:'10', actual:'(nothing)',
+    question:{en:'The function calculates but prints nothing. What is missing?', id:'Fungsi hitung tapi tidak mencetak. Apa yang kurang?'},
+    options:[
+      {en:'Line 2 needs "return result"', id:'Baris 2 butuh "return result"'},
+      {en:'Line 1 wrong function name', id:'Baris 1 nama fungsi salah'},
+      {en:'Line 4 wrong argument', id:'Baris 4 argumen salah'},
+      {en:'Line 3 extra "end"', id:'Baris 3 kelebihan "end"'},
+    ], ans:0, bugLine:1,
+    concept:{en:'A function must <b>return</b> a value if you want to use the result.', id:'Fungsi harus <b>return</b> nilai jika hasilnya mau dipakai.'}},
+  {id:6,
+    title:{en:'Type Mismatch', id:'Tipe Tidak Cocok'},
+    code:[
+      'age = "10"',
+      'next_age = age + 1',
+      'print(next_age)'
+    ],
+    expected:'11', actual:'Error: cannot add string and number',
+    question:{en:'Why does this crash?', id:'Kenapa error?'},
+    options:[
+      {en:'age is a string ("10"), not a number', id:'age adalah string ("10"), bukan angka'},
+      {en:'+ should be -', id:'+ harusnya -'},
+      {en:'print is misspelled', id:'print salah eja'},
+      {en:'next_age is reserved', id:'next_age kata terlarang'},
+    ], ans:0, bugLine:0,
+    concept:{en:'<b>"10"</b> with quotes is a string. <b>10</b> without is a number. Different types!', id:'<b>"10"</b> dengan tanda kutip adalah string. <b>10</b> tanpa kutip adalah angka. Beda tipe!'}},
+  {id:7,
+    title:{en:'Forever Loop', id:'Loop Tak Berhenti'},
+    code:[
+      'i = 0',
+      'while i < 5 do',
+      '  print(i)',
+      'end'
+    ],
+    expected:'0 1 2 3 4', actual:'0 0 0 0 0 ... (forever)',
+    question:{en:'Why does the loop never stop?', id:'Kenapa loop tidak pernah berhenti?'},
+    options:[
+      {en:'i never changes — need i = i + 1', id:'i tidak pernah berubah — butuh i = i + 1'},
+      {en:'< should be >', id:'< harusnya >'},
+      {en:'print is wrong', id:'print salah'},
+      {en:'while should be if', id:'while harusnya if'},
+    ], ans:0, bugLine:2,
+    concept:{en:'A <b>while</b> loop needs something inside it to change, or it runs forever.', id:'Loop <b>while</b> butuh sesuatu yang berubah di dalamnya, atau jalan selamanya.'}},
+  {id:8,
+    title:{en:'Wrong Increment', id:'Penambahan Salah'},
+    code:[
+      'for i = 1 to 10 step 2 do',
+      '  print(i)',
+      'end'
+    ],
+    expected:'1 2 3 4 5 6 7 8 9 10', actual:'1 3 5 7 9',
+    question:{en:'It skips numbers. What is wrong?', id:'Angka terlewat. Apa salahnya?'},
+    options:[
+      {en:'step should be 1, not 2', id:'step harusnya 1, bukan 2'},
+      {en:'1 should be 0', id:'1 harusnya 0'},
+      {en:'print is wrong', id:'print salah'},
+      {en:'No bug', id:'Tidak ada bug'},
+    ], ans:0, bugLine:0,
+    concept:{en:'<b>step</b> controls how much i grows each loop. step 2 means skip every other number.', id:'<b>step</b> mengatur seberapa banyak i bertambah tiap loop. step 2 berarti loncat 1 angka.'}},
+  {id:9,
+    title:{en:'And vs Or', id:'And vs Or'},
+    code:[
+      'age = 8',
+      'if age >= 5 and age <= 12 then',
+      '  print("Kid")',
+      'else',
+      '  print("Not a kid")',
+      'end'
+    ],
+    expected:'Kid', actual:'Kid',
+    question:{en:'This works! What if we change "and" to "or" — what happens?', id:'Ini benar! Jika "and" diganti "or" — apa terjadi?'},
+    options:[
+      {en:'Almost any age would print "Kid"', id:'Hampir semua umur akan cetak "Kid"'},
+      {en:'It would crash', id:'Akan error'},
+      {en:'Nothing would print', id:'Tidak ada yang cetak'},
+      {en:'No change', id:'Tidak berubah'},
+    ], ans:0, bugLine:1,
+    concept:{en:'<b>and</b> needs BOTH true. <b>or</b> needs only ONE true.', id:'<b>and</b> butuh KEDUANYA benar. <b>or</b> cukup SALAH SATU benar.'}},
+  {id:10,
+    title:{en:'List Index Off', id:'Index List Salah'},
+    code:[
+      'fruits = ["apple", "banana", "cherry"]',
+      'print(fruits[3])'
+    ],
+    expected:'cherry', actual:'Error: index out of range',
+    question:{en:'List has 3 items but index 3 crashes. Why?', id:'List punya 3 isi tapi index 3 error. Kenapa?'},
+    options:[
+      {en:'Lists start at 0 — last index is 2', id:'List mulai dari 0 — index terakhir 2'},
+      {en:'cherry is misspelled', id:'cherry salah eja'},
+      {en:'print is wrong', id:'print salah'},
+      {en:'fruits is a reserved word', id:'fruits kata terlarang'},
+    ], ans:0, bugLine:1,
+    concept:{en:'Most programming lists start at <b>0</b>, not 1!', id:'Kebanyakan list mulai dari <b>0</b>, bukan 1!'}},
+];
+
+const BUG_STATE = {idx:0, answered:false};
+
+function renderBug(){
+  const lvl = BUG_LEVELS[BUG_STATE.idx];
+  if(!lvl){ renderDone('bug'); return; }
+  setHeader((lang==='en'?'Bug ':'Bug ')+(BUG_STATE.idx+1)+'/'+BUG_LEVELS.length);
+
+  const codeHtml = lvl.code.map((ln,i)=>
+    `<div class="code-line" data-line="${i}"><span class="line-num">${i+1}</span><span class="line-body">${ln.replace(/</g,'&lt;')}</span></div>`
+  ).join('');
+
+  const optsHtml = lvl.options.map((opt,i)=>
+    `<button class="opt" data-i="${i}" onclick="answerBug(${i})"><span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${t(opt)}</span></button>`
+  ).join('');
+
+  document.getElementById('main').innerHTML = `
+    <div class="card">
+      <div class="level-head">
+        <span class="level-badge" style="background:#fff7ed;color:#c2410c">🐛 ${lang==='en'?'BUG':'BUG'} ${BUG_STATE.idx+1}</span>
+        <div class="level-title">${t(lvl.title)}</div>
+      </div>
+      <div class="level-desc">${t(lvl.question)}</div>
+      <div class="code-block">${codeHtml}</div>
+      <div class="io-row">
+        <div class="io-box expected"><div class="io-label">✓ ${lang==='en'?'Expected':'Diharapkan'}</div><div class="io-val">${lvl.expected.replace(/</g,'&lt;')}</div></div>
+        <div class="io-box actual"><div class="io-label">✗ ${lang==='en'?'Actual':'Hasil'}</div><div class="io-val">${lvl.actual.replace(/</g,'&lt;')}</div></div>
+      </div>
+      <div class="opts">${optsHtml}</div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  `;
+  BUG_STATE.answered = false;
+}
+
+function answerBug(i){
+  if(BUG_STATE.answered) return;
+  BUG_STATE.answered = true;
+  const lvl = BUG_LEVELS[BUG_STATE.idx];
+  document.querySelectorAll('.opt').forEach((el,j)=>{
+    el.disabled = true;
+    if(j===lvl.ans) el.classList.add('correct');
+    else if(j===i) el.classList.add('wrong');
+  });
+  const bugLineEl = document.querySelector(`.code-line[data-line="${lvl.bugLine}"]`);
+  if(bugLineEl) bugLineEl.classList.add('bug');
+
+  if(i===lvl.ans){
+    saveProgress('alesha_code_bug_progress', lvl.id);
+    confetti();
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'Bug found!':'Bug ketemu!'}</strong><br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextBug()">${lang==='en'?'Next Bug →':'Bug Berikut →'}</button>`);
+  } else {
+    showFeedback('bad',
+      `<strong>${lang==='en'?'Not quite!':'Belum tepat!'}</strong> ${lang==='en'?'The correct answer is highlighted.':'Jawaban benar disorot.'}<br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextBug()">${lang==='en'?'Next Bug →':'Bug Berikut →'}</button>`);
+  }
+}
+function nextBug(){
+  BUG_STATE.idx++;
+  render();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODE 3: LOGIC GATES
+// ════════════════════════════════════════════════════════════════
+// Each level: inputs (array of names), gates (array of {op, in:[srcA,srcB?], id}), goal (output value true/false), outputFrom (gate id)
+const GATES_LEVELS = [
+  {id:1, title:{en:'Just AND', id:'Hanya AND'},
+    description:{en:'Make both switches TRUE to light the bulb.', id:'Buat kedua saklar BENAR untuk nyalakan lampu.'},
+    inputs:['A','B'],
+    gates:[{op:'AND', in:['A','B'], id:'G1'}],
+    outputFrom:'G1', goal:true,
+    concept:{en:'<b>AND</b> is true only when BOTH inputs are true.', id:'<b>AND</b> benar hanya jika KEDUA input benar.'}},
+  {id:2, title:{en:'Just OR', id:'Hanya OR'},
+    description:{en:'Make at least one switch TRUE.', id:'Buat minimal satu saklar BENAR.'},
+    inputs:['A','B'],
+    gates:[{op:'OR', in:['A','B'], id:'G1'}],
+    outputFrom:'G1', goal:true,
+    concept:{en:'<b>OR</b> is true when AT LEAST ONE input is true.', id:'<b>OR</b> benar saat MINIMAL SATU input benar.'}},
+  {id:3, title:{en:'NOT Flip', id:'Bolak Balik NOT'},
+    description:{en:'Light the bulb — but input flips!', id:'Nyalakan lampu — tapi input dibalik!'},
+    inputs:['A'],
+    gates:[{op:'NOT', in:['A'], id:'G1'}],
+    outputFrom:'G1', goal:true,
+    concept:{en:'<b>NOT</b> flips true to false and false to true.', id:'<b>NOT</b> membalik benar jadi salah dan sebaliknya.'}},
+  {id:4, title:{en:'AND + NOT', id:'AND + NOT'},
+    description:{en:'A must be TRUE, B must be FALSE.', id:'A harus BENAR, B harus SALAH.'},
+    inputs:['A','B'],
+    gates:[{op:'NOT', in:['B'], id:'G1'}, {op:'AND', in:['A','G1'], id:'G2'}],
+    outputFrom:'G2', goal:true,
+    concept:{en:'Chain gates: feed output of one into another.', id:'Sambung gerbang: hasil satu jadi input yang lain.'}},
+  {id:5, title:{en:'Two ANDs', id:'Dua AND'},
+    description:{en:'A AND B, OR C AND D — light it up!', id:'A AND B, ATAU C AND D — nyalakan!'},
+    inputs:['A','B','C','D'],
+    gates:[{op:'AND', in:['A','B'], id:'G1'}, {op:'AND', in:['C','D'], id:'G2'}, {op:'OR', in:['G1','G2'], id:'G3'}],
+    outputFrom:'G3', goal:true,
+    concept:{en:'Many gates can work together to make a decision.', id:'Banyak gerbang bisa bekerja sama untuk keputusan.'}},
+  {id:6, title:{en:'Make it FALSE', id:'Buat SALAH'},
+    description:{en:'Now turn the bulb OFF — A AND B should be FALSE.', id:'Sekarang matikan lampu — A AND B harus SALAH.'},
+    inputs:['A','B'],
+    gates:[{op:'AND', in:['A','B'], id:'G1'}],
+    outputFrom:'G1', goal:false,
+    concept:{en:'AND is false when ANY input is false.', id:'AND salah saat ada input yang salah.'}},
+  {id:7, title:{en:'XOR Magic', id:'Ajaib XOR'},
+    description:{en:'XOR: exactly ONE input is true (not both).', id:'XOR: tepat SATU input benar (bukan keduanya).'},
+    inputs:['A','B'],
+    gates:[{op:'XOR', in:['A','B'], id:'G1'}],
+    outputFrom:'G1', goal:true,
+    concept:{en:'<b>XOR</b> = "exclusive or" — true when inputs are different.', id:'<b>XOR</b> = "or eksklusif" — benar saat input berbeda.'}},
+  {id:8, title:{en:'Tricky NOT', id:'NOT Pintar'},
+    description:{en:'A OR (NOT B) should be TRUE.', id:'A OR (NOT B) harus BENAR.'},
+    inputs:['A','B'],
+    gates:[{op:'NOT', in:['B'], id:'G1'}, {op:'OR', in:['A','G1'], id:'G2'}],
+    outputFrom:'G2', goal:true,
+    concept:{en:'NOT inside OR — many ways to win!', id:'NOT di dalam OR — banyak cara menang!'}},
+  {id:9, title:{en:'Three Gate Combo', id:'Tiga Gerbang'},
+    description:{en:'(A AND B) OR (NOT C).', id:'(A AND B) OR (NOT C).'},
+    inputs:['A','B','C'],
+    gates:[{op:'AND', in:['A','B'], id:'G1'}, {op:'NOT', in:['C'], id:'G2'}, {op:'OR', in:['G1','G2'], id:'G3'}],
+    outputFrom:'G3', goal:true,
+    concept:{en:'Read inside-out: solve small bits first.', id:'Baca dari dalam: selesaikan bagian kecil dulu.'}},
+  {id:10, title:{en:'Final Circuit', id:'Sirkuit Akhir'},
+    description:{en:'XOR + AND — both must work!', id:'XOR + AND — keduanya harus jalan!'},
+    inputs:['A','B','C'],
+    gates:[{op:'XOR', in:['A','B'], id:'G1'}, {op:'AND', in:['G1','C'], id:'G2'}],
+    outputFrom:'G2', goal:true,
+    concept:{en:'You can build any computer using AND, OR, and NOT!', id:'Komputer apa pun bisa dibangun dari AND, OR, dan NOT!'}},
+];
+
+const GATES_STATE = {idx:0, values:{}};
+
+function evalGate(g, vals){
+  const ev = name => name in vals ? vals[name] : false;
+  if(g.op==='AND') return ev(g.in[0]) && ev(g.in[1]);
+  if(g.op==='OR')  return ev(g.in[0]) || ev(g.in[1]);
+  if(g.op==='NOT') return !ev(g.in[0]);
+  if(g.op==='XOR') return ev(g.in[0]) !== ev(g.in[1]);
+  return false;
+}
+function computeGates(lvl){
+  const vals = {};
+  for(const inp of lvl.inputs) vals[inp] = !!GATES_STATE.values[inp];
+  for(const g of lvl.gates) vals[g.id] = evalGate(g, vals);
+  return vals;
+}
+
+function renderGates(){
+  const lvl = GATES_LEVELS[GATES_STATE.idx];
+  if(!lvl){ renderDone('gates'); return; }
+  setHeader((lang==='en'?'Circuit ':'Sirkuit ')+(GATES_STATE.idx+1)+'/'+GATES_LEVELS.length);
+
+  // initialize values
+  if(GATES_STATE.idx !== GATES_STATE.lastIdx){
+    GATES_STATE.values = {};
+    for(const inp of lvl.inputs) GATES_STATE.values[inp] = false;
+    GATES_STATE.lastIdx = GATES_STATE.idx;
+  }
+
+  const goalText = lvl.goal
+    ? (lang==='en'?'Make the bulb LIGHT UP 💡':'Nyalakan lampu 💡')
+    : (lang==='en'?'Make the bulb GO OFF 🌑':'Matikan lampu 🌑');
+
+  document.getElementById('main').innerHTML = `
+    <div class="card">
+      <div class="level-head">
+        <span class="level-badge" style="background:#ede9fe;color:#6d28d9">🔀 ${lang==='en'?'CIRCUIT':'SIRKUIT'} ${GATES_STATE.idx+1}</span>
+        <div class="level-title">${t(lvl.title)}</div>
+      </div>
+      <div class="level-desc">${t(lvl.description)}<br><b>${lang==='en'?'Goal:':'Tujuan:'}</b> ${goalText}</div>
+      <div class="circuit" id="circuit"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  `;
+  drawCircuit();
+}
+
+function drawCircuit(){
+  const lvl = GATES_LEVELS[GATES_STATE.idx];
+  const vals = computeGates(lvl);
+  const out = vals[lvl.outputFrom];
+
+  // layout: column-based. Inputs col=0; gates by topological level; output last col.
+  const colOf = {};
+  for(const inp of lvl.inputs) colOf[inp] = 0;
+  let maxCol = 1;
+  for(const g of lvl.gates){
+    const c = Math.max(...g.in.map(n=>colOf[n]||0)) + 1;
+    colOf[g.id] = c;
+    if(c > maxCol) maxCol = c;
+  }
+  const outputCol = maxCol + 1;
+  const totalCols = outputCol + 1;
+
+  // assign Y positions per column
+  const colItems = {};
+  for(let c=0; c<=outputCol; c++) colItems[c] = [];
+  for(const inp of lvl.inputs) colItems[0].push({type:'input', name:inp});
+  for(const g of lvl.gates) colItems[colOf[g.id]].push({type:'gate', g});
+  colItems[outputCol].push({type:'output'});
+
+  const colW = 110;
+  const rowH = 70;
+  const maxRows = Math.max(...Object.values(colItems).map(a=>a.length));
+  const W = totalCols * colW + 40;
+  const H = Math.max(maxRows*rowH + 40, 180);
+
+  const posOf = {};
+  for(let c=0; c<=outputCol; c++){
+    const items = colItems[c];
+    const startY = (H - items.length*rowH)/2 + rowH/2;
+    items.forEach((it,i)=>{
+      const x = 30 + c*colW;
+      const y = startY + i*rowH;
+      if(it.type==='input') posOf[it.name] = {x,y};
+      else if(it.type==='gate') posOf[it.g.id] = {x,y};
+      else posOf['_out'] = {x,y};
+    });
+  }
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+
+  // wires (draw under)
+  for(const g of lvl.gates){
+    const gp = posOf[g.id];
+    g.in.forEach((src,i)=>{
+      const sp = posOf[src];
+      const isOn = vals[src];
+      // input port offset
+      const portY = g.in.length===1 ? gp.y : gp.y + (i===0?-10:10);
+      svg += `<path class="wire ${isOn?'on':'off'}" d="M ${sp.x+25} ${sp.y} C ${sp.x+60} ${sp.y}, ${gp.x-35} ${portY}, ${gp.x-20} ${portY}"/>`;
+    });
+  }
+  // wire to output bulb
+  const outGate = posOf[lvl.outputFrom];
+  const outPos = posOf['_out'];
+  svg += `<path class="wire ${out?'on':'off'}" d="M ${outGate.x+25} ${outGate.y} C ${outGate.x+60} ${outGate.y}, ${outPos.x-40} ${outPos.y}, ${outPos.x-18} ${outPos.y}"/>`;
+
+  // inputs (switches)
+  for(const inp of lvl.inputs){
+    const p = posOf[inp];
+    const on = vals[inp];
+    svg += `<g class="input-sw" onclick="toggleInput('${inp}')">
+      <circle cx="${p.x}" cy="${p.y}" r="22" fill="${on?'#fbbf24':'#475569'}" stroke="${on?'#f59e0b':'#1e293b'}" stroke-width="3"/>
+      <text x="${p.x}" y="${p.y}" class="node-label" style="fill:${on?'#78350f':'#e2e8f0'}">${on?'1':'0'}</text>
+      <text x="${p.x}" y="${p.y-32}" class="node-label" style="font-size:12px;fill:#a78bfa">${inp}</text>
+    </g>`;
+  }
+
+  // gates (rectangles)
+  for(const g of lvl.gates){
+    const p = posOf[g.id];
+    const on = vals[g.id];
+    svg += `<g>
+      <rect x="${p.x-22}" y="${p.y-22}" width="44" height="44" rx="10" class="gate-shape" style="stroke:${on?'#fbbf24':'#a78bfa'}"/>
+      <text x="${p.x}" y="${p.y}" class="gate-label">${g.op}</text>
+    </g>`;
+  }
+
+  // output bulb
+  svg += `<g>
+    <circle cx="${outPos.x}" cy="${outPos.y}" r="20" class="bulb ${out?'on':'off'}" stroke="#fde68a" stroke-width="2"/>
+    <text x="${outPos.x}" y="${outPos.y+6}" class="node-label" style="font-size:18px">${out?'💡':'⚫'}</text>
+  </g>`;
+
+  svg += `</svg>`;
+  document.getElementById('circuit').innerHTML = svg;
+
+  // Check goal
+  const fb = document.getElementById('feedback');
+  if(out === lvl.goal){
+    saveProgress('alesha_code_gates_progress', lvl.id);
+    fb.className='feedback show ok';
+    fb.innerHTML = `<strong>🎉 ${lang==='en'?'Circuit complete!':'Sirkuit selesai!'}</strong><br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextGates()">${lang==='en'?'Next Circuit →':'Sirkuit Berikut →'}</button>`;
+    if(!GATES_STATE.confettiShown){ confetti(); GATES_STATE.confettiShown = true; }
+  } else {
+    fb.classList.remove('show');
+    GATES_STATE.confettiShown = false;
+  }
+}
+function toggleInput(name){
+  GATES_STATE.values[name] = !GATES_STATE.values[name];
+  drawCircuit();
+}
+function nextGates(){
+  GATES_STATE.idx++;
+  GATES_STATE.confettiShown = false;
+  render();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODE 4: ALGORITHM LAB
+// ════════════════════════════════════════════════════════════════
+const ALGO_LEVELS = [
+  // Bubble sort (3)
+  {id:1, kind:'sort', title:{en:'Sort 5 Cards', id:'Urutkan 5 Kartu'},
+    description:{en:'Click two ADJACENT cards to swap them. Sort smallest to largest.', id:'Klik dua kartu BERSEBELAHAN untuk tukar. Urutkan kecil ke besar.'},
+    nums:[5,2,4,1,3], optimal:6,
+    concept:{en:'<b>Bubble sort</b> swaps neighbors until everything is in order.', id:'<b>Bubble sort</b> tukar tetangga sampai semua urut.'}},
+  {id:2, kind:'sort', title:{en:'Sort 6 Cards', id:'Urutkan 6 Kartu'},
+    description:{en:'Same game, more cards! Sort them all.', id:'Game sama, kartu lebih banyak! Urutkan semua.'},
+    nums:[3,6,1,5,2,4], optimal:9,
+    concept:{en:'Bubble sort can take many swaps for large lists.', id:'Bubble sort butuh banyak tukar untuk list besar.'}},
+  {id:3, kind:'sort', title:{en:'Sort Challenge', id:'Tantangan Urut'},
+    description:{en:'Tougher arrangement. Try to use few swaps!', id:'Susunan lebih sulit. Coba pakai sedikit tukar!'},
+    nums:[7,3,5,1,6,2,4], optimal:13,
+    concept:{en:'Faster sorts exist (merge sort, quick sort) — you will learn them later!', id:'Ada sort lebih cepat (merge sort, quick sort) — nanti kamu belajar!'}},
+  // Binary search (2)
+  {id:4, kind:'bsearch', title:{en:'Guess 1–100', id:'Tebak 1–100'},
+    description:{en:'I picked a secret number 1–100. Guess in 7 tries. Tip: always guess the MIDDLE!', id:'Aku pilih angka rahasia 1–100. Tebak dalam 7 percobaan. Tip: selalu tebak TENGAH!'},
+    range:[1,100], maxGuesses:7,
+    concept:{en:'<b>Binary search</b> halves the choices each guess.', id:'<b>Binary search</b> membagi dua pilihan tiap tebakan.'}},
+  {id:5, kind:'bsearch', title:{en:'Guess 1–1000', id:'Tebak 1–1000'},
+    description:{en:'Now 1–1000 in 10 tries. Still possible!', id:'Sekarang 1–1000 dalam 10 percobaan. Masih bisa!'},
+    range:[1,1000], maxGuesses:10,
+    concept:{en:'Each halving covers 2× more numbers. 10 guesses can handle 1024!', id:'Tiap bagi dua, jangkauan 2× lipat. 10 tebakan menangani 1024!'}},
+  // Shortest path (2)
+  {id:6, kind:'path', title:{en:'Shortest Path', id:'Jalur Terpendek'},
+    description:{en:'Click tiles to walk from start (green) to end (yellow). Use fewest tiles!', id:'Klik ubin untuk jalan dari awal (hijau) ke akhir (kuning). Pakai ubin paling sedikit!'},
+    grid:[
+      ['S','.','.','#','.'],
+      ['.','#','.','#','.'],
+      ['.','#','.','.','.'],
+      ['.','.','.','#','.'],
+      ['.','#','#','.','E'],
+    ], optimal:9,
+    concept:{en:'A shortest path explores like ripples in water.', id:'Jalur terpendek seperti riak air menyebar.'}},
+  {id:7, kind:'path', title:{en:'Path Master', id:'Master Jalur'},
+    description:{en:'Bigger maze — find the shortest way!', id:'Maze lebih besar — temukan jalur terpendek!'},
+    grid:[
+      ['S','.','.','.','.','#'],
+      ['#','#','.','#','.','.'],
+      ['.','.','.','#','.','#'],
+      ['.','#','#','.','.','.'],
+      ['.','.','.','.','#','.'],
+      ['#','#','.','#','.','E'],
+    ], optimal:11,
+    concept:{en:'Algorithms like <b>BFS</b> find shortest paths fast.', id:'Algoritma seperti <b>BFS</b> cari jalur terpendek cepat.'}},
+  // Pattern (1)
+  {id:8, kind:'pattern', title:{en:'What Comes Next?', id:'Apa Selanjutnya?'},
+    description:{en:'Find the pattern and fill in the next 3 numbers.', id:'Temukan pola dan isi 3 angka berikut.'},
+    seq:[1,1,2,3,5,8], next:[13,21,34],
+    concept:{en:'This is the famous <b>Fibonacci</b> sequence — each number is the sum of the two before it!', id:'Ini deret <b>Fibonacci</b> terkenal — tiap angka jumlah dua sebelumnya!'}},
+];
+
+const ALGO_STATE = {idx:0};
+
+function renderAlgo(){
+  const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+  if(!lvl){ renderDone('algorithm'); return; }
+  setHeader((lang==='en'?'Lab ':'Lab ')+(ALGO_STATE.idx+1)+'/'+ALGO_LEVELS.length);
+
+  let body = '';
+  if(lvl.kind==='sort')    body = renderSort(lvl);
+  else if(lvl.kind==='bsearch') body = renderBsearch(lvl);
+  else if(lvl.kind==='path')    body = renderPath(lvl);
+  else if(lvl.kind==='pattern') body = renderPattern(lvl);
+
+  document.getElementById('main').innerHTML = `
+    <div class="card">
+      <div class="level-head">
+        <span class="level-badge" style="background:#fce7f3;color:#be185d">🦊 ${lang==='en'?'LAB':'LAB'} ${ALGO_STATE.idx+1}</span>
+        <div class="level-title">${t(lvl.title)}</div>
+      </div>
+      <div class="level-desc">${t(lvl.description)}</div>
+      ${body}
+      <div class="feedback" id="feedback"></div>
+    </div>
+  `;
+
+  if(lvl.kind==='sort') initSort(lvl);
+  else if(lvl.kind==='bsearch') initBsearch(lvl);
+  else if(lvl.kind==='path') initPath(lvl);
+  else if(lvl.kind==='pattern') {} // nothing
+}
+
+// --- Sort sub-mode ---
+let SORT_STATE = null;
+function renderSort(lvl){
+  return `
+    <div class="algo-stats">
+      <div class="algo-stat" id="sort-swaps">${lang==='en'?'Swaps':'Tukar'}: 0</div>
+      <div class="algo-stat">${lang==='en'?'Target':'Target'}: ≤ ${lvl.optimal}</div>
+    </div>
+    <button class="swap-btn" id="swap-btn" disabled onclick="doSwap()">${lang==='en'?'🔄 Swap Selected':'🔄 Tukar Pilihan'}</button>
+    <div class="bars" id="bars"></div>
+  `;
+}
+function initSort(lvl){
+  SORT_STATE = {arr:lvl.nums.slice(), selected:[], swaps:0, locked:false, optimal:lvl.optimal};
+  drawBars();
+}
+function drawBars(){
+  const max = Math.max(...SORT_STATE.arr);
+  const html = SORT_STATE.arr.map((n,i)=>{
+    const h = 40 + (n/max)*140;
+    const sel = SORT_STATE.selected.includes(i) ? ' selected' : '';
+    const locked = SORT_STATE.locked ? ' locked' : '';
+    return `<div class="bar${sel}${locked}" data-i="${i}" style="height:${h}px" onclick="pickBar(${i})">${n}</div>`;
+  }).join('');
+  document.getElementById('bars').innerHTML = html;
+  document.getElementById('sort-swaps').textContent = (lang==='en'?'Swaps: ':'Tukar: ')+SORT_STATE.swaps;
+  document.getElementById('swap-btn').disabled = SORT_STATE.selected.length !== 2 || SORT_STATE.locked;
+}
+function pickBar(i){
+  if(SORT_STATE.locked) return;
+  const idx = SORT_STATE.selected.indexOf(i);
+  if(idx>=0) SORT_STATE.selected.splice(idx,1);
+  else if(SORT_STATE.selected.length<2) SORT_STATE.selected.push(i);
+  drawBars();
+}
+function doSwap(){
+  if(SORT_STATE.selected.length!==2) return;
+  const [a,b] = SORT_STATE.selected;
+  if(Math.abs(a-b)!==1){
+    showFeedback('bad', lang==='en'?'⚠️ Only ADJACENT cards can swap!':'⚠️ Hanya kartu BERSEBELAHAN bisa ditukar!');
+    return;
+  }
+  document.getElementById('feedback').classList.remove('show');
+  [SORT_STATE.arr[a], SORT_STATE.arr[b]] = [SORT_STATE.arr[b], SORT_STATE.arr[a]];
+  SORT_STATE.swaps++;
+  SORT_STATE.selected = [];
+  drawBars();
+  // Check sorted
+  const sorted = SORT_STATE.arr.every((v,i,a)=>i===0||a[i-1]<=v);
+  if(sorted){
+    SORT_STATE.locked = true;
+    drawBars();
+    const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+    saveProgress('alesha_code_algorithm_progress', lvl.id);
+    confetti();
+    const extra = SORT_STATE.swaps<=SORT_STATE.optimal
+      ? (lang==='en'?'✨ Optimal!':'✨ Optimal!')
+      : (lang==='en'?'Done — try fewer swaps next time!':'Selesai — coba lebih sedikit lain kali!');
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'Sorted!':'Terurut!'}</strong> ${extra}<br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextAlgo()">${lang==='en'?'Next Lab →':'Lab Berikut →'}</button>`);
+  }
+}
+
+// --- Binary search ---
+let BS_STATE = null;
+function renderBsearch(lvl){
+  return `
+    <div class="algo-stats">
+      <div class="algo-stat" id="bs-tries">${lang==='en'?'Tries':'Coba'}: 0/${lvl.maxGuesses}</div>
+      <div class="algo-stat" id="bs-range">${lvl.range[0]} – ${lvl.range[1]}</div>
+    </div>
+    <div class="bs-display">
+      <div class="bs-range" id="bs-hint">${lang==='en'?'I picked a number between ':'Aku pilih angka antara '}<b>${lvl.range[0]}</b>${lang==='en'?' and ':' dan '}<b>${lvl.range[1]}</b>!</div>
+      <input class="bs-input" id="bs-input" type="number" min="${lvl.range[0]}" max="${lvl.range[1]}" placeholder="?">
+      <button class="bs-guess-btn" onclick="bsGuess()">${lang==='en'?'Guess':'Tebak'}</button>
+      <div class="bs-history" id="bs-history"></div>
+    </div>
+  `;
+}
+function initBsearch(lvl){
+  const secret = Math.floor(Math.random()*(lvl.range[1]-lvl.range[0]+1)) + lvl.range[0];
+  BS_STATE = {secret, tries:0, maxTries:lvl.maxGuesses, history:[], lo:lvl.range[0], hi:lvl.range[1], done:false};
+  document.getElementById('bs-input').focus();
+  document.getElementById('bs-input').addEventListener('keydown', e=>{if(e.key==='Enter') bsGuess();});
+}
+function bsGuess(){
+  if(BS_STATE.done) return;
+  const v = parseInt(document.getElementById('bs-input').value, 10);
+  if(isNaN(v)) return;
+  BS_STATE.tries++;
+  let cls='', txt='';
+  if(v === BS_STATE.secret){ cls='win'; txt=`${v} ✓`; }
+  else if(v > BS_STATE.secret){ cls='high'; txt=`${v} ↓ ${lang==='en'?'too high':'kebesaran'}`; BS_STATE.hi = Math.min(BS_STATE.hi, v-1); }
+  else { cls='low'; txt=`${v} ↑ ${lang==='en'?'too low':'kekecilan'}`; BS_STATE.lo = Math.max(BS_STATE.lo, v+1); }
+  BS_STATE.history.push({v, cls, txt});
+  document.getElementById('bs-tries').textContent = (lang==='en'?'Tries: ':'Coba: ')+BS_STATE.tries+'/'+BS_STATE.maxTries;
+  document.getElementById('bs-range').textContent = BS_STATE.lo+' – '+BS_STATE.hi;
+  document.getElementById('bs-history').innerHTML = BS_STATE.history.map(h=>`<span class="bs-guess ${h.cls}">${h.txt}</span>`).join('');
+  document.getElementById('bs-input').value='';
+  if(v===BS_STATE.secret){
+    BS_STATE.done = true;
+    const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+    saveProgress('alesha_code_algorithm_progress', lvl.id);
+    confetti();
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'You found it in ':'Kamu temukan dalam '}${BS_STATE.tries} ${lang==='en'?'tries!':'tebakan!'}</strong><br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextAlgo()">${lang==='en'?'Next Lab →':'Lab Berikut →'}</button>`);
+  } else if(BS_STATE.tries >= BS_STATE.maxTries){
+    BS_STATE.done = true;
+    showFeedback('bad',
+      `${lang==='en'?'Out of tries! The number was ':'Habis kesempatan! Angkanya '}<b>${BS_STATE.secret}</b>. ${lang==='en'?'Try again!':'Coba lagi!'}<br>
+       <button class="next-btn" onclick="render()">${lang==='en'?'Retry':'Coba lagi'}</button>`);
+  }
+}
+
+// --- Path ---
+let PATH_STATE = null;
+function renderPath(lvl){
+  return `
+    <div class="algo-stats">
+      <div class="algo-stat" id="path-count">${lang==='en'?'Tiles':'Ubin'}: 0</div>
+      <div class="algo-stat">${lang==='en'?'Target':'Target'}: ≤ ${lvl.optimal}</div>
+      <button class="algo-stat" style="cursor:pointer" onclick="resetPath()">↻ ${lang==='en'?'Reset':'Ulang'}</button>
+    </div>
+    <div class="maze-grid" id="maze" style="grid-template-columns:repeat(${lvl.grid[0].length},44px)"></div>
+  `;
+}
+function initPath(lvl){
+  PATH_STATE = {grid:lvl.grid.map(r=>r.slice()), path:[], done:false, optimal:lvl.optimal};
+  // find start
+  for(let y=0;y<lvl.grid.length;y++) for(let x=0;x<lvl.grid[0].length;x++){
+    if(lvl.grid[y][x]==='S') PATH_STATE.path.push({x,y});
+  }
+  drawMaze();
+}
+function resetPath(){
+  initPath(ALGO_LEVELS[ALGO_STATE.idx]);
+  document.getElementById('feedback').classList.remove('show');
+}
+function drawMaze(){
+  const grid = PATH_STATE.grid;
+  let html='';
+  for(let y=0;y<grid.length;y++){
+    for(let x=0;x<grid[0].length;x++){
+      const c = grid[y][x];
+      const onPath = PATH_STATE.path.some(p=>p.x===x&&p.y===y);
+      let cls='maze-cell';
+      let label='';
+      if(c==='#'){ cls+=' wall'; }
+      else if(c==='S'){ cls+=' start'; label='🐾'; }
+      else if(c==='E'){ cls+=' end'; label='🏁'; }
+      if(onPath && c!=='S' && c!=='E') cls+=' path';
+      else if(onPath && c==='S') cls+=' start';
+      html += `<div class="${cls}" data-x="${x}" data-y="${y}" onclick="pickMazeCell(${x},${y})">${label}</div>`;
+    }
+  }
+  document.getElementById('maze').innerHTML = html;
+  document.getElementById('path-count').textContent = (lang==='en'?'Tiles: ':'Ubin: ')+PATH_STATE.path.length;
+}
+function pickMazeCell(x,y){
+  if(PATH_STATE.done) return;
+  const grid = PATH_STATE.grid;
+  if(grid[y][x]==='#') return;
+  const last = PATH_STATE.path[PATH_STATE.path.length-1];
+  if(!last) return;
+  // adjacent?
+  if(Math.abs(last.x-x)+Math.abs(last.y-y) !== 1){
+    // allow undo: clicking second-to-last removes last
+    if(PATH_STATE.path.length>=2){
+      const prev = PATH_STATE.path[PATH_STATE.path.length-2];
+      if(prev.x===x&&prev.y===y){ PATH_STATE.path.pop(); drawMaze(); return; }
+    }
+    return;
+  }
+  // already on path? rewind to that cell
+  const existsIdx = PATH_STATE.path.findIndex(p=>p.x===x&&p.y===y);
+  if(existsIdx>=0){
+    PATH_STATE.path = PATH_STATE.path.slice(0, existsIdx+1);
+    drawMaze();
+    return;
+  }
+  PATH_STATE.path.push({x,y});
+  drawMaze();
+  if(grid[y][x]==='E'){
+    PATH_STATE.done = true;
+    const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+    saveProgress('alesha_code_algorithm_progress', lvl.id);
+    confetti();
+    const extra = PATH_STATE.path.length<=PATH_STATE.optimal
+      ? (lang==='en'?'✨ Optimal path!':'✨ Jalur optimal!')
+      : (lang==='en'?'Done — try shorter next time!':'Selesai — coba lebih pendek!');
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'Reached the goal!':'Sampai tujuan!'}</strong> ${extra}<br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextAlgo()">${lang==='en'?'Next Lab →':'Lab Berikut →'}</button>`);
+  }
+}
+
+// --- Pattern ---
+function renderPattern(lvl){
+  const seqText = lvl.seq.join(', ') + ', ?, ?, ?';
+  return `
+    <div class="pattern-display">
+      <div class="pattern-seq">${seqText}</div>
+      <div class="pattern-inputs">
+        <input class="pattern-input" id="pat-0" type="number" placeholder="?">
+        <input class="pattern-input" id="pat-1" type="number" placeholder="?">
+        <input class="pattern-input" id="pat-2" type="number" placeholder="?">
+      </div>
+      <button class="next-btn" onclick="checkPattern()">${lang==='en'?'Check!':'Cek!'}</button>
+    </div>
+  `;
+}
+function checkPattern(){
+  const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+  const got = [0,1,2].map(i=>parseInt(document.getElementById('pat-'+i).value,10));
+  const ok = got.every((v,i)=>v === lvl.next[i]);
+  if(ok){
+    saveProgress('alesha_code_algorithm_progress', lvl.id);
+    confetti();
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'You found the pattern!':'Pola kamu temukan!'}</strong><br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextAlgo()">${lang==='en'?'Next Lab →':'Lab Berikut →'}</button>`);
+  } else {
+    showFeedback('bad',
+      `${lang==='en'?'Not quite. The answer is ':'Belum tepat. Jawabannya '}<b>${lvl.next.join(', ')}</b>.<br><div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextAlgo()">${lang==='en'?'Next Lab →':'Lab Berikut →'}</button>`);
+  }
+}
+function nextAlgo(){
+  ALGO_STATE.idx++;
+  render();
+}
+
+// ════════════════════════════════════════════════════════════════
+// DONE SCREEN
+// ════════════════════════════════════════════════════════════════
+function renderDone(mode){
+  setHeader('');
+  const counts = {robot:20, bug:10, gates:10, algorithm:8};
+  const key = 'alesha_code_'+mode+'_progress';
+  const prog = getProgress(key);
+  const msg = {
+    robot:{en:'You programmed all 20 puzzles!', id:'Kamu menyelesaikan 20 teka-teki!'},
+    bug:{en:'You squashed all the bugs!', id:'Kamu basmi semua bug!'},
+    gates:{en:'Master of logic gates!', id:'Master gerbang logika!'},
+    algorithm:{en:'Algorithm wizard!', id:'Penyihir algoritma!'},
+  }[mode];
+  document.getElementById('main').innerHTML = `
+    <div class="done">
+      <h2>🎉 ${lang==='en'?'All Done!':'Selesai!'}</h2>
+      <p>${t(msg)}</p>
+      <div class="done-stats">
+        <div class="done-stat"><strong>${prog.length}</strong><span>${lang==='en'?'Solved':'Selesai'}</span></div>
+        <div class="done-stat"><strong>${counts[mode]}</strong><span>${lang==='en'?'Total':'Total'}</span></div>
+      </div>
+      <button class="restart-btn" onclick="restartMode()">${lang==='en'?'🔄 Play Again':'🔄 Main Lagi'}</button>
+      <button class="restart-btn alt" onclick="location.href='../'">${lang==='en'?'🏠 Home':'🏠 Beranda'}</button>
+    </div>
+  `;
+}
+function restartMode(){
+  ROBOT_STATE.level = 0; BUG_STATE.idx=0; GATES_STATE.idx=0; ALGO_STATE.idx=0;
+  GATES_STATE.lastIdx = -1;
+  render();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MAIN DISPATCHER
+// ════════════════════════════════════════════════════════════════
+function render(){
+  if(MODE==='robot') renderRobot();
+  else if(MODE==='bug') renderBug();
+  else if(MODE==='gates') renderGates();
+  else if(MODE==='algorithm') renderAlgo();
+  else {
+    document.getElementById('main').innerHTML = '<div class="card"><p>Unknown mode</p></div>';
+  }
+}
+
+render();
+</script>
+</body>
+</html>
