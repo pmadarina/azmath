@@ -1829,8 +1829,8 @@ ${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
       const diff=vals[i]-vals[i+1];
       if(diff>dropMag){dropMag=diff;dropIdx=i;}
     }
-    // SVG layout
-    const W=380,H=220,leftM=40,rightM=20,topM=22,bottomM=42;
+    // SVG layout — bigger + readable value labels
+    const W=440,H=280,leftM=48,rightM=28,topM=32,bottomM=48;
     const plotW=W-leftM-rightM, plotH=H-topM-bottomM;
     const yMax=Math.ceil(maxV/5)*5+5;
     const stepX=plotW/4;
@@ -1838,21 +1838,37 @@ ${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
     const yFor=(v)=>topM+plotH-(v/yMax)*plotH;
     let pts='';
     vals.forEach((v,i)=>{pts+=`${xFor(i).toFixed(1)},${yFor(v).toFixed(1)} `;});
-    const polyline=`<polyline points="${pts.trim()}" fill="none" stroke="#4f8ef7" stroke-width="2.4"/>`;
+    const polyline=`<polyline points="${pts.trim()}" fill="none" stroke="#4f8ef7" stroke-width="3"/>`;
+    // Dots — bigger and outlined
     let dots='';
-    vals.forEach((v,i)=>{dots+=`<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="4" fill="#6c5ce7" stroke="#fff" stroke-width="1.5"/>`;});
+    vals.forEach((v,i)=>{dots+=`<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="6" fill="#6c5ce7" stroke="#fff" stroke-width="2.5"/>`;});
+    // Value labels above each data point with white background pill for readability
+    let valLabs='';
+    vals.forEach((v,i)=>{
+      const cx=xFor(i), cy=yFor(v);
+      const above=cy>topM+18;
+      const ly=above?cy-12:cy+22;
+      const txt=String(v);
+      const w=txt.length*7+10;
+      valLabs+=`<rect x="${(cx-w/2).toFixed(1)}" y="${(ly-10).toFixed(1)}" width="${w}" height="15" rx="7" fill="#fff" stroke="#6c5ce7" stroke-width="1.3"/><text x="${cx.toFixed(1)}" y="${(ly+1).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="900" fill="#4a3fad">${txt}</text>`;
+    });
     let xLabs='';
     const labs=lang==='id'?d.xlabsId:d.xlabs;
-    labs.forEach((l,i)=>{xLabs+=`<text x="${xFor(i).toFixed(1)}" y="${topM+plotH+16}" text-anchor="middle" font-size="11" fill="#444">${l}</text>`;});
-    let yTicks='',gridLines='';
-    for(let v=0;v<=yMax;v+=5){
+    labs.forEach((l,i)=>{xLabs+=`<text x="${xFor(i).toFixed(1)}" y="${topM+plotH+18}" text-anchor="middle" font-size="12" font-weight="700" fill="#333">${l}</text>`;});
+    // Major gridlines every 5, minor every 1 (lighter)
+    let yTicks='',gridLines='',minorGrid='';
+    for(let v=0;v<=yMax;v++){
       const y=yFor(v);
-      yTicks+=`<text x="${leftM-6}" y="${y+4}" text-anchor="end" font-size="10" fill="#444">${v}</text>`;
-      gridLines+=`<line x1="${leftM}" y1="${y}" x2="${leftM+plotW}" y2="${y}" stroke="#dce8ff" stroke-width="0.8"/>`;
+      if(v%5===0){
+        yTicks+=`<text x="${leftM-7}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="11" font-weight="600" fill="#333">${v}</text>`;
+        gridLines+=`<line x1="${leftM}" y1="${y.toFixed(1)}" x2="${leftM+plotW}" y2="${y.toFixed(1)}" stroke="#cbd5e1" stroke-width="0.9"/>`;
+      } else {
+        minorGrid+=`<line x1="${leftM}" y1="${y.toFixed(1)}" x2="${leftM+plotW}" y2="${y.toFixed(1)}" stroke="#eef2f7" stroke-width="0.6"/>`;
+      }
     }
-    const axisLines=`<line x1="${leftM}" y1="${topM}" x2="${leftM}" y2="${topM+plotH}" stroke="#666" stroke-width="1.5"/><line x1="${leftM}" y1="${topM+plotH}" x2="${leftM+plotW}" y2="${topM+plotH}" stroke="#666" stroke-width="1.5"/>`;
-    const title=`<text x="${leftM+plotW/2}" y="14" text-anchor="middle" font-size="12" font-weight="800" fill="#1a1a2e">${t(d.title)}</text>`;
-    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px 0 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">${gridLines}${axisLines}${polyline}${dots}${yTicks}${xLabs}${title}</svg>`;
+    const axisLines=`<line x1="${leftM}" y1="${topM}" x2="${leftM}" y2="${topM+plotH}" stroke="#555" stroke-width="1.5"/><line x1="${leftM}" y1="${topM+plotH}" x2="${leftM+plotW}" y2="${topM+plotH}" stroke="#555" stroke-width="1.5"/>`;
+    const title=`<text x="${leftM+plotW/2}" y="18" text-anchor="middle" font-size="13" font-weight="900" fill="#1a1a2e">${t(d.title)}</text>`;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px auto 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">${minorGrid}${gridLines}${axisLines}${polyline}${dots}${valLabs}${yTicks}${xLabs}${title}</svg>`;
     const vv=pickA([0,1,2]);
     let qEn,qId,cor,distractors;
     if(vv===0){
