@@ -62,6 +62,10 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
 .mode.algorithm .mode-title{color:#be185d}
 .mode.algorithm .mode-progress{background:#fce7f3;color:#be185d}
 
+.mode.cipher{border-color:#1e40af;background:linear-gradient(180deg,#fff 60%,#dbeafe)}
+.mode.cipher .mode-title{color:#1e40af}
+.mode.cipher .mode-progress{background:#dbeafe;color:#1e40af}
+
 .owl{background:#fff;border:3px dashed #fbbf24;border-radius:24px;padding:18px 20px;display:flex;gap:14px;align-items:center;box-shadow:0 6px 18px rgba(251,191,36,.15)}
 .owl-icon{font-size:3rem;line-height:1;animation:bob 3s ease-in-out infinite}
 .owl-content{flex:1}
@@ -91,7 +95,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
     <div class="avatar">🐰</div>
     <div class="player-info">
       <div class="player-name">Alesha <span class="level-badge" id="playerRank">Coder</span></div>
-      <div class="player-stats" id="playerStats">0 / 48 levels solved</div>
+      <div class="player-stats" id="playerStats">0 / 79 levels solved</div>
     </div>
     <div class="player-trophy"><span>🏆</span><strong id="totalSolved">0</strong></div>
   </div>
@@ -100,26 +104,32 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear
     <a class="mode robot" href="play/?mode=robot">
       <span class="mode-emoji">🐢</span>
       <div class="mode-title" data-en="Robot Programmer" data-id="Programmer Robot">Robot Programmer</div>
-      <div class="mode-desc" data-en="Code the turtle through 20 puzzles" data-id="Susun kode kura-kura di 20 teka-teki">Code the turtle through 20 puzzles</div>
-      <span class="mode-progress" id="prog-robot">Level 0/20</span>
+      <div class="mode-desc" data-en="Code the turtle through 25 puzzles" data-id="Susun kode kura-kura di 25 teka-teki">Code the turtle through 25 puzzles</div>
+      <span class="mode-progress" id="prog-robot">Level 0/25</span>
     </a>
     <a class="mode bug" href="play/?mode=bug">
       <span class="mode-emoji">🐛</span>
       <div class="mode-title" data-en="Bug Hunt" data-id="Berburu Bug">Bug Hunt</div>
-      <div class="mode-desc" data-en="Find the bug in 10 code snippets" data-id="Temukan bug di 10 cuplikan kode">Find the bug in 10 code snippets</div>
-      <span class="mode-progress" id="prog-bug">Done 0/10</span>
+      <div class="mode-desc" data-en="Find the bug in 15 code snippets" data-id="Temukan bug di 15 cuplikan kode">Find the bug in 15 code snippets</div>
+      <span class="mode-progress" id="prog-bug">Done 0/15</span>
     </a>
     <a class="mode gates" href="play/?mode=gates">
       <span class="mode-emoji">🔀</span>
       <div class="mode-title" data-en="Logic Gates" data-id="Gerbang Logika">Logic Gates</div>
       <div class="mode-desc" data-en="Light up the bulb with logic" data-id="Nyalakan lampu dengan logika">Light up the bulb with logic</div>
-      <span class="mode-progress" id="prog-gates">Done 0/10</span>
+      <span class="mode-progress" id="prog-gates">Done 0/15</span>
     </a>
     <a class="mode algorithm" href="play/?mode=algorithm">
       <span class="mode-emoji">🦊</span>
       <div class="mode-title" data-en="Algorithm Lab" data-id="Lab Algoritma">Algorithm Lab</div>
       <div class="mode-desc" data-en="Sort, search, and find paths" data-id="Urutkan, cari, dan temukan jalur">Sort, search, and find paths</div>
-      <span class="mode-progress" id="prog-algorithm">Done 0/8</span>
+      <span class="mode-progress" id="prog-algorithm">Done 0/12</span>
+    </a>
+    <a class="mode cipher" href="play/?mode=cipher">
+      <span class="mode-emoji">🔐</span>
+      <div class="mode-title" data-en="Cipher Lab" data-id="Lab Sandi">Cipher Lab</div>
+      <div class="mode-desc" data-en="Decode secret messages with classic ciphers" data-id="Pecahkan pesan rahasia dengan sandi klasik">Decode secret messages with classic ciphers</div>
+      <span class="mode-progress" id="prog-cipher">Done 0/12</span>
     </a>
   </div>
 
@@ -172,18 +182,21 @@ function applyLang(){
   const bp = JSON.parse(localStorage.getItem('alesha_code_bug_progress')||'[]');
   const gp = JSON.parse(localStorage.getItem('alesha_code_gates_progress')||'[]');
   const ap = JSON.parse(localStorage.getItem('alesha_code_algorithm_progress')||'[]');
-  document.getElementById('prog-robot').textContent = (lang==='en'?'Level ':'Level ') + rp.length + '/20';
-  document.getElementById('prog-bug').textContent = STR.done[lang]+' '+bp.length+'/10';
-  document.getElementById('prog-gates').textContent = STR.done[lang]+' '+gp.length+'/10';
-  document.getElementById('prog-algorithm').textContent = STR.done[lang]+' '+ap.length+'/8';
+  const cp = JSON.parse(localStorage.getItem('alesha_code_cipher_progress')||'[]');
+  document.getElementById('prog-robot').textContent = (lang==='en'?'Level ':'Level ') + rp.length + '/25';
+  document.getElementById('prog-bug').textContent = STR.done[lang]+' '+bp.length+'/15';
+  document.getElementById('prog-gates').textContent = STR.done[lang]+' '+gp.length+'/15';
+  document.getElementById('prog-algorithm').textContent = STR.done[lang]+' '+ap.length+'/12';
+  document.getElementById('prog-cipher').textContent = STR.done[lang]+' '+cp.length+'/12';
   // Player bar: total solved + rank
-  const total = rp.length + bp.length + gp.length + ap.length;
+  const total = rp.length + bp.length + gp.length + ap.length + cp.length;
   document.getElementById('totalSolved').textContent = total;
-  document.getElementById('playerStats').textContent = total + (lang==='en'?' / 48 levels solved':' / 48 level selesai');
+  document.getElementById('playerStats').textContent = total + (lang==='en'?' / 79 levels solved':' / 79 level selesai');
   // Rank: Coder → Hacker → Engineer → Architect → Wizard
   const RANKS_EN = ['Coder','Hacker','Engineer','Architect','Code Wizard'];
   const RANKS_ID = ['Pemula','Peretas','Insinyur','Arsitek','Sang Wizard'];
-  const ri = total>=40 ? 4 : total>=25 ? 3 : total>=15 ? 2 : total>=6 ? 1 : 0;
+  // Thresholds (out of 79): 10 / 25 / 45 / 65
+  const ri = total>=65 ? 4 : total>=45 ? 3 : total>=25 ? 2 : total>=10 ? 1 : 0;
   document.getElementById('playerRank').textContent = (lang==='en'?RANKS_EN:RANKS_ID)[ri];
 }
 

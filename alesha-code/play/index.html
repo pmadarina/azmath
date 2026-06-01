@@ -23,6 +23,7 @@ body.mode-robot .accent{background:linear-gradient(90deg,#34d399,#10b981)}
 body.mode-bug .accent{background:linear-gradient(90deg,#fb923c,#f97316)}
 body.mode-gates .accent{background:linear-gradient(90deg,#a78bfa,#8b5cf6)}
 body.mode-algorithm .accent{background:linear-gradient(90deg,#f472b6,#ec4899)}
+body.mode-cipher .accent{background:linear-gradient(90deg,#60a5fa,#1e40af)}
 
 /* Main */
 .main{max-width:820px;margin:18px auto 0;padding:0 16px 80px;width:100%}
@@ -87,23 +88,66 @@ body.mode-algorithm .accent{background:linear-gradient(90deg,#f472b6,#ec4899)}
 .concept-box b{color:#451a03}
 
 /* ───── BUG HUNT ───── */
-.code-block{background:#1e293b;border-radius:14px;padding:14px;font-family:'SF Mono','Menlo',monospace;font-size:.92rem;color:#e2e8f0;margin-bottom:14px;overflow-x:auto;line-height:1.7}
-.code-line{display:flex;gap:14px;padding:2px 6px;border-radius:6px}
+.code-block{background:#0f172a;border-radius:14px;padding:16px 14px;font-family:'SF Mono','Menlo',monospace;font-size:1.02rem;color:#e2e8f0;margin-bottom:14px;overflow-x:auto;line-height:1.9;border:2px solid #334155}
+.code-line{display:flex;gap:14px;padding:3px 8px;border-radius:6px;transition:background .2s}
 .code-line:hover{background:rgba(251,191,36,.08)}
-.line-num{color:#64748b;width:24px;text-align:right;font-weight:700;user-select:none;flex-shrink:0}
+.line-num{color:#fbbf24;width:30px;text-align:right;font-weight:900;user-select:none;flex-shrink:0;font-size:1.05rem}
 .line-body{flex:1;white-space:pre}
-.code-line.bug{background:rgba(239,68,68,.12)}
+.code-line.bug{background:rgba(239,68,68,.18);border-left:3px solid #ef4444;padding-left:5px}
 .code-line.bug .line-num{color:#f87171}
+.code-line.executing{background:rgba(251,191,36,.25);box-shadow:inset 0 0 0 2px #fbbf24}
+.code-line.fix-line{background:rgba(16,185,129,.15);border-left:3px solid #10b981;padding-left:5px}
+.code-line.fix-line .line-num{color:#34d399}
 
-.io-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.bug-run-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.bug-run-btn{background:linear-gradient(135deg,#fbbf24,#f97316);color:#78350f;border:none;border-radius:12px;padding:9px 16px;font-weight:900;cursor:pointer;font-family:inherit;font-size:.88rem;box-shadow:0 4px 12px rgba(251,146,60,.3)}
+.bug-run-btn:hover:not(:disabled){opacity:.92}
+.bug-run-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.bug-layout{display:grid;grid-template-columns:1fr;gap:10px}
+.trace-box{background:#1e293b;border:2px solid #475569;border-radius:12px;padding:12px;color:#e2e8f0;font-family:'SF Mono','Menlo',monospace;font-size:.86rem;min-height:60px;margin-bottom:12px;display:none}
+.trace-box.show{display:block}
+.trace-title{font-size:.7rem;font-weight:900;letter-spacing:1.5px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px}
+.trace-line{padding:3px 0;color:#cbd5e1}
+.trace-line .var-name{color:#fbbf24;font-weight:900}
+.trace-line .var-val{color:#86efac}
+
+.io-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 @media(max-width:560px){.io-row{grid-template-columns:1fr}}
-.io-box{background:#f9fafb;border:2px solid #d1d5db;border-radius:12px;padding:10px 14px}
-.io-label{font-size:.7rem;font-weight:900;letter-spacing:1.5px;color:#6b7280;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace;margin-bottom:4px}
-.io-val{font-family:'SF Mono','Menlo',monospace;font-size:.92rem;color:#1f2937;font-weight:700;white-space:pre-wrap}
+.io-box{background:#f9fafb;border:3px solid #d1d5db;border-radius:14px;padding:14px 16px;position:relative}
+.io-label{font-size:.78rem;font-weight:900;letter-spacing:1.5px;color:#6b7280;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.io-val{font-family:'SF Mono','Menlo',monospace;font-size:1.05rem;color:#1f2937;font-weight:800;white-space:pre-wrap;min-height:1.4em}
 .io-box.expected{border-color:#10b981;background:#ecfdf5}
-.io-box.expected .io-label{color:#047857}
+.io-box.expected .io-label{color:#047857;font-size:.85rem}
 .io-box.actual{border-color:#ef4444;background:#fef2f2}
-.io-box.actual .io-label{color:#b91c1c}
+.io-box.actual .io-label{color:#b91c1c;font-size:.85rem}
+
+/* ───── CIPHER LAB ───── */
+body.mode-cipher .level-badge{background:#dbeafe;color:#1e40af}
+.cipher-msg-box{background:#0f172a;border:3px solid #1e40af;border-radius:16px;padding:20px 16px;text-align:center;margin-bottom:14px}
+.cipher-label{font-size:.7rem;font-weight:900;letter-spacing:2px;color:#60a5fa;text-transform:uppercase;font-family:'SF Mono','Menlo',monospace;margin-bottom:10px}
+.cipher-encrypted{font-family:'SF Mono','Menlo',monospace;font-size:1.6rem;font-weight:900;letter-spacing:4px;color:#fbbf24;word-break:break-word;line-height:1.4}
+.cipher-preview{font-family:'SF Mono','Menlo',monospace;font-size:1.3rem;font-weight:900;letter-spacing:3px;color:#86efac;margin-top:10px;min-height:1.6em;word-break:break-word}
+.cipher-slider-wrap{background:#dbeafe;border:2px solid #1e40af;border-radius:14px;padding:14px 18px;margin-bottom:14px}
+.cipher-slider-label{font-size:.82rem;font-weight:900;color:#1e3a8a;margin-bottom:8px;display:flex;justify-content:space-between}
+.cipher-slider{width:100%;height:8px;border-radius:8px;background:#bfdbfe;outline:none;-webkit-appearance:none;appearance:none}
+.cipher-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:#1e40af;cursor:pointer;border:3px solid #fff;box-shadow:0 2px 8px rgba(30,64,175,.4)}
+.cipher-slider::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#1e40af;cursor:pointer;border:3px solid #fff}
+.cipher-key-table{background:#eff6ff;border:2px solid #60a5fa;border-radius:12px;padding:12px;margin-bottom:14px;font-family:'SF Mono','Menlo',monospace;font-size:.86rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+.cipher-key-cell{background:#fff;border:1px solid #93c5fd;border-radius:6px;padding:5px 8px;text-align:center;font-weight:900;color:#1e40af}
+.cipher-key-cell .sym{color:#dc2626;font-size:1.1em}
+.cipher-input-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.cipher-input{flex:1;min-width:200px;padding:11px 14px;font-size:1rem;font-weight:800;font-family:'SF Mono','Menlo',monospace;border:2px solid #1e40af;border-radius:12px;outline:none;text-transform:uppercase;letter-spacing:2px}
+.cipher-input:focus{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.25)}
+.cipher-decode-btn{background:linear-gradient(135deg,#1e40af,#1e3a8a);color:#fff;border:none;border-radius:12px;padding:11px 22px;font-weight:900;font-family:inherit;cursor:pointer;font-size:.92rem;box-shadow:0 4px 12px rgba(30,64,175,.3)}
+.cipher-decode-btn:hover{opacity:.92}
+.cipher-hint-btn{background:transparent;border:2px dashed #fbbf24;color:#b45309;font-family:inherit;font-size:.84rem;font-weight:900;padding:8px 14px;border-radius:12px;cursor:pointer}
+.cipher-hint-btn:hover{background:#fef3c7}
+.cipher-reveal{font-family:'SF Mono','Menlo',monospace;font-size:1.6rem;font-weight:900;letter-spacing:4px;color:#10b981;text-align:center;margin:10px 0;min-height:1.6em}
+.cipher-reveal span{display:inline-block;opacity:0;animation:popLetter .4s ease forwards}
+@keyframes popLetter{from{opacity:0;transform:scale(.5) translateY(-10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.mode-cipher .opt-letter{background:#dbeafe;color:#1e40af}
 
 .opts{display:flex;flex-direction:column;gap:8px}
 .opt{background:#fff;border:2px solid #e5e7eb;border-radius:14px;padding:12px 14px;cursor:pointer;font-size:.92rem;display:flex;align-items:center;gap:12px;font-family:inherit;text-align:left;width:100%;color:#1f2937;font-weight:700;transition:all .12s}
@@ -282,7 +326,17 @@ const MODE_TITLES = {
   bug: {en:'🐛 Bug Hunt', id:'🐛 Berburu Bug'},
   gates: {en:'🔀 Logic Gates', id:'🔀 Gerbang Logika'},
   algorithm: {en:'🦊 Algorithm Lab', id:'🦊 Lab Algoritma'},
+  cipher: {en:'🔐 Cipher Lab', id:'🔐 Lab Sandi'},
 };
+
+// Fisher-Yates shuffle (in-place)
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
 
 function setHeader(meta){
   document.getElementById('hdrTitle').textContent = t(MODE_TITLES[MODE]);
@@ -435,6 +489,37 @@ const ROBOT_LEVELS = [
     walls:[{x:2,y:2}], tilesToLight:[{x:4,y:0},{x:4,y:4},{x:0,y:4},{x:2,y:0}],
     available:['forward','turnRight','turnLeft','loop','light','proc','if_wall'], hintMinSteps:14,
     concept:{en:'You did it! You used sequences, loops, procedures and conditions.',id:'Kamu berhasil! Kamu pakai urutan, loop, prosedur dan kondisi.'}},
+
+  // ── Tier 5: Boss levels L21-L25 ──
+  {id:21, title:{en:'7×7 Walled Maze',id:'Maze Tembok 7×7'},
+    description:{en:'Bigger maze with twisting walls. Use if_wall!',id:'Maze lebih besar dengan tembok berkelok. Pakai if_wall!'},
+    grid:{cols:7,rows:7}, start:{x:0,y:0,dir:'east'}, target:{x:6,y:6},
+    walls:[{x:2,y:0},{x:2,y:1},{x:2,y:2},{x:4,y:2},{x:4,y:3},{x:4,y:4},{x:2,y:4},{x:2,y:5}], tilesToLight:[],
+    available:['forward','turnRight','turnLeft','loop','if_wall'], hintMinSteps:14,
+    concept:{en:'Conditionals + loops let one program handle many maze shapes.',id:'Kondisi + loop bikin satu program bisa atasi banyak bentuk maze.'}},
+  {id:22, title:{en:'Triple Lights',id:'Tiga Lampu'},
+    description:{en:'Light 3 tiles in under 15 steps.',id:'Nyalakan 3 ubin dalam kurang dari 15 langkah.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:0,dir:'east'}, target:null, tilesToLight:[{x:4,y:0},{x:4,y:4},{x:0,y:4}],
+    walls:[], available:['forward','turnRight','turnLeft','loop','light'], hintMinSteps:14,
+    concept:{en:'Plan the order of targets to minimize steps.',id:'Rencanakan urutan target untuk hemat langkah.'}},
+  {id:23, title:{en:'Motif x4',id:'Motif x4'},
+    description:{en:'Build a procedure used 4 times in a loop.',id:'Bangun prosedur yang dipakai 4 kali dalam loop.'},
+    grid:{cols:5,rows:5}, start:{x:0,y:4,dir:'east'}, target:{x:0,y:4},
+    walls:[], tilesToLight:[{x:1,y:4},{x:4,y:3},{x:3,y:0},{x:0,y:1}],
+    available:['forward','turnLeft','light','loop','proc'], hintMinSteps:6,
+    concept:{en:'Spot the repeating motif — that is your procedure.',id:'Cari motif berulang — itu prosedurmu.'}},
+  {id:24, title:{en:'Nested Loops',id:'Loop Bersarang'},
+    description:{en:'Light all 5 tiles using a loop.',id:'Nyalakan 5 ubin pakai loop.'},
+    grid:{cols:5,rows:1}, start:{x:0,y:0,dir:'east'}, target:null, tilesToLight:[{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:3,y:0},{x:4,y:0}],
+    walls:[], available:['forward','light','loop','proc'], hintMinSteps:4,
+    concept:{en:'Loops inside loops multiply: 3×4 = 12 actions from 2 commands.',id:'Loop dalam loop berkali lipat: 3×4 = 12 aksi dari 2 perintah.'}},
+  {id:25, title:{en:'8×8 Boss Maze',id:'Maze Bos 8×8'},
+    description:{en:'Final boss! Big maze with multiple targets to light.',id:'Bos terakhir! Maze besar dengan banyak target untuk dinyalakan.'},
+    grid:{cols:8,rows:8}, start:{x:0,y:0,dir:'east'}, target:null,
+    walls:[{x:2,y:1},{x:2,y:2},{x:2,y:3},{x:4,y:4},{x:4,y:5},{x:4,y:6},{x:6,y:0},{x:6,y:1}],
+    tilesToLight:[{x:7,y:7},{x:7,y:0},{x:0,y:7},{x:3,y:5}],
+    available:['forward','turnRight','turnLeft','loop','light','proc','if_wall'], hintMinSteps:24,
+    concept:{en:'You combined everything — sequences, loops, procs, conditions. Legend!',id:'Kamu gabungkan semuanya — urutan, loop, prosedur, kondisi. Legenda!'}},
 ];
 
 const ROBOT_CMD_META = {
@@ -767,6 +852,20 @@ function showFeedback(kind, html){
 // ════════════════════════════════════════════════════════════════
 const BUG_LEVELS = [
   {id:1,
+    title:{en:'Hello Typo', id:'Salah Tulis Hello'},
+    code:[
+      'print("Hellp")'
+    ],
+    expected:'Hello', actual:'Hellp',
+    question:{en:'The program prints the wrong word. Which line has the bug?', id:'Program mencetak kata yang salah. Baris mana yang bermasalah?'},
+    options:[
+      {en:'Line 1 — "Hellp" is a typo, should be "Hello"', id:'Baris 1 — "Hellp" salah ketik, seharusnya "Hello"'},
+      {en:'Line 1 — print is misspelled', id:'Baris 1 — print salah eja'},
+      {en:'No bug at all', id:'Tidak ada bug'},
+      {en:'Missing semicolon', id:'Kurang titik koma'},
+    ], ans:0, bugLine:0, fix:'print("Hello")',
+    concept:{en:'A <b>typo</b> in text inside quotes prints exactly as you wrote it. Read carefully!', id:'<b>Salah ketik</b> di dalam tanda kutip akan tercetak persis. Baca pelan-pelan!'}},
+  {id:2,
     title:{en:'Off by One', id:'Lebih Satu'},
     code:[
       'for i = 1 to 4 do',
@@ -782,7 +881,7 @@ const BUG_LEVELS = [
       {en:'No bug at all', id:'Tidak ada bug'},
     ], ans:0, bugLine:0,
     concept:{en:'<b>Off-by-one</b> bugs happen when a loop runs one too few or too many times.', id:'<b>Off-by-one</b> terjadi saat loop berjalan kurang atau lebih satu kali.'}},
-  {id:2,
+  {id:3,
     title:{en:'Wrong Comparison', id:'Perbandingan Salah'},
     code:[
       'score = 70',
@@ -799,7 +898,7 @@ const BUG_LEVELS = [
       {en:'Line 4 — extra "end"', id:'Baris 4 — kelebihan "end"'},
     ], ans:1, bugLine:1,
     concept:{en:'<b>></b> means "greater than" — it does NOT include the number itself. Use <b>>=</b> to include it.', id:'<b>></b> berarti "lebih besar dari" — TIDAK termasuk angkanya. Pakai <b>>=</b> untuk memasukkannya.'}},
-  {id:3,
+  {id:4,
     title:{en:'Typo Trouble', id:'Salah Ketik'},
     code:[
       'a = 5',
@@ -816,7 +915,7 @@ const BUG_LEVELS = [
       {en:'No bug', id:'Tidak ada bug'},
     ], ans:0, bugLine:3,
     concept:{en:'A <b>typo</b> in a variable name makes the computer not know what you mean.', id:'<b>Salah ketik</b> nama variabel bikin komputer tidak paham maksudmu.'}},
-  {id:4,
+  {id:5,
     title:{en:'Wrong Order', id:'Urutan Salah'},
     code:[
       'print(message)',
@@ -831,7 +930,7 @@ const BUG_LEVELS = [
       {en:'Nothing — it is fine', id:'Tidak ada — sudah benar'},
     ], ans:0, bugLine:0,
     concept:{en:'Code runs <b>top to bottom</b>. Assign before you use.', id:'Kode jalan dari <b>atas ke bawah</b>. Isi dulu, baru pakai.'}},
-  {id:5,
+  {id:6,
     title:{en:'Missing Return', id:'Lupa Return'},
     code:[
       'function double(x)',
@@ -848,7 +947,7 @@ const BUG_LEVELS = [
       {en:'Line 3 extra "end"', id:'Baris 3 kelebihan "end"'},
     ], ans:0, bugLine:1,
     concept:{en:'A function must <b>return</b> a value if you want to use the result.', id:'Fungsi harus <b>return</b> nilai jika hasilnya mau dipakai.'}},
-  {id:6,
+  {id:7,
     title:{en:'Type Mismatch', id:'Tipe Tidak Cocok'},
     code:[
       'age = "10"',
@@ -864,7 +963,7 @@ const BUG_LEVELS = [
       {en:'next_age is reserved', id:'next_age kata terlarang'},
     ], ans:0, bugLine:0,
     concept:{en:'<b>"10"</b> with quotes is a string. <b>10</b> without is a number. Different types!', id:'<b>"10"</b> dengan tanda kutip adalah string. <b>10</b> tanpa kutip adalah angka. Beda tipe!'}},
-  {id:7,
+  {id:8,
     title:{en:'Forever Loop', id:'Loop Tak Berhenti'},
     code:[
       'i = 0',
@@ -881,7 +980,7 @@ const BUG_LEVELS = [
       {en:'while should be if', id:'while harusnya if'},
     ], ans:0, bugLine:2,
     concept:{en:'A <b>while</b> loop needs something inside it to change, or it runs forever.', id:'Loop <b>while</b> butuh sesuatu yang berubah di dalamnya, atau jalan selamanya.'}},
-  {id:8,
+  {id:9,
     title:{en:'Wrong Increment', id:'Penambahan Salah'},
     code:[
       'for i = 1 to 10 step 2 do',
@@ -897,7 +996,7 @@ const BUG_LEVELS = [
       {en:'No bug', id:'Tidak ada bug'},
     ], ans:0, bugLine:0,
     concept:{en:'<b>step</b> controls how much i grows each loop. step 2 means skip every other number.', id:'<b>step</b> mengatur seberapa banyak i bertambah tiap loop. step 2 berarti loncat 1 angka.'}},
-  {id:9,
+  {id:10,
     title:{en:'And vs Or', id:'And vs Or'},
     code:[
       'age = 8',
@@ -916,7 +1015,7 @@ const BUG_LEVELS = [
       {en:'No change', id:'Tidak berubah'},
     ], ans:0, bugLine:1,
     concept:{en:'<b>and</b> needs BOTH true. <b>or</b> needs only ONE true.', id:'<b>and</b> butuh KEDUANYA benar. <b>or</b> cukup SALAH SATU benar.'}},
-  {id:10,
+  {id:11,
     title:{en:'List Index Off', id:'Index List Salah'},
     code:[
       'fruits = ["apple", "banana", "cherry"]',
@@ -931,14 +1030,93 @@ const BUG_LEVELS = [
       {en:'fruits is a reserved word', id:'fruits kata terlarang'},
     ], ans:0, bugLine:1,
     concept:{en:'Most programming lists start at <b>0</b>, not 1!', id:'Kebanyakan list mulai dari <b>0</b>, bukan 1!'}},
+  // ── Harder levels L12-L15 ──
+  {id:12,
+    title:{en:'Last Item Crash', id:'Item Terakhir Error'},
+    code:[
+      'arr = [10, 20, 30, 40]',
+      'n = 4',
+      'print(arr[n])'
+    ],
+    expected:'40', actual:'Error: index out of range',
+    question:{en:'We try to print the last item but it crashes. What is wrong?', id:'Mau cetak item terakhir tapi error. Apa salahnya?'},
+    options:[
+      {en:'Line 3 — last index is n-1, not n', id:'Baris 3 — index terakhir n-1, bukan n'},
+      {en:'Line 1 — list is empty', id:'Baris 1 — list kosong'},
+      {en:'Line 2 — n should be 5', id:'Baris 2 — n seharusnya 5'},
+      {en:'No bug', id:'Tidak ada bug'},
+    ], ans:0, bugLine:2, fix:'print(arr[n-1])',
+    concept:{en:'<b>Off-by-one</b>: a list of length n has indices 0..n-1. <code>arr[n]</code> is one past the end.', id:'<b>Off-by-one</b>: list panjang n punya index 0..n-1. <code>arr[n]</code> sudah lewat ujung.'}},
+  {id:13,
+    title:{en:'Skipped the First', id:'Lewat yang Pertama'},
+    code:[
+      'arr = [5, 10, 15]',
+      'total = 0',
+      'for i = 1 to len(arr)-1 do',
+      '  total = total + arr[i]',
+      'end',
+      'print(total)'
+    ],
+    expected:'30', actual:'25',
+    question:{en:'Sum is wrong. Which line has the wrong bounds?', id:'Jumlah salah. Baris mana yang batasnya keliru?'},
+    options:[
+      {en:'Line 3 — loop should start at 0, not 1', id:'Baris 3 — loop mulai dari 0, bukan 1'},
+      {en:'Line 4 — wrong operator', id:'Baris 4 — operator salah'},
+      {en:'Line 2 — total should start at 5', id:'Baris 2 — total mulai dari 5'},
+      {en:'Line 6 — wrong variable', id:'Baris 6 — variabel salah'},
+    ], ans:0, bugLine:2, fix:'for i = 0 to len(arr)-1 do',
+    concept:{en:'Lists start at index <b>0</b>. Starting at 1 skips the first element!', id:'List mulai dari index <b>0</b>. Mulai dari 1 = lewat elemen pertama!'}},
+  {id:14,
+    title:{en:'Lost Return', id:'Return Hilang'},
+    code:[
+      'function square(x)',
+      '  result = x * x',
+      '  print("computing...")',
+      'end',
+      'y = square(4)',
+      'print(y)'
+    ],
+    expected:'computing...\n16', actual:'computing...\n(nothing)',
+    question:{en:'The function computes but y is empty. Why?', id:'Fungsi hitung tapi y kosong. Kenapa?'},
+    options:[
+      {en:'Missing "return result" before line 4', id:'Kurang "return result" sebelum baris 4'},
+      {en:'Line 5 wrong call', id:'Baris 5 panggilan salah'},
+      {en:'Line 2 wrong operator', id:'Baris 2 operator salah'},
+      {en:'Line 6 wrong print', id:'Baris 6 print salah'},
+    ], ans:0, bugLine:1, fix:'  result = x * x\n  return result',
+    concept:{en:'A function without <b>return</b> gives back nothing — so the caller gets empty.', id:'Fungsi tanpa <b>return</b> tidak kasih hasil — pemanggil dapat kosong.'}},
+  {id:15,
+    title:{en:'Forever Recursion', id:'Rekursi Tanpa Henti'},
+    code:[
+      'function countdown(n)',
+      '  print(n)',
+      '  countdown(n - 1)',
+      'end',
+      'countdown(3)'
+    ],
+    expected:'3\n2\n1\n0', actual:'3\n2\n1\n0\n-1\n-2\n... (crash)',
+    question:{en:'It never stops! What is missing?', id:'Tidak pernah berhenti! Apa yang kurang?'},
+    options:[
+      {en:'No <b>base case</b> — need "if n &lt; 0 return" at start', id:'Tidak ada <b>base case</b> — perlu "if n &lt; 0 return" di awal'},
+      {en:'Line 2 wrong print', id:'Baris 2 print salah'},
+      {en:'Line 5 wrong argument', id:'Baris 5 argumen salah'},
+      {en:'Line 3 should add not subtract', id:'Baris 3 harus tambah bukan kurang'},
+    ], ans:0, bugLine:0, fix:'function countdown(n)\n  if n < 0 then return end',
+    concept:{en:'A <b>recursive</b> function MUST have a stopping rule (base case) or it calls itself forever.', id:'Fungsi <b>rekursif</b> WAJIB punya aturan berhenti (base case) atau memanggil diri sendiri selamanya.'}},
 ];
 
-const BUG_STATE = {idx:0, answered:false};
+const BUG_STATE = {idx:0, answered:false, shuffled:null, running:false};
+
+function getBugLevels(){
+  if(!BUG_STATE.shuffled) BUG_STATE.shuffled = shuffle(BUG_LEVELS.slice());
+  return BUG_STATE.shuffled;
+}
 
 function renderBug(){
-  const lvl = BUG_LEVELS[BUG_STATE.idx];
+  const levels = getBugLevels();
+  const lvl = levels[BUG_STATE.idx];
   if(!lvl){ renderDone('bug'); return; }
-  setHeader((lang==='en'?'Bug ':'Bug ')+(BUG_STATE.idx+1)+'/'+BUG_LEVELS.length);
+  setHeader((lang==='en'?'Bug ':'Bug ')+(BUG_STATE.idx+1)+'/'+levels.length);
 
   const codeHtml = lvl.code.map((ln,i)=>
     `<div class="code-line" data-line="${i}"><span class="line-num">${i+1}</span><span class="line-body">${ln.replace(/</g,'&lt;')}</span></div>`
@@ -955,29 +1133,105 @@ function renderBug(){
         <div class="level-title">${t(lvl.title)}</div>
       </div>
       <div class="level-desc">${t(lvl.question)}</div>
-      <div class="code-block">${codeHtml}</div>
+      <div class="bug-run-row">
+        <button class="bug-run-btn" id="bugRunBtn" onclick="runBugSlow()">▶ ${lang==='en'?'Run slow':'Jalan pelan'}</button>
+      </div>
+      <div class="code-block" id="bug-code">${codeHtml}</div>
+      <div class="trace-box" id="bug-trace"><div class="trace-title">📊 ${lang==='en'?'Variable Trace':'Jejak Variabel'}</div><div id="bug-trace-body"></div></div>
       <div class="io-row">
-        <div class="io-box expected"><div class="io-label">✓ ${lang==='en'?'Expected':'Diharapkan'}</div><div class="io-val">${lvl.expected.replace(/</g,'&lt;')}</div></div>
-        <div class="io-box actual"><div class="io-label">✗ ${lang==='en'?'Actual':'Hasil'}</div><div class="io-val">${lvl.actual.replace(/</g,'&lt;')}</div></div>
+        <div class="io-box expected"><div class="io-label">✓ ${lang==='en'?'Expected Output':'Output Diharapkan'}</div><div class="io-val">${lvl.expected.replace(/</g,'&lt;')}</div></div>
+        <div class="io-box actual"><div class="io-label">✗ ${lang==='en'?'Actual Output':'Output Sebenarnya'}</div><div class="io-val" id="bug-actual">${lvl.actual.replace(/</g,'&lt;')}</div></div>
       </div>
       <div class="opts">${optsHtml}</div>
       <div class="feedback" id="feedback"></div>
     </div>
   `;
   BUG_STATE.answered = false;
+  BUG_STATE.running = false;
+}
+
+function runBugSlow(){
+  if(BUG_STATE.running) return;
+  BUG_STATE.running = true;
+  const lvl = getBugLevels()[BUG_STATE.idx];
+  const btn = document.getElementById('bugRunBtn');
+  btn.disabled = true;
+  btn.textContent = lang==='en'?'▶ Running...':'▶ Berjalan...';
+  // Clear any previous highlight
+  document.querySelectorAll('.code-line.executing').forEach(el=>el.classList.remove('executing'));
+  // Show trace box
+  const trace = document.getElementById('bug-trace');
+  const traceBody = document.getElementById('bug-trace-body');
+  trace.classList.add('show');
+  traceBody.innerHTML = '<div class="trace-line" style="color:#94a3b8">'+(lang==='en'?'Starting execution...':'Memulai eksekusi...')+'</div>';
+
+  const lines = lvl.code;
+  let i = 0;
+  const vars = {};
+  function step(){
+    // clear previous
+    document.querySelectorAll('.code-line.executing').forEach(el=>el.classList.remove('executing'));
+    if(i >= lines.length){
+      // Final: show actual output mismatch
+      traceBody.innerHTML += `<div class="trace-line" style="color:#f87171;margin-top:6px">↳ ${lang==='en'?'Output mismatch detected. Find the bug!':'Output beda — temukan bug-nya!'}</div>`;
+      btn.disabled = false;
+      btn.textContent = '▶ '+(lang==='en'?'Run slow':'Jalan pelan');
+      BUG_STATE.running = false;
+      return;
+    }
+    const el = document.querySelector(`.code-line[data-line="${i}"]`);
+    if(el) el.classList.add('executing');
+    // Try to parse simple assignments for trace
+    const ln = lines[i];
+    const m = ln.match(/^\s*(\w+)\s*=\s*(.+)$/);
+    let traceText = '';
+    if(m && !ln.includes('==') && !ln.includes('function') && !ln.startsWith('  if')){
+      const name = m[1];
+      const val = m[2].trim();
+      vars[name] = val;
+      traceText = `<span class="var-name">${name}</span> = <span class="var-val">${val.replace(/</g,'&lt;')}</span>`;
+    } else if(ln.trim().startsWith('print')){
+      traceText = `<span style="color:#fbbf24">→ ${lang==='en'?'output':'cetak'}</span>: <span class="var-val">${ln.replace(/</g,'&lt;')}</span>`;
+    } else if(ln.trim().startsWith('for') || ln.trim().startsWith('while')){
+      traceText = `<span style="color:#a78bfa">${lang==='en'?'loop':'loop'}</span>: ${ln.replace(/</g,'&lt;')}`;
+    } else if(ln.trim().startsWith('if')){
+      traceText = `<span style="color:#f472b6">${lang==='en'?'check':'cek'}</span>: ${ln.replace(/</g,'&lt;')}`;
+    } else if(ln.trim().startsWith('function')){
+      traceText = `<span style="color:#60a5fa">${lang==='en'?'define':'definisi'}</span>: ${ln.replace(/</g,'&lt;')}`;
+    } else {
+      traceText = `<span style="color:#cbd5e1">${ln.replace(/</g,'&lt;')}</span>`;
+    }
+    traceBody.innerHTML += `<div class="trace-line">L${i+1}: ${traceText}</div>`;
+    // scroll trace
+    trace.scrollTop = trace.scrollHeight;
+    i++;
+    setTimeout(step, 600);
+  }
+  setTimeout(step, 300);
 }
 
 function answerBug(i){
   if(BUG_STATE.answered) return;
+  if(BUG_STATE.running) return;
   BUG_STATE.answered = true;
-  const lvl = BUG_LEVELS[BUG_STATE.idx];
+  const lvl = getBugLevels()[BUG_STATE.idx];
   document.querySelectorAll('.opt').forEach((el,j)=>{
     el.disabled = true;
     if(j===lvl.ans) el.classList.add('correct');
     else if(j===i) el.classList.add('wrong');
   });
+  // Highlight buggy line red, then insert fix line in green
   const bugLineEl = document.querySelector(`.code-line[data-line="${lvl.bugLine}"]`);
-  if(bugLineEl) bugLineEl.classList.add('bug');
+  if(bugLineEl){
+    bugLineEl.classList.add('bug');
+    if(lvl.fix){
+      const fixLines = lvl.fix.split('\n');
+      const fixHtml = fixLines.map(fl=>
+        `<div class="code-line fix-line"><span class="line-num">✓</span><span class="line-body">${fl.replace(/</g,'&lt;')}</span></div>`
+      ).join('');
+      bugLineEl.insertAdjacentHTML('afterend', fixHtml);
+    }
+  }
 
   if(i===lvl.ans){
     saveProgress('alesha_code_bug_progress', lvl.id);
@@ -1061,9 +1315,45 @@ const GATES_LEVELS = [
     gates:[{op:'XOR', in:['A','B'], id:'G1'}, {op:'AND', in:['G1','C'], id:'G2'}],
     outputFrom:'G2', goal:true,
     concept:{en:'You can build any computer using AND, OR, and NOT!', id:'Komputer apa pun bisa dibangun dari AND, OR, dan NOT!'}},
+  // ── Harder levels L11-L15 ──
+  {id:11, title:{en:'Four-Input Mix', id:'Empat Input'},
+    description:{en:'(A AND B) OR (C AND D) — light it up!', id:'(A AND B) OR (C AND D) — nyalakan!'},
+    inputs:['A','B','C','D'],
+    gates:[{op:'AND', in:['A','B'], id:'G1'}, {op:'AND', in:['C','D'], id:'G2'}, {op:'OR', in:['G1','G2'], id:'G3'}],
+    outputFrom:'G3', goal:true,
+    concept:{en:'More inputs = more combinations. Logic still works the same!', id:'Lebih banyak input = lebih banyak kombinasi. Logika tetap sama!'}},
+  {id:12, title:{en:'NAND Gate', id:'Gerbang NAND'},
+    description:{en:'NAND = NOT AND. True unless BOTH are true.', id:'NAND = NOT AND. Benar kecuali KEDUA-nya benar.'},
+    inputs:['A','B'],
+    gates:[{op:'NAND', in:['A','B'], id:'G1'}],
+    outputFrom:'G1', goal:true,
+    concept:{en:'<b>NAND</b> is "universal" — every other gate can be built from NANDs!', id:'<b>NAND</b> bersifat "universal" — semua gerbang bisa dibangun dari NAND!'}},
+  {id:13, title:{en:'NOR Gate', id:'Gerbang NOR'},
+    description:{en:'NOR = NOT OR. True only when BOTH are false.', id:'NOR = NOT OR. Benar hanya saat KEDUA-nya salah.'},
+    inputs:['A','B'],
+    gates:[{op:'NOR', in:['A','B'], id:'G1'}],
+    outputFrom:'G1', goal:true,
+    concept:{en:'<b>NOR</b> is also universal. Two NORs make a NOT!', id:'<b>NOR</b> juga universal. Dua NOR jadi NOT!'}},
+  {id:14, title:{en:'XOR + AND + NOT', id:'XOR + AND + NOT'},
+    description:{en:'(A XOR B) AND (NOT C) — combine three gate types!', id:'(A XOR B) AND (NOT C) — gabungkan tiga jenis gerbang!'},
+    inputs:['A','B','C'],
+    gates:[{op:'XOR', in:['A','B'], id:'G1'}, {op:'NOT', in:['C'], id:'G2'}, {op:'AND', in:['G1','G2'], id:'G3'}],
+    outputFrom:'G3', goal:true,
+    concept:{en:'Real chips combine many gate types like this.', id:'Chip sungguhan menggabungkan banyak jenis gerbang seperti ini.'}},
+  {id:15, title:{en:'Majority Vote', id:'Suara Terbanyak'},
+    description:{en:'Output TRUE if 2 or more of A,B,C are TRUE (majority detector).', id:'Output BENAR jika 2 atau lebih dari A,B,C adalah BENAR (detektor mayoritas).'},
+    inputs:['A','B','C'],
+    gates:[{op:'AND', in:['A','B'], id:'G1'}, {op:'AND', in:['B','C'], id:'G2'}, {op:'AND', in:['A','C'], id:'G3'}, {op:'OR', in:['G1','G2'], id:'G4'}, {op:'OR', in:['G4','G3'], id:'G5'}],
+    outputFrom:'G5', goal:true,
+    concept:{en:'A <b>majority detector</b> uses 3 ANDs + 2 ORs to check if most inputs are true.', id:'<b>Detektor mayoritas</b> pakai 3 AND + 2 OR untuk cek mayoritas input benar.'}},
 ];
 
-const GATES_STATE = {idx:0, values:{}};
+const GATES_STATE = {idx:0, values:{}, shuffled:null};
+
+function getGatesLevels(){
+  if(!GATES_STATE.shuffled) GATES_STATE.shuffled = shuffle(GATES_LEVELS.slice());
+  return GATES_STATE.shuffled;
+}
 
 function evalGate(g, vals){
   const ev = name => name in vals ? vals[name] : false;
@@ -1071,6 +1361,8 @@ function evalGate(g, vals){
   if(g.op==='OR')  return ev(g.in[0]) || ev(g.in[1]);
   if(g.op==='NOT') return !ev(g.in[0]);
   if(g.op==='XOR') return ev(g.in[0]) !== ev(g.in[1]);
+  if(g.op==='NAND') return !(ev(g.in[0]) && ev(g.in[1]));
+  if(g.op==='NOR') return !(ev(g.in[0]) || ev(g.in[1]));
   return false;
 }
 function computeGates(lvl){
@@ -1081,9 +1373,9 @@ function computeGates(lvl){
 }
 
 function renderGates(){
-  const lvl = GATES_LEVELS[GATES_STATE.idx];
+  const lvl = getGatesLevels()[GATES_STATE.idx];
   if(!lvl){ renderDone('gates'); return; }
-  setHeader((lang==='en'?'Circuit ':'Sirkuit ')+(GATES_STATE.idx+1)+'/'+GATES_LEVELS.length);
+  setHeader((lang==='en'?'Circuit ':'Sirkuit ')+(GATES_STATE.idx+1)+'/'+getGatesLevels().length);
 
   // initialize values
   if(GATES_STATE.idx !== GATES_STATE.lastIdx){
@@ -1111,7 +1403,7 @@ function renderGates(){
 }
 
 function drawCircuit(){
-  const lvl = GATES_LEVELS[GATES_STATE.idx];
+  const lvl = getGatesLevels()[GATES_STATE.idx];
   const vals = computeGates(lvl);
   const out = vals[lvl.outputFrom];
 
@@ -1277,14 +1569,57 @@ const ALGO_LEVELS = [
     description:{en:'Find the pattern and fill in the next 3 numbers.', id:'Temukan pola dan isi 3 angka berikut.'},
     seq:[1,1,2,3,5,8], next:[13,21,34],
     concept:{en:'This is the famous <b>Fibonacci</b> sequence — each number is the sum of the two before it!', id:'Ini deret <b>Fibonacci</b> terkenal — tiap angka jumlah dua sebelumnya!'}},
+  // ── Harder levels L9-L12 ──
+  {id:9, kind:'sort', title:{en:'Sort 8 Cards', id:'Urutkan 8 Kartu'},
+    description:{en:'8 cards! Sort them all using adjacent swaps.', id:'8 kartu! Urutkan semua pakai tukar bersebelahan.'},
+    nums:[8,3,6,1,7,2,5,4], optimal:18,
+    concept:{en:'For 8 items, bubble sort can need up to 28 swaps in the worst case!', id:'Untuk 8 item, bubble sort bisa butuh sampai 28 tukar di kasus terburuk!'}},
+  {id:10, kind:'bsearch', title:{en:'Guess 1–1000 Pro', id:'Tebak 1–1000 Pro'},
+    description:{en:'1–1000 in only 10 tries. Halve every time!', id:'1–1000 hanya 10 percobaan. Bagi dua tiap kali!'},
+    range:[1,1000], maxGuesses:10,
+    concept:{en:'log₂(1000) ≈ 10. Binary search lets 10 questions cover 1024 options!', id:'log₂(1000) ≈ 10. Binary search bikin 10 pertanyaan cukup untuk 1024 pilihan!'}},
+  {id:11, kind:'path', title:{en:'8×8 Maze', id:'Maze 8×8'},
+    description:{en:'Huge maze with many obstacles. Find the shortest path!', id:'Maze besar dengan banyak tembok. Temukan jalur terpendek!'},
+    grid:[
+      ['S','.','.','#','.','.','.','.'],
+      ['#','.','#','#','.','#','#','.'],
+      ['.','.','.','.','.','.','.','.'],
+      ['.','#','#','#','#','#','#','.'],
+      ['.','.','.','.','.','.','.','.'],
+      ['#','#','.','#','#','#','.','#'],
+      ['.','.','.','#','.','.','.','.'],
+      ['.','#','#','#','.','#','#','E'],
+    ], optimal:20,
+    concept:{en:'Big mazes show why BFS algorithms beat trial-and-error every time.', id:'Maze besar menunjukkan kenapa algoritma BFS selalu menang dari coba-coba.'}},
+  {id:12, kind:'pattern', title:{en:'Pascal Row', id:'Baris Pascal'},
+    description:{en:'Pascal\'s triangle: each number is the sum of the two above. Row starts: 1, 5, 10, 10, ?, ? — fill the next 3.', id:'Segitiga Pascal: tiap angka adalah jumlah dua di atasnya. Baris: 1, 5, 10, 10, ?, ?, ? — isi 3 berikutnya.'},
+    seq:[1,5,10,10], next:[5,1,0],
+    concept:{en:'<b>Pascal\'s triangle</b> row 5 is 1,5,10,10,5,1 then 0s. It appears in probability & combinatorics!', id:'<b>Segitiga Pascal</b> baris 5: 1,5,10,10,5,1 lalu 0. Muncul di peluang & kombinatorik!'}},
 ];
 
-const ALGO_STATE = {idx:0};
+const ALGO_STATE = {idx:0, shuffled:null};
+
+function getAlgoLevels(){
+  if(!ALGO_STATE.shuffled){
+    // Group by kind, shuffle within each, then concat in fixed group order
+    const groups = {sort:[], bsearch:[], path:[], pattern:[]};
+    for(const lvl of ALGO_LEVELS){
+      if(groups[lvl.kind]) groups[lvl.kind].push(lvl);
+    }
+    ALGO_STATE.shuffled = [
+      ...shuffle(groups.sort),
+      ...shuffle(groups.bsearch),
+      ...shuffle(groups.path),
+      ...shuffle(groups.pattern),
+    ];
+  }
+  return ALGO_STATE.shuffled;
+}
 
 function renderAlgo(){
-  const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+  const lvl = getAlgoLevels()[ALGO_STATE.idx];
   if(!lvl){ renderDone('algorithm'); return; }
-  setHeader((lang==='en'?'Lab ':'Lab ')+(ALGO_STATE.idx+1)+'/'+ALGO_LEVELS.length);
+  setHeader((lang==='en'?'Lab ':'Lab ')+(ALGO_STATE.idx+1)+'/'+getAlgoLevels().length);
 
   let body = '';
   if(lvl.kind==='sort')    body = renderSort(lvl);
@@ -1362,7 +1697,7 @@ function doSwap(){
   if(sorted){
     SORT_STATE.locked = true;
     drawBars();
-    const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+    const lvl = getAlgoLevels()[ALGO_STATE.idx];
     saveProgress('alesha_code_algorithm_progress', lvl.id);
     confetti();
     const extra = SORT_STATE.swaps<=SORT_STATE.optimal
@@ -1412,7 +1747,7 @@ function bsGuess(){
   document.getElementById('bs-input').value='';
   if(v===BS_STATE.secret){
     BS_STATE.done = true;
-    const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+    const lvl = getAlgoLevels()[ALGO_STATE.idx];
     saveProgress('alesha_code_algorithm_progress', lvl.id);
     confetti();
     showFeedback('ok',
@@ -1447,7 +1782,7 @@ function initPath(lvl){
   drawMaze();
 }
 function resetPath(){
-  initPath(ALGO_LEVELS[ALGO_STATE.idx]);
+  initPath(getAlgoLevels()[ALGO_STATE.idx]);
   document.getElementById('feedback').classList.remove('show');
 }
 function drawMaze(){
@@ -1496,7 +1831,7 @@ function pickMazeCell(x,y){
   drawMaze();
   if(grid[y][x]==='E'){
     PATH_STATE.done = true;
-    const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+    const lvl = getAlgoLevels()[ALGO_STATE.idx];
     saveProgress('alesha_code_algorithm_progress', lvl.id);
     confetti();
     const extra = PATH_STATE.path.length<=PATH_STATE.optimal
@@ -1524,7 +1859,7 @@ function renderPattern(lvl){
   `;
 }
 function checkPattern(){
-  const lvl = ALGO_LEVELS[ALGO_STATE.idx];
+  const lvl = getAlgoLevels()[ALGO_STATE.idx];
   const got = [0,1,2].map(i=>parseInt(document.getElementById('pat-'+i).value,10));
   const ok = got.every((v,i)=>v === lvl.next[i]);
   if(ok){
@@ -1545,18 +1880,261 @@ function nextAlgo(){
 }
 
 // ════════════════════════════════════════════════════════════════
+// MODE 5: CIPHER LAB
+// ════════════════════════════════════════════════════════════════
+const CIPHER_LEVELS = [
+  // Tier 1: Caesar (5)
+  {id:1, kind:'caesar', tier:'caesar', shift:1, encrypted:'BCD', answer:'ABC',
+    title:{en:'First Shift', id:'Geser Pertama'},
+    hint:{en:'Slide to shift -1: B→A, C→B, D→C.', id:'Geser ke -1: B→A, C→B, D→C.'},
+    concept:{en:'<b>Caesar shift</b> moves every letter by the same amount.', id:'<b>Geser Caesar</b> memindahkan tiap huruf sebanyak angka tertentu.'}},
+  {id:2, kind:'caesar', tier:'caesar', shift:3, encrypted:'KHOOR', answer:'HELLO',
+    title:{en:'Shift Three', id:'Geser Tiga'},
+    hint:{en:'Try shift = 3 backwards.', id:'Coba geser = 3 mundur.'},
+    concept:{en:'Julius Caesar himself used shift=3 to send secret army messages!', id:'Julius Caesar pakai geser=3 untuk pesan tentara rahasia!'}},
+  {id:3, kind:'caesar', tier:'caesar', shift:13, encrypted:'URPNRG', answer:'HELLO',
+    // ROT13: H=>U, E=>R, L=>Y... let's actually compute: H+13 = U, E+13 = R, L+13 = Y, L+13=Y, O+13=B => URYYB. Fix encrypted.
+    title:{en:'ROT13', id:'ROT13'},
+    hint:{en:'ROT13 means shift by 13. Try that.', id:'ROT13 berarti geser 13. Coba itu.'},
+    concept:{en:'<b>ROT13</b> is its own inverse — shift 13 twice and you\'re back.', id:'<b>ROT13</b> kebalikan dirinya — geser 13 dua kali kembali ke asal.'}},
+  {id:4, kind:'caesar', tier:'caesar', shift:5, encrypted:'XJSPM', answer:'SECRET',
+    // shift=5 forward: S+5=X, E+5=J, C+5=H, R+5=W, E+5=J, T+5=Y => XJHWJY. Recompute carefully.
+    title:{en:'Find the Shift', id:'Cari Geseran'},
+    hint:{en:'Slide until words appear readable.', id:'Geser sampai kata terbaca.'},
+    concept:{en:'When the shift is unknown, try them all — only 25 possibilities!', id:'Kalau geseran rahasia, coba semua — hanya 25 kemungkinan!'}},
+  {id:5, kind:'caesar', tier:'caesar', shift:7, encrypted:'SLAGHKZHU', answer:'LIGHT',
+    title:{en:'Long Message', id:'Pesan Panjang'},
+    hint:{en:'Common short words like THE, AND, LIGHT often appear.', id:'Kata umum seperti THE, AND, LIGHT sering muncul.'},
+    concept:{en:'Crypto analysts use letter frequency to break Caesar quickly.', id:'Analis sandi pakai frekuensi huruf untuk pecahkan Caesar cepat.'}},
+  // Tier 2: Atbash (3)
+  {id:6, kind:'atbash', tier:'atbash', encrypted:'ZGGZXP', answer:'ATTACK',
+    title:{en:'Atbash Start', id:'Atbash Mula'},
+    hint:{en:'A↔Z, B↔Y, C↔X. Try Z→A, G→T, X→C, P→K.', id:'A↔Z, B↔Y, C↔X. Coba Z→A, G→T, X→C, P→K.'},
+    concept:{en:'<b>Atbash</b> mirrors the alphabet: A↔Z, B↔Y, and so on.', id:'<b>Atbash</b> membalik abjad: A↔Z, B↔Y, dan seterusnya.'}},
+  {id:7, kind:'atbash', tier:'atbash', encrypted:'HVXIVG', answer:'SECRET',
+    title:{en:'Atbash Two', id:'Atbash Dua'},
+    hint:{en:'H↔S, V↔E, X↔C, I↔R, G↔T.', id:'H↔S, V↔E, X↔C, I↔R, G↔T.'},
+    concept:{en:'Atbash is one of the oldest known ciphers — used in the Hebrew Bible!', id:'Atbash salah satu sandi tertua — dipakai dalam Alkitab Ibrani!'}},
+  {id:8, kind:'atbash', tier:'atbash', encrypted:'GIVZHFIV', answer:'TREASURE',
+    title:{en:'Hidden Treasure', id:'Harta Tersembunyi'},
+    hint:{en:'G↔T, I↔R, V↔E, Z↔A, H↔S, F↔U.', id:'G↔T, I↔R, V↔E, Z↔A, H↔S, F↔U.'},
+    concept:{en:'Spies used Atbash because it needs no key — just the mirror table.', id:'Mata-mata pakai Atbash karena tak perlu kunci — cukup tabel cermin.'}},
+  // Tier 3: Substitution (4)
+  {id:9, kind:'subst', tier:'subst',
+    key:{'★':'A','◆':'B','●':'C','○':'D','■':'E','▲':'H','▼':'L','⬢':'O'},
+    encrypted:'▲■▼▼⬢', answer:'HELLO',
+    title:{en:'Symbol Cipher', id:'Sandi Simbol'},
+    hint:{en:'Use the key: ▲=H, ■=E, ▼=L, ⬢=O.', id:'Pakai kunci: ▲=H, ■=E, ▼=L, ⬢=O.'},
+    concept:{en:'<b>Substitution ciphers</b> map each letter to a symbol or other letter.', id:'<b>Sandi substitusi</b> memetakan tiap huruf ke simbol/huruf lain.'}},
+  {id:10, kind:'subst', tier:'subst',
+    key:{'★':'A','◆':'B','●':'C','○':'D','■':'E','◇':'G','▲':'H','♦':'I','▼':'L','⬢':'O','◯':'R','□':'S','◐':'T'},
+    encrypted:'◯⬢◆⬢◐', answer:'ROBOT',
+    title:{en:'Robot Code', id:'Kode Robot'},
+    hint:{en:'Find the symbols for R, O, B, O, T in the key table.', id:'Cari simbol R, O, B, O, T di tabel kunci.'},
+    concept:{en:'Longer messages give more clues — look for repeated symbols!', id:'Pesan panjang lebih banyak petunjuk — cari simbol berulang!'}},
+  {id:11, kind:'subst', tier:'subst',
+    // Partial key: missing some letters. Player deduces.
+    key:{'★':'A','■':'E','▲':'H','▼':'L','⬢':'O','◐':'T'},
+    encrypted:'▲■▼▼⬢ ◐⬢ ★▼▼', answer:'HELLO TO ALL',
+    title:{en:'Partial Key', id:'Kunci Sebagian'},
+    hint:{en:'Use what you know to fill the rest from context.', id:'Pakai yang kamu tahu untuk tebak sisanya.'},
+    concept:{en:'Real cryptographers often start with only a few known letters.', id:'Kriptografer sungguhan sering mulai dengan beberapa huruf saja.'}},
+  {id:12, kind:'subst', tier:'subst',
+    key:{'★':'A','■':'E','♦':'I','⬢':'O','□':'S','◐':'T','▲':'H'},
+    encrypted:'◐▲♦□ ♦□ ★ ◐■□◐', answer:'THIS IS A TEST',
+    title:{en:'Secret Phrase', id:'Frasa Rahasia'},
+    hint:{en:'Common words: THIS, IS, A, TEST. Vowels A,E,I,O are given.', id:'Kata umum: THIS, IS, A, TEST. Vokal A,E,I,O sudah diberi.'},
+    concept:{en:'Knowing vowels first is a classic cipher-breaking trick!', id:'Tahu vokal duluan adalah trik klasik pecahkan sandi!'}},
+];
+
+// Recompute correct encrypted for Caesar L3, L4, L5 at runtime to guarantee correctness
+function caesarShift(s, n){
+  return s.split('').map(c=>{
+    const code = c.charCodeAt(0);
+    if(code>=65 && code<=90) return String.fromCharCode((code-65+n+26)%26+65);
+    return c;
+  }).join('');
+}
+// Auto-fix encrypted strings for any caesar levels (in case manual encoding was wrong)
+for(const lvl of CIPHER_LEVELS){
+  if(lvl.kind==='caesar') lvl.encrypted = caesarShift(lvl.answer, lvl.shift);
+}
+
+const CIPHER_STATE = {idx:0, shuffled:null, sliderVal:0, hintUsed:false, done:false};
+
+function getCipherLevels(){
+  if(!CIPHER_STATE.shuffled){
+    const tiers = {caesar:[], atbash:[], subst:[]};
+    for(const l of CIPHER_LEVELS){ if(tiers[l.tier]) tiers[l.tier].push(l); }
+    CIPHER_STATE.shuffled = [
+      ...shuffle(tiers.caesar),
+      ...shuffle(tiers.atbash),
+      ...shuffle(tiers.subst),
+    ];
+  }
+  return CIPHER_STATE.shuffled;
+}
+
+function atbashDecode(s){
+  return s.split('').map(c=>{
+    const code = c.charCodeAt(0);
+    if(code>=65 && code<=90) return String.fromCharCode(90 - (code-65));
+    return c;
+  }).join('');
+}
+
+function substDecode(s, key){
+  return s.split('').map(c=> key[c] || c).join('');
+}
+
+function renderCipher(){
+  const levels = getCipherLevels();
+  const lvl = levels[CIPHER_STATE.idx];
+  if(!lvl){ renderDone('cipher'); return; }
+  setHeader((lang==='en'?'Cipher ':'Sandi ')+(CIPHER_STATE.idx+1)+'/'+levels.length);
+  CIPHER_STATE.sliderVal = 0;
+  CIPHER_STATE.hintUsed = false;
+  CIPHER_STATE.done = false;
+
+  let body = '';
+  if(lvl.kind==='caesar') body = renderCaesar(lvl);
+  else if(lvl.kind==='atbash') body = renderAtbash(lvl);
+  else if(lvl.kind==='subst') body = renderSubst(lvl);
+
+  const tierName = lvl.kind==='caesar' ? (lang==='en'?'Caesar Shift':'Geser Caesar')
+                 : lvl.kind==='atbash' ? (lang==='en'?'Atbash':'Atbash')
+                 : (lang==='en'?'Substitution':'Substitusi');
+
+  document.getElementById('main').innerHTML = `
+    <div class="card">
+      <div class="level-head">
+        <span class="level-badge">🔐 ${tierName} ${CIPHER_STATE.idx+1}</span>
+        <div class="level-title">${t(lvl.title)}</div>
+      </div>
+      <div class="cipher-msg-box">
+        <div class="cipher-label">${lang==='en'?'Encrypted Message':'Pesan Terenkripsi'}</div>
+        <div class="cipher-encrypted">${lvl.encrypted}</div>
+        <div class="cipher-preview" id="cipher-preview"></div>
+      </div>
+      ${body}
+      <div class="cipher-input-row">
+        <input class="cipher-input" id="cipher-answer" type="text" placeholder="${lang==='en'?'Type decoded message...':'Ketik pesan asli...'}" autocomplete="off">
+        <button class="cipher-decode-btn" onclick="checkCipher()">🔓 ${lang==='en'?'Decode':'Pecahkan'}</button>
+        <button class="cipher-hint-btn" onclick="cipherHint()">💡 ${lang==='en'?'Hint':'Petunjuk'}</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  `;
+  updateCipherPreview();
+  const inp = document.getElementById('cipher-answer');
+  if(inp) inp.addEventListener('keydown', e=>{ if(e.key==='Enter') checkCipher(); });
+}
+
+function renderCaesar(lvl){
+  return `
+    <div class="cipher-slider-wrap">
+      <div class="cipher-slider-label">
+        <span>${lang==='en'?'Shift':'Geser'}: <b id="cipher-shift-val">0</b></span>
+        <span>${lang==='en'?'Try sliding!':'Coba geser!'}</span>
+      </div>
+      <input class="cipher-slider" id="cipher-slider" type="range" min="-25" max="25" value="0" oninput="cipherSliderChange(this.value)">
+    </div>
+  `;
+}
+
+function renderAtbash(lvl){
+  // Build key table A=Z, B=Y, ...
+  const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M'];
+  let cells = '';
+  for(const L of letters){
+    const code = L.charCodeAt(0);
+    const mirror = String.fromCharCode(90 - (code-65));
+    cells += `<div class="cipher-key-cell">${L}↔<span class="sym">${mirror}</span></div>`;
+  }
+  return `
+    <div class="cipher-key-table">${cells}</div>
+  `;
+}
+
+function renderSubst(lvl){
+  let cells = '';
+  for(const [sym, ltr] of Object.entries(lvl.key)){
+    cells += `<div class="cipher-key-cell"><span class="sym">${sym}</span>=${ltr}</div>`;
+  }
+  return `
+    <div class="cipher-key-table">${cells}</div>
+  `;
+}
+
+function cipherSliderChange(v){
+  CIPHER_STATE.sliderVal = parseInt(v,10);
+  document.getElementById('cipher-shift-val').textContent = v;
+  updateCipherPreview();
+}
+
+function updateCipherPreview(){
+  const lvl = getCipherLevels()[CIPHER_STATE.idx];
+  const prev = document.getElementById('cipher-preview');
+  if(!prev) return;
+  let decoded = '';
+  if(lvl.kind==='caesar'){
+    decoded = caesarShift(lvl.encrypted, CIPHER_STATE.sliderVal);
+  } else if(lvl.kind==='atbash'){
+    decoded = atbashDecode(lvl.encrypted);
+  } else if(lvl.kind==='subst'){
+    decoded = substDecode(lvl.encrypted, lvl.key);
+  }
+  prev.textContent = decoded;
+}
+
+function cipherHint(){
+  const lvl = getCipherLevels()[CIPHER_STATE.idx];
+  CIPHER_STATE.hintUsed = true;
+  const firstLetter = lvl.answer.replace(/[^A-Z]/g,'').charAt(0);
+  showFeedback('info', `💡 ${lang==='en'?'First letter is':'Huruf pertama'} <b>${firstLetter}</b>. ${t(lvl.hint||{en:'',id:''})}`);
+}
+
+function checkCipher(){
+  if(CIPHER_STATE.done) return;
+  const lvl = getCipherLevels()[CIPHER_STATE.idx];
+  const inp = document.getElementById('cipher-answer');
+  const guess = (inp.value||'').toUpperCase().replace(/\s+/g,' ').trim();
+  const target = lvl.answer.toUpperCase().trim();
+  if(guess === target){
+    CIPHER_STATE.done = true;
+    saveProgress('alesha_code_cipher_progress', lvl.id);
+    confetti();
+    // Animated reveal
+    const reveal = lvl.answer.split('').map((c,i)=>`<span style="animation-delay:${i*100}ms">${c==' '?'&nbsp;':c}</span>`).join('');
+    showFeedback('ok',
+      `<strong>🎉 ${lang==='en'?'Message decoded!':'Pesan terpecahkan!'}</strong>
+       <div class="cipher-reveal">${reveal}</div>
+       <div class="concept-box">${t(lvl.concept)}</div>
+       <button class="next-btn" onclick="nextCipher()">${lang==='en'?'Next Cipher →':'Sandi Berikut →'}</button>`);
+  } else {
+    showFeedback('bad', `❌ ${lang==='en'?'Not quite — keep trying!':'Belum tepat — coba lagi!'}`);
+  }
+}
+
+function nextCipher(){
+  CIPHER_STATE.idx++;
+  render();
+}
+
+// ════════════════════════════════════════════════════════════════
 // DONE SCREEN
 // ════════════════════════════════════════════════════════════════
 function renderDone(mode){
   setHeader('');
-  const counts = {robot:20, bug:10, gates:10, algorithm:8};
+  const counts = {robot:25, bug:15, gates:15, algorithm:12, cipher:12};
   const key = 'alesha_code_'+mode+'_progress';
   const prog = getProgress(key);
   const msg = {
-    robot:{en:'You programmed all 20 puzzles!', id:'Kamu menyelesaikan 20 teka-teki!'},
+    robot:{en:'You programmed all 25 puzzles!', id:'Kamu menyelesaikan 25 teka-teki!'},
     bug:{en:'You squashed all the bugs!', id:'Kamu basmi semua bug!'},
     gates:{en:'Master of logic gates!', id:'Master gerbang logika!'},
     algorithm:{en:'Algorithm wizard!', id:'Penyihir algoritma!'},
+    cipher:{en:'Master cryptographer!', id:'Master kriptografi!'},
   }[mode];
   document.getElementById('main').innerHTML = `
     <div class="done">
@@ -1572,8 +2150,13 @@ function renderDone(mode){
   `;
 }
 function restartMode(){
-  ROBOT_STATE.level = 0; BUG_STATE.idx=0; GATES_STATE.idx=0; ALGO_STATE.idx=0;
+  ROBOT_STATE.level = 0; BUG_STATE.idx=0; GATES_STATE.idx=0; ALGO_STATE.idx=0; CIPHER_STATE.idx=0;
   GATES_STATE.lastIdx = -1;
+  // Re-shuffle for shuffled modes
+  BUG_STATE.shuffled = null;
+  GATES_STATE.shuffled = null;
+  ALGO_STATE.shuffled = null;
+  CIPHER_STATE.shuffled = null;
   render();
 }
 
@@ -1585,6 +2168,7 @@ function render(){
   else if(MODE==='bug') renderBug();
   else if(MODE==='gates') renderGates();
   else if(MODE==='algorithm') renderAlgo();
+  else if(MODE==='cipher') renderCipher();
   else {
     document.getElementById('main').innerHTML = '<div class="card"><p>Unknown mode</p></div>';
   }
@@ -1610,14 +2194,14 @@ const TUTORIALS = {
   bug: {
     title: {en:"🐛 Bug Hunt", id:"🐛 Berburu Bug"},
     steps: [
-      {en:`You're a <strong>code detective</strong> 🕵️. Each puzzle shows a small piece of buggy code.`,
-       id:`Kamu jadi <strong>detektif kode</strong> 🕵️. Tiap teka-teki ada potongan kode yang ada bug-nya.`},
-      {en:`Compare <strong>Expected Output</strong> with <strong>Actual Output</strong>. The difference tells you something is wrong!`,
-       id:`Bandingkan <strong>Output Diharapkan</strong> dengan <strong>Output Sebenarnya</strong>. Bedanya kasih petunjuk ada yang salah!`},
-      {en:`Pick which <strong>line number</strong> contains the bug, or choose the description that matches the error.`,
-       id:`Pilih <strong>nomor baris</strong> yang ada bug-nya, atau pilih deskripsi yang cocok sama errornya.`},
-      {en:`After answering you'll see <strong>why</strong> it was wrong — a great way to spot the same bug next time! 💡`,
-       id:`Setelah jawab kamu lihat <strong>kenapa</strong> salahnya — biar kamu kenali bug yang sama lain kali! 💡`},
+      {en:`You're a code detective 🕵️. Each puzzle shows a small buggy program — find the line with the mistake.`,
+       id:`Kamu detektif kode 🕵️. Tiap teka-teki tampilkan program kecil yang ada bug-nya — temukan baris yang salah.`},
+      {en:`Compare the <strong>Expected Output</strong> (green box, what should happen) with <strong>Actual Output</strong> (red box, what really happens). The difference is your clue.`,
+       id:`Bandingkan <strong>Output Diharapkan</strong> (kotak hijau, yang seharusnya) dengan <strong>Output Sebenarnya</strong> (kotak merah, yang sungguh terjadi). Bedanya adalah petunjukmu.`},
+      {en:`Click <kbd>▶ Run slow</kbd> to watch the code execute one line at a time. You'll see exactly where things go wrong.`,
+       id:`Klik <kbd>▶ Jalan pelan</kbd> untuk lihat kode jalan satu baris demi satu baris. Kamu akan lihat persis di mana salahnya.`},
+      {en:`Click the line you think has the bug. After you answer, you'll see the fix in green and learn why it was wrong.`,
+       id:`Klik baris yang menurutmu bermasalah. Setelah jawab, kamu lihat perbaikannya hijau dan paham kenapa salah.`},
     ]
   },
   gates: {
@@ -1644,6 +2228,19 @@ const TUTORIALS = {
        id:`<strong>Binary Search</strong>: aku pikir satu angka. Tiap tebakan aku bilang "terlalu tinggi" atau "terlalu rendah". Strategi pintar: selalu <strong>tebak tengah</strong> range yang tersisa!`},
       {en:`<strong>Shortest Path</strong>: click tiles to make a path from start to finish. Goal: use the <strong>fewest tiles</strong> possible. Click a tile again to undo.`,
        id:`<strong>Shortest Path</strong>: klik kotak buat bikin jalur dari start ke finish. Tujuan: pakai <strong>kotak sesedikit mungkin</strong>. Klik ulang untuk batal.`},
+    ]
+  },
+  cipher: {
+    title: {en:"🔐 Cipher Lab", id:"🔐 Lab Sandi"},
+    steps: [
+      {en:`You're a secret agent 🕵️! Each puzzle hides a real message inside coded letters.`,
+       id:`Kamu agen rahasia 🕵️! Tiap teka-teki menyembunyikan pesan asli di balik huruf rahasia.`},
+      {en:`<strong>Caesar Shift</strong>: every letter moves N positions. E.g. shift=3 means A→D, B→E, K→N. So KHOOR (shift=3 back) becomes HELLO.`,
+       id:`<strong>Geser Caesar</strong>: tiap huruf bergeser N posisi. Misal geser=3 berarti A→D, B→E, K→N. Jadi KHOOR (geser=3 mundur) jadi HELLO.`},
+      {en:`Use the <strong>slider</strong> (Caesar) or check the <strong>key table</strong> (others) to figure out the original letters. Live preview helps you see what looks right.`,
+       id:`Pakai <strong>slider</strong> (Caesar) atau cek <strong>tabel kunci</strong> (lainnya) untuk cari huruf asli. Pratinjau langsung bantu lihat yang masuk akal.`},
+      {en:`Type the decoded message and hit Decode. Need help? Tap <kbd>💡 Hint</kbd> to reveal the first letter.`,
+       id:`Ketik pesan terdekode dan tekan Pecahkan. Butuh bantuan? Tekan <kbd>💡 Petunjuk</kbd> untuk lihat huruf pertama.`},
     ]
   }
 };
