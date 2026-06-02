@@ -3,193 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alesha's English Mastery — Academic Track</title>
+<title>Alesha's English Library — Beyond Classroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cream:#fdfaf3;
+  --bg:#fff8eb;
   --paper:#ffffff;
-  --ink:#0f1f3a;
-  --navy:#1e3a5f;
-  --crimson:#7a1f2a;
-  --gold:#b8860b;
-  --slate:#475569;
-  --rule:#e7dfd0;
+  --ink:#1f2937;
+  --teal:#0f766e;
+  --coral:#fb7185;
+  --grape:#a78bfa;
+  --sage:#84cc16;
+  --gold:#f59e0b;
+  --sky:#0ea5e9;
+  --slate:#64748b;
+  --rule:#fde68a;
 }
-html,body{background:var(--cream);color:var(--ink);min-height:100vh}
-body{font-family:Georgia,'Hoefler Text','Times New Roman',serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--ink);min-height:100vh}
+body{font-family:'Lora',Georgia,serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f59e0b' fill-opacity='.06'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='60' cy='40' r='1.5'/%3E%3Ccircle cx='40' cy='60' r='2'/%3E%3Cpath d='M10 50 L14 50 M12 48 L12 52' stroke='%23f59e0b' stroke-width='1' opacity='.4'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5}
 
 /* Top bar */
-.topbar{background:var(--paper);border-bottom:1px solid var(--rule);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.back-link{font-family:Georgia,serif;font-style:italic;font-size:.92rem;color:var(--navy);text-decoration:none;letter-spacing:.2px}
-.back-link:hover{color:var(--crimson);text-decoration:underline}
-.crest{font-family:Georgia,serif;font-size:.78rem;letter-spacing:.18em;color:var(--slate);text-transform:uppercase}
+.topbar{background:var(--paper);border-bottom:3px solid var(--rule);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:relative;z-index:1}
+.back-link{font-family:'Quicksand',sans-serif;font-weight:700;font-size:.92rem;color:var(--teal);text-decoration:none;background:#ccfbf1;padding:8px 16px;border-radius:18px;border:2px solid #5eead4;transition:transform .15s,background .15s}
+.back-link:hover{background:#a7f3d0;transform:translateX(-3px)}
+.crest{font-family:'Quicksand',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;color:var(--coral);text-transform:uppercase}
 
-/* Hero */
-.hero{background:linear-gradient(135deg,#0f1f3a 0%,#1e3a5f 60%,#7a1f2a 100%);color:#fff8eb;padding:54px 24px 64px;text-align:center;position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,248,235,.08),transparent 60%);pointer-events:none}
-.hero-badge{font-family:'Inter',system-ui,sans-serif;display:inline-block;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:#e6c98a;border:1px solid rgba(230,201,138,.5);padding:5px 14px;border-radius:2px;margin-bottom:22px}
-.hero h1{font-family:Georgia,'Hoefler Text','Times New Roman',serif;font-weight:400;font-size:2.5rem;letter-spacing:-.5px;line-height:1.15;margin-bottom:14px}
-.hero h1 em{font-style:italic;color:#e6c98a}
-.hero-sub{font-family:Georgia,serif;font-style:italic;font-size:1.08rem;opacity:.88;max-width:520px;margin:0 auto;letter-spacing:.2px}
-.hero-rule{width:60px;height:1px;background:#e6c98a;margin:20px auto 0}
+/* Hero — warm friendly gradient */
+.hero{background:linear-gradient(135deg,#fb7185 0%,#a78bfa 35%,#0ea5e9 70%,#84cc16 100%);color:#fff;padding:48px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='%23ffffff' opacity='.12'%3E%3Cpath d='M30 8 L33 22 L48 23 L36 32 L40 47 L30 38 L20 47 L24 32 L12 23 L27 22 Z'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;opacity:.5}
+.hero-badge{font-family:'Quicksand',sans-serif;font-weight:700;display:inline-block;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.5);padding:6px 16px;border-radius:20px;margin-bottom:18px;position:relative;z-index:1}
+.hero h1{font-family:'Quicksand',sans-serif;font-weight:700;font-size:2.6rem;letter-spacing:-1px;line-height:1.1;margin-bottom:10px;position:relative;z-index:1;text-shadow:0 3px 12px rgba(0,0,0,.15)}
+.hero h1 .accent{background:linear-gradient(180deg,#fef3c7 0%,#fde68a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-style:italic}
+.hero-sub{font-family:'Lora',serif;font-style:italic;font-size:1.05rem;opacity:.96;max-width:520px;margin:0 auto;position:relative;z-index:1}
+.hero-emojis{font-size:1.6rem;letter-spacing:14px;display:inline-block;margin-top:14px;position:relative;z-index:1}
 
 /* Container */
-.wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+.wrap{max-width:780px;margin:0 auto;padding:42px 22px 80px;position:relative;z-index:1}
 
 /* Section label */
-.section-label{font-family:Georgia,serif;font-variant:small-caps;letter-spacing:.18em;font-size:.9rem;color:var(--crimson);text-align:center;margin-bottom:28px;position:relative}
-.section-label::before,.section-label::after{content:'';display:inline-block;width:38px;height:1px;background:var(--rule);vertical-align:middle;margin:0 12px}
+.section-label{font-family:'Quicksand',sans-serif;font-weight:700;letter-spacing:.08em;font-size:1rem;color:var(--coral);text-align:center;margin-bottom:24px;text-transform:uppercase}
+.section-label .deco{color:var(--gold);margin:0 8px}
 
 /* Track grid */
-.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:54px}
+.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:44px}
 @media(max-width:620px){.track-grid{grid-template-columns:1fr}}
 
-.track{display:block;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:26px 24px;text-decoration:none;color:inherit;transition:transform .18s ease, box-shadow .18s ease;position:relative}
-.track:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(15,31,58,.10)}
-.track::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:4px 4px 0 0}
-.track.t1::before{background:var(--navy)}
-.track.t2::before{background:var(--crimson)}
-.track.t3::before{background:var(--gold)}
-.track.t4::before{background:linear-gradient(90deg,var(--navy) 0%,var(--crimson) 100%)}
+.track{display:block;background:var(--paper);border-radius:20px;padding:22px 22px 18px;text-decoration:none;color:inherit;transition:transform .25s cubic-bezier(.34,1.4,.64,1),box-shadow .25s;position:relative;overflow:hidden;border:2px solid transparent}
+.track:hover{transform:translateY(-5px) rotate(-.5deg);box-shadow:0 18px 36px rgba(251,113,133,.18)}
+.track::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;border-radius:20px 20px 0 0}
+.track::after{content:'';position:absolute;bottom:-30px;right:-20px;width:120px;height:120px;border-radius:50%;opacity:.08;transition:transform .35s}
+.track:hover::after{transform:scale(1.4)}
 
-.track-roman{font-family:Georgia,serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--slate);margin-bottom:6px}
-.track h3{font-family:Georgia,serif;font-weight:400;font-size:1.32rem;line-height:1.25;color:var(--ink);margin-bottom:10px;letter-spacing:-.2px}
-.track p{font-family:Georgia,serif;font-size:.94rem;color:var(--slate);line-height:1.55;margin-bottom:18px}
-.track-meta{display:flex;justify-content:space-between;align-items:center;font-family:'Inter',system-ui,sans-serif;font-size:.74rem;letter-spacing:.05em;color:var(--navy);border-top:1px solid var(--rule);padding-top:12px}
-.track-progress{font-weight:600}
-.track-enter{font-style:italic;font-family:Georgia,serif;color:var(--crimson)}
+.track.t1::before{background:linear-gradient(90deg,#0ea5e9,#06b6d4)}
+.track.t1::after{background:radial-gradient(circle,#0ea5e9,#06b6d4)}
+.track.t1{border-color:#bae6fd}
+.track.t1 .track-num{background:#e0f2fe;color:#0369a1}
+.track.t1 h3{color:#0369a1}
+
+.track.t2::before{background:linear-gradient(90deg,#fb7185,#f43f5e)}
+.track.t2::after{background:radial-gradient(circle,#fb7185,#f43f5e)}
+.track.t2{border-color:#fecdd3}
+.track.t2 .track-num{background:#ffe4e6;color:#be123c}
+.track.t2 h3{color:#be123c}
+
+.track.t3::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.track.t3::after{background:radial-gradient(circle,#f59e0b,#fbbf24)}
+.track.t3{border-color:#fde68a}
+.track.t3 .track-num{background:#fef3c7;color:#a16207}
+.track.t3 h3{color:#a16207}
+
+.track.t4::before{background:linear-gradient(90deg,#a78bfa,#8b5cf6)}
+.track.t4::after{background:radial-gradient(circle,#a78bfa,#8b5cf6)}
+.track.t4{border-color:#ddd6fe}
+.track.t4 .track-num{background:#ede9fe;color:#6d28d9}
+.track.t4 h3{color:#6d28d9}
+
+.track-emoji{font-size:2.4rem;display:block;margin-bottom:6px;line-height:1}
+.track-num{display:inline-block;font-family:'Quicksand',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:11px;margin-bottom:8px}
+.track h3{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.15rem;line-height:1.25;margin-bottom:8px;position:relative;z-index:1}
+.track p{font-family:'Lora',serif;font-size:.88rem;color:var(--slate);line-height:1.55;margin-bottom:14px;position:relative;z-index:1}
+.track-meta{display:flex;justify-content:space-between;align-items:center;font-family:'Quicksand',sans-serif;font-size:.74rem;font-weight:600;color:var(--slate);border-top:1.5px dashed var(--rule);padding-top:11px;position:relative;z-index:1}
+.track-enter{font-style:italic;font-family:'Lora',serif;font-weight:600}
+.track.t1 .track-enter{color:#0369a1}
+.track.t2 .track-enter{color:#be123c}
+.track.t3 .track-enter{color:#a16207}
+.track.t4 .track-enter{color:#6d28d9}
 
 /* Reading list */
-.list-section{margin-bottom:48px}
-.reading-list{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:26px 30px}
-.reading-list h4{font-family:Georgia,serif;font-weight:400;font-size:1.05rem;color:var(--navy);margin-bottom:14px;letter-spacing:.3px}
+.reading-list{background:var(--paper);border:2.5px dashed #f59e0b;border-radius:22px;padding:24px 28px;margin-bottom:32px;position:relative}
+.reading-list h4{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.1rem;color:#a16207;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .reading-list ul{list-style:none}
-.reading-list li{font-family:Georgia,serif;font-size:.95rem;padding:9px 0;border-bottom:1px dotted var(--rule);color:var(--ink);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.reading-list li{font-family:'Lora',serif;font-size:.95rem;padding:10px 0;border-bottom:1px dotted #fde68a;color:var(--ink);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
 .reading-list li:last-child{border-bottom:none}
-.book-title{font-style:italic;color:var(--navy);min-width:200px;display:inline-block}
-.book-note{color:var(--slate);font-size:.9rem;flex:1}
+.book-title{font-style:italic;color:#0369a1;font-weight:600;min-width:200px}
+.book-note{color:var(--slate);font-size:.88rem;flex:1}
 
 /* Study tips */
-.tips{background:transparent;border-left:3px solid var(--gold);padding:6px 22px;margin-bottom:32px}
-.tips h4{font-family:Georgia,serif;font-weight:400;font-size:1.05rem;color:var(--crimson);margin-bottom:10px;font-variant:small-caps;letter-spacing:.1em}
+.tips{background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 100%);border:2.5px solid #fdba74;border-radius:22px;padding:20px 24px;margin-bottom:32px}
+.tips h4{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.05rem;color:#c2410c;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .tips ol{list-style:none;counter-reset:tip}
-.tips li{font-family:Georgia,serif;font-size:.95rem;padding:7px 0 7px 30px;position:relative;color:var(--ink);line-height:1.55}
-.tips li::before{counter-increment:tip;content:counter(tip,upper-roman) ".";position:absolute;left:0;color:var(--gold);font-style:italic;font-weight:bold}
+.tips li{font-family:'Lora',serif;font-size:.95rem;padding:7px 0 7px 34px;position:relative;color:var(--ink);line-height:1.55}
+.tips li::before{counter-increment:tip;content:counter(tip);position:absolute;left:0;top:7px;width:24px;height:24px;background:#fdba74;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Quicksand',sans-serif;font-weight:700;font-size:.78rem}
 
 /* Footer note */
-.foot{text-align:center;font-family:Georgia,serif;font-style:italic;font-size:.86rem;color:var(--slate);margin-top:40px;padding-top:24px;border-top:1px solid var(--rule)}
+.foot{text-align:center;font-family:'Lora',serif;font-style:italic;font-size:.88rem;color:var(--slate);margin-top:32px;padding-top:22px;border-top:2px dashed #fde68a}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <a class="back-link" href="../">← Subjects</a>
-  <div class="crest">Academic Track · Beyond School</div>
+  <a class="back-link" href="../">← All Subjects</a>
+  <div class="crest">📚 Beyond Classroom</div>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Ivy-Track Preparation</div>
-  <h1>Alesha's <em>English Mastery</em></h1>
-  <div class="hero-sub">Advanced English study for serious readers and writers.</div>
-  <div class="hero-rule"></div>
+  <div class="hero-badge">For Curious Minds 🌟</div>
+  <h1>Alesha's <span class="accent">English Library</span></h1>
+  <div class="hero-sub">Bigger words. Deeper stories. Sharper thinking.</div>
+  <div class="hero-emojis">📚 ✏️ 🔍 🖋️</div>
 </div>
 
 <div class="wrap">
 
-  <div class="section-label">Four Tracks of Study</div>
+  <div class="section-label"><span class="deco">✦</span> Four Adventures of Reading <span class="deco">✦</span></div>
 
   <div class="track-grid">
     <a class="track t1" href="quiz/?track=reading">
-      <div class="track-roman">I — Reading</div>
-      <h3>Advanced Reading Comprehension</h3>
-      <p>Literary excerpts from Lewis, Lowry, Burnett and others, paired with non-fiction passages and rigorous inference questions.</p>
+      <span class="track-emoji">📖</span>
+      <span class="track-num">Adventure 1</span>
+      <h3>Deep Reading</h3>
+      <p>Beautiful stories from famous books — then puzzle out what the author really means.</p>
       <div class="track-meta">
-        <span class="track-progress" data-progress="reading">0 of 22 passages</span>
-        <span class="track-enter">Begin →</span>
+        <span data-progress="reading">0 of 6 stories</span>
+        <span class="track-enter">Start →</span>
       </div>
     </a>
 
     <a class="track t2" href="quiz/?track=vocab">
-      <div class="track-roman">II — Vocabulary</div>
-      <h3>Vocabulary &amp; Etymology</h3>
-      <p>Greek and Latin roots, Tier-2 academic vocabulary, analogies, and SAT-style synonym precision drills.</p>
+      <span class="track-emoji">📚</span>
+      <span class="track-num">Adventure 2</span>
+      <h3>Word Detective</h3>
+      <p>Big fancy words, Greek &amp; Latin roots, and word puzzles like grown-up readers love.</p>
       <div class="track-meta">
-        <span class="track-progress" data-progress="vocab">0 of 60 exercises</span>
-        <span class="track-enter">Begin →</span>
+        <span data-progress="vocab">0 of 18 puzzles</span>
+        <span class="track-enter">Start →</span>
       </div>
     </a>
 
     <a class="track t3" href="quiz/?track=critical">
-      <div class="track-roman">III — Critical Reading</div>
-      <h3>Critical Reading &amp; Argument</h3>
-      <p>Identify thesis statements, evaluate evidence, detect bias and logical fallacies in short analytical passages.</p>
+      <span class="track-emoji">🔍</span>
+      <span class="track-num">Adventure 3</span>
+      <h3>Think Like a Critic</h3>
+      <p>Find the main idea, spot tricky thinking, and tell facts from opinions.</p>
       <div class="track-meta">
-        <span class="track-progress" data-progress="critical">0 of 34 exercises</span>
-        <span class="track-enter">Begin →</span>
+        <span data-progress="critical">0 of 10 puzzles</span>
+        <span class="track-enter">Start →</span>
       </div>
     </a>
 
     <a class="track t4" href="quiz/?track=writing">
-      <div class="track-roman">IV — Writing</div>
-      <h3>Advanced Grammar &amp; Writing Craft</h3>
-      <p>Sentence structure, figurative language, rhetorical devices, and essay craft at SAT Writing foundation level.</p>
+      <span class="track-emoji">🖋️</span>
+      <span class="track-num">Adventure 4</span>
+      <h3>Writer's Workshop</h3>
+      <p>Fancy grammar tricks, beautiful sentences, and stories that surprise the reader.</p>
       <div class="track-meta">
-        <span class="track-progress" data-progress="writing">0 of 46 exercises</span>
-        <span class="track-enter">Begin →</span>
+        <span data-progress="writing">0 of 16 puzzles</span>
+        <span class="track-enter">Start →</span>
       </div>
     </a>
   </div>
 
-  <div class="list-section">
-    <div class="section-label">Recommended Reading</div>
-    <div class="reading-list">
-      <h4>A Library for the Serious Young Reader</h4>
-      <ul>
-        <li><span class="book-title">A Wrinkle in Time</span><span class="book-note">L'Engle — physics, faith, and the strangeness of love.</span></li>
-        <li><span class="book-title">The Giver</span><span class="book-note">Lowry — memory, choice, and the price of comfort.</span></li>
-        <li><span class="book-title">Bridge to Terabithia</span><span class="book-note">Paterson — friendship and the architecture of grief.</span></li>
-        <li><span class="book-title">Charlotte's Web</span><span class="book-note">White — mortality, devotion, and the dignity of small lives.</span></li>
-        <li><span class="book-title">The Secret Garden</span><span class="book-note">Burnett — solitude, growth, and the will to bloom.</span></li>
-        <li><span class="book-title">The Phantom Tollbooth</span><span class="book-note">Juster — wordplay, logic puzzles, and the joy of language.</span></li>
-        <li><span class="book-title">Number the Stars</span><span class="book-note">Lowry — quiet courage under occupation.</span></li>
-        <li><span class="book-title">Where the Red Fern Grows</span><span class="book-note">Rawls — loyalty, loss, and the woods of childhood.</span></li>
-        <li><span class="book-title">Anne of Green Gables</span><span class="book-note">Montgomery — imagination as moral instrument.</span></li>
-        <li><span class="book-title">The Lion, the Witch &amp; the Wardrobe</span><span class="book-note">Lewis — allegory and the geometry of right and wrong.</span></li>
-      </ul>
-    </div>
+  <div class="reading-list">
+    <h4>📖 Books for Smart Readers</h4>
+    <ul>
+      <li><span class="book-title">Charlotte's Web</span><span class="book-note">A pig, a spider, and a friendship that changes everything.</span></li>
+      <li><span class="book-title">A Wrinkle in Time</span><span class="book-note">Time travel + a magical adventure across the universe.</span></li>
+      <li><span class="book-title">The Lion, the Witch and the Wardrobe</span><span class="book-note">Step through a closet into Narnia.</span></li>
+      <li><span class="book-title">The Phantom Tollbooth</span><span class="book-note">A boring boy turns into a hero in a wordy world.</span></li>
+      <li><span class="book-title">The Giver</span><span class="book-note">A perfect world... with a dark secret. Mind-blowing.</span></li>
+      <li><span class="book-title">The Secret Garden</span><span class="book-note">A grumpy girl and a hidden garden bring everything back to life.</span></li>
+    </ul>
   </div>
 
   <div class="tips">
-    <h4>Habits of Serious Study</h4>
+    <h4>✨ Tips to Get Really Good at English</h4>
     <ol>
-      <li>Read thirty minutes daily — fiction, non-fiction, and one demanding text per week.</li>
-      <li>Keep a vocabulary journal. Note the word, the sentence in which you met it, and a definition in your own words.</li>
-      <li>Annotate as you read. Underline diction that surprises you and write a marginal question on every page.</li>
-      <li>Write for fifteen minutes after each long passage — summary, reaction, or an imitation of the author's style.</li>
+      <li><strong>Read 30 minutes a day</strong> — your brain learns new words like magic.</li>
+      <li><strong>Keep a word jar</strong> — when you see a new word, write it down with what you think it means.</li>
+      <li><strong>Re-read your favourite paragraphs</strong> — ask "why did the author say it like that?"</li>
+      <li><strong>Write a little every day</strong> — even one sentence about your day counts.</li>
     </ol>
   </div>
 
-  <div class="foot">Studium sine fine — study without end.</div>
-
+  <div class="foot">No XP. No badges. Just better thinking, one story at a time. 🌱</div>
 </div>
 
 <script>
-const TRACK_TOTALS = {reading:22, vocab:60, critical:34, writing:46};
+// Update progress
 function loadProgress(track){
-  try{
-    const raw = localStorage.getItem('alesha_excel_'+track+'_progress');
-    if(!raw) return 0;
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.length : 0;
-  }catch(e){ return 0; }
+  try{ return JSON.parse(localStorage.getItem('alesha_excel_'+track+'_progress')||'[]'); }
+  catch{ return []; }
 }
-document.querySelectorAll('[data-progress]').forEach(el=>{
-  const track = el.dataset.progress;
-  const done = loadProgress(track);
-  const total = TRACK_TOTALS[track] || 0;
-  const labels = {reading:'passages', vocab:'exercises', critical:'exercises', writing:'exercises'};
-  el.textContent = `${done} of ${total} ${labels[track]}`;
+const counts = {reading:6, vocab:18, critical:10, writing:16};
+const labels = {reading:'stories', vocab:'puzzles', critical:'puzzles', writing:'puzzles'};
+['reading','vocab','critical','writing'].forEach(k=>{
+  const el = document.querySelector(`[data-progress="${k}"]`);
+  if(!el) return;
+  const done = loadProgress(k).length;
+  el.textContent = `${done} of ${counts[k]} ${labels[k]}`;
 });
 </script>
 
