@@ -3,261 +3,194 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alesha's English Adventure</title>
+<title>Alesha's English Mastery — Academic Track</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 30%,#581c87 70%,#1e1b4b 100%);min-height:100vh;color:#fff;overflow-x:hidden;display:flex;flex-direction:column}
-body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cg fill='%23fff' opacity='0.4'%3E%3Ccircle cx='20' cy='30' r='1'/%3E%3Ccircle cx='80' cy='15' r='1.5'/%3E%3Ccircle cx='140' cy='40' r='1'/%3E%3Ccircle cx='180' cy='80' r='1.2'/%3E%3Ccircle cx='40' cy='110' r='1'/%3E%3Ccircle cx='110' cy='130' r='1.4'/%3E%3Ccircle cx='160' cy='170' r='1'/%3E%3Ccircle cx='60' cy='180' r='1.2'/%3E%3Ccircle cx='100' cy='70' r='0.8'/%3E%3Ccircle cx='30' cy='160' r='0.9'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;z-index:0;animation:sparkle 12s ease-in-out infinite}
-@keyframes sparkle{0%,100%{opacity:.5}50%{opacity:1}}
-
-/* HEADER */
-.hero{background:linear-gradient(135deg,#a78bfa 0%,#ec4899 30%,#06b6d4 70%,#8b5cf6 100%);color:#fff;padding:18px 18px 22px;text-align:center;position:relative;overflow:hidden;box-shadow:0 6px 28px rgba(167,139,250,.5);z-index:1}
-.hero-back{position:absolute;top:12px;left:14px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:5px 12px;border-radius:16px;font-size:.72rem;font-weight:800;cursor:pointer;text-decoration:none;z-index:2}
-.hero-back:hover{background:rgba(255,255,255,.35)}
-.hero h1{font-size:1.6rem;font-weight:900;letter-spacing:-.5px;margin-top:18px}
-.hero-sub{font-size:.78rem;opacity:.95;margin-top:4px;font-weight:600}
-
-/* PLAYER BAR */
-.player-bar{background:rgba(15,12,40,.85);backdrop-filter:blur(10px);border-bottom:2px solid rgba(167,139,250,.4);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative;z-index:1}
-.avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#c4b5fd);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 4px 14px rgba(196,181,253,.55);flex-shrink:0;animation:bob 2.5s ease-in-out infinite;border:2px solid rgba(255,255,255,.6)}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.player-info{flex:1;min-width:140px}
-.player-name{font-size:1rem;font-weight:900;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.level-badge{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:900;letter-spacing:.5px;box-shadow:0 2px 8px rgba(251,191,36,.5)}
-.xp-bar-wrap{margin-top:6px;background:rgba(255,255,255,.12);height:10px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.18)}
-.xp-bar{height:100%;background:linear-gradient(90deg,#06b6d4,#a78bfa,#ec4899);border-radius:6px;transition:width .6s ease;box-shadow:0 0 10px rgba(167,139,250,.7)}
-.xp-text{font-size:.7rem;font-weight:700;opacity:.85;margin-top:3px}
-.stat-pill{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:14px;padding:6px 12px;font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:5px;white-space:nowrap}
-.stat-pill.streak{background:linear-gradient(135deg,rgba(251,146,60,.3),rgba(239,68,68,.3));border-color:rgba(251,146,60,.6)}
-.stat-pill.trophy{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(245,158,11,.3));border-color:rgba(251,191,36,.6)}
-
-/* MAIN */
-.main{max-width:880px;margin:0 auto;padding:18px 16px 60px;width:100%;position:relative;z-index:1;flex:1}
-
-.section-label{font-size:.72rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#fbbf24;margin:18px 0 10px;text-shadow:0 2px 6px rgba(0,0,0,.4)}
-
-/* MAP */
-.lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.lesson{background:rgba(255,255,255,.06);border:1.5px solid rgba(167,139,250,.3);border-radius:16px;padding:14px 16px;text-decoration:none;color:#fff;display:flex;align-items:flex-start;gap:12px;transition:transform .25s cubic-bezier(.34,1.4,.64,1),background .25s,border-color .25s;position:relative;overflow:hidden}
-.lesson:hover{transform:translateY(-3px);background:rgba(255,255,255,.1);border-color:rgba(253,224,71,.55);box-shadow:0 10px 26px rgba(0,0,0,.25)}
-.lesson-icon{font-size:1.7rem;flex-shrink:0;line-height:1;margin-top:2px}
-.lesson-body{flex:1;min-width:0}
-.lesson-topic{font-size:.96rem;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-.2px}
-.lesson-flavor{font-size:.7rem;font-weight:700;color:#a78bfa;margin-top:3px;letter-spacing:.3px;text-transform:uppercase}
-.lesson-status{position:absolute;top:10px;right:12px;font-size:.85rem;opacity:.8}
-.lesson.done{border-color:rgba(34,197,94,.55);background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(255,255,255,.06))}
-.lesson.done .lesson-status{color:#86efac;opacity:1}
-
-/* TROPHY WALL */
-.trophy-wall{background:rgba(15,12,40,.6);border:2px solid rgba(251,191,36,.4);border-radius:20px;padding:16px;margin-top:18px}
-.trophy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-top:10px}
-.trophy{aspect-ratio:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;transition:transform .2s}
-.trophy.unlocked{background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(245,158,11,.15));border-color:rgba(251,191,36,.65);box-shadow:0 4px 12px rgba(251,191,36,.3)}
-.trophy.unlocked:hover{transform:scale(1.08)}
-.trophy-icon{font-size:1.7rem;filter:grayscale(1) opacity(.35)}
-.trophy.unlocked .trophy-icon{filter:none}
-.trophy-name{font-size:.6rem;font-weight:800;text-align:center;opacity:.7;line-height:1.1}
-.trophy.unlocked .trophy-name{opacity:1;color:#fbbf24}
-
-/* MINI-GAMES */
-.minigames-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.minigame{background:linear-gradient(135deg,rgba(236,72,153,.25),rgba(139,92,246,.25));border:2px solid rgba(236,72,153,.5);border-radius:20px;padding:18px 16px;text-decoration:none;color:#fff;transition:transform .2s,box-shadow .2s;cursor:pointer;display:block;position:relative;overflow:hidden}
-.minigame:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 10px 26px rgba(236,72,153,.4)}
-.minigame.speed{background:linear-gradient(135deg,rgba(251,146,60,.3),rgba(239,68,68,.25));border-color:rgba(251,146,60,.6)}
-.minigame.match{background:linear-gradient(135deg,rgba(6,182,212,.3),rgba(59,130,246,.25));border-color:rgba(6,182,212,.6)}
-.minigame.builder{background:linear-gradient(135deg,rgba(34,197,94,.3),rgba(16,185,129,.25));border-color:rgba(34,197,94,.6)}
-.minigame-icon{font-size:2.4rem;margin-bottom:6px;display:block}
-.minigame h3{font-size:1rem;font-weight:900;margin-bottom:4px}
-.minigame p{font-size:.78rem;opacity:.9;line-height:1.4}
-.best-pill{display:inline-block;margin-top:8px;background:rgba(0,0,0,.3);padding:3px 10px;border-radius:10px;font-size:.7rem;font-weight:800}
-
-.footer{margin-top:auto;text-align:center;padding:18px;color:rgba(255,255,255,.5);font-size:.72rem;position:relative;z-index:1}
-.footer span{color:#fbbf24;font-weight:700}
-
-@media(max-width:520px){
-  .hero h1{font-size:1.3rem}
-  .avatar{width:46px;height:46px;font-size:1.6rem}
-  .player-name{font-size:.92rem}
-  .stat-pill{font-size:.72rem;padding:5px 10px}
-  .map-wrap{padding:8px}
-  .trophy-grid{grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px}
-  .trophy-icon{font-size:1.4rem}
-  .trophy-name{font-size:.55rem}
+:root{
+  --cream:#fdfaf3;
+  --paper:#ffffff;
+  --ink:#0f1f3a;
+  --navy:#1e3a5f;
+  --crimson:#7a1f2a;
+  --gold:#b8860b;
+  --slate:#475569;
+  --rule:#e7dfd0;
 }
+html,body{background:var(--cream);color:var(--ink);min-height:100vh}
+body{font-family:Georgia,'Hoefler Text','Times New Roman',serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* Top bar */
+.topbar{background:var(--paper);border-bottom:1px solid var(--rule);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.back-link{font-family:Georgia,serif;font-style:italic;font-size:.92rem;color:var(--navy);text-decoration:none;letter-spacing:.2px}
+.back-link:hover{color:var(--crimson);text-decoration:underline}
+.crest{font-family:Georgia,serif;font-size:.78rem;letter-spacing:.18em;color:var(--slate);text-transform:uppercase}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#0f1f3a 0%,#1e3a5f 60%,#7a1f2a 100%);color:#fff8eb;padding:54px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,248,235,.08),transparent 60%);pointer-events:none}
+.hero-badge{font-family:'Inter',system-ui,sans-serif;display:inline-block;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:#e6c98a;border:1px solid rgba(230,201,138,.5);padding:5px 14px;border-radius:2px;margin-bottom:22px}
+.hero h1{font-family:Georgia,'Hoefler Text','Times New Roman',serif;font-weight:400;font-size:2.5rem;letter-spacing:-.5px;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:#e6c98a}
+.hero-sub{font-family:Georgia,serif;font-style:italic;font-size:1.08rem;opacity:.88;max-width:520px;margin:0 auto;letter-spacing:.2px}
+.hero-rule{width:60px;height:1px;background:#e6c98a;margin:20px auto 0}
+
+/* Container */
+.wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+
+/* Section label */
+.section-label{font-family:Georgia,serif;font-variant:small-caps;letter-spacing:.18em;font-size:.9rem;color:var(--crimson);text-align:center;margin-bottom:28px;position:relative}
+.section-label::before,.section-label::after{content:'';display:inline-block;width:38px;height:1px;background:var(--rule);vertical-align:middle;margin:0 12px}
+
+/* Track grid */
+.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:54px}
+@media(max-width:620px){.track-grid{grid-template-columns:1fr}}
+
+.track{display:block;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:26px 24px;text-decoration:none;color:inherit;transition:transform .18s ease, box-shadow .18s ease;position:relative}
+.track:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(15,31,58,.10)}
+.track::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:4px 4px 0 0}
+.track.t1::before{background:var(--navy)}
+.track.t2::before{background:var(--crimson)}
+.track.t3::before{background:var(--gold)}
+.track.t4::before{background:linear-gradient(90deg,var(--navy) 0%,var(--crimson) 100%)}
+
+.track-roman{font-family:Georgia,serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--slate);margin-bottom:6px}
+.track h3{font-family:Georgia,serif;font-weight:400;font-size:1.32rem;line-height:1.25;color:var(--ink);margin-bottom:10px;letter-spacing:-.2px}
+.track p{font-family:Georgia,serif;font-size:.94rem;color:var(--slate);line-height:1.55;margin-bottom:18px}
+.track-meta{display:flex;justify-content:space-between;align-items:center;font-family:'Inter',system-ui,sans-serif;font-size:.74rem;letter-spacing:.05em;color:var(--navy);border-top:1px solid var(--rule);padding-top:12px}
+.track-progress{font-weight:600}
+.track-enter{font-style:italic;font-family:Georgia,serif;color:var(--crimson)}
+
+/* Reading list */
+.list-section{margin-bottom:48px}
+.reading-list{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:26px 30px}
+.reading-list h4{font-family:Georgia,serif;font-weight:400;font-size:1.05rem;color:var(--navy);margin-bottom:14px;letter-spacing:.3px}
+.reading-list ul{list-style:none}
+.reading-list li{font-family:Georgia,serif;font-size:.95rem;padding:9px 0;border-bottom:1px dotted var(--rule);color:var(--ink);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.reading-list li:last-child{border-bottom:none}
+.book-title{font-style:italic;color:var(--navy);min-width:200px;display:inline-block}
+.book-note{color:var(--slate);font-size:.9rem;flex:1}
+
+/* Study tips */
+.tips{background:transparent;border-left:3px solid var(--gold);padding:6px 22px;margin-bottom:32px}
+.tips h4{font-family:Georgia,serif;font-weight:400;font-size:1.05rem;color:var(--crimson);margin-bottom:10px;font-variant:small-caps;letter-spacing:.1em}
+.tips ol{list-style:none;counter-reset:tip}
+.tips li{font-family:Georgia,serif;font-size:.95rem;padding:7px 0 7px 30px;position:relative;color:var(--ink);line-height:1.55}
+.tips li::before{counter-increment:tip;content:counter(tip,upper-roman) ".";position:absolute;left:0;color:var(--gold);font-style:italic;font-weight:bold}
+
+/* Footer note */
+.foot{text-align:center;font-family:Georgia,serif;font-style:italic;font-size:.86rem;color:var(--slate);margin-top:40px;padding-top:24px;border-top:1px solid var(--rule)}
 </style>
 </head>
 <body>
 
+<div class="topbar">
+  <a class="back-link" href="../">← Subjects</a>
+  <div class="crest">Academic Track · Beyond School</div>
+</div>
+
 <div class="hero">
-  <a class="hero-back" href="../">&larr; Subjects</a>
-  <h1>🗺️ Alesha's English Adventure</h1>
-  <div class="hero-sub">Cambridge Stage 5 &middot; Quest Mode</div>
+  <div class="hero-badge">Ivy-Track Preparation</div>
+  <h1>Alesha's <em>English Mastery</em></h1>
+  <div class="hero-sub">Advanced English study for serious readers and writers.</div>
+  <div class="hero-rule"></div>
 </div>
 
-<div class="player-bar">
-  <div class="avatar">🐰</div>
-  <div class="player-info">
-    <div class="player-name">Alesha <span class="level-badge" id="levelBadge">Lv 1</span></div>
-    <div class="xp-bar-wrap"><div class="xp-bar" id="xpBar" style="width:0%"></div></div>
-    <div class="xp-text" id="xpText">0 / 100 XP</div>
+<div class="wrap">
+
+  <div class="section-label">Four Tracks of Study</div>
+
+  <div class="track-grid">
+    <a class="track t1" href="quiz/?track=reading">
+      <div class="track-roman">I — Reading</div>
+      <h3>Advanced Reading Comprehension</h3>
+      <p>Literary excerpts from Lewis, Lowry, Burnett and others, paired with non-fiction passages and rigorous inference questions.</p>
+      <div class="track-meta">
+        <span class="track-progress" data-progress="reading">0 of 22 passages</span>
+        <span class="track-enter">Begin →</span>
+      </div>
+    </a>
+
+    <a class="track t2" href="quiz/?track=vocab">
+      <div class="track-roman">II — Vocabulary</div>
+      <h3>Vocabulary &amp; Etymology</h3>
+      <p>Greek and Latin roots, Tier-2 academic vocabulary, analogies, and SAT-style synonym precision drills.</p>
+      <div class="track-meta">
+        <span class="track-progress" data-progress="vocab">0 of 60 exercises</span>
+        <span class="track-enter">Begin →</span>
+      </div>
+    </a>
+
+    <a class="track t3" href="quiz/?track=critical">
+      <div class="track-roman">III — Critical Reading</div>
+      <h3>Critical Reading &amp; Argument</h3>
+      <p>Identify thesis statements, evaluate evidence, detect bias and logical fallacies in short analytical passages.</p>
+      <div class="track-meta">
+        <span class="track-progress" data-progress="critical">0 of 34 exercises</span>
+        <span class="track-enter">Begin →</span>
+      </div>
+    </a>
+
+    <a class="track t4" href="quiz/?track=writing">
+      <div class="track-roman">IV — Writing</div>
+      <h3>Advanced Grammar &amp; Writing Craft</h3>
+      <p>Sentence structure, figurative language, rhetorical devices, and essay craft at SAT Writing foundation level.</p>
+      <div class="track-meta">
+        <span class="track-progress" data-progress="writing">0 of 46 exercises</span>
+        <span class="track-enter">Begin →</span>
+      </div>
+    </a>
   </div>
-  <div class="stat-pill streak">🔥 <span id="streakNum">0</span></div>
-  <div class="stat-pill trophy">🏆 <span id="trophyNum">0</span></div>
+
+  <div class="list-section">
+    <div class="section-label">Recommended Reading</div>
+    <div class="reading-list">
+      <h4>A Library for the Serious Young Reader</h4>
+      <ul>
+        <li><span class="book-title">A Wrinkle in Time</span><span class="book-note">L'Engle — physics, faith, and the strangeness of love.</span></li>
+        <li><span class="book-title">The Giver</span><span class="book-note">Lowry — memory, choice, and the price of comfort.</span></li>
+        <li><span class="book-title">Bridge to Terabithia</span><span class="book-note">Paterson — friendship and the architecture of grief.</span></li>
+        <li><span class="book-title">Charlotte's Web</span><span class="book-note">White — mortality, devotion, and the dignity of small lives.</span></li>
+        <li><span class="book-title">The Secret Garden</span><span class="book-note">Burnett — solitude, growth, and the will to bloom.</span></li>
+        <li><span class="book-title">The Phantom Tollbooth</span><span class="book-note">Juster — wordplay, logic puzzles, and the joy of language.</span></li>
+        <li><span class="book-title">Number the Stars</span><span class="book-note">Lowry — quiet courage under occupation.</span></li>
+        <li><span class="book-title">Where the Red Fern Grows</span><span class="book-note">Rawls — loyalty, loss, and the woods of childhood.</span></li>
+        <li><span class="book-title">Anne of Green Gables</span><span class="book-note">Montgomery — imagination as moral instrument.</span></li>
+        <li><span class="book-title">The Lion, the Witch &amp; the Wardrobe</span><span class="book-note">Lewis — allegory and the geometry of right and wrong.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tips">
+    <h4>Habits of Serious Study</h4>
+    <ol>
+      <li>Read thirty minutes daily — fiction, non-fiction, and one demanding text per week.</li>
+      <li>Keep a vocabulary journal. Note the word, the sentence in which you met it, and a definition in your own words.</li>
+      <li>Annotate as you read. Underline diction that surprises you and write a marginal question on every page.</li>
+      <li>Write for fifteen minutes after each long passage — summary, reaction, or an imitation of the author's style.</li>
+    </ol>
+  </div>
+
+  <div class="foot">Studium sine fine — study without end.</div>
+
 </div>
-
-<div class="main">
-
-  <div class="section-label">📚 Lessons</div>
-  <div class="lessons-grid" id="lessonsGrid"></div>
-
-  <div class="section-label">⚡ Mini-Games</div>
-  <div class="minigames-grid">
-    <a class="minigame speed" href="quiz/?game=speed">
-      <span class="minigame-icon">⚡</span>
-      <h3>Lightning Tournament</h3>
-      <p>60 seconds. Smash as many questions as you can!</p>
-      <span class="best-pill">Best: <span id="bestSpeed">0</span></span>
-    </a>
-    <a class="minigame match" href="quiz/?game=match">
-      <span class="minigame-icon">🃏</span>
-      <h3>Memory Match</h3>
-      <p>Flip cards. Match word ↔ meaning. Beat your time!</p>
-      <span class="best-pill">Best: <span id="bestMatch">—</span></span>
-    </a>
-    <a class="minigame builder" href="quiz/?game=builder">
-      <span class="minigame-icon">🧩</span>
-      <h3>Sentence Puzzle Cove</h3>
-      <p>Drag the jumbled words into the right order!</p>
-      <span class="best-pill">New mode</span>
-    </a>
-  </div>
-
-  <div class="section-label">🎯 Mixed Review</div>
-  <div class="minigames-grid">
-    <a class="minigame" href="quiz/?ch=mix" style="background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(245,158,11,.25));border-color:rgba(251,191,36,.65)">
-      <span class="minigame-icon">🎯</span>
-      <h3>Cambridge Stage 5 Mix</h3>
-      <p>20 random questions from every world. The ultimate test!</p>
-    </a>
-  </div>
-
-  <div class="trophy-wall">
-    <div class="section-label" style="margin-top:0">🏆 Trophy Wall</div>
-    <div class="trophy-grid" id="trophyGrid"></div>
-  </div>
-
-</div>
-
-<div class="footer">Alesha's English Adventure &middot; Built with 💜 for <span>brilliant adventurers</span></div>
 
 <script>
-// ════════════════════════════════════════════════════════════════
-// SAVE
-// ════════════════════════════════════════════════════════════════
-const SAVE_KEY = 'alesha_save_v1';
-const DEFAULT_SAVE = {
-  xp:0, level:1, totalCorrect:0, totalAnswered:0,
-  badges:[], dailyStreak:0, longestStreak:0, lastPlayDate:null,
-  bestSpeedScore:0, bestMatchTime:0, worldsCompleted:[]
-};
-function loadSave(){
-  try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); return s?{...DEFAULT_SAVE,...s}:{...DEFAULT_SAVE}; }
-  catch(e){ return {...DEFAULT_SAVE}; }
+const TRACK_TOTALS = {reading:22, vocab:60, critical:34, writing:46};
+function loadProgress(track){
+  try{
+    const raw = localStorage.getItem('alesha_excel_'+track+'_progress');
+    if(!raw) return 0;
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.length : 0;
+  }catch(e){ return 0; }
 }
-function xpForLevel(n){ return (n*(n+1)/2)*100; } // sum(1..n)*100
-function levelFromXp(xp){ let lv=1; while(xpForLevel(lv) <= xp) lv++; return lv; }
-
-const BADGES = [
-  {id:'first_correct', icon:'⭐', name:'First Star'},
-  {id:'streak_5', icon:'🔥', name:'5 Combo'},
-  {id:'streak_10', icon:'🌋', name:'10 Combo'},
-  {id:'perfect_chapter', icon:'💯', name:'Perfect World'},
-  {id:'time_traveler', icon:'⏳', name:'Time Traveler'},
-  {id:'dreamer', icon:'🌴', name:'Dreamer'},
-  {id:'contrast_master', icon:'🏰', name:'Contrast Master'},
-  {id:'forest_explorer', icon:'🌲', name:'Forest Explorer'},
-  {id:'wordsmith', icon:'💎', name:'Wordsmith'},
-  {id:'inference_pro', icon:'🔍', name:'Inference Pro'},
-  {id:'daily_3', icon:'📅', name:'3-Day Streak'},
-  {id:'daily_7', icon:'🗓️', name:'Week Warrior'},
-  {id:'daily_30', icon:'👑', name:'Monthly Hero'},
-  {id:'speed_demon', icon:'⚡', name:'Speed Demon'},
-  {id:'memory_master', icon:'🃏', name:'Memory Master'}
-];
-
-const WORLDS = [
-  {ch:'1', name:'Time Travel Tower',    topic:'Past Perfect',           icon:'⏳', x:100, y:90,  grad:'nodeGrad1'},
-  {ch:'2', name:'Imagination Island',   topic:'Second Conditional',     icon:'🌴', x:240, y:170, grad:'nodeGrad2'},
-  {ch:'3', name:'Contrast Castle',      topic:'Although / Even Though', icon:'🏰', x:390, y:110, grad:'nodeGrad3'},
-  {ch:'4', name:'Story Forest',         topic:'Reading Comprehension',  icon:'🌲', x:540, y:200, grad:'nodeGrad4'},
-  {ch:'5', name:'Vocab Cavern',         topic:'Vocab in Context',       icon:'💎', x:560, y:340, grad:'nodeGrad5'},
-  {ch:'6', name:'Quotation Quarry',     topic:'Direct Speech',          icon:'💬', x:400, y:400, grad:'nodeGrad2'},
-  {ch:'7', name:'Hidden Clue Caves',    topic:'Inferencing',            icon:'🔍', x:230, y:380, grad:'nodeGrad1'},
-  {ch:'8', name:"Writer's Workshop",    topic:'Writing Prompts',        icon:'✒️', x:110, y:260, grad:'nodeGrad3'}
-];
-
-// ════════════════════════════════════════════════════════════════
-// RENDER
-// ════════════════════════════════════════════════════════════════
-const save = loadSave();
-save.level = levelFromXp(save.xp);
-
-// Daily streak check (display only — game increments on play)
-(function checkDailyDisplay(){
-  if(!save.lastPlayDate) return;
-  const today = new Date().toISOString().slice(0,10);
-  const last = save.lastPlayDate;
-  if(last === today) return;
-  const d1 = new Date(today), d2 = new Date(last);
-  const diffDays = Math.round((d1-d2)/(1000*60*60*24));
-  if(diffDays > 1){ save.dailyStreak = 0; localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
-})();
-
-function renderPlayer(){
-  document.getElementById('levelBadge').textContent = 'Lv ' + save.level;
-  const xpStart = xpForLevel(save.level-1);
-  const xpEnd = xpForLevel(save.level);
-  const need = xpEnd - xpStart;
-  const have = save.xp - xpStart;
-  const pct = Math.max(0, Math.min(100, (have/need)*100));
-  document.getElementById('xpBar').style.width = pct + '%';
-  document.getElementById('xpText').textContent = `${have} / ${need} XP`;
-  document.getElementById('streakNum').textContent = save.dailyStreak;
-  document.getElementById('trophyNum').textContent = save.badges.length;
-  document.getElementById('bestSpeed').textContent = save.bestSpeedScore;
-  document.getElementById('bestMatch').textContent = save.bestMatchTime ? save.bestMatchTime + 's' : '—';
-}
-
-function renderLessons(){
-  const g = document.getElementById('lessonsGrid');
-  g.innerHTML = WORLDS.map(w=>{
-    const done = save.worldsCompleted.includes(w.ch);
-    const status = done ? '✓ Done' : '';
-    return `<a class="lesson ${done?'done':''}" href="quiz/?ch=${w.ch}">
-      <span class="lesson-icon">${w.icon}</span>
-      <div class="lesson-body">
-        <div class="lesson-topic">${w.topic}</div>
-        <div class="lesson-flavor">${w.name}</div>
-      </div>
-      <span class="lesson-status">${status}</span>
-    </a>`;
-  }).join('');
-}
-
-function renderTrophies(){
-  const grid = document.getElementById('trophyGrid');
-  grid.innerHTML = BADGES.map(b=>{
-    const unlocked = save.badges.includes(b.id);
-    return `<div class="trophy ${unlocked?'unlocked':''}" title="${b.name}">
-      <div class="trophy-icon">${b.icon}</div>
-      <div class="trophy-name">${b.name}</div>
-    </div>`;
-  }).join('');
-}
-
-renderPlayer();
-renderLessons();
-renderTrophies();
+document.querySelectorAll('[data-progress]').forEach(el=>{
+  const track = el.dataset.progress;
+  const done = loadProgress(track);
+  const total = TRACK_TOTALS[track] || 0;
+  const labels = {reading:'passages', vocab:'exercises', critical:'exercises', writing:'exercises'};
+  el.textContent = `${done} of ${total} ${labels[track]}`;
+});
 </script>
 
 </body>
