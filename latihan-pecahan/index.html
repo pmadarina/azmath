@@ -1898,6 +1898,305 @@ ${rowLabel(hC/2,hR+dR+dR/2,'Not '+nm.sB)}
                id:'Grafik garis menghubungkan titik data untuk menunjukkan perubahan nilai dari waktu ke waktu.'}};
   },
 
+  // ── Ch 14: UAS Replica gap generators ─────────────────────────
+  simul_2var_puzzle:()=>{
+    // Picture-based simultaneous equations. Two icons, two equations, solve for each.
+    // Each scenario has integer-only solutions. Verified by hand.
+    const scenarios=[
+      {a:'🍬',b:'🍪',na:{en:'sweet',id:'permen'},nb:{en:'cookie',id:'kue'},
+        eq1:{ac:1,bc:1,r:5},  eq2:{ac:1,bc:2,r:8},  va:2,vb:3, unit:'$'}, // a+b=5, a+2b=8 → b=3, a=2
+      {a:'🍩',b:'🍦',na:{en:'donut',id:'donat'},nb:{en:'ice cream',id:'es krim'},
+        eq1:{ac:2,bc:1,r:7},  eq2:{ac:1,bc:1,r:4},  va:3,vb:1, unit:'$'}, // 2a+b=7, a+b=4 → a=3, b=1
+      {a:'⭐',b:'⬛',na:{en:'star',id:'bintang'},nb:{en:'block',id:'kotak'},
+        eq1:{ac:1,bc:1,r:9},  eq2:{ac:2,bc:1,r:13}, va:4,vb:5, unit:'$'}, // a+b=9, 2a+b=13 → a=4, b=5
+      {a:'🍎',b:'🍌',na:{en:'apple',id:'apel'},nb:{en:'banana',id:'pisang'},
+        eq1:{ac:1,bc:2,r:8},  eq2:{ac:1,bc:1,r:5},  va:2,vb:3, unit:'$'}, // a+2b=8, a+b=5 → b=3, a=2
+      {a:'🎈',b:'🎁',na:{en:'balloon',id:'balon'},nb:{en:'gift',id:'hadiah'},
+        eq1:{ac:1,bc:1,r:7},  eq2:{ac:1,bc:2,r:11}, va:3,vb:4, unit:'$'}, // a+b=7, a+2b=11 → b=4, a=3
+      {a:'🍇',b:'🍊',na:{en:'grape',id:'anggur'},nb:{en:'orange',id:'jeruk'},
+        eq1:{ac:2,bc:1,r:10}, eq2:{ac:1,bc:1,r:6},  va:4,vb:2, unit:'$'}, // 2a+b=10, a+b=6 → a=4, b=2
+    ];
+    const s=pickA(scenarios);
+    const repA=(n)=>s.a.repeat(n);
+    const repB=(n)=>s.b.repeat(n);
+    const buildEq=(eq)=>{
+      const left=[];
+      if(eq.ac>0)left.push(repA(eq.ac));
+      if(eq.bc>0)left.push(repB(eq.bc));
+      return left.join(' + ')+' = '+s.unit+eq.r;
+    };
+    const svg=`<div style="background:#fafbff;border:1.5px solid #dce8ff;border-radius:12px;padding:18px 20px;margin:10px 0 4px;font-size:1.35rem;line-height:2.1;text-align:center;font-weight:700;color:#1a1a2e;letter-spacing:1px">
+<div>${buildEq(s.eq1)}</div>
+<div>${buildEq(s.eq2)}</div>
+</div>`;
+    // Use symbol-based option labels so they're language-neutral.
+    const cor=`${s.a}=${s.unit}${s.va}, ${s.b}=${s.unit}${s.vb}`;
+    const w1=`${s.a}=${s.unit}${s.vb}, ${s.b}=${s.unit}${s.va}`;
+    const w2=`${s.a}=${s.unit}${s.va+1}, ${s.b}=${s.unit}${s.vb-1>0?s.vb-1:s.vb+1}`;
+    const w3=`${s.a}=${s.unit}${s.va*2}, ${s.b}=${s.unit}${s.vb}`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    // Build step explanation: subtract equations.
+    // Whichever equation has a single shared variable difference, do that subtraction.
+    const stepsEn=[
+      `From picture: ${buildEq(s.eq1)} and ${buildEq(s.eq2)}.`,
+      `Subtract the two equations to remove one unknown.`,
+      `Solve: ${s.na.en} = ${s.unit}${s.va}, ${s.nb.en} = ${s.unit}${s.vb}.`
+    ];
+    const stepsId=[
+      `Dari gambar: ${buildEq(s.eq1)} dan ${buildEq(s.eq2)}.`,
+      `Kurangi kedua persamaan untuk menghilangkan satu variabel.`,
+      `Jawaban: ${s.na.id} = ${s.unit}${s.va}, ${s.nb.id} = ${s.unit}${s.vb}.`
+    ];
+    return{text:{en:`What is the cost of a ${s.na.en} ${s.a} and a ${s.nb.en} ${s.b}?`,
+                 id:`Berapa harga ${s.na.id} ${s.a} dan ${s.nb.id} ${s.b}?`},
+      isWord:true,math:svg,opts,ans,
+      steps:{en:stepsEn,id:stepsId},
+      concept:{en:'When two pictures share a variable, subtract one equation from the other to find one unknown.',
+               id:'Jika dua persamaan memiliki variabel yang sama, kurangkan satu persamaan dengan yang lain untuk menemukan satu nilai.'}};
+  },
+
+  venn_3set:()=>{
+    // 3-circle Venn with 7 regions + 1 outside. Verified totals.
+    // Regions: a=onlyA, b=onlyB, c=onlyC, ab=A∩B only, ac=A∩C only, bc=B∩C only, abc=all three
+    const configs=[
+      {a:5,b:6,c:7,ab:3,ac:2,bc:4,abc:2,out:1}, // burger:5+3+2+2=12  hotdog:6+3+4+2=15  pizza:7+2+4+2=15  total=30
+      {a:8,b:5,c:6,ab:4,ac:3,bc:2,abc:3,out:4}, // total=35
+      {a:10,b:8,c:7,ab:5,ac:4,bc:3,abc:2,out:1}, // total=40
+      {a:6,b:7,c:5,ab:2,ac:3,bc:4,abc:1,out:2}, // total=30
+      {a:9,b:6,c:8,ab:3,ac:5,bc:2,abc:2,out:5}, // total=40
+    ];
+    const cfg=pickA(configs);
+    const{a,b,c,ab,ac,bc,abc,out}=cfg;
+    const total=a+b+c+ab+ac+bc+abc+out;
+    // Total in each set
+    const totA=a+ab+ac+abc, totB=b+ab+bc+abc, totC=c+ac+bc+abc;
+    const themes=[
+      {A:{en:'burger',id:'burger'}, B:{en:'hotdog',id:'hotdog'}, C:{en:'pizza',id:'pizza'},
+        subj:{en:'students',id:'siswa'}, ctx:{en:'favourite food',id:'makanan favorit'}},
+      {A:{en:'football',id:'sepak bola'}, B:{en:'tennis',id:'tenis'}, C:{en:'swimming',id:'renang'},
+        subj:{en:'children',id:'anak'}, ctx:{en:'sport',id:'olahraga'}},
+      {A:{en:'apple',id:'apel'}, B:{en:'banana',id:'pisang'}, C:{en:'mango',id:'mangga'},
+        subj:{en:'students',id:'siswa'}, ctx:{en:'fruit',id:'buah'}},
+    ];
+    const th=pickA(themes);
+    // SVG: 3 overlapping circles
+    const W=420,H=300;
+    const cx1=150,cy1=130,cx2=270,cy2=130,cx3=210,cy3=200,r=85;
+    const svg=`<svg width="${W}" height="${H}" style="font-family:inherit;display:block;margin:10px auto 4px;max-width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="4" y="4" width="${W-8}" height="${H-8}" fill="#fafbff" stroke="#dce8ff" stroke-width="1.5" rx="10"/>
+<circle cx="${cx1}" cy="${cy1}" r="${r}" fill="#4f8ef7" fill-opacity="0.22" stroke="#4f8ef7" stroke-width="2.5"/>
+<circle cx="${cx2}" cy="${cy2}" r="${r}" fill="#6c5ce7" fill-opacity="0.22" stroke="#6c5ce7" stroke-width="2.5"/>
+<circle cx="${cx3}" cy="${cy3}" r="${r}" fill="#00b894" fill-opacity="0.22" stroke="#00b894" stroke-width="2.5"/>
+<text x="${cx1-55}" y="50" text-anchor="middle" font-size="15" font-weight="900" fill="#4f8ef7">A: ${th.A.en}</text>
+<text x="${cx2+55}" y="50" text-anchor="middle" font-size="15" font-weight="900" fill="#6c5ce7">B: ${th.B.en}</text>
+<text x="${cx3}" y="${H-14}" text-anchor="middle" font-size="15" font-weight="900" fill="#00b894">C: ${th.C.en}</text>
+<text x="90" y="135" text-anchor="middle" font-size="18" font-weight="900" fill="#1a1a2e">${a}</text>
+<text x="330" y="135" text-anchor="middle" font-size="18" font-weight="900" fill="#1a1a2e">${b}</text>
+<text x="210" y="245" text-anchor="middle" font-size="18" font-weight="900" fill="#1a1a2e">${c}</text>
+<text x="210" y="110" text-anchor="middle" font-size="18" font-weight="900" fill="#1a1a2e">${ab}</text>
+<text x="155" y="200" text-anchor="middle" font-size="18" font-weight="900" fill="#1a1a2e">${ac}</text>
+<text x="265" y="200" text-anchor="middle" font-size="18" font-weight="900" fill="#1a1a2e">${bc}</text>
+<text x="210" y="170" text-anchor="middle" font-size="20" font-weight="900" fill="#d63031">${abc}</text>
+<text x="${W-30}" y="${H-14}" text-anchor="end" font-size="12" fill="#888">outside: ${out}</text>
+</svg>`;
+    // Pick a question variant
+    const vv=pickA([0,1,2,3,4]);
+    let cor,distractors,qEn,qId,stepsEn,stepsId;
+    if(vv===0){
+      cor=String(abc);
+      distractors=[String(ab),String(bc),String(ac)];
+      qEn=`How many ${th.subj.en} like ${th.A.en}, ${th.B.en} AND ${th.C.en}?`;
+      qId=`Berapa ${th.subj.id} yang menyukai ${th.A.id}, ${th.B.id} DAN ${th.C.id}?`;
+      stepsEn=[`The triple intersection is the centre region.`,`Centre = <b>${abc}</b>.`];
+      stepsId=[`Irisan tiga lingkaran adalah daerah tengah.`,`Tengah = <b>${abc}</b>.`];
+    } else if(vv===1){
+      const tot=ab+abc;
+      cor=String(tot);
+      distractors=[String(ab),String(abc),String(tot+1)];
+      qEn=`How many ${th.subj.en} like ${th.A.en} AND ${th.B.en}?`;
+      qId=`Berapa ${th.subj.id} yang menyukai ${th.A.id} DAN ${th.B.id}?`;
+      stepsEn=[`A∩B includes the centre too.`,`= ${ab} + ${abc} = <b>${tot}</b>.`];
+      stepsId=[`A∩B juga termasuk daerah tengah.`,`= ${ab} + ${abc} = <b>${tot}</b>.`];
+    } else if(vv===2){
+      const tot=ac+abc;
+      cor=String(tot);
+      distractors=[String(ac),String(abc),String(tot+1)];
+      qEn=`How many ${th.subj.en} like ${th.C.en} AND ${th.A.en}?`;
+      qId=`Berapa ${th.subj.id} yang menyukai ${th.C.id} DAN ${th.A.id}?`;
+      stepsEn=[`A∩C includes the centre too.`,`= ${ac} + ${abc} = <b>${tot}</b>.`];
+      stepsId=[`A∩C juga termasuk daerah tengah.`,`= ${ac} + ${abc} = <b>${tot}</b>.`];
+    } else if(vv===3){
+      cor=String(a);
+      distractors=[String(b),String(c),String(a+ab)];
+      qEn=`How many ${th.subj.en} like ONLY ${th.A.en}?`;
+      qId=`Berapa ${th.subj.id} yang HANYA menyukai ${th.A.id}?`;
+      stepsEn=[`The "only A" region is in circle A and outside both B and C.`,`= <b>${a}</b>.`];
+      stepsId=[`Daerah "hanya A" berada di dalam lingkaran A tetapi di luar B dan C.`,`= <b>${a}</b>.`];
+    } else {
+      cor=String(total);
+      distractors=[String(total-out),String(total+1),String(a+b+c)];
+      qEn=`How many ${th.subj.en} are there in total?`;
+      qId=`Berapa total ${th.subj.id} seluruhnya?`;
+      stepsEn=[`Sum every region (inside + outside the circles).`,`= ${a}+${b}+${c}+${ab}+${ac}+${bc}+${abc}+${out} = <b>${total}</b>.`];
+      stepsId=[`Jumlahkan semua daerah (di dalam dan di luar lingkaran).`,`= ${a}+${b}+${c}+${ab}+${ac}+${bc}+${abc}+${out} = <b>${total}</b>.`];
+    }
+    const{opts,ans}=mkOpts(cor,distractors);
+    return{text:{en:qEn,id:qId},isWord:true,math:svg,opts,ans,
+      steps:{en:stepsEn,id:stepsId},
+      concept:{en:'A 3-circle Venn has 7 regions: 3 singles, 3 doubles, 1 triple intersection in the centre.',
+               id:'Diagram Venn 3 lingkaran punya 7 daerah: 3 tunggal, 3 ganda, dan 1 irisan tiga di tengah.'}};
+  },
+
+  multi_step_word_problem:()=>{
+    // Multi-step subtraction word problems
+    const scenarios=[
+      {total:5278, steps:[3452,70,950],
+        ctxEn:'A farmer harvested {T} kg of apples. {S1} kg were sent to the supermarket, {S2} kg were made into juice, and {S3} kg were delivered to town. The rest were sold at the farmer market.',
+        ctxId:'Seorang petani memanen {T} kg apel. {S1} kg dikirim ke supermarket, {S2} kg dibuat jus, dan {S3} kg dikirim ke kota. Sisanya dijual di pasar tani.',
+        qEn:'How many kg of apples were sold at the farmer market?',
+        qId:'Berapa kg apel yang dijual di pasar tani?',
+        unit:'kg'},
+      {total:800, steps:[245,178,95],
+        ctxEn:'A bakery makes {T} cupcakes. {S1} are sold in the morning, {S2} in the afternoon, and {S3} are thrown away. The rest are saved for the evening.',
+        ctxId:'Sebuah toko roti membuat {T} cupcake. {S1} terjual pagi, {S2} terjual sore, dan {S3} dibuang. Sisanya disimpan untuk malam.',
+        qEn:'How many cupcakes are saved for the evening?',
+        qId:'Berapa cupcake yang disimpan untuk malam?',
+        unit:''},
+      {total:2000, steps:[320,478,215],
+        ctxEn:'A library has {T} books. {S1} are placed on shelf A, {S2} on shelf B, and {S3} are missing. The rest are on shelf C.',
+        ctxId:'Sebuah perpustakaan punya {T} buku. {S1} di rak A, {S2} di rak B, dan {S3} hilang. Sisanya di rak C.',
+        qEn:'How many books are on shelf C?',
+        qId:'Berapa buku yang ada di rak C?',
+        unit:''},
+      {total:1500, steps:[425,380,295],
+        ctxEn:'A factory produces {T} toys. {S1} go to Jakarta, {S2} to Bandung, and {S3} to Bali. The rest are sold locally.',
+        ctxId:'Sebuah pabrik membuat {T} mainan. {S1} dikirim ke Jakarta, {S2} ke Bandung, dan {S3} ke Bali. Sisanya dijual lokal.',
+        qEn:'How many toys are sold locally?',
+        qId:'Berapa mainan yang dijual lokal?',
+        unit:''},
+      {total:3600, steps:[1240,860,500],
+        ctxEn:'A school orders {T} notebooks. {S1} go to Year 4, {S2} to Year 5, and {S3} to Year 6. The rest are kept in storage.',
+        ctxId:'Sekolah memesan {T} buku tulis. {S1} untuk Kelas 4, {S2} untuk Kelas 5, dan {S3} untuk Kelas 6. Sisanya disimpan.',
+        qEn:'How many notebooks are kept in storage?',
+        qId:'Berapa buku tulis yang disimpan?',
+        unit:''},
+      {total:4500, steps:[1800,925,640],
+        ctxEn:'A charity collected {T} bottles of water. {S1} were sent to village A, {S2} to village B, and {S3} to village C. The rest stay at the warehouse.',
+        ctxId:'Sebuah yayasan mengumpulkan {T} botol air. {S1} dikirim ke desa A, {S2} ke desa B, dan {S3} ke desa C. Sisanya di gudang.',
+        qEn:'How many bottles stay at the warehouse?',
+        qId:'Berapa botol yang masih di gudang?',
+        unit:''},
+    ];
+    const s=pickA(scenarios);
+    const[s1,s2,s3]=s.steps;
+    const after1=s.total-s1;
+    const after2=after1-s2;
+    const after3=after2-s3;
+    const cor=String(after3)+(s.unit?' '+s.unit:'');
+    const w1=String(after3+s3)+(s.unit?' '+s.unit:''); // forgot last sub
+    const w2=String(after3-s3)+(s.unit?' '+s.unit:''); // off
+    const w3=String(after3+10)+(s.unit?' '+s.unit:''); // small slip
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    const sub=(tpl)=>tpl.replace('{T}',s.total).replace('{S1}',s1).replace('{S2}',s2).replace('{S3}',s3);
+    return{text:{en:`${sub(s.ctxEn)}<br><br><strong>${s.qEn}</strong>`,
+                 id:`${sub(s.ctxId)}<br><br><strong>${s.qId}</strong>`},
+      isWord:true,math:null,opts,ans,
+      steps:{en:[`Start with ${s.total}${s.unit?' '+s.unit:''}.`,
+                 `Subtract step 1: ${s.total} − ${s1} = ${after1}.`,
+                 `Subtract step 2: ${after1} − ${s2} = ${after2}.`,
+                 `Subtract step 3: ${after2} − ${s3} = <b>${after3}</b>${s.unit?' '+s.unit:''}.`],
+             id:[`Mulai dengan ${s.total}${s.unit?' '+s.unit:''}.`,
+                 `Kurangi langkah 1: ${s.total} − ${s1} = ${after1}.`,
+                 `Kurangi langkah 2: ${after1} − ${s2} = ${after2}.`,
+                 `Kurangi langkah 3: ${after2} − ${s3} = <b>${after3}</b>${s.unit?' '+s.unit:''}.`]},
+      concept:{en:'Multi-step subtraction: do each subtraction in order, keep track of the running total.',
+               id:'Pengurangan banyak langkah: kerjakan satu per satu sambil mencatat hasil sementara.'}};
+  },
+
+  multi_pct_decomp:()=>{
+    // Total split: pct1, frac2 (e.g. 1/4), rest split equally between 2 groups; find one group.
+    const scenarios=[
+      {total:100, p1:34, f2n:1, f2d:4, items:{en:'pens',id:'pena'}, c1:{en:'red',id:'merah'}, c2:{en:'blue',id:'biru'}, c3:{en:'black',id:'hitam'}, c4:{en:'green',id:'hijau'}},
+      // 100 pens: red=34, blue=25, rest=41... not even. Adjust: 100 - 34 - 25 = 41, odd. Use different totals.
+      {total:80, p1:25, f2n:1, f2d:4, items:{en:'marbles',id:'kelereng'}, c1:{en:'striped',id:'bergaris'}, c2:{en:'solid',id:'polos'}, c3:{en:'clear',id:'bening'}, c4:{en:'frosted',id:'buram'}},
+      // 80: 25%=20, 1/4=20, rest=40 → 20 each
+      {total:60, p1:30, f2n:1, f2d:4, items:{en:'cookies',id:'kue'}, c1:{en:'chocolate',id:'cokelat'}, c2:{en:'vanilla',id:'vanila'}, c3:{en:'strawberry',id:'stroberi'}, c4:{en:'coffee',id:'kopi'}},
+      // 60: 30%=18, 1/4=15, rest=27, odd. Bad. Replace.
+      {total:200, p1:25, f2n:1, f2d:4, items:{en:'candies',id:'permen'}, c1:{en:'red',id:'merah'}, c2:{en:'blue',id:'biru'}, c3:{en:'yellow',id:'kuning'}, c4:{en:'green',id:'hijau'}},
+      // 200: 25%=50, 1/4=50, rest=100, /2=50 ✓
+      {total:120, p1:25, f2n:1, f2d:3, items:{en:'beads',id:'manik'}, c1:{en:'pink',id:'merah muda'}, c2:{en:'purple',id:'ungu'}, c3:{en:'gold',id:'emas'}, c4:{en:'silver',id:'perak'}},
+      // 120: 25%=30, 1/3=40, rest=50, odd. Bad.
+      {total:100, p1:40, f2n:1, f2d:5, items:{en:'stickers',id:'stiker'}, c1:{en:'star',id:'bintang'}, c2:{en:'heart',id:'hati'}, c3:{en:'circle',id:'lingkaran'}, c4:{en:'square',id:'kotak'}},
+      // 100: 40%=40, 1/5=20, rest=40, /2=20 ✓
+      {total:80, p1:50, f2n:1, f2d:8, items:{en:'cards',id:'kartu'}, c1:{en:'spade',id:'sekop'}, c2:{en:'heart',id:'hati'}, c3:{en:'diamond',id:'wajik'}, c4:{en:'club',id:'keriting'}},
+      // 80: 50%=40, 1/8=10, rest=30, odd. Bad.
+    ];
+    // Filter to only valid (integer) scenarios:
+    const valid=scenarios.filter(s=>{
+      const v1=s.total*s.p1/100;
+      const v2=s.total*s.f2n/s.f2d;
+      const rest=s.total-v1-v2;
+      return Number.isInteger(v1)&&Number.isInteger(v2)&&rest>0&&rest%2===0;
+    });
+    const s=pickA(valid);
+    const v1=s.total*s.p1/100;
+    const v2=s.total*s.f2n/s.f2d;
+    const rest=s.total-v1-v2;
+    const each=rest/2;
+    const cor=String(each);
+    const w1=String(rest); // forgot to halve
+    const w2=String(each+1);
+    const w3=String(each-1>0?each-1:each+2);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    const fracStr=`${s.f2n}/${s.f2d}`;
+    const qEn=`A shop has ${s.total} ${s.items.en}. ${s.p1}% are ${s.c1.en}. ${fracStr} are ${s.c2.en}. The rest are ${s.c3.en} or ${s.c4.en}, with an equal number of each. How many ${s.c3.en} ${s.items.en} are there?`;
+    const qId=`Sebuah toko punya ${s.total} ${s.items.id}. ${s.p1}% berwarna ${s.c1.id}. ${fracStr} berwarna ${s.c2.id}. Sisanya ${s.c3.id} atau ${s.c4.id} dengan jumlah sama. Berapa ${s.items.id} ${s.c3.id}?`;
+    return{text:{en:qEn,id:qId},isWord:true,math:null,opts,ans,
+      steps:{en:[`${s.c1.en}: ${s.p1}% × ${s.total} = ${v1}.`,
+                 `${s.c2.en}: ${fracStr} × ${s.total} = ${v2}.`,
+                 `Remainder: ${s.total} − ${v1} − ${v2} = ${rest}.`,
+                 `Split equally: ${rest} ÷ 2 = <b>${each}</b>.`],
+             id:[`${s.c1.id}: ${s.p1}% × ${s.total} = ${v1}.`,
+                 `${s.c2.id}: ${fracStr} × ${s.total} = ${v2}.`,
+                 `Sisa: ${s.total} − ${v1} − ${v2} = ${rest}.`,
+                 `Bagi sama rata: ${rest} ÷ 2 = <b>${each}</b>.`]},
+      concept:{en:'Convert each percentage/fraction to actual count, subtract from total, divide the remainder.',
+               id:'Ubah setiap persen/pecahan menjadi jumlah nyata, kurangi dari total, lalu bagi sisanya.'}};
+  },
+
+  draw_bar_chart_link:()=>{
+    // Frequency table → quick MCQ about it + link to interactive bar chart builder.
+    const datasets=[
+      {ttlEn:'Clothing Sizes in Class 5B',ttlId:'Ukuran Baju Kelas 5B',
+        hdrEn:'Size',hdrId:'Ukuran',cats:['S','M','L','XL'],freqs:[5,10,9,1]},
+      {ttlEn:'Favourite Colours',ttlId:'Warna Favorit',
+        hdrEn:'Colour',hdrId:'Warna',cats:['Red','Blue','Green','Yellow'],freqs:[8,6,3,7]},
+      {ttlEn:'Pets at Home',ttlId:'Hewan Peliharaan di Rumah',
+        hdrEn:'Pet',hdrId:'Hewan',cats:['Cat','Dog','Bird','Fish'],freqs:[12,9,4,6]},
+      {ttlEn:'Favourite Sports',ttlId:'Olahraga Favorit',
+        hdrEn:'Sport',hdrId:'Olahraga',cats:['Football','Tennis','Swimming','Cycling'],freqs:[14,5,8,3]},
+    ];
+    const d=pickA(datasets);
+    const maxI=d.freqs.indexOf(Math.max(...d.freqs));
+    const cor=d.cats[maxI];
+    const wrongs=d.cats.filter((_,i)=>i!==maxI);
+    const{opts,ans}=mkOpts(cor,wrongs);
+    const rows=d.cats.map((c,i)=>`<tr><td class="row-head">${c}</td><td>${d.freqs[i]}</td></tr>`).join('');
+    // Language-neutral table (titles + headers shown bilingually on two lines).
+    const tbl=`<div style="text-align:center;font-weight:800;margin:8px 0 4px;color:#4f8ef7">${d.ttlEn} / ${d.ttlId}</div><table class="freq-table"><tr><th class="row-head">${d.hdrEn} / ${d.hdrId}</th><th>Frequency / Frekuensi</th></tr>${rows}</table><div style="margin-top:14px;padding:10px 14px;background:#fffbe8;border:1.5px solid #fdcb6e;border-radius:10px;font-size:.88rem;line-height:1.55"><strong>📝</strong> Open the <a href="../diagram-latihan/" target="_blank" style="color:#b7760a;font-weight:800">interactive Bar Chart Builder</a> to draw this chart with a title and labelled axes. / Buka <a href="../diagram-latihan/" target="_blank" style="color:#b7760a;font-weight:800">Bar Chart Builder interaktif</a> untuk menggambar diagram ini lengkap dengan judul dan label sumbu.</div>`;
+    return{text:{en:`Looking at the table, which category has the highest frequency? (Then draw the bar chart using the link below.)`,
+                 id:`Lihat tabel berikut, kategori mana yang frekuensinya paling tinggi? (Lalu gambar diagram batangnya lewat tautan di bawah.)`},
+      isWord:true,math:tbl,opts,ans,
+      steps:{en:[`Compare the frequencies: ${d.freqs.join(', ')}.`,
+                 `The highest is ${d.freqs[maxI]} → <b>${cor}</b>.`,
+                 `For the drawing: title the chart, label the x-axis with categories and the y-axis with frequency.`],
+             id:[`Bandingkan frekuensi: ${d.freqs.join(', ')}.`,
+                 `Yang tertinggi adalah ${d.freqs[maxI]} → <b>${cor}</b>.`,
+                 `Untuk menggambar: beri judul, label sumbu-x dengan kategori dan sumbu-y dengan frekuensi.`]},
+      concept:{en:'A bar chart needs: a title, labelled axes, and a consistent scale on the y-axis.',
+               id:'Diagram batang harus punya: judul, label sumbu, dan skala konsisten pada sumbu-y.'}};
+  },
+
 };
 
 const Parts=[
@@ -1927,6 +2226,8 @@ const Parts=[
     topics:['dec_mul_pow10','ratio_simplify','ratio_share'] },
   { ch:13, section:{en:'Chapter 13 — Advanced Data (Dot Plot, Histogram, Line Graph, Median)',id:'Bab 13 — Data Lanjutan (Diagram Titik, Histogram, Grafik Garis, Median)'},
     topics:['data_dotplot','data_histogram','data_linegraph','data_median'] },
+  { ch:14, section:{en:'Chapter 14 — UAS Replica (Practice for the Real Exam)',id:'Bab 14 — Replika UAS (Latihan Soal Ujian Asli)'},
+    topics:['simul_2var_puzzle','venn_3set','multi_step_word_problem','multi_pct_decomp','draw_bar_chart_link'] },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -1962,6 +2263,12 @@ const UAS_TOPIC_MAP = {
   histogram: ['data_histogram'],
   linegraph: ['data_linegraph'],
   mode_median: ['data_mode','data_median'],
+  // Ch 14 gap topics (UAS replica patterns)
+  simul_eq: ['simul_2var_puzzle'],
+  venn_3set: ['venn_3set'],
+  multi_step_word: ['multi_step_word_problem'],
+  multi_pct: ['multi_pct_decomp'],
+  draw_bar: ['draw_bar_chart_link'],
 };
 
 // UAS distribution: [topic_key, count, slot_type] — 20 mcq + 10 fill + 5 essay = 35
@@ -2062,6 +2369,12 @@ const topicNames={
   data_histogram:{ en:'Histogram Reading',          id:'Membaca Histogram' },
   data_linegraph:{ en:'Line Graph Reading',         id:'Membaca Grafik Garis' },
   data_median:{ en:'Find the Median',               id:'Cari Median' },
+  // Ch 14 — UAS Replica gap topics
+  simul_2var_puzzle:{ en:'Picture Equations (2 Unknowns)', id:'Persamaan Gambar (2 Variabel)' },
+  venn_3set:{ en:'3-Set Venn Diagram',                id:'Diagram Venn 3 Himpunan' },
+  multi_step_word_problem:{ en:'Multi-Step Word Problems', id:'Soal Cerita Multi-Langkah' },
+  multi_pct_decomp:{ en:'Multi-% Decomposition',      id:'Pecahan Persen Bertingkat' },
+  draw_bar_chart_link:{ en:'Bar Chart Drawing',       id:'Menggambar Diagram Batang' },
 };
 
 // ─────────────────────────────────────────────────────────────
