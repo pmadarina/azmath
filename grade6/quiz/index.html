@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grade 6 Math Practice — Cambridge Stage 6 + Kurmer Kelas 6</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#eef3ff;min-height:100vh}
+
+.header{background:linear-gradient(135deg,#0984e3,#6c5ce7);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 12px rgba(0,0,0,.2);gap:12px;flex-wrap:wrap}
+.header-left h1{font-size:1.15rem;font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.header-left p{font-size:.75rem;opacity:.85;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:12px}
+.lang-toggle{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;letter-spacing:.5px;transition:background .15s;white-space:nowrap}
+.lang-toggle:hover{background:rgba(255,255,255,.28)}
+.smart-score-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.smart-score-ring svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.25);stroke-width:5}
+.ring-fill{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:188.5;stroke-dashoffset:188.5;transition:stroke-dashoffset .6s ease}
+.score-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-label span{font-size:1.3rem;font-weight:900;line-height:1}
+.score-label small{font-size:.48rem;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
+
+.bar-wrap{background:#fff;border-bottom:1px solid #dce8ff;padding:9px 24px;display:flex;align-items:center;gap:12px}
+.bar-track{flex:1;height:10px;background:#dde6ff;border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,#0984e3,#6c5ce7);border-radius:6px;transition:width .55s ease;width:0%}
+.bar-pct{font-size:.78rem;color:#6c5ce7;font-weight:700;min-width:28px;text-align:right}
+
+.stats-row{display:flex;gap:10px;margin-bottom:16px}
+.stat-box{flex:1;background:#fff;border-radius:14px;padding:12px 8px;text-align:center;box-shadow:0 1px 8px rgba(79,142,247,.1)}
+.stat-box .val{font-size:1.75rem;font-weight:900;line-height:1}
+.stat-box .lbl{font-size:.68rem;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.val-g{color:#00b894}.val-r{color:#d63031}.val-b{color:#0984e3}
+
+.main{max-width:780px;margin:24px auto;padding:0 14px}
+.section-banner{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border-radius:14px;padding:14px 20px;margin-bottom:14px;font-weight:800;font-size:.95rem;letter-spacing:.3px}
+.prog-dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:50%;background:#cdd8ff;transition:all .3s}
+.dot.done{background:#00b894}.dot.wrong-dot{background:#d63031}.dot.cur{background:#0984e3;box-shadow:0 0 0 3px rgba(9,132,227,.3)}
+
+.qcard{background:#fff;border-radius:20px;padding:28px 28px;box-shadow:0 4px 20px rgba(79,142,247,.12);animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-tag{display:inline-block;background:#e3f0ff;color:#0984e3;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px}
+.section-tag{background:#f0eeff;color:#6c5ce7}
+.q-text{font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:6px;line-height:1.55}
+.math-big{font-size:1.55rem;margin:12px 0 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1}
+.frac .n{border-bottom:2.5px solid currentColor;padding:1px 5px;font-size:.82em}
+.frac .d{padding:1px 5px;font-size:.82em}
+
+.word-box{background:#f8faff;border-radius:13px;padding:18px 20px;margin:12px 0 20px;border-left:4px solid #0984e3;font-size:.97rem;line-height:1.85;color:#1a1a2e}
+.word-box strong{color:#0984e3}
+
+.options{display:grid;gap:10px;margin-bottom:4px}
+.opt{display:flex;align-items:center;gap:13px;padding:12px 16px;border:2.5px solid #dce8ff;border-radius:13px;background:#fff;cursor:pointer;font-size:1rem;text-align:left;transition:all .15s;color:#1a1a2e;font-family:inherit}
+.opt:hover:not(:disabled){border-color:#0984e3;background:#f4f7ff}
+.opt-lbl{min-width:31px;height:31px;border-radius:50%;background:#e3f0ff;color:#0984e3;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.84rem;transition:all .2s}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:#00b894;background:#f0fff8}
+.opt.correct .opt-lbl{background:#00b894;color:#fff}
+.opt.wrong{border-color:#d63031;background:#fff5f5}
+.opt.wrong .opt-lbl{background:#d63031;color:#fff}
+.opt.selected{border-color:#6c5ce7;background:#f4f0ff}
+.opt.selected .opt-lbl{background:#6c5ce7;color:#fff}
+
+.feedback{margin-top:16px;padding:15px 18px;border-radius:13px;font-size:.9rem;line-height:1.65;display:none;animation:fadeIn .3s ease}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fff8;border:2px solid #00b894;color:#00634d}
+.feedback.wrong{background:#fff5f5;border:2px solid #d63031;color:#6b1010}
+.feedback.hint{background:#fffbf0;border:2px solid #fdcb6e;color:#7a5500}
+.steps{margin-top:10px}
+.step{display:flex;gap:9px;margin-bottom:6px;font-size:.88rem;align-items:flex-start}
+.step-num{background:#0984e3;color:#fff;min-width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.step-num.orange{background:#fdcb6e;color:#6b4c00}
+.concept-box{margin-top:10px;padding:9px 13px;background:rgba(0,0,0,.04);border-radius:9px;font-size:.82rem}
+
+.hint-btn{margin-top:12px;padding:7px 18px;background:transparent;color:#6c5ce7;border:2px solid #6c5ce7;border-radius:9px;font-size:.84rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit}
+.hint-btn:hover{background:#f4f0ff}
+.hint-btn:disabled{opacity:.55;cursor:default}
+.next-btn{margin-top:16px;padding:11px 30px;background:linear-gradient(135deg,#0984e3,#6c5ce7);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;display:none;font-family:inherit;box-shadow:0 3px 12px rgba(9,132,227,.35)}
+.next-btn:hover{opacity:.9}
+.next-btn.show{display:inline-block}
+.submit-btn{margin-top:12px;padding:11px 30px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;display:none;font-family:inherit;box-shadow:0 3px 12px rgba(108,92,231,.35)}
+.submit-btn:hover{opacity:.9}
+.submit-btn.show{display:inline-block}
+
+.streak{display:inline-flex;align-items:center;gap:5px;background:#fff9ec;border:1.5px solid #fdcb6e;color:#7a5500;padding:4px 11px;border-radius:20px;font-size:.8rem;font-weight:700;margin-left:8px}
+.weak-badge{display:inline-flex;align-items:center;gap:6px;background:#fff0f0;border:1.5px solid #d63031;color:#d63031;padding:5px 13px;border-radius:20px;font-size:.78rem;font-weight:800;margin-bottom:10px;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+
+.weak-report{background:#fff5f5;border:2px solid #ffcdd2;border-radius:14px;padding:16px 18px;margin:16px 0}
+.weak-report h3{font-size:.9rem;font-weight:800;color:#d63031;margin-bottom:12px}
+.weak-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:10px}
+.weak-row .topic-name{font-size:.85rem;font-weight:600;color:#333;flex:1}
+.weak-bar-wrap{width:120px;height:9px;background:#eef0f5;border-radius:5px;overflow:hidden;flex-shrink:0}
+.weak-bar-fill{height:100%;background:#d63031;border-radius:5px;transition:width .5s ease}
+.weak-pct{font-size:.78rem;font-weight:800;color:#666;min-width:70px;text-align:right}
+.weak-row.good .topic-name{color:#00634d}
+.weak-row.good .weak-bar-fill{background:linear-gradient(90deg,#00b894,#55efc4)}
+.weak-row.good .weak-pct{color:#00634d}
+.weak-row.mid .topic-name{color:#7c5e02}
+.weak-row.mid .weak-bar-fill{background:linear-gradient(90deg,#f9ca24,#fdcb6e)}
+.weak-row.mid .weak-pct{color:#b7760a}
+.weak-row.weak .topic-name{color:#9a1010}
+.weak-row.weak .weak-bar-fill{background:linear-gradient(90deg,#d63031,#e17055)}
+.weak-row.weak .weak-pct{color:#d63031}
+
+.practice-btn{padding:12px 28px;background:linear-gradient(135deg,#d63031,#e17055);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(214,48,49,.35);margin-right:10px}
+.practice-btn:hover{opacity:.9}
+.round-badge{display:inline-block;background:#e3f0ff;color:#0984e3;font-size:.75rem;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:8px;border:1.5px solid #c5d5f8}
+
+.completion{text-align:center;padding:44px 24px}
+.trophy{font-size:4.5rem;margin-bottom:14px;animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.completion h2{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#0984e3,#6c5ce7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.completion p{color:#666;font-size:1rem;margin-bottom:22px}
+.restart-btn{padding:13px 40px;background:linear-gradient(135deg,#0984e3,#6c5ce7);color:#fff;border:none;border-radius:13px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(9,132,227,.4)}
+.restart-btn:hover{opacity:.9}
+
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.cp{position:absolute;opacity:0;animation:fall 1.6s ease-in forwards}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+@media(max-width:540px){
+  .header{padding:10px 14px;gap:6px}
+  .header-left h1{font-size:.95rem}
+  .header-left p{font-size:.68rem}
+  .header-right{gap:8px}
+  .lang-toggle{padding:5px 9px;font-size:.7rem;letter-spacing:.2px}
+  .smart-score-ring{width:48px;height:48px}
+  .smart-score-ring svg{width:48px;height:48px}
+  .score-label span{font-size:1rem}
+  .bar-wrap{padding:7px 14px}
+  .main{padding:0 10px;margin-top:14px}
+  .stats-row{gap:7px;margin-bottom:12px}
+  .stat-box{padding:9px 5px;border-radius:11px}
+  .stat-box .val{font-size:1.35rem}
+  .stat-box .lbl{font-size:.62rem}
+  .prog-dots{gap:4px;margin-bottom:14px}
+  .dot{width:8px;height:8px}
+  .section-banner{padding:11px 14px;font-size:.85rem;border-radius:11px}
+  .qcard{padding:18px 14px;border-radius:16px}
+  .q-text{font-size:.97rem}
+  .math-big{font-size:1.2rem;margin:10px 0 16px}
+  .word-box{padding:13px 14px;font-size:.88rem;line-height:1.7}
+  .options{gap:8px}
+  .opt{padding:10px 11px;gap:9px;font-size:16px;border-radius:11px}
+  .opt-lbl{min-width:27px;height:27px;font-size:.76rem}
+  .feedback{padding:12px 14px;font-size:.85rem}
+  .step{font-size:.82rem}
+  .hint-btn{width:100%;margin-top:10px}
+  .next-btn{width:100%;text-align:center;margin-top:12px;padding:12px 20px}
+  .completion{padding:28px 16px}
+  .trophy{font-size:3.8rem}
+  .completion h2{font-size:1.5rem}
+  .completion p{font-size:.9rem}
+  .restart-btn{width:100%;max-width:260px;padding:12px 20px;font-size:.95rem}
+  .practice-btn{width:100%;margin-right:0;margin-bottom:8px;padding:11px 20px}
+  .weak-report{padding:13px 14px}
+  .weak-row .topic-name{font-size:.78rem}
+  .weak-bar-wrap{width:70px}
+}
+</style>
+</head>
+<body>
+
+<div class="confetti-wrap" id="confWrap"></div>
+
+<div class="header">
+  <div class="header-left">
+    <h1 id="hTitle">Grade 6 Math Practice</h1>
+    <p id="hSub">Cambridge Stage 6 · Kurmer Kelas 6 · Interactive Practice</p>
+  </div>
+  <div class="header-right">
+    <a class="lang-toggle" href="../" style="text-decoration:none">← All Chapters</a>
+    <button class="lang-toggle" onclick="toggleLang()" id="langBtn">🌐 Bahasa Indonesia</button>
+    <div class="smart-score-ring" title="SmartScore">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle class="ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="ring-fill" id="ringFill" cx="32" cy="32" r="28"/>
+      </svg>
+      <div class="score-label"><span id="ssVal">0</span><small>Score</small></div>
+    </div>
+  </div>
+</div>
+
+<div class="bar-wrap">
+  <span style="font-size:.75rem;color:#888;font-weight:600" id="barLbl">SmartScore</span>
+  <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  <span class="bar-pct" id="barPct">0</span>
+</div>
+
+<div class="main">
+  <div class="stats-row">
+    <div class="stat-box"><div class="val val-g" id="sCorrect">0</div><div class="lbl" id="lCorrect">✅ Correct</div></div>
+    <div class="stat-box"><div class="val val-r" id="sWrong">0</div><div class="lbl" id="lWrong">❌ Wrong</div></div>
+    <div class="stat-box"><div class="val val-b" id="sTotal">0</div><div class="lbl" id="lTotal">📝 Answered</div></div>
+  </div>
+  <div class="prog-dots" id="progDots"></div>
+  <div id="qArea"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+function frac(n,d){return`<span class="frac"><span class="n">${n}</span><span class="d">${d}</span></span>`}
+function mixed(w,n,d){return`${w}${frac(n,d)}`}
+
+// ─────────────────────────────────────────────────────────────
+// Language
+// ─────────────────────────────────────────────────────────────
+let lang='en';
+function t(obj){ return typeof obj==='string'?obj:(obj[lang]||obj.en) }
+function updateChapterHeader(){
+  if(isExam){
+    document.getElementById('hTitle').textContent=lang==='en'?'Full Exam — Grade 6':'Ujian Lengkap — Kelas 6';
+    document.getElementById('hSub').textContent=lang==='en'?'All Chapters · Grade 6 · Mathematics · No Hints':'Semua Bab · Kelas 6 · Matematika · Tanpa Petunjuk';
+    return;
+  }
+  const ch=parseInt(new URLSearchParams(window.location.search).get('ch'))||0;
+  const part=ch?Parts.find(p=>p.ch===ch):null;
+  if(part){
+    document.getElementById('hTitle').textContent=lang==='en'?part.section.en:part.section.id;
+    document.getElementById('hSub').textContent=lang==='en'?'Grade 6 · Mathematics · MCQ Practice':'Kelas 6 · Matematika · Latihan MCQ';
+  } else {
+    document.getElementById('hTitle').textContent=lang==='en'?'Grade 6 Math Practice':'Latihan Matematika Kelas 6';
+    document.getElementById('hSub').textContent=lang==='en'?'Cambridge Stage 6 · Kurmer Kelas 6':'Cambridge Stage 6 · Kurmer Kelas 6';
+  }
+}
+
+function toggleLang(){
+  lang = lang==='en'?'id':'en';
+  document.getElementById('langBtn').textContent = lang==='en'?'🌐 Bahasa Indonesia':'🌐 English';
+  updateChapterHeader();
+  document.getElementById('lCorrect').textContent = lang==='en'?'✅ Correct':'✅ Benar';
+  document.getElementById('lWrong').textContent = lang==='en'?'❌ Wrong':'❌ Salah';
+  document.getElementById('lTotal').textContent = lang==='en'?'📝 Answered':'📝 Dijawab';
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────
+// Random helpers
+// ─────────────────────────────────────────────────────────────
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pickA(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function gcd2(a,b){a=Math.abs(a);b=Math.abs(b);return b===0?a:gcd2(b,a%b);}
+function sfrac(n,d){const g=gcd2(n,d)||1;return[n/g,d/g];}
+function shuffA(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function mkOpts(correct,wrongs){
+  const seen=new Set([String(correct)]);
+  const uniq=wrongs.map(String).filter(x=>{if(seen.has(x))return false;seen.add(x);return true;});
+  while(uniq.length<3)uniq.push(String(correct)+'?'+uniq.length);
+  const pool=shuffA([String(correct),...uniq.slice(0,3)]);
+  const L=['A','B','C','D'];let ans='';
+  const opts=pool.map((v,i)=>{if(v===String(correct))ans=L[i];return{l:L[i],v};});
+  return{opts,ans};
+}
+
+// ─────────────────────────────────────────────────────────────
+// GENERATORS
+// ─────────────────────────────────────────────────────────────
+const Generators={
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 1 — Place Value & Rounding
+  // ══════════════════════════════════════════════════════════
+  place_millions:()=>{
+    const m=ri(1,9), hk=ri(0,9), tk=ri(0,9), k=ri(0,9);
+    const h=ri(0,9), tens=ri(0,9), u=ri(0,9);
+    const num = m*1000000 + hk*100000 + tk*10000 + k*1000 + h*100 + tens*10 + u;
+    const positions=[
+      {idx:0,name:{en:'millions',id:'jutaan'},val:m*1000000,digit:m},
+      {idx:1,name:{en:'hundred thousands',id:'ratus ribuan'},val:hk*100000,digit:hk},
+      {idx:2,name:{en:'ten thousands',id:'puluh ribuan'},val:tk*10000,digit:tk},
+      {idx:3,name:{en:'thousands',id:'ribuan'},val:k*1000,digit:k},
+      {idx:4,name:{en:'hundreds',id:'ratusan'},val:h*100,digit:h},
+      {idx:5,name:{en:'tens',id:'puluhan'},val:tens*10,digit:tens},
+      {idx:6,name:{en:'ones',id:'satuan'},val:u,digit:u},
+    ];
+    const target=pickA(positions.filter(p=>p.digit>0));
+    const cor=target.val;
+    const w1=target.digit;
+    const w2=target.val*10;
+    const w3=Math.floor(target.val/10)||target.val+10;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`What is the value of the digit <b>${target.digit}</b> in the <b>${target.name.en}</b> place of <b>${num.toLocaleString('en-US')}</b>?`,
+                 id:`Berapa nilai angka <b>${target.digit}</b> di tempat <b>${target.name.id}</b> pada bilangan <b>${num.toLocaleString('id-ID').replace(/,/g,'.')}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`The digit <b>${target.digit}</b> is in the <b>${target.name.en}</b> place.`,`Value = ${target.digit} × ${target.val/target.digit} = <b>${cor}</b>`],
+             id:[`Angka <b>${target.digit}</b> ada di tempat <b>${target.name.id}</b>.`,`Nilai = ${target.digit} × ${target.val/target.digit} = <b>${cor}</b>`]},
+      concept:{en:'Place value: each digit\'s value = digit × its place (1, 10, 100, 1000, …).',
+               id:'Nilai tempat: nilai tiap angka = angka × nilai tempatnya (1, 10, 100, 1000, …).'}};
+  },
+
+  decimal_thousandth:()=>{
+    const w=ri(0,9), t=ri(0,9), h=ri(0,9), th=ri(1,9);
+    const num=w + t/10 + h/100 + th/1000;
+    const positions=[
+      {name:{en:'tenths',id:'persepuluhan'},digit:t,val:+(t/10).toFixed(1)},
+      {name:{en:'hundredths',id:'perseratusan'},digit:h,val:+(h/100).toFixed(2)},
+      {name:{en:'thousandths',id:'perseribuan'},digit:th,val:+(th/1000).toFixed(3)},
+    ].filter(p=>p.digit>0);
+    const target=pickA(positions);
+    const cor=target.val;
+    const{opts,ans}=mkOpts(String(cor),[String(target.digit),String(+(target.val*10).toFixed(2)),String(+(target.val/10).toFixed(4))]);
+    return{text:{en:`In the number <b>${num.toFixed(3)}</b>, what is the value of the digit in the <b>${target.name.en}</b> place?`,
+                 id:`Pada bilangan <b>${num.toFixed(3).replace('.',',')}</b>, berapa nilai angka di tempat <b>${target.name.id}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Locate the ${target.name.en} digit: <b>${target.digit}</b>.`,`Value = ${target.digit}/${target.name.en==='tenths'?10:target.name.en==='hundredths'?100:1000} = <b>${cor}</b>`],
+             id:[`Cari angka ${target.name.id}: <b>${target.digit}</b>.`,`Nilai = ${target.digit}/${target.name.en==='tenths'?10:target.name.en==='hundredths'?100:1000} = <b>${cor}</b>`]},
+      concept:{en:'After the decimal: 1st place = tenths (÷10), 2nd = hundredths (÷100), 3rd = thousandths (÷1000).',
+               id:'Setelah koma: tempat ke-1 = persepuluhan (÷10), ke-2 = perseratusan (÷100), ke-3 = perseribuan (÷1000).'}};
+  },
+
+  compare_large:()=>{
+    const a=ri(100000,9999999), b=ri(100000,9999999);
+    if(a===b) return Generators.compare_large();
+    const sym = a>b ? '>' : '<';
+    const opts=[
+      {l:'A',v:'&gt;'},{l:'B',v:'&lt;'},{l:'C',v:'='},{l:'D',v:{en:'Cannot tell',id:'Tidak dapat ditentukan'}}
+    ];
+    const ans = a>b?'A':'B';
+    return{text:{en:'Fill the blank with > or <',id:'Isi titik-titik dengan > atau <'},
+      math:`<b>${a.toLocaleString('en-US')}</b> &nbsp;___&nbsp; <b>${b.toLocaleString('en-US')}</b>`,
+      opts,ans,
+      steps:{en:[`Compare digit by digit from the left.`,`${a} ${sym} ${b}`],
+             id:[`Bandingkan angka demi angka dari kiri.`,`${a} ${sym} ${b}`]},
+      concept:{en:'When numbers have the same number of digits, compare each digit from the left.',
+               id:'Jika jumlah digit sama, bandingkan angka demi angka dari kiri.'}};
+  },
+
+  round_int:()=>{
+    const v=pickA([10,100,1000]);
+    const num=ri(v*5,v*99)+ri(0,v-1);
+    const cor=Math.round(num/v)*v;
+    const w1=cor+v; const w2=cor-v>0?cor-v:cor+v*2; const w3=Math.floor(num/v)*v===cor?cor+v:Math.floor(num/v)*v;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const lbl=v===10?{en:'nearest 10',id:'puluhan terdekat'}:v===100?{en:'nearest 100',id:'ratusan terdekat'}:{en:'nearest 1000',id:'ribuan terdekat'};
+    return{text:{en:`Round <b>${num.toLocaleString('en-US')}</b> to the <b>${lbl.en}</b>.`,
+                 id:`Bulatkan <b>${num.toLocaleString('id-ID').replace(/,/g,'.')}</b> ke <b>${lbl.id}</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Look at the digit one place to the right of ${lbl.en}.`,`If ≥ 5: round up. If < 5: round down.`,`Answer: <b>${cor.toLocaleString('en-US')}</b>`],
+             id:[`Lihat angka satu tempat ke kanan dari ${lbl.id}.`,`Jika ≥ 5: bulatkan ke atas. Jika < 5: ke bawah.`,`Jawaban: <b>${cor.toLocaleString('id-ID').replace(/,/g,'.')}</b>`]},
+      concept:{en:'Rounding: look at the next digit. ≥ 5 round up, < 5 round down.',
+               id:'Pembulatan: lihat angka berikutnya. ≥ 5 bulatkan ke atas, < 5 ke bawah.'}};
+  },
+
+  round_dec:()=>{
+    const dp=pickA([1,2]);
+    const raw=ri(1,99)+ri(1,999)/1000;
+    const cor=+raw.toFixed(dp);
+    const w1=+(cor+(dp===1?0.1:0.01)).toFixed(dp);
+    const w2=+(cor-(dp===1?0.1:0.01)).toFixed(dp);
+    const w3=+raw.toFixed(dp===1?2:1);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const lbl=dp===1?{en:'1 decimal place',id:'1 angka di belakang koma'}:{en:'2 decimal places',id:'2 angka di belakang koma'};
+    return{text:{en:`Round <b>${raw.toFixed(3)}</b> to <b>${lbl.en}</b>.`,
+                 id:`Bulatkan <b>${raw.toFixed(3).replace('.',',')}</b> ke <b>${lbl.id}</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Look at the digit just after the ${dp===1?'tenths':'hundredths'} place.`,`If ≥ 5 round up.`,`Answer: <b>${cor}</b>`],
+             id:[`Lihat angka tepat setelah tempat ${dp===1?'persepuluhan':'perseratusan'}.`,`Jika ≥ 5 bulatkan ke atas.`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'Same rule for decimals — look at the next digit, then ≥ 5 up, < 5 down.',
+               id:'Aturan sama untuk desimal — lihat angka berikutnya, ≥ 5 ke atas, < 5 ke bawah.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 2 — Factors, Multiples, Primes
+  // ══════════════════════════════════════════════════════════
+  factors:()=>{
+    const n=pickA([12,18,20,24,28,30,36,40,42,45,48,50,54,56,60,72]);
+    const fset=[];
+    for(let i=1;i<=n;i++) if(n%i===0) fset.push(i);
+    const cor=fset.length;
+    const w1=cor+1, w2=cor-1, w3=cor+2;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`How many factors does <b>${n}</b> have?`,
+                 id:`Berapa banyak faktor dari <b>${n}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Factors of ${n}: ${fset.join(', ')}.`,`Count: <b>${cor}</b>`],
+             id:[`Faktor dari ${n}: ${fset.join(', ')}.`,`Jumlah: <b>${cor}</b>`]},
+      concept:{en:'A factor divides a number with no remainder. List them in pairs.',
+               id:'Faktor adalah bilangan yang membagi habis. Daftar berpasangan.'}};
+  },
+
+  multiples:()=>{
+    const n=ri(3,9);
+    const k=ri(4,8);
+    const cor=n*k;
+    const w1=n*k+1, w2=n*(k-1), w3=n*k+n-1;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`What is the <b>${k}<sup>th</sup> multiple</b> of <b>${n}</b>?`,
+                 id:`Apakah <b>kelipatan ke-${k}</b> dari <b>${n}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Multiples of ${n}: ${[1,2,3,4,5,6,7,8].map(i=>n*i).join(', ')}…`,`${k}th multiple = ${n} × ${k} = <b>${cor}</b>`],
+             id:[`Kelipatan ${n}: ${[1,2,3,4,5,6,7,8].map(i=>n*i).join(', ')}…`,`Kelipatan ke-${k} = ${n} × ${k} = <b>${cor}</b>`]},
+      concept:{en:'A multiple is the result of multiplying a number by a whole number.',
+               id:'Kelipatan adalah hasil kali sebuah bilangan dengan bilangan asli.'}};
+  },
+
+  primes:()=>{
+    // primes up to 100
+    const primes=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97];
+    const composites=[4,6,8,9,10,12,14,15,16,18,20,21,22,24,25,26,27,28,33,35,39,49,51,55,57,63,65,77,81,85,87,91,93,95];
+    const vv=pickA([0,1]);
+    if(vv===0){
+      // identify which is prime
+      const p=pickA(primes.filter(x=>x>10));
+      const wgs=shuffA(composites).slice(0,3);
+      const{opts,ans}=mkOpts(String(p),wgs.map(String));
+      return{text:{en:'Which of these numbers is a <b>prime number</b>?',
+                   id:'Manakah dari bilangan-bilangan berikut yang merupakan <b>bilangan prima</b>?'},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`A prime number has only two factors: 1 and itself.`,`${p} is prime — it has no other divisors.`],
+               id:[`Bilangan prima hanya memiliki dua faktor: 1 dan dirinya sendiri.`,`${p} adalah prima — tidak punya pembagi lain.`]},
+        concept:{en:'A prime number has exactly two factors: 1 and itself. 1 is NOT prime.',
+                 id:'Bilangan prima memiliki tepat dua faktor: 1 dan dirinya sendiri. 1 BUKAN prima.'}};
+    } else {
+      // which is NOT prime
+      const c=pickA(composites.filter(x=>x>10));
+      const wgs=shuffA(primes.filter(x=>x>10)).slice(0,3);
+      const{opts,ans}=mkOpts(String(c),wgs.map(String));
+      // find a factor of c (other than 1 and itself) to explain
+      let fct=2;
+      for(let i=2;i<c;i++){if(c%i===0){fct=i;break;}}
+      return{text:{en:'Which of these numbers is <b>NOT a prime number</b>?',
+                   id:'Manakah dari bilangan-bilangan berikut yang <b>BUKAN bilangan prima</b>?'},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`${c} is divisible by ${fct} (and ${c/fct}).`,`So ${c} has more than 2 factors — not prime.`],
+               id:[`${c} habis dibagi ${fct} (dan ${c/fct}).`,`Jadi ${c} memiliki lebih dari 2 faktor — bukan prima.`]},
+        concept:{en:'If a number has any factor besides 1 and itself, it is composite, not prime.',
+                 id:'Jika sebuah bilangan punya faktor selain 1 dan dirinya sendiri, ia komposit, bukan prima.'}};
+    }
+  },
+
+  squares:()=>{
+    const vv=pickA([0,1]);
+    if(vv===0){
+      const n=ri(2,12);
+      const cor=n*n;
+      const w1=cor+n, w2=2*n, w3=n*(n+1);
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:'What is the value?',id:'Berapakah nilainya?'},
+        math:`<b>${n}<sup>2</sup></b>`,opts,ans,
+        steps:{en:[`${n}² = ${n} × ${n} = <b>${cor}</b>`],id:[`${n}² = ${n} × ${n} = <b>${cor}</b>`]},
+        concept:{en:'A square number = a whole number multiplied by itself.',
+                 id:'Bilangan kuadrat = bilangan bulat dikalikan dirinya sendiri.'}};
+    } else {
+      const n=ri(2,12);
+      const sq=n*n;
+      const cor=n;
+      const w1=n+1, w2=n-1>0?n-1:n+2, w3=sq/2;
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:'What is the value?',id:'Berapakah nilainya?'},
+        math:`<b>√${sq}</b>`,opts,ans,
+        steps:{en:[`Find a number whose square is ${sq}.`,`${n} × ${n} = ${sq}`,`So √${sq} = <b>${n}</b>`],
+               id:[`Cari bilangan yang kuadratnya = ${sq}.`,`${n} × ${n} = ${sq}`,`Jadi √${sq} = <b>${n}</b>`]},
+        concept:{en:'The square root of n² is n. Memorise squares 1–12.',
+                 id:'Akar kuadrat dari n² adalah n. Hafal kuadrat 1–12.'}};
+    }
+  },
+
+  hcf_lcm:()=>{
+    const pairs=[[12,18],[8,12],[15,20],[24,36],[10,15],[14,21],[16,24],[18,30],[20,30],[9,12],[6,8],[10,12]];
+    const[a,b]=pickA(pairs);
+    const which=pickA(['hcf','lcm']);
+    const g=gcd2(a,b);
+    const l=a*b/g;
+    const cor = which==='hcf'?g:l;
+    const w1=cor+1, w2=cor-1>0?cor-1:cor+2, w3=which==='hcf'?l:g;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const lbl = which==='hcf' ? {en:'highest common factor (HCF)',id:'faktor persekutuan terbesar (FPB)'} : {en:'lowest common multiple (LCM)',id:'kelipatan persekutuan terkecil (KPK)'};
+    return{text:{en:`Find the <b>${lbl.en}</b> of <b>${a}</b> and <b>${b}</b>.`,
+                 id:`Cari <b>${lbl.id}</b> dari <b>${a}</b> dan <b>${b}</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`HCF(${a},${b}) = <b>${g}</b>`,`LCM(${a},${b}) = ${a}×${b}÷${g} = <b>${l}</b>`,`Answer: <b>${cor}</b>`],
+             id:[`FPB(${a},${b}) = <b>${g}</b>`,`KPK(${a},${b}) = ${a}×${b}÷${g} = <b>${l}</b>`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'HCF = largest factor both share. LCM = smallest multiple both share. LCM × HCF = a × b.',
+               id:'FPB = faktor terbesar yang sama. KPK = kelipatan terkecil yang sama. KPK × FPB = a × b.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 3 — Fractions (all operations)
+  // ══════════════════════════════════════════════════════════
+  frac_add_diff:()=>{
+    // a/b ± c/d with different denominators
+    const pairs=[[1,2,1,3],[1,4,1,3],[2,3,1,4],[3,4,1,6],[1,5,1,2],[2,5,1,3],[3,5,1,4],[5,6,1,3],[1,6,1,4],[2,3,1,6],[1,8,1,4],[3,8,1,6]];
+    const[n1,d1,n2,d2]=pickA(pairs);
+    const op=pickA(['+','−']);
+    const lcm=d1*d2/gcd2(d1,d2);
+    const rn = op==='+' ? n1*(lcm/d1)+n2*(lcm/d2) : n1*(lcm/d1)-n2*(lcm/d2);
+    if(rn<=0) return Generators.frac_add_diff();
+    const[sn,sd]=sfrac(rn,lcm);
+    const cor = sd===1?String(sn):frac(sn,sd);
+    const w1 = frac(op==='+'?n1+n2:Math.abs(n1-n2), d1+d2);
+    const w2 = sd===1?String(sn+1):frac(sn+1,sd);
+    const w3 = frac(rn+1,lcm);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`${frac(n1,d1)} ${op} ${frac(n2,d2)}`,opts,ans,
+      steps:{en:[`Find a common denominator: LCM(${d1},${d2}) = <b>${lcm}</b>`,
+                `${frac(n1*(lcm/d1),lcm)} ${op} ${frac(n2*(lcm/d2),lcm)} = ${frac(rn,lcm)}`,
+                (sn!==rn||sd!==lcm)?`Simplify: <b>${cor}</b>`:`Answer: <b>${cor}</b>`],
+             id:[`Cari penyebut sama: KPK(${d1},${d2}) = <b>${lcm}</b>`,
+                `${frac(n1*(lcm/d1),lcm)} ${op} ${frac(n2*(lcm/d2),lcm)} = ${frac(rn,lcm)}`,
+                (sn!==rn||sd!==lcm)?`Sederhanakan: <b>${cor}</b>`:`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'Find LCM of denominators, convert each fraction, then add/subtract numerators.',
+               id:'Cari KPK penyebut, ubah tiap pecahan, lalu jumlahkan/kurangkan pembilang.'}};
+  },
+
+  frac_mul_frac:()=>{
+    const n1=ri(1,5), d1=ri(2,8);
+    const n2=ri(1,5), d2=ri(2,8);
+    if(n1>=d1||n2>=d2) return Generators.frac_mul_frac();
+    const[sn,sd]=sfrac(n1*n2,d1*d2);
+    const cor = sd===1?String(sn):frac(sn,sd);
+    const w1 = frac(n1+n2,d1+d2);
+    const w2 = frac(n1*n2,d1+d2);
+    const w3 = sd===1?String(sn+1):frac(sn+1,sd);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'What is the product?',id:'Berapa hasil kalinya?'},
+      math:`${frac(n1,d1)} × ${frac(n2,d2)}`,opts,ans,
+      steps:{en:[`Multiply numerators: ${n1} × ${n2} = <b>${n1*n2}</b>`,`Multiply denominators: ${d1} × ${d2} = <b>${d1*d2}</b>`,`${frac(n1*n2,d1*d2)}${sn!==n1*n2?' = '+cor:''}`],
+             id:[`Kali pembilang: ${n1} × ${n2} = <b>${n1*n2}</b>`,`Kali penyebut: ${d1} × ${d2} = <b>${d1*d2}</b>`,`${frac(n1*n2,d1*d2)}${sn!==n1*n2?' = '+cor:''}`]},
+      concept:{en:'Multiply numerators and denominators straight across, then simplify.',
+               id:'Kalikan pembilang dengan pembilang, penyebut dengan penyebut, lalu sederhanakan.'}};
+  },
+
+  frac_div:()=>{
+    const n1=ri(1,5), d1=ri(2,8);
+    const n2=ri(1,5), d2=ri(2,8);
+    if(n1>=d1||n2>=d2||n2===0) return Generators.frac_div();
+    // a/b ÷ c/d = a/b × d/c = ad/bc
+    const[sn,sd]=sfrac(n1*d2,d1*n2);
+    const cor = sd===1?String(sn):frac(sn,sd);
+    const w1 = frac(n1*n2,d1*d2);
+    const w2 = sd===1?String(sn+1):frac(sn,sd+1);
+    const w3 = frac(n1+n2,d1+d2);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'What is the result?',id:'Berapakah hasilnya?'},
+      math:`${frac(n1,d1)} ÷ ${frac(n2,d2)}`,opts,ans,
+      steps:{en:[`Keep, flip, multiply: ${frac(n1,d1)} × ${frac(d2,n2)}`,
+                `= ${frac(n1*d2,d1*n2)}${sn!==n1*d2?' = '+cor:''}`],
+             id:[`Tetap, balik, kalikan: ${frac(n1,d1)} × ${frac(d2,n2)}`,
+                `= ${frac(n1*d2,d1*n2)}${sn!==n1*d2?' = '+cor:''}`]},
+      concept:{en:'To divide by a fraction, multiply by its reciprocal (flip it).',
+               id:'Membagi pecahan = kalikan dengan kebalikannya (balik).'}};
+  },
+
+  mixed_ops:()=>{
+    // mixed number ± fraction
+    const w=ri(1,4);
+    const d=pickA([3,4,5,6,8]);
+    const n=ri(1,d-1);
+    const n2=ri(1,d-1);
+    const op=pickA(['+','−']);
+    // (w + n/d) op (n2/d) — same denominator for simplicity
+    const totalN = w*d + n + (op==='+'?n2:-n2);
+    if(totalN<=0) return Generators.mixed_ops();
+    const newW = Math.floor(totalN/d);
+    const newN = totalN%d;
+    const[sn,sd] = newN>0 ? sfrac(newN,d) : [0,1];
+    const cor = newN===0 ? String(newW) : (newW===0 ? frac(sn,sd) : mixed(newW,sn,sd));
+    const w1 = mixed(newW+1,sn||1,sd||d);
+    const w2 = mixed(newW,Math.max(1,sn-1),sd||d);
+    const w3 = mixed(Math.max(0,newW-1),sn||1,sd||d);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`${mixed(w,n,d)} ${op} ${frac(n2,d)}`,opts,ans,
+      steps:{en:[`Convert mixed to improper: ${frac(w*d+n,d)}`,
+                `${frac(w*d+n,d)} ${op} ${frac(n2,d)} = ${frac(totalN,d)}`,
+                `Convert back: <b>${cor}</b>`],
+             id:[`Ubah ke pecahan biasa: ${frac(w*d+n,d)}`,
+                `${frac(w*d+n,d)} ${op} ${frac(n2,d)} = ${frac(totalN,d)}`,
+                `Ubah kembali: <b>${cor}</b>`]},
+      concept:{en:'Convert mixed numbers to improper fractions, operate, then convert back.',
+               id:'Ubah pecahan campuran ke biasa, hitung, lalu ubah kembali.'}};
+  },
+
+  simplify:()=>{
+    const factors=[2,3,4,5,6];
+    const f=pickA(factors);
+    const[sn,sd]=[ri(1,9),ri(2,9)];
+    if(sn>=sd) return Generators.simplify();
+    const n=sn*f, d=sd*f;
+    const g=gcd2(n,d);
+    const[fn,fd]=[n/g,d/g];
+    const cor=frac(fn,fd);
+    const w1=frac(n/2,d/2);
+    const w2=frac(fn+1,fd);
+    const w3=frac(fn,fd+1);
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'Simplify the fraction:',id:'Sederhanakan pecahan berikut:'},
+      math:frac(n,d),opts,ans,
+      steps:{en:[`HCF(${n},${d}) = <b>${g}</b>`,`${frac(n,d)} ÷ ${frac(g,g)} = <b>${cor}</b>`],
+             id:[`FPB(${n},${d}) = <b>${g}</b>`,`${frac(n,d)} ÷ ${frac(g,g)} = <b>${cor}</b>`]},
+      concept:{en:'Divide numerator and denominator by their HCF.',
+               id:'Bagi pembilang dan penyebut dengan FPB-nya.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 4 — Decimals (all operations)
+  // ══════════════════════════════════════════════════════════
+  dec_add_sub:()=>{
+    const pairs=[[2.45,1.32],[3.7,0.85],[5.6,2.34],[4.25,1.7],[6.8,3.45],[7.5,2.85],[10.0,4.65],[8.4,3.27],[12.5,7.85],[5.05,2.4],[9.6,3.75]];
+    const[a,b]=pickA(pairs);
+    const op=pickA(['+','−']);
+    const cor = op==='+' ? +(a+b).toFixed(2) : +(a-b).toFixed(2);
+    if(cor<=0) return Generators.dec_add_sub();
+    const w1=+(cor+0.1).toFixed(2), w2=+(cor-0.1).toFixed(2), w3=+(cor+0.01).toFixed(2);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${a} ${op} ${b}</b>`,opts,ans,
+      steps:{en:[`Line up the decimal points.`,`${a} ${op} ${b} = <b>${cor}</b>`],
+             id:[`Sejajarkan titik desimal.`,`${a} ${op} ${b} = <b>${cor}</b>`]},
+      concept:{en:'Line up the decimal points before adding or subtracting.',
+               id:'Sejajarkan titik desimal sebelum menjumlahkan atau mengurangkan.'}};
+  },
+
+  dec_mul:()=>{
+    // decimal × decimal
+    const pairs=[[0.3,0.7],[0.4,0.5],[0.2,0.8],[0.6,0.9],[0.5,0.5],[0.3,0.4],[1.2,0.5],[2.5,0.4],[1.5,0.6],[0.25,0.4],[0.75,0.2],[1.4,0.3]];
+    const[a,b]=pickA(pairs);
+    const cor=+(a*b).toFixed(4);
+    const w1=+(cor*10).toFixed(4);
+    const w2=+(a+b).toFixed(2);
+    const w3=+(cor/10).toFixed(4);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const dpa=(String(a).split('.')[1]||'').length;
+    const dpb=(String(b).split('.')[1]||'').length;
+    const intA=Math.round(a*Math.pow(10,dpa));
+    const intB=Math.round(b*Math.pow(10,dpb));
+    return{text:{en:'What is the product?',id:'Berapa hasil kalinya?'},
+      math:`<b>${a} × ${b}</b>`,opts,ans,
+      steps:{en:[`Ignore decimals: ${intA} × ${intB} = <b>${intA*intB}</b>`,`Total decimal places: ${dpa}+${dpb} = ${dpa+dpb}`,`Place the decimal: <b>${cor}</b>`],
+             id:[`Abaikan desimal: ${intA} × ${intB} = <b>${intA*intB}</b>`,`Total angka desimal: ${dpa}+${dpb} = ${dpa+dpb}`,`Letakkan koma: <b>${cor}</b>`]},
+      concept:{en:'Multiply as whole numbers, then place the decimal so the result has (dp of a + dp of b) places.',
+               id:'Kalikan sebagai bilangan bulat, lalu tempatkan koma sebanyak (desimal a + desimal b).'}};
+  },
+
+  dec_div:()=>{
+    // decimal ÷ whole, ensure exact
+    const v=pickA([0,1]);
+    if(v===0){
+      const div=pickA([2,3,4,5,6,8]);
+      const q=pickA([0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.2,1.5,2.5,0.25,0.15,0.35]);
+      const a=+(q*div).toFixed(3);
+      const cor=q;
+      const w1=+(cor*10).toFixed(3), w2=+(cor+0.1).toFixed(3), w3=+(cor/10).toFixed(3);
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:'Calculate:',id:'Hitung:'},
+        math:`<b>${a} ÷ ${div}</b>`,opts,ans,
+        steps:{en:[`${a} ÷ ${div} = <b>${cor}</b>`,`Place decimal directly above in the quotient.`],
+               id:[`${a} ÷ ${div} = <b>${cor}</b>`,`Letakkan koma tepat di atas pada hasil bagi.`]},
+        concept:{en:'When dividing a decimal by a whole, place the decimal directly above.',
+                 id:'Saat membagi desimal dengan bilangan bulat, letakkan koma tepat di atas.'}};
+    } else {
+      // decimal ÷ decimal — multiply both by 10
+      const pairs=[[2.4,0.6],[3.6,0.4],[1.8,0.2],[4.5,0.5],[2.5,0.5],[7.2,0.8],[5.4,0.9],[3.6,0.6],[6.4,0.8]];
+      const[a,b]=pickA(pairs);
+      const cor=+(a/b).toFixed(4);
+      const w1=+(cor+1).toFixed(2), w2=+(cor*2).toFixed(2), w3=+(cor/2).toFixed(2);
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:'Calculate:',id:'Hitung:'},
+        math:`<b>${a} ÷ ${b}</b>`,opts,ans,
+        steps:{en:[`Multiply both by 10: ${a*10} ÷ ${b*10}`,`= <b>${cor}</b>`],
+               id:[`Kali keduanya dengan 10: ${a*10} ÷ ${b*10}`,`= <b>${cor}</b>`]},
+        concept:{en:'Move both decimal points right until the divisor is whole, then divide.',
+                 id:'Geser titik desimal kedua bilangan ke kanan hingga pembagi jadi bulat, lalu bagi.'}};
+    }
+  },
+
+  dec_mul_pow10:()=>{
+    const v=pickA([0,1,2,3]);
+    let a,b,cor,sEn,sId,sym;
+    if(v===0){ a=pickA([0.5,1.25,2.3,4.7,3.45]); b=10; cor=+(a*10).toFixed(4); sym='×';
+      sEn=[`Move the decimal 1 place right: <b>${cor}</b>`]; sId=[`Geser koma 1 tempat ke kanan: <b>${cor}</b>`];
+    } else if(v===1){ a=pickA([0.05,0.12,0.5,1.25,3.45]); b=100; cor=+(a*100).toFixed(4); sym='×';
+      sEn=[`Move the decimal 2 places right: <b>${cor}</b>`]; sId=[`Geser koma 2 tempat ke kanan: <b>${cor}</b>`];
+    } else if(v===2){ a=pickA([15,25,40,125,250,500]); b=10; cor=+(a/10).toFixed(4); sym='÷';
+      sEn=[`Move the decimal 1 place left: <b>${cor}</b>`]; sId=[`Geser koma 1 tempat ke kiri: <b>${cor}</b>`];
+    } else { a=pickA([0.5,1.5,2.5,4.25,12,25]); b=1000; cor=+(a*1000).toFixed(2); sym='×';
+      sEn=[`Move the decimal 3 places right: <b>${cor}</b>`]; sId=[`Geser koma 3 tempat ke kanan: <b>${cor}</b>`];
+    }
+    const w1=+(cor*10).toFixed(4), w2=+(cor/10).toFixed(4), w3=+(a+b).toFixed(2);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${a} ${sym} ${b}</b>`,opts,ans,
+      steps:{en:sEn,id:sId},
+      concept:{en:'× by 10/100/1000: move the decimal right. ÷ by 10/100/1000: move it left.',
+               id:'× 10/100/1000: geser koma ke kanan. ÷ 10/100/1000: geser koma ke kiri.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 5 — Percentages
+  // ══════════════════════════════════════════════════════════
+  pct_of:()=>{
+    const pct=pickA([5,10,15,20,25,30,40,50,60,70,75,80]);
+    const n=pickA([20,40,50,60,80,100,120,150,160,200,240,300,400]);
+    const cor = pct*n/100;
+    if(cor!==Math.floor(cor)) return Generators.pct_of();
+    const w1=cor+n/10, w2=Math.max(1,cor-n/10), w3=Math.round(cor*2);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`What is <b>${pct}%</b> of <b>${n}</b>?`,
+                 id:`Berapakah <b>${pct}%</b> dari <b>${n}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`${pct}% = ${pct}/100`,`${pct}/100 × ${n} = <b>${cor}</b>`],
+             id:[`${pct}% = ${pct}/100`,`${pct}/100 × ${n} = <b>${cor}</b>`]},
+      concept:{en:'% of a number: divide by 100 and multiply, or multiply by the equivalent decimal.',
+               id:'% dari bilangan: bagi 100 lalu kali, atau kali dengan desimal yang setara.'}};
+  },
+
+  frac_to_pct:()=>{
+    const pool=[[1,2,50],[1,4,25],[3,4,75],[1,5,20],[2,5,40],[3,5,60],[4,5,80],[1,10,10],[3,10,30],[7,10,70],[9,10,90],[1,20,5],[3,20,15],[1,25,4],[2,25,8],[3,25,12]];
+    const[n,d,pct]=pickA(pool);
+    const cor=`${pct}%`;
+    const w1=`${pct+5<=100?pct+5:pct-5}%`;
+    const w2=`${pct-5>0?pct-5:pct+10}%`;
+    const w3=`${Math.round(n/d*1000)/10}%`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'Express as a percentage:',id:'Nyatakan sebagai persen:'},
+      math:frac(n,d),opts,ans,
+      steps:{en:[`${frac(n,d)} × 100 = ${n*100/d}`,`= <b>${pct}%</b>`],
+             id:[`${frac(n,d)} × 100 = ${n*100/d}`,`= <b>${pct}%</b>`]},
+      concept:{en:'Multiply the fraction by 100 to convert to a percentage.',
+               id:'Kalikan pecahan dengan 100 untuk mendapatkan persen.'}};
+  },
+
+  pct_increase:()=>{
+    const pct=pickA([10,20,25,50,15,30]);
+    const orig=pickA([40,60,80,100,120,150,200,240,300]);
+    const inc=pct*orig/100;
+    if(inc!==Math.floor(inc)) return Generators.pct_increase();
+    const cor=orig+inc;
+    const w1=cor+10, w2=orig-inc, w3=inc;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Increase <b>${orig}</b> by <b>${pct}%</b>. What is the new value?`,
+                 id:`Naikkan <b>${orig}</b> sebesar <b>${pct}%</b>. Berapa nilai barunya?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`${pct}% of ${orig} = <b>${inc}</b>`,`${orig} + ${inc} = <b>${cor}</b>`],
+             id:[`${pct}% dari ${orig} = <b>${inc}</b>`,`${orig} + ${inc} = <b>${cor}</b>`]},
+      concept:{en:'Increase: find the % of the original, then add it.',
+               id:'Kenaikan: cari % dari nilai awal, lalu tambahkan.'}};
+  },
+
+  pct_decrease:()=>{
+    const pct=pickA([10,20,25,15,30,50]);
+    const orig=pickA([40,60,80,100,120,160,200,240,300]);
+    const dec=pct*orig/100;
+    if(dec!==Math.floor(dec)) return Generators.pct_decrease();
+    const cor=orig-dec;
+    const w1=cor+10, w2=orig+dec, w3=dec;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`A jacket costs <b>$${orig}</b>. It is reduced by <b>${pct}%</b>. What is the new price?`,
+                 id:`Sebuah jaket harganya <b>Rp${orig}</b>. Diskon <b>${pct}%</b>. Berapa harga barunya?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`${pct}% of ${orig} = <b>${dec}</b>`,`${orig} − ${dec} = <b>${cor}</b>`],
+             id:[`${pct}% dari ${orig} = <b>${dec}</b>`,`${orig} − ${dec} = <b>${cor}</b>`]},
+      concept:{en:'Decrease: find the % of the original, then subtract it.',
+               id:'Pengurangan: cari % dari nilai awal, lalu kurangkan.'}};
+  },
+
+  pct_reverse:()=>{
+    // Given (orig × (1+pct/100)) = new, find orig
+    const pct=pickA([10,20,25,50]);
+    const orig=pickA([40,60,80,100,120,200]);
+    const newV = orig*(100+pct)/100;
+    if(newV!==Math.floor(newV)) return Generators.pct_reverse();
+    const cor=orig;
+    const w1=newV, w2=orig-pct, w3=Math.round(newV/(1+pct));
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`After an increase of <b>${pct}%</b>, a price becomes <b>$${newV}</b>. What was the <b>original price</b>?`,
+                 id:`Setelah naik <b>${pct}%</b>, harga menjadi <b>Rp${newV}</b>. Berapa <b>harga semula</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`New = Original × (100+${pct})/100 = Original × ${(100+pct)/100}`,`Original = ${newV} ÷ ${(100+pct)/100} = <b>${cor}</b>`],
+             id:[`Baru = Awal × (100+${pct})/100 = Awal × ${(100+pct)/100}`,`Awal = ${newV} ÷ ${(100+pct)/100} = <b>${cor}</b>`]},
+      concept:{en:'Reverse %: divide the new value by (1 + pct/100) for an increase, or (1 − pct/100) for a decrease.',
+               id:'Persen terbalik: bagi nilai baru dengan (1 + pct/100) untuk kenaikan, atau (1 − pct/100) untuk pengurangan.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 6 — Ratio & Proportion
+  // ══════════════════════════════════════════════════════════
+  ratio_simplify:()=>{
+    const k=pickA([2,3,4,5,6,8]);
+    const a=ri(2,6), b=ri(2,6);
+    if(a===b||gcd2(a,b)!==1) return Generators.ratio_simplify();
+    const ra=a*k, rb=b*k;
+    const cor=`${a}:${b}`;
+    const w1=`${ra}:${rb}`;
+    const w2=`${a+1}:${b}`;
+    const w3=`${b}:${a}`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'Simplify the ratio:',id:'Sederhanakan rasio:'},
+      math:`<b>${ra} : ${rb}</b>`,opts,ans,
+      steps:{en:[`HCF(${ra},${rb}) = <b>${k}</b>`,`${ra}÷${k} : ${rb}÷${k} = <b>${cor}</b>`],
+             id:[`FPB(${ra},${rb}) = <b>${k}</b>`,`${ra}÷${k} : ${rb}÷${k} = <b>${cor}</b>`]},
+      concept:{en:'Divide both parts by their HCF to simplify a ratio.',
+               id:'Bagi kedua bagian dengan FPB untuk menyederhanakan rasio.'}};
+  },
+
+  ratio_share:()=>{
+    const a=ri(2,5), b=ri(2,5);
+    if(a===b) return Generators.ratio_share();
+    const part=ri(5,15);
+    const total=part*(a+b);
+    const corA=part*a, corB=part*b;
+    const which=pickA(['A','B']);
+    const cor = which==='A' ? corA : corB;
+    const w1 = which==='A' ? corB : corA;
+    const w2 = total/2, w3 = cor+part;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const whoEn = which==='A' ? 'first person' : 'second person';
+    const whoId = which==='A' ? 'orang pertama' : 'orang kedua';
+    return{text:{en:`<b>$${total}</b> is shared in the ratio <b>${a} : ${b}</b>. How much does the <b>${whoEn}</b> get?`,
+                 id:`<b>Rp${total}</b> dibagi dengan rasio <b>${a} : ${b}</b>. Berapa yang didapat <b>${whoId}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Total parts = ${a} + ${b} = <b>${a+b}</b>`,`One part = ${total} ÷ ${a+b} = <b>${part}</b>`,`${whoEn}: ${part} × ${which==='A'?a:b} = <b>${cor}</b>`],
+             id:[`Total bagian = ${a} + ${b} = <b>${a+b}</b>`,`Satu bagian = ${total} ÷ ${a+b} = <b>${part}</b>`,`${whoId}: ${part} × ${which==='A'?a:b} = <b>${cor}</b>`]},
+      concept:{en:'Share by ratio: total ÷ sum of parts gives one unit, then multiply.',
+               id:'Bagi dengan rasio: total ÷ jumlah bagian = satu bagian, lalu kalikan.'}};
+  },
+
+  prop_missing:()=>{
+    // a:b = c:?
+    const a=ri(2,6), m=ri(2,6);
+    const b=a*ri(2,5);
+    const c=a*m;
+    const cor=b*m;
+    const w1=cor+m, w2=cor-m, w3=b+m;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Find the missing value in the proportion:`,
+                 id:`Cari nilai yang hilang dalam perbandingan:`},
+      math:`<b>${a} : ${b} = ${c} : ?</b>`,opts,ans,
+      steps:{en:[`Find the multiplier: ${c} ÷ ${a} = <b>${m}</b>`,`Apply: ${b} × ${m} = <b>${cor}</b>`],
+             id:[`Cari pengali: ${c} ÷ ${a} = <b>${m}</b>`,`Terapkan: ${b} × ${m} = <b>${cor}</b>`]},
+      concept:{en:'Proportions stay equal — find the multiplier on one side, apply to the other.',
+               id:'Perbandingan tetap setara — cari pengali di satu sisi, terapkan ke sisi lain.'}};
+  },
+
+  prop_word:()=>{
+    const items=pickA([
+      {en:'pencils',id:'pensil',unitE:'pencils',unitI:'pensil'},
+      {en:'apples',id:'apel',unitE:'apples',unitI:'apel'},
+      {en:'eggs',id:'telur',unitE:'eggs',unitI:'telur'}
+    ]);
+    const n1=ri(2,5), price=ri(2,8);
+    const n2=n1*ri(2,6);
+    const cor=price*n2/n1;
+    const w1=cor+price, w2=cor-price, w3=Math.round(cor*1.5);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`If <b>${n1} ${items.en}</b> cost <b>$${price}</b>, how much do <b>${n2} ${items.en}</b> cost?`,
+                 id:`Jika <b>${n1} ${items.id}</b> seharga <b>Rp${price}</b>, berapa harga <b>${n2} ${items.id}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`1 ${items.en.replace(/s$/,'')} = $${price}÷${n1} = $${price/n1}`,`${n2} × $${price/n1} = <b>$${cor}</b>`],
+             id:[`1 ${items.id} = Rp${price}÷${n1} = Rp${price/n1}`,`${n2} × Rp${price/n1} = <b>Rp${cor}</b>`]},
+      concept:{en:'Direct proportion: when one quantity doubles, the other doubles.',
+               id:'Perbandingan senilai: jika satu naik 2×, yang lain juga naik 2×.'}};
+  },
+
+  scale:()=>{
+    const scale=pickA([100,200,500,1000,2500]);
+    const mapCm=pickA([2,3,4,5,6,8,10]);
+    const realCm=mapCm*scale;
+    const realM=realCm/100;
+    const cor=realM;
+    const w1=mapCm*scale, w2=realM/10, w3=mapCm+scale;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`A map has a scale of <b>1 : ${scale}</b>. The distance on the map is <b>${mapCm} cm</b>. What is the real distance in <b>metres</b>?`,
+                 id:`Sebuah peta berskala <b>1 : ${scale}</b>. Jarak di peta <b>${mapCm} cm</b>. Berapa jarak sebenarnya dalam <b>meter</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Real = ${mapCm} × ${scale} = <b>${realCm} cm</b>`,`Convert to metres: ÷100 = <b>${realM} m</b>`],
+             id:[`Sebenarnya = ${mapCm} × ${scale} = <b>${realCm} cm</b>`,`Ubah ke meter: ÷100 = <b>${realM} m</b>`]},
+      concept:{en:'Map scale 1:n means 1 cm on the map = n cm in real life. Remember to convert units.',
+               id:'Skala peta 1:n berarti 1 cm di peta = n cm sebenarnya. Ingat ubah satuan.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 7 — Negative Numbers
+  // ══════════════════════════════════════════════════════════
+  neg_add_sub:()=>{
+    const a=ri(-15,15), b=ri(-15,15);
+    if(a===0||b===0) return Generators.neg_add_sub();
+    const op=pickA(['+','−']);
+    const cor = op==='+' ? a+b : a-b;
+    const w1=cor+1, w2=cor-1, w3=-cor;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const aS = a<0?`(${a})`:String(a);
+    const bS = b<0?`(${b})`:String(b);
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${aS} ${op} ${bS}</b>`,opts,ans,
+      steps:{en:[op==='+'?`Adding: ${a}+(${b}) = <b>${cor}</b>`:`Subtracting: ${a}−(${b}) = ${a}+(${-b}) = <b>${cor}</b>`,
+                `Same signs: add and keep sign. Different signs: subtract and keep larger sign.`],
+             id:[op==='+'?`Jumlahkan: ${a}+(${b}) = <b>${cor}</b>`:`Kurangi: ${a}−(${b}) = ${a}+(${-b}) = <b>${cor}</b>`,
+                `Tanda sama: jumlahkan, tanda tetap. Tanda beda: kurangkan, ambil tanda yang lebih besar.`]},
+      concept:{en:'Subtracting a negative is the same as adding a positive: a − (−b) = a + b.',
+               id:'Mengurangi bilangan negatif sama dengan menjumlahkan positif: a − (−b) = a + b.'}};
+  },
+
+  neg_mul_div:()=>{
+    const a=pickA([-12,-10,-8,-6,-5,-4,-3,-2,2,3,4,5,6,8,10,12]);
+    const b=pickA([-6,-5,-4,-3,-2,2,3,4,5,6]);
+    const op=pickA(['×','÷']);
+    let cor;
+    if(op==='×'){ cor=a*b; }
+    else {
+      // ensure exact division
+      if(a%b!==0) return Generators.neg_mul_div();
+      cor=a/b;
+    }
+    const w1=-cor, w2=cor+1, w3=cor-1;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const aS=a<0?`(${a})`:String(a);
+    const bS=b<0?`(${b})`:String(b);
+    const sameSign = (a<0)===(b<0);
+    const ruleEn = sameSign?`Same signs → positive`:`Different signs → negative`;
+    const ruleId = sameSign?`Tanda sama → positif`:`Tanda beda → negatif`;
+    return{text:{en:'Calculate:',id:'Hitung:'},
+      math:`<b>${aS} ${op} ${bS}</b>`,opts,ans,
+      steps:{en:[`${ruleEn}`,`|${a}| ${op} |${b}| = ${Math.abs(cor)}`,`Answer: <b>${cor}</b>`],
+             id:[`${ruleId}`,`|${a}| ${op} |${b}| = ${Math.abs(cor)}`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'For × and ÷: same signs → positive; different signs → negative.',
+               id:'Untuk × dan ÷: tanda sama → positif; tanda beda → negatif.'}};
+  },
+
+  neg_context:()=>{
+    const v=pickA([0,1]);
+    if(v===0){
+      // temperature change
+      const start=ri(-10,-1);
+      const change=ri(3,15);
+      const cor=start+change;
+      const w1=cor-1, w2=start-change, w3=cor+1;
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:`The temperature is <b>${start}°C</b>. It rises by <b>${change}°C</b>. What is the new temperature?`,
+                   id:`Suhu mula-mula <b>${start}°C</b>. Naik <b>${change}°C</b>. Berapa suhu sekarang?`},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`${start} + ${change} = <b>${cor}°C</b>`],id:[`${start} + ${change} = <b>${cor}°C</b>`]},
+        concept:{en:'Temperature rising = add. Temperature falling = subtract.',
+                 id:'Suhu naik = tambah. Suhu turun = kurang.'}};
+    } else {
+      const debt=ri(20,80);
+      const pay=ri(10,debt-5);
+      const cor=-debt+pay; // still negative
+      const w1=cor+pay, w2=-cor, w3=cor-1;
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:`Adi owes <b>$${debt}</b> (balance = <b>$${-debt}</b>). He pays back <b>$${pay}</b>. What is his new balance?`,
+                   id:`Adi berhutang <b>Rp${debt}</b> (saldo = <b>Rp${-debt}</b>). Ia membayar <b>Rp${pay}</b>. Berapa saldo sekarang?`},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`${-debt} + ${pay} = <b>${cor}</b>`],id:[`${-debt} + ${pay} = <b>${cor}</b>`]},
+        concept:{en:'Owing money is a negative balance. Paying back adds to the balance.',
+                 id:'Hutang adalah saldo negatif. Membayar akan menambah saldo.'}};
+    }
+  },
+
+  neg_number_line:()=>{
+    const start=ri(-8,8);
+    const step=ri(3,12);
+    const dir=pickA(['right','left']);
+    const cor = dir==='right' ? start+step : start-step;
+    const w1=cor+1, w2=cor-1, w3=start;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Start at <b>${start}</b> on a number line. Move <b>${step} units to the ${dir}</b>. Where do you land?`,
+                 id:`Mulai dari <b>${start}</b> di garis bilangan. Geser <b>${step} satuan ke ${dir==='right'?'kanan':'kiri'}</b>. Di mana mendarat?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`${dir==='right'?'Right = add':'Left = subtract'}`,`${start} ${dir==='right'?'+':'−'} ${step} = <b>${cor}</b>`],
+             id:[`${dir==='right'?'Kanan = tambah':'Kiri = kurang'}`,`${start} ${dir==='right'?'+':'−'} ${step} = <b>${cor}</b>`]},
+      concept:{en:'On a number line: right = add, left = subtract.',
+               id:'Pada garis bilangan: kanan = tambah, kiri = kurang.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 8 — Algebra & Sequences
+  // ══════════════════════════════════════════════════════════
+  solve_simple:()=>{
+    const a=ri(2,8), x=ri(2,10), b=ri(1,15);
+    const op=pickA(['+','−']);
+    const rhs = op==='+' ? a*x+b : a*x-b;
+    if(rhs<=0) return Generators.solve_simple();
+    const cor=x;
+    const w1=cor+1, w2=cor-1>0?cor-1:cor+2, w3=Math.round(rhs/a);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:'Solve for x:',id:'Tentukan nilai x:'},
+      math:`<b>${a}x ${op} ${b} = ${rhs}</b>`,opts,ans,
+      steps:{en:[op==='+'?`${a}x = ${rhs} − ${b} = <b>${a*x}</b>`:`${a}x = ${rhs} + ${b} = <b>${a*x}</b>`,
+                `x = ${a*x} ÷ ${a} = <b>${cor}</b>`],
+             id:[op==='+'?`${a}x = ${rhs} − ${b} = <b>${a*x}</b>`:`${a}x = ${rhs} + ${b} = <b>${a*x}</b>`,
+                `x = ${a*x} ÷ ${a} = <b>${cor}</b>`]},
+      concept:{en:'Do the opposite operation: undo + with −, then undo × with ÷. Same on both sides.',
+               id:'Lakukan operasi kebalikan: balik + dengan −, lalu × dengan ÷. Lakukan di kedua sisi.'}};
+  },
+
+  substitute:()=>{
+    const a=ri(2,8), b=ri(1,9), x=ri(2,9);
+    const formulas=[
+      {en:`<b>${a}x + ${b}</b>`,id:`<b>${a}x + ${b}</b>`,calc:a*x+b},
+      {en:`<b>${a}x − ${b}</b>`,id:`<b>${a}x − ${b}</b>`,calc:a*x-b},
+      {en:`<b>x² + ${b}</b>`,id:`<b>x² + ${b}</b>`,calc:x*x+b},
+      {en:`<b>${a}(x + ${b})</b>`,id:`<b>${a}(x + ${b})</b>`,calc:a*(x+b)},
+    ];
+    const f=pickA(formulas);
+    const cor=f.calc;
+    const w1=cor+a, w2=cor-a, w3=cor+b;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`If <b>x = ${x}</b>, find the value of:`,
+                 id:`Jika <b>x = ${x}</b>, cari nilai dari:`},
+      math:f.en,opts,ans,
+      steps:{en:[`Replace x with ${x}.`,`Calculate: <b>${cor}</b>`],
+             id:[`Ganti x dengan ${x}.`,`Hitung: <b>${cor}</b>`]},
+      concept:{en:'Substitution: replace each variable with its value, then evaluate using BODMAS.',
+               id:'Substitusi: ganti tiap variabel dengan nilainya, lalu hitung dengan BODMAS.'}};
+  },
+
+  sequence_next:()=>{
+    const v=pickA([0,1]);
+    const a=ri(2,8), d=ri(2,7);
+    let terms,cor,stepEn,stepId;
+    if(v===0){ // arithmetic
+      terms=[a,a+d,a+2*d,a+3*d];
+      cor=a+4*d;
+      stepEn=[`Difference between terms = <b>${d}</b>`,`Next: ${a+3*d} + ${d} = <b>${cor}</b>`];
+      stepId=[`Selisih antar suku = <b>${d}</b>`,`Berikutnya: ${a+3*d} + ${d} = <b>${cor}</b>`];
+    } else { // multiply by r
+      const r=pickA([2,3]);
+      terms=[a,a*r,a*r*r,a*r*r*r];
+      cor=a*r*r*r*r;
+      stepEn=[`Multiply by <b>${r}</b> each time`,`Next: ${a*r*r*r} × ${r} = <b>${cor}</b>`];
+      stepId=[`Kali <b>${r}</b> tiap kali`,`Berikutnya: ${a*r*r*r} × ${r} = <b>${cor}</b>`];
+    }
+    const w1=cor+1, w2=cor-1, w3=cor*2;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:'What is the next term in the sequence?',id:'Apakah suku berikutnya pada barisan ini?'},
+      math:`<b>${terms.join(', ')}, ?</b>`,opts,ans,
+      steps:{en:stepEn,id:stepId},
+      concept:{en:'Find the pattern: a constant difference (arithmetic) or a constant ratio (geometric).',
+               id:'Cari polanya: selisih tetap (aritmetika) atau rasio tetap (geometri).'}};
+  },
+
+  sequence_nth:()=>{
+    // n-th term of an+b
+    const a=ri(2,6), b=ri(1,8);
+    const n=ri(5,10);
+    const cor=a*n+b;
+    const terms=[a*1+b,a*2+b,a*3+b,a*4+b];
+    const w1=cor+a, w2=cor-a, w3=a*(n-1)+b;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`The sequence is <b>${terms.join(', ')}, …</b>. The <b>${n}<sup>th</sup> term</b> follows the rule <b>${a}n + ${b}</b>. What is the <b>${n}<sup>th</sup> term</b>?`,
+                 id:`Barisan: <b>${terms.join(', ')}, …</b>. Rumus suku ke-n adalah <b>${a}n + ${b}</b>. Berapa suku ke-<b>${n}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Substitute n = ${n}`,`${a} × ${n} + ${b} = ${a*n} + ${b} = <b>${cor}</b>`],
+             id:[`Substitusi n = ${n}`,`${a} × ${n} + ${b} = ${a*n} + ${b} = <b>${cor}</b>`]},
+      concept:{en:'Use the rule for n-th term: substitute the position number into the formula.',
+               id:'Gunakan rumus suku ke-n: substitusi nomor posisi ke dalam rumus.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 9 — Angles & Shapes
+  // ══════════════════════════════════════════════════════════
+  triangle_angle:()=>{
+    // angles sum to 180
+    const a=ri(30,80);
+    const b=ri(30,80);
+    if(a+b>=170) return Generators.triangle_angle();
+    const cor=180-a-b;
+    const w1=cor+10, w2=cor-10, w3=180-cor;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Two angles of a triangle are <b>${a}°</b> and <b>${b}°</b>. What is the third angle?`,
+                 id:`Dua sudut sebuah segitiga adalah <b>${a}°</b> dan <b>${b}°</b>. Berapa sudut ketiganya?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Angles in a triangle sum to <b>180°</b>.`,`180° − ${a}° − ${b}° = <b>${cor}°</b>`],
+             id:[`Jumlah sudut segitiga = <b>180°</b>.`,`180° − ${a}° − ${b}° = <b>${cor}°</b>`]},
+      concept:{en:'The three angles of any triangle always add up to 180°.',
+               id:'Jumlah tiga sudut segitiga selalu 180°.'}};
+  },
+
+  quad_angle:()=>{
+    const a=ri(60,120), b=ri(60,120), c=ri(60,120);
+    if(a+b+c>=350) return Generators.quad_angle();
+    const cor=360-a-b-c;
+    if(cor<=20||cor>=170) return Generators.quad_angle();
+    const w1=cor+10, w2=cor-10, w3=180-cor;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Three angles of a quadrilateral are <b>${a}°</b>, <b>${b}°</b>, and <b>${c}°</b>. What is the fourth angle?`,
+                 id:`Tiga sudut segiempat: <b>${a}°</b>, <b>${b}°</b>, dan <b>${c}°</b>. Berapa sudut keempat?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Angles in a quadrilateral sum to <b>360°</b>.`,`360° − ${a}° − ${b}° − ${c}° = <b>${cor}°</b>`],
+             id:[`Jumlah sudut segiempat = <b>360°</b>.`,`360° − ${a}° − ${b}° − ${c}° = <b>${cor}°</b>`]},
+      concept:{en:'The four angles of any quadrilateral sum to 360°.',
+               id:'Jumlah empat sudut segiempat selalu 360°.'}};
+  },
+
+  angle_straight:()=>{
+    const a=ri(30,150);
+    const cor=180-a;
+    const w1=cor+10, w2=cor-10, w3=360-a;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Two angles lie on a straight line. One is <b>${a}°</b>. What is the other?`,
+                 id:`Dua sudut pada satu garis lurus. Satu sudut <b>${a}°</b>. Berapa sudut lainnya?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Angles on a straight line sum to <b>180°</b>.`,`180° − ${a}° = <b>${cor}°</b>`],
+             id:[`Sudut pada garis lurus berjumlah <b>180°</b>.`,`180° − ${a}° = <b>${cor}°</b>`]},
+      concept:{en:'Angles on a straight line add to 180°. Angles around a point add to 360°.',
+               id:'Sudut pada garis lurus = 180°. Sudut keliling satu titik = 360°.'}};
+  },
+
+  vert_opp:()=>{
+    const a=ri(30,150);
+    const cor=a; // vertically opposite = equal
+    const w1=180-a, w2=360-a, w3=a+10;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Two lines cross. One angle is <b>${a}°</b>. What is the <b>vertically opposite</b> angle?`,
+                 id:`Dua garis berpotongan. Salah satu sudut <b>${a}°</b>. Berapa sudut <b>vertikal yang berlawanan</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Vertically opposite angles are <b>equal</b>.`,`Answer: <b>${cor}°</b>`],
+             id:[`Sudut yang bertolak belakang itu <b>sama besar</b>.`,`Jawaban: <b>${cor}°</b>`]},
+      concept:{en:'When two lines cross, vertically opposite angles are equal.',
+               id:'Bila dua garis berpotongan, sudut bertolak belakang sama besar.'}};
+  },
+
+  quad_props:()=>{
+    const shapes=[
+      {n:{en:'parallelogram',id:'jajar genjang'}, prop:{en:'opposite sides parallel and equal, opposite angles equal',id:'sisi berhadapan sejajar dan sama panjang, sudut berhadapan sama besar'}},
+      {n:{en:'rhombus',id:'belah ketupat'}, prop:{en:'all 4 sides equal, diagonals perpendicular',id:'keempat sisi sama panjang, diagonal saling tegak lurus'}},
+      {n:{en:'trapezium',id:'trapesium'}, prop:{en:'exactly one pair of parallel sides',id:'tepat satu pasang sisi sejajar'}},
+      {n:{en:'kite',id:'layang-layang'}, prop:{en:'two pairs of adjacent sides equal, one diagonal is the perpendicular bisector',id:'dua pasang sisi bersebelahan sama panjang, satu diagonal merupakan sumbu simetri'}},
+    ];
+    const s=pickA(shapes);
+    const wrongs=shapes.filter(x=>x.n.en!==s.n.en);
+    const cor=t(s.prop);
+    const distractors=wrongs.map(x=>t(x.prop));
+    const{opts,ans}=mkOpts(cor,distractors);
+    return{text:{en:`Which property describes a <b>${s.n.en}</b>?`,
+                 id:`Manakah sifat yang menggambarkan <b>${s.n.id}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Recall key properties of a ${s.n.en}.`,`<b>${cor}</b>`],
+             id:[`Ingat sifat utama ${s.n.id}.`,`<b>${cor}</b>`]},
+      concept:{en:'Each quadrilateral has unique properties: sides, angles, diagonals, parallel pairs.',
+               id:'Setiap segiempat punya sifat khas: sisi, sudut, diagonal, dan pasangan sejajar.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 10 — Coordinates & Transformations (with SVG)
+  // ══════════════════════════════════════════════════════════
+  coord_4quad:()=>{
+    const x=ri(-5,5), y=ri(-5,5);
+    if(x===0||y===0) return Generators.coord_4quad();
+    // SVG grid
+    const S=20, W=240, H=240, CX=W/2, CY=H/2;
+    let grid='';
+    for(let i=-6;i<=6;i++){
+      grid+=`<line x1="${CX+i*S}" y1="0" x2="${CX+i*S}" y2="${H}" stroke="${i===0?'#333':'#dde6ff'}" stroke-width="${i===0?1.5:0.6}"/>`;
+      grid+=`<line x1="0" y1="${CY+i*S}" x2="${W}" y2="${CY+i*S}" stroke="${i===0?'#333':'#dde6ff'}" stroke-width="${i===0?1.5:0.6}"/>`;
+    }
+    // axis labels
+    let labs='';
+    for(let i=-5;i<=5;i++){
+      if(i!==0){
+        labs+=`<text x="${CX+i*S}" y="${CY+12}" text-anchor="middle" font-size="9" fill="#666">${i}</text>`;
+        labs+=`<text x="${CX-7}" y="${CY-i*S+3}" text-anchor="end" font-size="9" fill="#666">${i}</text>`;
+      }
+    }
+    const px=CX+x*S, py=CY-y*S;
+    const dot=`<circle cx="${px}" cy="${py}" r="5" fill="#d63031" stroke="#fff" stroke-width="2"/>`;
+    const lbl=`<text x="${px+8}" y="${py-6}" font-size="11" font-weight="900" fill="#d63031">P</text>`;
+    const svg=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:10px auto;max-width:100%;height:auto;background:#fafbff;border-radius:10px">${grid}${labs}${dot}${lbl}</svg>`;
+    const cor=`(${x}, ${y})`;
+    const w1=`(${y}, ${x})`, w2=`(${-x}, ${y})`, w3=`(${x}, ${-y})`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:'What are the coordinates of point <b>P</b>?',
+                 id:'Apakah koordinat titik <b>P</b>?'},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[`Read across (x) then up/down (y).`,`x = ${x}, y = ${y}`,`Answer: <b>${cor}</b>`],
+             id:[`Baca ke kanan (x) lalu naik/turun (y).`,`x = ${x}, y = ${y}`,`Jawaban: <b>${cor}</b>`]},
+      concept:{en:'Coordinates are written (x, y). x is horizontal, y is vertical. Negative values go left/down.',
+               id:'Koordinat ditulis (x, y). x = mendatar, y = tegak. Nilai negatif ke kiri/bawah.'}};
+  },
+
+  translate:()=>{
+    const x=ri(-3,3), y=ri(-3,3);
+    const dx=ri(-4,4), dy=ri(-4,4);
+    if(dx===0&&dy===0) return Generators.translate();
+    const cor=`(${x+dx}, ${y+dy})`;
+    const w1=`(${x-dx}, ${y-dy})`;
+    const w2=`(${x+dy}, ${y+dx})`;
+    const w3=`(${dx}, ${dy})`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:`Point P is at <b>(${x}, ${y})</b>. It is translated by <b>(${dx}, ${dy})</b>. What are the new coordinates?`,
+                 id:`Titik P berada di <b>(${x}, ${y})</b>. Digeser sejauh <b>(${dx}, ${dy})</b>. Berapa koordinat barunya?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Add the translation vector to each coordinate.`,`(${x}+${dx}, ${y}+${dy}) = <b>${cor}</b>`],
+             id:[`Tambahkan vektor geser ke tiap koordinat.`,`(${x}+${dx}, ${y}+${dy}) = <b>${cor}</b>`]},
+      concept:{en:'Translation: add the same numbers to every point. The shape slides — same size, same orientation.',
+               id:'Translasi: tambahkan bilangan yang sama ke tiap titik. Bentuk bergeser — ukuran dan arah tetap.'}};
+  },
+
+  reflect:()=>{
+    const x=ri(-5,5), y=ri(-5,5);
+    if(x===0||y===0) return Generators.reflect();
+    const axis=pickA(['x','y']);
+    const newX = axis==='y' ? -x : x;
+    const newY = axis==='x' ? -y : y;
+    const cor=`(${newX}, ${newY})`;
+    const w1=`(${-x}, ${-y})`;
+    const w2=`(${y}, ${x})`;
+    const w3=`(${x}, ${y})`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    // SVG showing original
+    const S=18, W=200, H=200, CX=W/2, CY=H/2;
+    let grid='';
+    for(let i=-5;i<=5;i++){
+      grid+=`<line x1="${CX+i*S}" y1="0" x2="${CX+i*S}" y2="${H}" stroke="${i===0?'#333':'#e6ecff'}" stroke-width="${i===0?1.5:0.5}"/>`;
+      grid+=`<line x1="0" y1="${CY+i*S}" x2="${W}" y2="${CY+i*S}" stroke="${i===0?'#333':'#e6ecff'}" stroke-width="${i===0?1.5:0.5}"/>`;
+    }
+    // highlight reflection axis
+    const axisLine = axis==='x'
+      ? `<line x1="0" y1="${CY}" x2="${W}" y2="${CY}" stroke="#d63031" stroke-width="2.5" stroke-dasharray="4,3"/>`
+      : `<line x1="${CX}" y1="0" x2="${CX}" y2="${H}" stroke="#d63031" stroke-width="2.5" stroke-dasharray="4,3"/>`;
+    const px=CX+x*S, py=CY-y*S;
+    const dot=`<circle cx="${px}" cy="${py}" r="5" fill="#0984e3" stroke="#fff" stroke-width="2"/>`;
+    const lbl=`<text x="${px+8}" y="${py-6}" font-size="11" font-weight="900" fill="#0984e3">P</text>`;
+    const svg=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px auto;max-width:100%;height:auto;background:#fafbff;border-radius:10px">${grid}${axisLine}${dot}${lbl}</svg>`;
+    return{text:{en:`Point P at <b>(${x}, ${y})</b> is reflected over the <b>${axis}-axis</b> (red dashed line). What are the new coordinates?`,
+                 id:`Titik P di <b>(${x}, ${y})</b> dicerminkan terhadap sumbu <b>${axis}</b> (garis merah putus-putus). Berapa koordinat barunya?`},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[axis==='x'?`Reflect over x-axis: y becomes −y.`:`Reflect over y-axis: x becomes −x.`,
+                `(${x}, ${y}) → <b>${cor}</b>`],
+             id:[axis==='x'?`Cermin sumbu x: y menjadi −y.`:`Cermin sumbu y: x menjadi −x.`,
+                `(${x}, ${y}) → <b>${cor}</b>`]},
+      concept:{en:'Reflect over x-axis: (x, y) → (x, −y). Reflect over y-axis: (x, y) → (−x, y).',
+               id:'Cermin sumbu x: (x, y) → (x, −y). Cermin sumbu y: (x, y) → (−x, y).'}};
+  },
+
+  rotate:()=>{
+    const x=ri(1,5), y=ri(1,5);
+    const angle=pickA([90,180,270]);
+    // rotation about origin (clockwise convention or CCW? Use CCW = standard math)
+    // 90° CCW: (x,y) → (-y, x)
+    // 180°:   (x,y) → (-x, -y)
+    // 270° CCW (= 90° CW): (x,y) → (y, -x)
+    let nx,ny;
+    if(angle===90){nx=-y; ny=x;}
+    else if(angle===180){nx=-x; ny=-y;}
+    else {nx=y; ny=-x;}
+    const cor=`(${nx}, ${ny})`;
+    const w1=`(${-nx}, ${-ny})`, w2=`(${ny}, ${nx})`, w3=`(${x}, ${y})`;
+    const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+    return{text:{en:`Point at <b>(${x}, ${y})</b> is rotated <b>${angle}° counter-clockwise</b> about the origin. What are the new coordinates?`,
+                 id:`Titik <b>(${x}, ${y})</b> diputar <b>${angle}° berlawanan jarum jam</b> terhadap titik asal. Berapa koordinat barunya?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Rotation by ${angle}° rule:`,
+                angle===90?`(x, y) → (−y, x)`:angle===180?`(x, y) → (−x, −y)`:`(x, y) → (y, −x)`,
+                `Apply: <b>${cor}</b>`],
+             id:[`Aturan putar ${angle}°:`,
+                angle===90?`(x, y) → (−y, x)`:angle===180?`(x, y) → (−x, −y)`:`(x, y) → (y, −x)`,
+                `Terapkan: <b>${cor}</b>`]},
+      concept:{en:'Rotation about the origin: 90° CCW (x,y)→(−y,x); 180° (x,y)→(−x,−y); 270° CCW (x,y)→(y,−x).',
+               id:'Putar terhadap titik asal: 90° BJL (x,y)→(−y,x); 180° (x,y)→(−x,−y); 270° BJL (x,y)→(y,−x).'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 11 — Area, Perimeter, Volume
+  // ══════════════════════════════════════════════════════════
+  area_parallelogram:()=>{
+    const base=ri(4,15), h=ri(3,12);
+    const cor=base*h;
+    const w1=base+h, w2=2*(base+h), w3=Math.round(base*h/2);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    // simple SVG
+    const sc=10, off=20;
+    const svg=`<svg width="200" height="120" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px auto;max-width:100%;height:auto;background:#fafbff;border-radius:8px">
+      <polygon points="${off+20},${20+h*sc} ${off+20+base*sc},${20+h*sc} ${off+base*sc},20 ${off},20" fill="#e3f0ff" stroke="#0984e3" stroke-width="2"/>
+      <text x="${off+20+base*sc/2}" y="${30+h*sc}" text-anchor="middle" font-size="12" font-weight="700" fill="#0984e3">base = ${base}</text>
+      <line x1="${off+base*sc+12}" y1="20" x2="${off+base*sc+12}" y2="${20+h*sc}" stroke="#d63031" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <text x="${off+base*sc+16}" y="${20+h*sc/2}" font-size="12" font-weight="700" fill="#d63031">h = ${h}</text>
+    </svg>`;
+    return{text:{en:'Find the <b>area</b> of the parallelogram (in square units).',
+                 id:'Cari <b>luas</b> jajar genjang (dalam satuan persegi).'},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[`Area = base × height`,`= ${base} × ${h} = <b>${cor}</b>`],
+             id:[`Luas = alas × tinggi`,`= ${base} × ${h} = <b>${cor}</b>`]},
+      concept:{en:'Area of a parallelogram = base × perpendicular height (not the slant side).',
+               id:'Luas jajar genjang = alas × tinggi tegak lurus (bukan sisi miring).'}};
+  },
+
+  area_triangle:()=>{
+    const base=pickA([4,6,8,10,12,14,16]);
+    const h=pickA([3,5,6,8,9,10]);
+    const cor=base*h/2;
+    if(cor!==Math.floor(cor)) return Generators.area_triangle();
+    const w1=base*h, w2=base+h, w3=cor+5;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    const sc=10;
+    const svg=`<svg width="200" height="${40+h*sc}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px auto;max-width:100%;height:auto;background:#fafbff;border-radius:8px">
+      <polygon points="20,${20+h*sc} ${20+base*sc},${20+h*sc} ${20+base*sc/2},20" fill="#e3f0ff" stroke="#0984e3" stroke-width="2"/>
+      <text x="${20+base*sc/2}" y="${32+h*sc}" text-anchor="middle" font-size="12" font-weight="700" fill="#0984e3">base = ${base}</text>
+      <line x1="${20+base*sc/2}" y1="20" x2="${20+base*sc/2}" y2="${20+h*sc}" stroke="#d63031" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <text x="${22+base*sc/2}" y="${20+h*sc/2}" font-size="12" font-weight="700" fill="#d63031">h = ${h}</text>
+    </svg>`;
+    return{text:{en:'Find the <b>area</b> of the triangle (in square units).',
+                 id:'Cari <b>luas</b> segitiga (dalam satuan persegi).'},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[`Area = ½ × base × height`,`= ½ × ${base} × ${h} = <b>${cor}</b>`],
+             id:[`Luas = ½ × alas × tinggi`,`= ½ × ${base} × ${h} = <b>${cor}</b>`]},
+      concept:{en:'Area of a triangle = ½ × base × perpendicular height.',
+               id:'Luas segitiga = ½ × alas × tinggi tegak lurus.'}};
+  },
+
+  area_compound:()=>{
+    // L-shape: big rectangle - small cutout
+    const W1=ri(8,14), H1=ri(5,9);
+    const W2=ri(2,W1-3), H2=ri(2,H1-2);
+    const cor=W1*H1-W2*H2;
+    const w1=W1*H1, w2=W1*H1+W2*H2, w3=cor+10;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    // SVG
+    const sc=14, off=14;
+    const fullPath=`M ${off},${off}
+                    L ${off+W1*sc},${off}
+                    L ${off+W1*sc},${off+H1*sc}
+                    L ${off+W2*sc},${off+H1*sc}
+                    L ${off+W2*sc},${off+(H1-H2)*sc}
+                    L ${off},${off+(H1-H2)*sc} Z`;
+    const svg=`<svg width="${off*2+W1*sc}" height="${off*2+H1*sc}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px auto;max-width:100%;height:auto;background:#fafbff;border-radius:8px">
+      <path d="${fullPath}" fill="#e3f0ff" stroke="#0984e3" stroke-width="2"/>
+      <text x="${off+W1*sc/2}" y="${off-3}" text-anchor="middle" font-size="11" font-weight="700" fill="#0984e3">${W1}</text>
+      <text x="${off-5}" y="${off+(H1-H2)*sc/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#0984e3">${H1-H2}</text>
+      <text x="${off+W2*sc/2}" y="${off+H1*sc+12}" text-anchor="middle" font-size="11" font-weight="700" fill="#0984e3">${W2}</text>
+      <text x="${off+W2*sc-5}" y="${off+H1*sc-H2*sc/2+4}" text-anchor="end" font-size="11" font-weight="700" fill="#0984e3">${H2}</text>
+    </svg>`;
+    return{text:{en:'Find the <b>area</b> of the compound shape (split into rectangles).',
+                 id:'Cari <b>luas</b> bentuk gabungan (pisah menjadi persegi panjang).'},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[`Big rectangle: ${W1} × ${H1} = <b>${W1*H1}</b>`,`Cutout: ${W1-W2} × ${H2} = <b>${(W1-W2)*H2}</b>`,`Total area = ${W1*H1} − ${(W1-W2)*H2}… split into two rectangles: ${W1}×${H1-H2} + ${W2}×${H2} = ${W1*(H1-H2)} + ${W2*H2} = <b>${cor}</b>`],
+             id:[`Persegi panjang besar: ${W1} × ${H1} = <b>${W1*H1}</b>`,`Pisah jadi dua: ${W1}×${H1-H2} + ${W2}×${H2} = ${W1*(H1-H2)} + ${W2*H2} = <b>${cor}</b>`]},
+      concept:{en:'Split a compound shape into rectangles, find each area, then add them.',
+               id:'Pisah bentuk gabungan menjadi persegi panjang, hitung luas masing-masing, lalu jumlahkan.'}};
+  },
+
+  perim_compound:()=>{
+    const W1=ri(6,12), H1=ri(4,8);
+    const W2=ri(2,W1-2), H2=ri(2,H1-2);
+    // L-shape perimeter = 2(W1 + H1)
+    const cor=2*(W1+H1);
+    const w1=W1*H1, w2=cor+W2, w3=cor-W2>0?cor-W2:cor+H2;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`A garden is L-shaped. Its bounding rectangle is <b>${W1} m × ${H1} m</b>, with a corner cut out (${W1-W2} m × ${H2} m). What is the <b>perimeter</b>?`,
+                 id:`Sebuah taman berbentuk L. Persegi panjang sekitarnya <b>${W1} m × ${H1} m</b>, sudutnya dipotong (${W1-W2} m × ${H2} m). Berapa <b>kelilingnya</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`For an L-shape, the perimeter equals that of the bounding rectangle.`,`Perimeter = 2 × (${W1} + ${H1}) = <b>${cor} m</b>`],
+             id:[`Untuk bentuk L, kelilingnya sama dengan keliling persegi panjang luar.`,`Keliling = 2 × (${W1} + ${H1}) = <b>${cor} m</b>`]},
+      concept:{en:'For an L-shape, the "indented" edges add up to the missing rectangle edges — perimeter equals the full rectangle.',
+               id:'Untuk bentuk L, sisi yang masuk ke dalam menutup sisi yang hilang — keliling = persegi panjang penuh.'}};
+  },
+
+  vol_cuboid:()=>{
+    const l=ri(3,10), w=ri(3,10), h=ri(2,8);
+    const cor=l*w*h;
+    const w1=l*w+h, w2=l+w+h, w3=2*(l*w+l*h+w*h);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Find the <b>volume</b> of a cuboid with length <b>${l} cm</b>, width <b>${w} cm</b>, and height <b>${h} cm</b>.`,
+                 id:`Cari <b>volume</b> balok dengan panjang <b>${l} cm</b>, lebar <b>${w} cm</b>, dan tinggi <b>${h} cm</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Volume = length × width × height`,`= ${l} × ${w} × ${h} = <b>${cor} cm³</b>`],
+             id:[`Volume = panjang × lebar × tinggi`,`= ${l} × ${w} × ${h} = <b>${cor} cm³</b>`]},
+      concept:{en:'Volume of a cuboid = length × width × height. Units are cubic (cm³, m³, …).',
+               id:'Volume balok = panjang × lebar × tinggi. Satuan kubik (cm³, m³, …).'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 12 — Statistics & Probability
+  // ══════════════════════════════════════════════════════════
+  mean:()=>{
+    const n=pickA([4,5,6]);
+    const mean=ri(5,12);
+    const vals=[];
+    let sum=0;
+    for(let i=0;i<n-1;i++){const v=ri(mean-3,mean+3); vals.push(v); sum+=v;}
+    vals.push(mean*n-sum);
+    if(vals[n-1]<=0||vals[n-1]>30) return Generators.mean();
+    shuffA(vals);
+    const cor=mean;
+    const w1=cor+1, w2=cor-1, w3=Math.max(...vals);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Find the <b>mean</b> of the data set:`,
+                 id:`Cari <b>rata-rata</b> dari himpunan data:`},
+      math:`<b>${vals.join(', ')}</b>`,opts,ans,
+      steps:{en:[`Sum = ${vals.join(' + ')} = <b>${vals.reduce((a,b)=>a+b,0)}</b>`,`Mean = ${vals.reduce((a,b)=>a+b,0)} ÷ ${n} = <b>${cor}</b>`],
+             id:[`Jumlah = ${vals.join(' + ')} = <b>${vals.reduce((a,b)=>a+b,0)}</b>`,`Rata-rata = ${vals.reduce((a,b)=>a+b,0)} ÷ ${n} = <b>${cor}</b>`]},
+      concept:{en:'Mean (average) = sum of all values ÷ number of values.',
+               id:'Rata-rata = jumlah semua nilai ÷ banyak nilai.'}};
+  },
+
+  median_g6:()=>{
+    const n=pickA([5,7]);
+    const vals=[];
+    for(let i=0;i<n;i++) vals.push(ri(3,30));
+    const sorted=[...vals].sort((a,b)=>a-b);
+    const cor=sorted[Math.floor(n/2)];
+    const w1=sorted[0], w2=sorted[n-1], w3=Math.round(vals.reduce((a,b)=>a+b,0)/n);
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`Find the <b>median</b> of the data:`,
+                 id:`Cari <b>median</b> dari data:`},
+      math:`<b>${vals.join(', ')}</b>`,opts,ans,
+      steps:{en:[`Sort: ${sorted.join(', ')}`,`Middle value (${n} items): <b>${cor}</b>`],
+             id:[`Urutkan: ${sorted.join(', ')}`,`Nilai tengah (${n} data): <b>${cor}</b>`]},
+      concept:{en:'Median = the middle value after sorting. With an odd count, it\'s the exact middle.',
+               id:'Median = nilai tengah setelah diurutkan. Jika data ganjil, ambil tengahnya.'}};
+  },
+
+  mode_range:()=>{
+    const v=pickA([0,1]);
+    // build data with a clear mode
+    const modeVal=ri(3,12);
+    const vals=[modeVal,modeVal,modeVal];
+    for(let i=0;i<4;i++){
+      let x;
+      do{ x=ri(1,15); }while(x===modeVal);
+      vals.push(x);
+    }
+    shuffA(vals);
+    const maxV=Math.max(...vals), minV=Math.min(...vals);
+    const sorted=[...vals].sort((a,b)=>a-b);
+    if(v===0){
+      const cor=modeVal;
+      const w1=maxV, w2=minV, w3=sorted[Math.floor(sorted.length/2)];
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:`Find the <b>mode</b> of the data:`,id:`Cari <b>modus</b> dari data:`},
+        math:`<b>${vals.join(', ')}</b>`,opts,ans,
+        steps:{en:[`${modeVal} appears the most (3 times).`,`Mode = <b>${cor}</b>`],
+               id:[`${modeVal} muncul paling sering (3 kali).`,`Modus = <b>${cor}</b>`]},
+        concept:{en:'Mode = the value that appears most often.',
+                 id:'Modus = nilai yang paling sering muncul.'}};
+    } else {
+      const cor=maxV-minV;
+      const w1=maxV, w2=minV, w3=cor+1;
+      const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+      return{text:{en:`Find the <b>range</b> of the data:`,id:`Cari <b>jangkauan</b> dari data:`},
+        math:`<b>${vals.join(', ')}</b>`,opts,ans,
+        steps:{en:[`Max = ${maxV}, Min = ${minV}`,`Range = ${maxV} − ${minV} = <b>${cor}</b>`],
+               id:[`Maks = ${maxV}, Min = ${minV}`,`Jangkauan = ${maxV} − ${minV} = <b>${cor}</b>`]},
+        concept:{en:'Range = largest value − smallest value.',
+                 id:'Jangkauan = nilai terbesar − nilai terkecil.'}};
+    }
+  },
+
+  pie_chart:()=>{
+    // 4 categories adding to 100%
+    const cats=[
+      {en:'Football',id:'Sepak bola',color:'#0984e3'},
+      {en:'Basketball',id:'Bola basket',color:'#e17055'},
+      {en:'Tennis',id:'Tenis',color:'#00b894'},
+      {en:'Swimming',id:'Renang',color:'#fdcb6e'},
+    ];
+    // generate 4 percentages summing to 100 — multiples of 5
+    let parts;
+    do{
+      const a=pickA([10,15,20,25,30,35]);
+      const b=pickA([10,15,20,25,30]);
+      const c=pickA([10,15,20,25,30]);
+      const d=100-a-b-c;
+      parts=[a,b,c,d];
+    } while(parts[3]<10||parts[3]>40);
+    // SVG pie
+    const cx=110, cy=110, r=85;
+    let startA=-90; // top
+    let slices='';
+    let legend='';
+    parts.forEach((p,i)=>{
+      const ang=p/100*360;
+      const endA=startA+ang;
+      const sR=startA*Math.PI/180, eR=endA*Math.PI/180;
+      const x1=cx+r*Math.cos(sR), y1=cy+r*Math.sin(sR);
+      const x2=cx+r*Math.cos(eR), y2=cy+r*Math.sin(eR);
+      const largeArc = ang>180?1:0;
+      slices+=`<path d="M ${cx},${cy} L ${x1.toFixed(1)},${y1.toFixed(1)} A ${r},${r} 0 ${largeArc} 1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${cats[i].color}" stroke="#fff" stroke-width="2"/>`;
+      // label inside
+      const midA=(startA+endA)/2*Math.PI/180;
+      const lx=cx+r*0.6*Math.cos(midA), ly=cy+r*0.6*Math.sin(midA);
+      slices+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="900" fill="#fff">${p}%</text>`;
+      legend+=`<div style="display:flex;align-items:center;gap:6px;font-size:.85rem;margin:2px 0"><span style="display:inline-block;width:12px;height:12px;background:${cats[i].color};border-radius:3px"></span> ${t(cats[i])}</div>`;
+      startA=endA;
+    });
+    const svg=`<div style="display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:10px auto">
+      <svg width="220" height="220" xmlns="http://www.w3.org/2000/svg">${slices}</svg>
+      <div>${legend}</div></div>`;
+    // total students
+    const total=pickA([40,50,80,100,200]);
+    const which=ri(0,3);
+    const cor=total*parts[which]/100;
+    if(cor!==Math.floor(cor)) return Generators.pie_chart();
+    const w1=cor+5, w2=cor-5>0?cor-5:cor+10, w3=total-cor;
+    const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
+    return{text:{en:`The pie chart shows favourite sports of <b>${total}</b> students. How many students chose <b>${cats[which].en}</b>?`,
+                 id:`Diagram lingkaran menunjukkan olahraga favorit <b>${total}</b> siswa. Berapa siswa memilih <b>${cats[which].id}</b>?`},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[`${cats[which].en} = ${parts[which]}%`,`${parts[which]}% × ${total} = <b>${cor}</b>`],
+             id:[`${cats[which].id} = ${parts[which]}%`,`${parts[which]}% × ${total} = <b>${cor}</b>`]},
+      concept:{en:'In a pie chart, the % of the total equals the % of the sector.',
+               id:'Pada diagram lingkaran, % dari total = % bagian sektor.'}};
+  },
+
+  prob_basic:()=>{
+    const v=pickA([0,1,2]);
+    if(v===0){
+      // dice
+      const target=pickA([
+        {en:'an even number',id:'bilangan genap',count:3},
+        {en:'a number greater than 4',id:'bilangan lebih dari 4',count:2},
+        {en:'a 3 or a 5',id:'angka 3 atau 5',count:2},
+        {en:'a multiple of 3',id:'kelipatan 3',count:2},
+      ]);
+      const[sn,sd]=sfrac(target.count,6);
+      const cor=frac(sn,sd);
+      const w1=frac(target.count,12);
+      const w2=frac(6,target.count);
+      const w3=frac(sn+1,sd);
+      const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+      return{text:{en:`A fair 6-sided die is rolled. What is the probability of rolling <b>${target.en}</b>?`,
+                   id:`Sebuah dadu 6 sisi yang adil dilempar. Berapa peluang munculnya <b>${target.id}</b>?`},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`Favourable outcomes: ${target.count} out of 6.`,`P = ${frac(target.count,6)} = <b>${cor}</b>`],
+               id:[`Hasil yang diinginkan: ${target.count} dari 6.`,`P = ${frac(target.count,6)} = <b>${cor}</b>`]},
+        concept:{en:'Probability = (favourable outcomes) / (total outcomes).',
+                 id:'Peluang = (hasil yang diinginkan) / (total hasil mungkin).'}};
+    } else if(v===1){
+      // marbles
+      const red=ri(2,6), blue=ri(2,6), green=ri(1,4);
+      const total=red+blue+green;
+      const which=pickA([
+        {en:'red',id:'merah',c:red},
+        {en:'blue',id:'biru',c:blue},
+        {en:'green',id:'hijau',c:green},
+      ]);
+      const[sn,sd]=sfrac(which.c,total);
+      const cor=frac(sn,sd);
+      const w1=frac(which.c,which.c+1);
+      const w2=frac(total,which.c);
+      const w3=frac(which.c+1,total);
+      const{opts,ans}=mkOpts(cor,[w1,w2,w3]);
+      return{text:{en:`A bag has <b>${red} red</b>, <b>${blue} blue</b> and <b>${green} green</b> marbles. One is picked at random. What is the probability it is <b>${which.en}</b>?`,
+                   id:`Sebuah kantong berisi <b>${red} kelereng merah</b>, <b>${blue} biru</b>, dan <b>${green} hijau</b>. Satu diambil secara acak. Berapa peluang yang terambil <b>${which.id}</b>?`},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`Total marbles = ${total}.`,`${which.en}: ${which.c} out of ${total}.`,`P = ${frac(which.c,total)} = <b>${cor}</b>`],
+               id:[`Total kelereng = ${total}.`,`${which.id}: ${which.c} dari ${total}.`,`P = ${frac(which.c,total)} = <b>${cor}</b>`]},
+        concept:{en:'Probability = favourable / total possible outcomes. Always between 0 and 1.',
+                 id:'Peluang = yang diinginkan / total kemungkinan. Selalu antara 0 dan 1.'}};
+    } else {
+      // coin two flips — describe sample space
+      const cor='4';
+      const{opts,ans}=mkOpts(cor,['2','6','8']);
+      return{text:{en:`A coin is flipped <b>twice</b>. How many possible outcomes are there in the sample space?`,
+                   id:`Sebuah koin dilempar <b>dua kali</b>. Berapa banyak kemungkinan hasil pada ruang sampel?`},
+        math:null,isWord:true,opts,ans,
+        steps:{en:[`Each flip: 2 outcomes (H or T).`,`Total = 2 × 2 = <b>4</b>: HH, HT, TH, TT.`],
+               id:[`Setiap lemparan: 2 hasil (G atau A).`,`Total = 2 × 2 = <b>4</b>: GG, GA, AG, AA.`]},
+        concept:{en:'Sample space = the set of all possible outcomes. For 2 independent events: multiply the counts.',
+                 id:'Ruang sampel = himpunan semua kemungkinan hasil. Untuk 2 kejadian bebas: kalikan banyaknya.'}};
+    }
+  },
+
+};
+
+// ─────────────────────────────────────────────────────────────
+// PARTS
+// ─────────────────────────────────────────────────────────────
+const Parts=[
+  { ch:1, section:{en:'Chapter 1 — Place Value & Rounding',id:'Bab 1 — Nilai Tempat & Pembulatan'},
+    topics:['place_millions','decimal_thousandth','compare_large','round_int','round_dec'] },
+  { ch:2, section:{en:'Chapter 2 — Factors, Multiples & Primes',id:'Bab 2 — Faktor, Kelipatan & Prima'},
+    topics:['factors','multiples','primes','squares','hcf_lcm'] },
+  { ch:3, section:{en:'Chapter 3 — Fractions (All Operations)',id:'Bab 3 — Pecahan (Semua Operasi)'},
+    topics:['frac_add_diff','frac_mul_frac','frac_div','mixed_ops','simplify'] },
+  { ch:4, section:{en:'Chapter 4 — Decimals (All Operations)',id:'Bab 4 — Desimal (Semua Operasi)'},
+    topics:['dec_add_sub','dec_mul','dec_div','dec_mul_pow10'] },
+  { ch:5, section:{en:'Chapter 5 — Percentages',id:'Bab 5 — Persentase'},
+    topics:['pct_of','frac_to_pct','pct_increase','pct_decrease','pct_reverse'] },
+  { ch:6, section:{en:'Chapter 6 — Ratio & Proportion',id:'Bab 6 — Rasio & Perbandingan'},
+    topics:['ratio_simplify','ratio_share','prop_missing','prop_word','scale'] },
+  { ch:7, section:{en:'Chapter 7 — Negative Numbers',id:'Bab 7 — Bilangan Negatif'},
+    topics:['neg_add_sub','neg_mul_div','neg_context','neg_number_line'] },
+  { ch:8, section:{en:'Chapter 8 — Algebra & Sequences',id:'Bab 8 — Aljabar & Barisan'},
+    topics:['solve_simple','substitute','sequence_next','sequence_nth'] },
+  { ch:9, section:{en:'Chapter 9 — Angles & Shapes',id:'Bab 9 — Sudut & Bangun'},
+    topics:['triangle_angle','quad_angle','angle_straight','vert_opp','quad_props'] },
+  { ch:10, section:{en:'Chapter 10 — Coordinates & Transformations',id:'Bab 10 — Koordinat & Transformasi'},
+    topics:['coord_4quad','translate','reflect','rotate'] },
+  { ch:11, section:{en:'Chapter 11 — Area, Perimeter & Volume',id:'Bab 11 — Luas, Keliling & Volume'},
+    topics:['area_parallelogram','area_triangle','area_compound','perim_compound','vol_cuboid'] },
+  { ch:12, section:{en:'Chapter 12 — Statistics & Probability',id:'Bab 12 — Statistika & Peluang'},
+    topics:['mean','median_g6','mode_range','pie_chart','prob_basic'] },
+];
+
+// Topic display names
+const topicNames={
+  place_millions:{en:'Place Value (Millions)',id:'Nilai Tempat (Jutaan)'},
+  decimal_thousandth:{en:'Decimal Thousandths',id:'Desimal Perseribuan'},
+  compare_large:{en:'Compare Large Numbers',id:'Bandingkan Bilangan Besar'},
+  round_int:{en:'Round Whole Numbers',id:'Bulatkan Bilangan Bulat'},
+  round_dec:{en:'Round Decimals',id:'Bulatkan Desimal'},
+  factors:{en:'Counting Factors',id:'Hitung Faktor'},
+  multiples:{en:'Multiples',id:'Kelipatan'},
+  primes:{en:'Prime Numbers',id:'Bilangan Prima'},
+  squares:{en:'Squares & Roots',id:'Kuadrat & Akar Kuadrat'},
+  hcf_lcm:{en:'HCF & LCM',id:'FPB & KPK'},
+  frac_add_diff:{en:'Add/Subtract Fractions',id:'Jumlah/Kurang Pecahan'},
+  frac_mul_frac:{en:'Multiply Fractions',id:'Kali Pecahan'},
+  frac_div:{en:'Divide Fractions',id:'Bagi Pecahan'},
+  mixed_ops:{en:'Mixed Number Operations',id:'Operasi Pecahan Campuran'},
+  simplify:{en:'Simplify Fractions',id:'Sederhanakan Pecahan'},
+  dec_add_sub:{en:'Add/Subtract Decimals',id:'Jumlah/Kurang Desimal'},
+  dec_mul:{en:'Multiply Decimals',id:'Kali Desimal'},
+  dec_div:{en:'Divide Decimals',id:'Bagi Desimal'},
+  dec_mul_pow10:{en:'Decimals × ÷ 10/100/1000',id:'Desimal × ÷ 10/100/1000'},
+  pct_of:{en:'Percentage of a Number',id:'Persen dari Bilangan'},
+  frac_to_pct:{en:'Fraction → Percentage',id:'Pecahan → Persen'},
+  pct_increase:{en:'Percentage Increase',id:'Kenaikan Persen'},
+  pct_decrease:{en:'Percentage Decrease',id:'Pengurangan Persen'},
+  pct_reverse:{en:'Reverse Percentage',id:'Persen Terbalik'},
+  ratio_simplify:{en:'Simplify Ratios',id:'Sederhanakan Rasio'},
+  ratio_share:{en:'Share by Ratio',id:'Bagi dengan Rasio'},
+  prop_missing:{en:'Missing in Proportion',id:'Nilai Hilang dalam Perbandingan'},
+  prop_word:{en:'Proportion Word Problem',id:'Cerita Perbandingan'},
+  scale:{en:'Scale (Maps)',id:'Skala (Peta)'},
+  neg_add_sub:{en:'Add/Subtract Negatives',id:'Jumlah/Kurang Bilangan Negatif'},
+  neg_mul_div:{en:'Multiply/Divide Negatives',id:'Kali/Bagi Bilangan Negatif'},
+  neg_context:{en:'Negatives in Context',id:'Bilangan Negatif dalam Soal Cerita'},
+  neg_number_line:{en:'Number Line Problems',id:'Garis Bilangan'},
+  solve_simple:{en:'Solve Linear Equations',id:'Selesaikan Persamaan Linear'},
+  substitute:{en:'Substitute Values',id:'Substitusi Nilai'},
+  sequence_next:{en:'Next Term in Sequence',id:'Suku Berikutnya'},
+  sequence_nth:{en:'Find nth Term',id:'Cari Suku ke-n'},
+  triangle_angle:{en:'Triangle Angles',id:'Sudut Segitiga'},
+  quad_angle:{en:'Quadrilateral Angles',id:'Sudut Segiempat'},
+  angle_straight:{en:'Angles on a Line',id:'Sudut pada Garis Lurus'},
+  vert_opp:{en:'Vertically Opposite Angles',id:'Sudut Bertolak Belakang'},
+  quad_props:{en:'Quadrilateral Properties',id:'Sifat Segiempat'},
+  coord_4quad:{en:'Plot in 4 Quadrants',id:'Plot di 4 Kuadran'},
+  translate:{en:'Translation',id:'Translasi'},
+  reflect:{en:'Reflection',id:'Refleksi (Cerminan)'},
+  rotate:{en:'Rotation',id:'Rotasi'},
+  area_parallelogram:{en:'Area of Parallelogram',id:'Luas Jajar Genjang'},
+  area_triangle:{en:'Area of Triangle',id:'Luas Segitiga'},
+  area_compound:{en:'Compound Shapes Area',id:'Luas Bentuk Gabungan'},
+  perim_compound:{en:'Compound Shapes Perimeter',id:'Keliling Bentuk Gabungan'},
+  vol_cuboid:{en:'Volume of Cuboid',id:'Volume Balok'},
+  mean:{en:'Mean (Average)',id:'Rata-rata'},
+  median_g6:{en:'Median',id:'Median'},
+  mode_range:{en:'Mode & Range',id:'Modus & Jangkauan'},
+  pie_chart:{en:'Read Pie Chart',id:'Baca Diagram Lingkaran'},
+  prob_basic:{en:'Basic Probability',id:'Peluang Dasar'},
+};
+
+// ─────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────
+const topicStats={};
+Object.keys(topicNames).forEach(k=>topicStats[k]={wrong:0,correct:0});
+
+const _examParam=new URLSearchParams(window.location.search).get('exam');
+let isExam=_examParam!==null;
+
+let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false,selectedAnswer=null;
+let round=1, isAdaptive=false;
+let queue=[];
+let results=[];
+
+// ─────────────────────────────────────────────────────────────
+// SmartScore
+// ─────────────────────────────────────────────────────────────
+function applyScore(ok){
+  const topic=queue[cur].topic;
+  if(ok){
+    streak++;
+    topicStats[topic].correct++;
+    nCorrect++;
+    if(!isExam){
+      const bonus=streak>=3?2:0;
+      const gain=Math.max(4,Math.round((100-score)*0.2))+bonus;
+      score=Math.min(100,score+gain);
+    }
+  } else {
+    streak=0;
+    topicStats[topic].wrong++;
+    nWrong++;
+    if(!isExam){
+      const loss=Math.max(3,Math.round(score*0.13));
+      score=Math.max(0,score-loss);
+    }
+  }
+  if(!isExam){
+    document.getElementById('ssVal').textContent=score;
+    document.getElementById('barFill').style.width=score+'%';
+    document.getElementById('barPct').textContent=score;
+    document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+  }
+  document.getElementById('sCorrect').textContent=nCorrect;
+  document.getElementById('sWrong').textContent=nWrong;
+  document.getElementById('sTotal').textContent=nCorrect+nWrong;
+}
+
+function renderDots(){
+  const c=document.getElementById('progDots');
+  c.innerHTML='';
+  queue.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(results[i]==='correct'?' done':results[i]==='wrong'?' wrong-dot':i===cur?' cur':'');
+    c.appendChild(d);
+  });
+}
+
+function refillQueue(){
+  const activeParts=getActiveParts();
+  const allTopics=activeParts.flatMap(p=>p.topics);
+  if(allTopics.length===0) return;
+  const weighted=allTopics.map(tp=>{
+    const st=topicStats[tp]||{wrong:0,correct:0};
+    const unattempted=(st.wrong+st.correct)===0?1:0;
+    return{tp,w:1+3*st.wrong+unattempted};
+  });
+  const totalW=weighted.reduce((s,x)=>s+x.w,0);
+  for(let i=0;i<5;i++){
+    let r=Math.random()*totalW,pick=weighted[0].tp;
+    for(const w of weighted){r-=w.w;if(r<=0){pick=w.tp;break}}
+    const q=Generators[pick]();
+    q.topic=pick;
+    q.tag={en:`Bonus Q${queue.length+1}`,id:`Soal Bonus ${queue.length+1}`};
+    queue.push(q);
+    results.push(null);
+  }
+}
+
+function render(){
+  if(cur>=queue.length){
+    if(!isExam && score<100){
+      refillQueue();
+    } else {
+      renderDone();
+      return;
+    }
+  }
+  answered=false;
+  hintUsed=false;
+  selectedAnswer=null;
+  renderDots();
+  renderMCQ(queue[cur]);
+}
+
+function renderMCQ(q){
+  const sectionHtml = q.section ? `<div class="section-banner">📚 ${t(q.section)}</div>` : '';
+  const mathHtml = q.math ? `<div class="math-big">${q.math}</div>` : '';
+  const extraHtml = q.extra || '';
+  const wordWrap = q.isWord
+    ? `<div class="word-box">${t(q.text)}${extraHtml}</div>${mathHtml}`
+    : `<div class="q-text">${t(q.text)}</div>${mathHtml}`;
+  const optsHtml = q.opts.map(o=>`
+    <button class="opt" data-l="${o.l}" onclick="pick('${o.l}')">
+      <span class="opt-lbl">${o.l}</span>
+      <span>${typeof o.v==='string'?o.v:t(o.v)}</span>
+    </button>`).join('');
+  const hintLabel = lang==='en'?'💡 Show Hint':'💡 Minta Petunjuk';
+  const nextLabel = lang==='en'?'Next Question →':'Soal Berikutnya →';
+
+  const stats=topicStats[q.topic]||{wrong:0,correct:0};
+  const attempts=stats.wrong+stats.correct;
+  const errRate=attempts>0?stats.wrong/attempts:0;
+  const isWeakRepeat=q._isRepeat&&errRate>0.4;
+  const weakBadge=isWeakRepeat
+    ?`<div class="weak-badge">🔁 ${lang==='en'?'Weak area — keep practising!':'Area lemah — terus berlatih!'}</div>`:'';
+  const roundBadge=round>1
+    ?`<div class="round-badge">🔄 ${lang==='en'?`Round ${round} · Adaptive Practice`:`Putaran ${round} · Latihan Adaptif`}</div>`:'';
+
+  document.getElementById('qArea').innerHTML=`
+    ${sectionHtml}
+    <div class="qcard">
+      ${roundBadge}${weakBadge}
+      <span class="q-tag ${q.section?'section-tag':''}">${t(q.tag)}</span>
+      ${wordWrap}
+      <div class="options">${optsHtml}</div>
+      ${isExam
+        ? `<button class="submit-btn" id="submitBtn" onclick="submitAnswer()">${lang==='en'?'Submit →':'Kirim →'}</button>`
+        : `<button class="hint-btn" id="hintBtn" onclick="showHint()">${hintLabel}</button>`}
+      <div class="feedback" id="fb"></div>
+      <button class="next-btn" id="nxtBtn" onclick="next()">${nextLabel}</button>
+    </div>`;
+}
+
+function pick(l){
+  if(answered) return;
+  if(isExam){
+    selectedAnswer=l;
+    document.querySelectorAll('.opt').forEach(b=>{
+      b.classList.toggle('selected', b.getAttribute('data-l')===l);
+    });
+    document.getElementById('submitBtn').classList.add('show');
+    return;
+  }
+  answered=true;
+  const q=queue[cur];
+  const ok=l===q.ans;
+  if(!hintUsed) applyScore(ok);
+  results[cur]=ok?'correct':'wrong';
+  renderDots();
+
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    const bl=b.getAttribute('data-l');
+    if(bl===q.ans) b.classList.add('correct');
+    else if(bl===l&&!ok) b.classList.add('wrong');
+  });
+
+  const fb=document.getElementById('fb');
+  const hintBtn=document.getElementById('hintBtn');
+  const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptBox=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
+
+  if(ok){
+    const sm=streak>=3?`<span class="streak">🔥 ${streak}${lang==='en'?' in a row!':' berturut-turut!'}</span>`:'';
+    fb.className='feedback show correct';
+    if(score>=100){
+      fb.innerHTML=`<strong>🏆 ${lang==='en'?'Perfect Score! Chapter mastered!':'Sempurna! Bab ini sudah dikuasai!'}</strong>${conceptBox}`;
+      confetti();
+      if(hintBtn) hintBtn.style.display='none';
+      setTimeout(()=>{window.scrollTo({top:0,behavior:'smooth'});renderDone();},1600);
+      return;
+    }
+    fb.innerHTML=`<strong>${lang==='en'?'✅ Correct! Well done!':'✅ Benar! Mantap!'} ${sm}</strong><div class="steps" style="margin-top:10px">${stHtml}</div>${conceptBox}`;
+    confetti();
+  } else {
+    const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
+    fb.className='feedback show wrong';
+    fb.innerHTML=`<strong>${lang==='en'?'❌ Not quite.':'❌ Belum tepat.'} ${topicLabel}</strong>
+      <div class="steps" style="margin-top:10px">${stHtml}</div>${conceptBox}`;
+  }
+  if(hintBtn) hintBtn.style.display='none';
+  document.getElementById('nxtBtn').classList.add('show');
+}
+
+function submitAnswer(){
+  if(!selectedAnswer||answered) return;
+  answered=true;
+  const l=selectedAnswer;
+  const q=queue[cur];
+  const ok=l===q.ans;
+  applyScore(ok);
+  results[cur]=ok?'correct':'wrong';
+  renderDots();
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    b.classList.remove('selected');
+    const bl=b.getAttribute('data-l');
+    if(bl===q.ans) b.classList.add('correct');
+    else if(bl===l&&!ok) b.classList.add('wrong');
+  });
+  document.getElementById('submitBtn').classList.remove('show');
+  const fb2=document.getElementById('fb');
+  const stHtml2=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  const conceptBox2=`<div class="concept-box">💡 ${t(q.concept)}</div>`;
+  if(ok){
+    if(streak>=3) confetti();
+    fb2.className='feedback show correct';
+    fb2.innerHTML=`<strong>${lang==='en'?'✅ Correct!':'✅ Benar!'}</strong><div class="steps" style="margin-top:10px">${stHtml2}</div>${conceptBox2}`;
+    setTimeout(()=>next(), 1800);
+  } else {
+    const topicLabel=`<span style="background:#fce4e4;color:#d63031;font-size:.75rem;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px">${t(topicNames[q.topic])}</span>`;
+    fb2.className='feedback show wrong';
+    fb2.innerHTML=`<strong>❌ ${lang==='en'?'Incorrect.':'Salah.'} ${topicLabel}</strong>
+      <div class="steps" style="margin-top:10px">${stHtml2}</div>${conceptBox2}`;
+    document.getElementById('nxtBtn').classList.add('show');
+  }
+}
+
+function showHint(){
+  hintUsed=true;
+  const hintBtn=document.getElementById('hintBtn');
+  hintBtn.textContent=lang==='en'?'💡 Hint shown — question not scored':'💡 Petunjuk aktif — soal ini tidak dinilai';
+  hintBtn.disabled=true;
+  const q=queue[cur];
+  const topic=q.topic;
+  if(topicStats[topic]) topicStats[topic].wrong++;
+  nWrong++;
+  document.getElementById('sWrong').textContent=nWrong;
+  const stHtml=t(q.steps).map((s,i)=>`<div class="step"><div class="step-num orange">${i+1}</div><div>${s}</div></div>`).join('');
+  const fb=document.getElementById('fb');
+  fb.className='feedback show hint';
+  fb.innerHTML=`<strong>💡 ${lang==='en'?'Step-by-step hint:':'Petunjuk Langkah demi Langkah:'}</strong>
+    <div class="steps" style="margin-top:10px">${stHtml}</div>
+    <div style="margin-top:8px;font-size:.79rem;opacity:.75">⚠️ ${lang==='en'?'This question won\'t affect your SmartScore since you used a hint.':'Soal ini tidak dihitung ke SmartScore karena kamu melihat petunjuk.'}</div>`;
+}
+
+function next(){
+  cur++;
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function getActiveParts(){
+  const ch=parseInt(new URLSearchParams(window.location.search).get('ch'))||0;
+  return ch?Parts.filter(p=>p.ch===ch):Parts;
+}
+
+function buildInitialQueue(){
+  let qNum=1;
+  const result=getActiveParts().flatMap(part=>{
+    const picked=part.topics.map(topic=>{
+      const q=Generators[topic]();
+      q.topic=topic;
+      return q;
+    });
+    shuffle(picked);
+    picked[0].section=part.section;
+    picked.forEach(q=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
+    return picked;
+  });
+  if(isExam){
+    shuffle(result);
+    const tot=result.length;
+    result.forEach((q,i)=>{ q.tag={en:`Q${i+1} of ${tot}`,id:`S${i+1} dari ${tot}`}; });
+  }
+  return result;
+}
+
+function buildAdaptiveQueue(){
+  let qNum=1;
+  const newQueue=[];
+  getActiveParts().forEach(part=>{
+    const partQs=[];
+    part.topics.forEach(topic=>{
+      const s=topicStats[topic]||{wrong:0,correct:0};
+      const att=s.wrong+s.correct;
+      const err=att>0?s.wrong/att:0;
+      const copies=err>0.66?3:err>0.33?2:1;
+      for(let i=0;i<copies;i++){
+        const q=Generators[topic]();
+        q.topic=topic;
+        q._isRepeat=i>0;
+        partQs.push(q);
+      }
+    });
+    shuffle(partQs);
+    if(partQs.length) partQs[0].section=part.section;
+    newQueue.push(...partQs);
+  });
+  newQueue.forEach((q,i)=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
+  return{queue:newQueue};
+}
+
+function renderDone(){
+  document.getElementById('progDots').innerHTML='';
+  const total=nCorrect+nWrong;
+  const acc=total>0?Math.round(nCorrect/total*100):0;
+  if(isExam){
+    score=acc;
+    document.getElementById('ssVal').textContent=score;
+    document.getElementById('barFill').style.width=score+'%';
+    document.getElementById('barPct').textContent=score;
+    document.getElementById('ringFill').style.strokeDashoffset=175.9*(1-score/100);
+  }
+  let trophy='📚',msg={en:'Keep studying — you can do it!',id:'Terus belajar ya, kamu pasti bisa!'};
+  if(isExam){
+    if(acc>=90){trophy='🏆';msg={en:'Outstanding! Excellent exam result!',id:'Luar biasa! Hasil ujian yang sangat baik!'};}
+    else if(acc>=70){trophy='⭐';msg={en:'Good result! Keep studying!',id:'Hasil bagus! Terus belajar ya!'};}
+    else if(acc>=50){trophy='💪';msg={en:'Fair result — more practice needed!',id:'Lumayan — perlu lebih banyak latihan!'};}
+    else{trophy='📚';msg={en:'Keep studying — you\'ll get there!',id:'Terus semangat belajar!'};}
+  } else {
+    if(score>=100){trophy='🏆';msg={en:'Perfect Score! You\'ve fully mastered this chapter!',id:'Sempurna! Kamu sudah menguasai bab ini sepenuhnya!'};}
+    else if(score>=80){trophy='🏆';msg={en:'Amazing! You\'ve mastered this topic!',id:'Luar biasa! Kamu sudah menguasai materi ini!'};}
+    else if(score>=50){trophy='⭐';msg={en:'Good job! Keep practising!',id:'Bagus! Terus semangat berlatih ya!'};}
+    else if(score>=30){trophy='💪';msg={en:'Getting there! A bit more practice!',id:'Hampir! Sedikit lagi berlatih!'};}
+  }
+
+  const topicScores=Object.keys(topicStats)
+    .map(tp=>({tp,s:topicStats[tp],att:topicStats[tp].wrong+topicStats[tp].correct}))
+    .filter(x=>x.att>0)
+    .sort((a,b)=>(a.s.correct/a.att)-(b.s.correct/b.att));
+  const hasWeakness=topicScores.some(x=>x.s.wrong/x.att>0.33);
+
+  const weakRowsHtml=topicScores.map(({tp,s,att})=>{
+    const corPct=Math.round(s.correct/att*100);
+    let tier='good',icon='✅';
+    if(corPct<50){tier='weak';icon='⚠️';}
+    else if(corPct<80){tier='mid';icon='💪';}
+    return`<div class="weak-row ${tier}">
+      <span class="topic-name">${icon} ${t(topicNames[tp])}</span>
+      <div class="weak-bar-wrap"><div class="weak-bar-fill" style="width:${corPct}%"></div></div>
+      <span class="weak-pct">${s.correct}/${att} ${lang==='en'?'right':'benar'}</span>
+    </div>`;
+  }).join('');
+  const weakReport=topicScores.length>0?`
+    <div class="weak-report">
+      <h3>📊 ${lang==='en'?'Performance by Topic':'Performa per Topik'}</h3>
+      ${weakRowsHtml}
+    </div>`:'';
+  const adaptiveBtn=(!isExam && hasWeakness)?`
+    <button class="practice-btn" onclick="startAdaptive()">
+      🎯 ${lang==='en'?'Practice Weak Areas':'Latih Area Lemah'}
+    </button>`:'';
+
+  document.getElementById('qArea').innerHTML=`
+  <div class="qcard completion">
+    <div class="trophy">${trophy}</div>
+    <h2>${isExam?(lang==='en'?'Exam Complete!':'Ujian Selesai!'):'SmartScore: '+score}</h2>
+    <p>${t(msg)}</p>
+    <div class="stats-row" style="max-width:360px;margin:0 auto 16px">
+      <div class="stat-box"><div class="val val-g">${nCorrect}</div><div class="lbl">${lang==='en'?'Correct':'Benar'}</div></div>
+      <div class="stat-box"><div class="val val-r">${nWrong}</div><div class="lbl">${lang==='en'?'Wrong':'Salah'}</div></div>
+      <div class="stat-box"><div class="val val-b">${acc}%</div><div class="lbl">${lang==='en'?'Accuracy':'Akurasi'}</div></div>
+    </div>
+    ${weakReport}
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+      ${adaptiveBtn}
+      <button class="restart-btn" onclick="restart()">🔄 ${lang==='en'?'Start Over':'Mulai Ulang'}</button>
+    </div>
+  </div>`;
+  if(score>=70) confetti();
+}
+
+function startAdaptive(){
+  const {queue:newQ}=buildAdaptiveQueue();
+  queue=newQ;
+  cur=0;
+  results=new Array(queue.length).fill(null);
+  nCorrect=0;nWrong=0;streak=0;answered=false;
+  round++;
+  ['sCorrect','sWrong','sTotal'].forEach(id=>document.getElementById(id).textContent='0');
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restart(){
+  Object.keys(topicStats).forEach(k=>{ topicStats[k]={wrong:0,correct:0}; });
+  score=0;nCorrect=0;nWrong=0;cur=0;streak=0;round=1;isAdaptive=false;
+  queue=buildInitialQueue();
+  results=new Array(queue.length).fill(null);
+  answered=false;
+  ['ssVal','sCorrect','sWrong','sTotal','barPct'].forEach(id=>document.getElementById(id).textContent='0');
+  document.getElementById('barFill').style.width='0%';
+  document.getElementById('ringFill').style.strokeDashoffset='175.9';
+  render();
+}
+
+function confetti(){
+  const wrap=document.getElementById('confWrap');
+  const cols=['#0984e3','#6c5ce7','#00b894','#fdcb6e','#d63031','#fd79a8','#00cec9'];
+  for(let i=0;i<65;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');
+      p.className='cp';
+      p.style.cssText=`left:${Math.random()*100}vw;top:-20px;width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${1.2+Math.random()*.8}s;animation-delay:${Math.random()*.4}s`;
+      wrap.appendChild(p);
+      setTimeout(()=>p.remove(),2500);
+    },i*18);
+  }
+}
+
+queue=buildInitialQueue();
+results=new Array(queue.length).fill(null);
+updateChapterHeader();
+render();
+</script>
+</body>
+</html>

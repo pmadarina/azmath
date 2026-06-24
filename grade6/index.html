@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzMath — Grade 6 Math Practice</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;min-height:100vh;display:flex;flex-direction:column}
+
+.hero{background:linear-gradient(135deg,#0984e3 0%,#6c5ce7 60%,#a29bfe 100%);color:#fff;padding:56px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:20px;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;margin-bottom:20px;position:relative}
+.hero h1{font-size:3rem;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px;position:relative}
+.hero p{font-size:1rem;opacity:.85;max-width:380px;margin:0 auto;line-height:1.6;position:relative}
+.back-btn{position:absolute;top:16px;left:20px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:800;cursor:pointer;text-decoration:none;white-space:nowrap;z-index:2}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+.main{max-width:760px;margin:-44px auto 0;padding:0 20px 60px;width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+
+.card{background:#fff;border-radius:22px;padding:28px 24px 22px;box-shadow:0 8px 32px rgba(79,142,247,.13);cursor:pointer;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:-30px;right:-20px;width:100px;height:100px;border-radius:50%;opacity:.06}
+.card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(79,142,247,.22)}
+.card-accent{height:5px;border-radius:3px;margin-bottom:18px}
+.card-icon{font-size:2.3rem;margin-bottom:10px;display:block}
+.card h3{font-size:1.02rem;font-weight:900;color:#1a1a2e;margin-bottom:6px;letter-spacing:-.3px}
+.card p{font-size:.8rem;color:#666;line-height:1.55;margin-bottom:14px}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
+
+.card.blue::after{background:#0984e3}.card.blue .card-accent{background:linear-gradient(90deg,#0984e3,#74b9ff)}.card.blue .pill{background:#e3f0ff;color:#0984e3}
+.card.purple::after{background:#6c5ce7}.card.purple .card-accent{background:linear-gradient(90deg,#6c5ce7,#a29bfe)}.card.purple .pill{background:#f0eeff;color:#6c5ce7}
+.card.teal::after{background:#00b894}.card.teal .card-accent{background:linear-gradient(90deg,#00b894,#55efc4)}.card.teal .pill{background:#e8fff8;color:#00b894}
+.card.orange::after{background:#e17055}.card.orange .card-accent{background:linear-gradient(90deg,#e17055,#fdcb6e)}.card.orange .pill{background:#fff5f0;color:#e17055}
+.card.gold::after{background:#f9ca24}.card.gold .card-accent{background:linear-gradient(90deg,#f9ca24,#f0932b)}.card.gold .pill{background:#fffbe8;color:#b7760a}
+.card.green::after{background:#27ae60}.card.green .card-accent{background:linear-gradient(90deg,#27ae60,#2ecc71)}.card.green .pill{background:#eafaf1;color:#27ae60}
+.card.pink::after{background:#e84393}.card.pink .card-accent{background:linear-gradient(90deg,#e84393,#fd79a8)}.card.pink .pill{background:#fdeef6;color:#e84393}
+.card.red::after{background:#d63031}.card.red .card-accent{background:linear-gradient(90deg,#d63031,#e17055)}.card.red .pill{background:#ffeaea;color:#d63031}
+.card.indigo::after{background:#341f97}.card.indigo .card-accent{background:linear-gradient(90deg,#341f97,#5f3dc4)}.card.indigo .pill{background:#ece8ff;color:#341f97}
+.card.cyan::after{background:#00cec9}.card.cyan .card-accent{background:linear-gradient(90deg,#00cec9,#81ecec)}.card.cyan .pill{background:#e0fbfb;color:#00838a}
+
+.section-label{font-size:.7rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#bbb;padding:2px 2px;margin-bottom:10px;margin-top:22px}
+.card-arrow{position:absolute;top:24px;right:22px;font-size:1.1rem;opacity:.25;transition:opacity .18s,transform .18s}
+.card:hover .card-arrow{opacity:.7;transform:translateX(3px)}
+.footer{margin-top:auto;text-align:center;padding:24px;color:#bbb;font-size:.76rem}
+.footer span{color:#a29bfe;font-weight:700}
+
+@media(max-width:520px){
+  .hero{padding:40px 18px 72px}
+  .hero h1{font-size:2.4rem;letter-spacing:-1.5px}
+  .hero p{font-size:.88rem}
+  .main{padding:0 14px 40px}
+  .grid{gap:13px}
+  .card{padding:22px 18px 18px}
+  .card-icon{font-size:2rem}
+  .card h3{font-size:.95rem}
+  .card p{font-size:.76rem}
+  .pill{font-size:.63rem;padding:3px 9px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back-btn" href="../">← Subjects</a>
+  <div class="hero-badge">Grade 6 · Mathematics</div>
+  <h1>📐 AzMath</h1>
+  <p>12 chapters of Stage 6 MCQ practice — Cambridge Primary + Kurikulum Merdeka Kelas 6.</p>
+</div>
+
+<div class="main">
+
+  <div class="section-label">📝 MCQ Practice — 12 Chapters</div>
+  <div class="grid">
+
+    <a class="card blue" href="./quiz/?ch=1">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">🔢</span>
+      <h3>Ch 1 · Place Value &amp; Rounding</h3>
+      <p>Millions, decimal thousandths, compare big numbers, round to 10/100/1000 and decimal places.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.NBT</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card purple" href="./quiz/?ch=2">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">✳️</span>
+      <h3>Ch 2 · Factors, Multiples &amp; Primes</h3>
+      <p>Factors, HCF, multiples, LCM, primes to 100, square numbers and square roots.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.NS</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card teal" href="./quiz/?ch=3">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">🥧</span>
+      <h3>Ch 3 · Fractions (All Ops)</h3>
+      <p>Add &amp; subtract with different denominators, multiply, divide, mixed-number operations.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.NF</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card orange" href="./quiz/?ch=4">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">🔣</span>
+      <h3>Ch 4 · Decimals (All Ops)</h3>
+      <p>Add, subtract, multiply &amp; divide decimals — including × ÷ by powers of 10.</p>
+      <div class="pill-row"><span class="pill">4 topics</span><span class="pill">6.NBT</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card green" href="./quiz/?ch=5">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">💯</span>
+      <h3>Ch 5 · Percentages</h3>
+      <p>% of a number, fraction → %, percentage increase/decrease, find original from %.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.RP</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card pink" href="./quiz/?ch=6">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">⚖️</span>
+      <h3>Ch 6 · Ratio &amp; Proportion</h3>
+      <p>Simplify ratios, share in a ratio, missing values in proportion, scale problems.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.RP</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card red" href="./quiz/?ch=7">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">➖</span>
+      <h3>Ch 7 · Negative Numbers</h3>
+      <p>Add, subtract, multiply &amp; divide negatives. Number line and real-world contexts.</p>
+      <div class="pill-row"><span class="pill">4 topics</span><span class="pill">6.NS</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card indigo" href="./quiz/?ch=8">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">🔠</span>
+      <h3>Ch 8 · Algebra &amp; Sequences</h3>
+      <p>Solve linear equations, substitute values, find missing &amp; nth term of a sequence.</p>
+      <div class="pill-row"><span class="pill">4 topics</span><span class="pill">6.EE</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card gold" href="./quiz/?ch=9">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">📐</span>
+      <h3>Ch 9 · Angles &amp; Shapes</h3>
+      <p>Triangle angles = 180°, quad angles = 360°, straight line, vertical, quad properties.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.G</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card cyan" href="./quiz/?ch=10">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">🗺️</span>
+      <h3>Ch 10 · Coordinates &amp; Transformations</h3>
+      <p>Plot in 4 quadrants. Translate, reflect &amp; rotate shapes — with interactive grid.</p>
+      <div class="pill-row"><span class="pill">4 topics</span><span class="pill">6.G</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card blue" href="./quiz/?ch=11">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">📏</span>
+      <h3>Ch 11 · Area, Perimeter &amp; Volume</h3>
+      <p>Parallelogram, triangle, compound shapes, perimeter, and volume of a cuboid.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.G</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+    <a class="card purple" href="./quiz/?ch=12">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">📊</span>
+      <h3>Ch 12 · Statistics &amp; Probability</h3>
+      <p>Mean, median, mode, range, read pie charts, basic probability.</p>
+      <div class="pill-row"><span class="pill">5 topics</span><span class="pill">6.SP</span><span class="pill">MCQ ✓</span></div>
+    </a>
+
+  </div>
+
+  <div class="section-label">📋 Full Exam</div>
+  <div class="grid">
+    <a class="card orange" href="./quiz/?exam=1" style="grid-column:1/-1">
+      <span class="card-arrow">→</span><div class="card-accent"></div>
+      <span class="card-icon">📝</span>
+      <h3>Full Exam — All 12 Chapters</h3>
+      <p>One question from every topic across all chapters. No hints. Graded by accuracy.</p>
+      <div class="pill-row"><span class="pill">All chapters</span><span class="pill">~55 questions</span><span class="pill">No hints</span></div>
+    </a>
+  </div>
+
+</div>
+
+<div class="footer">AzMath · Grade 6 · Built with ❤️ for <span>young mathematicians</span></div>
+
+</body>
+</html>
