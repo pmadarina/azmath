@@ -259,6 +259,30 @@ function mkOpts(correct,wrongs){
 }
 
 // ─────────────────────────────────────────────────────────────
+// Recent-value dedup (prevents same parameter set appearing repeatedly)
+// ─────────────────────────────────────────────────────────────
+const _recentVals={};
+function rememberValue(key,val){
+  if(!_recentVals[key]) _recentVals[key]=[];
+  _recentVals[key].unshift(val);
+  if(_recentVals[key].length>5) _recentVals[key].pop();
+}
+function seenValue(key,val){
+  return _recentVals[key]&&_recentVals[key].includes(val);
+}
+function uniqueGen(key,paramGen,maxAttempts){
+  maxAttempts=maxAttempts||6;
+  let params,sig,attempts=0;
+  do{
+    params=paramGen();
+    sig=Array.isArray(params)?params.join(','):String(params);
+    attempts++;
+  } while(seenValue(key,sig)&&attempts<maxAttempts);
+  rememberValue(key,sig);
+  return params;
+}
+
+// ─────────────────────────────────────────────────────────────
 // GENERATORS
 // ─────────────────────────────────────────────────────────────
 const Generators={
@@ -267,8 +291,7 @@ const Generators={
   // CHAPTER 1 — Place Value & Rounding
   // ══════════════════════════════════════════════════════════
   place_millions:()=>{
-    const m=ri(1,9), hk=ri(0,9), tk=ri(0,9), k=ri(0,9);
-    const h=ri(0,9), tens=ri(0,9), u=ri(0,9);
+    const [m,hk,tk,k,h,tens,u]=uniqueGen('place_millions',()=>[ri(1,9),ri(0,9),ri(0,9),ri(0,9),ri(0,9),ri(0,9),ri(0,9)]);
     const num = m*1000000 + hk*100000 + tk*10000 + k*1000 + h*100 + tens*10 + u;
     const positions=[
       {idx:0,name:{en:'millions',id:'jutaan'},val:m*1000000,digit:m},
@@ -332,8 +355,8 @@ const Generators={
   },
 
   round_int:()=>{
-    const v=pickA([10,100,1000]);
-    const num=ri(v*5,v*99)+ri(0,v-1);
+    const v=pickA([10,100,1000,10000]);
+    const num=uniqueGen('round_int_'+v,()=>ri(v*3,v*99)+ri(0,v-1));
     const cor=Math.round(num/v)*v;
     const w1=cor+v; const w2=cor-v>0?cor-v:cor+v*2; const w3=Math.floor(num/v)*v===cor?cor+v:Math.floor(num/v)*v;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -349,7 +372,7 @@ const Generators={
 
   round_dec:()=>{
     const dp=pickA([1,2]);
-    const raw=ri(1,99)+ri(1,999)/1000;
+    const raw=ri(0,99)+ri(1,999)/1000;
     const cor=+raw.toFixed(dp);
     const w1=+(cor+(dp===1?0.1:0.01)).toFixed(dp);
     const w2=+(cor-(dp===1?0.1:0.01)).toFixed(dp);
@@ -369,7 +392,7 @@ const Generators={
   // CHAPTER 2 — Factors, Multiples, Primes
   // ══════════════════════════════════════════════════════════
   factors:()=>{
-    const n=pickA([12,18,20,24,28,30,36,40,42,45,48,50,54,56,60,72]);
+    const n=uniqueGen('factors',()=>pickA([12,18,20,24,27,28,30,32,36,40,42,45,48,50,54,56,60,63,64,72,84,90,96]));
     const fset=[];
     for(let i=1;i<=n;i++) if(n%i===0) fset.push(i);
     const cor=fset.length;
@@ -385,8 +408,7 @@ const Generators={
   },
 
   multiples:()=>{
-    const n=ri(3,9);
-    const k=ri(4,8);
+    const [n,k]=uniqueGen('multiples',()=>[ri(3,12),ri(4,12)]);
     const cor=n*k;
     const w1=n*k+1, w2=n*(k-1), w3=n*k+n-1;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -406,7 +428,7 @@ const Generators={
     const vv=pickA([0,1]);
     if(vv===0){
       // identify which is prime
-      const p=pickA(primes.filter(x=>x>10));
+      const p=uniqueGen('primes_p',()=>pickA(primes.filter(x=>x>10)));
       const wgs=shuffA(composites).slice(0,3);
       const{opts,ans}=mkOpts(String(p),wgs.map(String));
       return{text:{en:'Which of these numbers is a <b>prime number</b>?',
@@ -418,7 +440,7 @@ const Generators={
                  id:'Bilangan prima memiliki tepat dua faktor: 1 dan dirinya sendiri. 1 BUKAN prima.'}};
     } else {
       // which is NOT prime
-      const c=pickA(composites.filter(x=>x>10));
+      const c=uniqueGen('primes_c',()=>pickA(composites.filter(x=>x>10)));
       const wgs=shuffA(primes.filter(x=>x>10)).slice(0,3);
       const{opts,ans}=mkOpts(String(c),wgs.map(String));
       // find a factor of c (other than 1 and itself) to explain
@@ -437,7 +459,7 @@ const Generators={
   squares:()=>{
     const vv=pickA([0,1]);
     if(vv===0){
-      const n=ri(2,12);
+      const n=uniqueGen('squares_n',()=>ri(2,15));
       const cor=n*n;
       const w1=cor+n, w2=2*n, w3=n*(n+1);
       const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -447,7 +469,7 @@ const Generators={
         concept:{en:'A square number = a whole number multiplied by itself.',
                  id:'Bilangan kuadrat = bilangan bulat dikalikan dirinya sendiri.'}};
     } else {
-      const n=ri(2,12);
+      const n=uniqueGen('squares_root',()=>ri(2,15));
       const sq=n*n;
       const cor=n;
       const w1=n+1, w2=n-1>0?n-1:n+2, w3=sq/2;
@@ -462,8 +484,8 @@ const Generators={
   },
 
   hcf_lcm:()=>{
-    const pairs=[[12,18],[8,12],[15,20],[24,36],[10,15],[14,21],[16,24],[18,30],[20,30],[9,12],[6,8],[10,12]];
-    const[a,b]=pickA(pairs);
+    const pairs=[[12,18],[8,12],[15,20],[24,36],[10,15],[14,21],[16,24],[18,30],[20,30],[9,12],[6,8],[10,12],[15,35],[28,42],[27,36],[24,40],[32,48],[18,45],[20,50],[36,54],[16,40],[14,35]];
+    const[a,b]=uniqueGen('hcf_lcm',()=>pickA(pairs));
     const which=pickA(['hcf','lcm']);
     const g=gcd2(a,b);
     const l=a*b/g;
@@ -485,7 +507,7 @@ const Generators={
   // ══════════════════════════════════════════════════════════
   frac_add_diff:()=>{
     // a/b ± c/d with different denominators
-    const pairs=[[1,2,1,3],[1,4,1,3],[2,3,1,4],[3,4,1,6],[1,5,1,2],[2,5,1,3],[3,5,1,4],[5,6,1,3],[1,6,1,4],[2,3,1,6],[1,8,1,4],[3,8,1,6]];
+    const pairs=[[1,2,1,3],[1,4,1,3],[2,3,1,4],[3,4,1,6],[1,5,1,2],[2,5,1,3],[3,5,1,4],[5,6,1,3],[1,6,1,4],[2,3,1,6],[1,8,1,4],[3,8,1,6],[5,8,1,3],[7,10,1,5],[4,9,1,3],[5,12,1,4],[7,12,1,6],[3,10,1,4],[5,9,1,6],[2,7,1,3],[3,7,1,4],[5,8,1,6]];
     const[n1,d1,n2,d2]=pickA(pairs);
     const op=pickA(['+','−']);
     const lcm=d1*d2/gcd2(d1,d2);
@@ -510,8 +532,8 @@ const Generators={
   },
 
   frac_mul_frac:()=>{
-    const n1=ri(1,5), d1=ri(2,8);
-    const n2=ri(1,5), d2=ri(2,8);
+    const n1=ri(1,8), d1=ri(3,12);
+    const n2=ri(1,8), d2=ri(3,12);
     if(n1>=d1||n2>=d2) return Generators.frac_mul_frac();
     const[sn,sd]=sfrac(n1*n2,d1*d2);
     const cor = sd===1?String(sn):frac(sn,sd);
@@ -528,8 +550,8 @@ const Generators={
   },
 
   frac_div:()=>{
-    const n1=ri(1,5), d1=ri(2,8);
-    const n2=ri(1,5), d2=ri(2,8);
+    const n1=ri(1,8), d1=ri(3,12);
+    const n2=ri(1,8), d2=ri(3,12);
     if(n1>=d1||n2>=d2||n2===0) return Generators.frac_div();
     // a/b ÷ c/d = a/b × d/c = ad/bc
     const[sn,sd]=sfrac(n1*d2,d1*n2);
@@ -550,8 +572,8 @@ const Generators={
 
   mixed_ops:()=>{
     // mixed number ± fraction
-    const w=ri(1,4);
-    const d=pickA([3,4,5,6,8]);
+    const w=ri(1,7);
+    const d=pickA([3,4,5,6,7,8,9,10]);
     const n=ri(1,d-1);
     const n2=ri(1,d-1);
     const op=pickA(['+','−']);
@@ -579,10 +601,10 @@ const Generators={
   },
 
   simplify:()=>{
-    const factors=[2,3,4,5,6];
+    const factors=[2,3,4,5,6,7,8];
     const f=pickA(factors);
-    const[sn,sd]=[ri(1,9),ri(2,9)];
-    if(sn>=sd) return Generators.simplify();
+    const[sn,sd]=[ri(2,9),ri(3,12)];
+    if(sn>=sd||gcd2(sn,sd)!==1) return Generators.simplify();
     const n=sn*f, d=sd*f;
     const g=gcd2(n,d);
     const[fn,fd]=[n/g,d/g];
@@ -603,12 +625,12 @@ const Generators={
   // CHAPTER 4 — Decimals (all operations)
   // ══════════════════════════════════════════════════════════
   dec_add_sub:()=>{
-    const pairs=[[2.45,1.32],[3.7,0.85],[5.6,2.34],[4.25,1.7],[6.8,3.45],[7.5,2.85],[10.0,4.65],[8.4,3.27],[12.5,7.85],[5.05,2.4],[9.6,3.75]];
+    const pairs=[[2.45,1.32],[3.7,0.85],[5.6,2.34],[4.25,1.7],[6.8,3.45],[7.5,2.85],[10.0,4.65],[8.4,3.27],[12.5,7.85],[5.05,2.4],[9.6,3.75],[8.347,2.16],[12.6,4.073],[15.04,6.829],[7.392,3.5],[20.5,8.347],[11.728,4.55],[6.054,2.39],[14.6,5.873],[9.205,3.48],[18.74,7.069]];
     const[a,b]=pickA(pairs);
     const op=pickA(['+','−']);
-    const cor = op==='+' ? +(a+b).toFixed(2) : +(a-b).toFixed(2);
+    const cor = op==='+' ? +(a+b).toFixed(3) : +(a-b).toFixed(3);
     if(cor<=0) return Generators.dec_add_sub();
-    const w1=+(cor+0.1).toFixed(2), w2=+(cor-0.1).toFixed(2), w3=+(cor+0.01).toFixed(2);
+    const w1=+(cor+0.1).toFixed(3), w2=+(cor-0.1).toFixed(3), w3=+(cor+0.01).toFixed(3);
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
     return{text:{en:'Calculate:',id:'Hitung:'},
       math:`<b>${a} ${op} ${b}</b>`,opts,ans,
@@ -620,7 +642,7 @@ const Generators={
 
   dec_mul:()=>{
     // decimal × decimal
-    const pairs=[[0.3,0.7],[0.4,0.5],[0.2,0.8],[0.6,0.9],[0.5,0.5],[0.3,0.4],[1.2,0.5],[2.5,0.4],[1.5,0.6],[0.25,0.4],[0.75,0.2],[1.4,0.3]];
+    const pairs=[[0.3,0.7],[0.4,0.5],[0.2,0.8],[0.6,0.9],[0.5,0.5],[0.3,0.4],[1.2,0.5],[2.5,0.4],[1.5,0.6],[0.25,0.4],[0.75,0.2],[1.4,0.3],[8.347,4],[2.6,1.3],[3.4,2.5],[6.25,0.8],[1.75,0.6],[4.5,2.3],[0.054,12],[7.2,3.5],[1.15,0.4]];
     const[a,b]=pickA(pairs);
     const cor=+(a*b).toFixed(4);
     const w1=+(cor*10).toFixed(4);
@@ -696,8 +718,8 @@ const Generators={
   // CHAPTER 5 — Percentages
   // ══════════════════════════════════════════════════════════
   pct_of:()=>{
-    const pct=pickA([5,10,15,20,25,30,40,50,60,70,75,80]);
-    const n=pickA([20,40,50,60,80,100,120,150,160,200,240,300,400]);
+    const pct=pickA([5,10,12,13,15,18,20,24,25,27,30,35,40,42,45,50,55,60,65,68,70,72,75,80,85,90]);
+    const n=pickA([20,25,40,50,60,75,80,95,100,120,140,150,160,175,180,200,225,240,250,300,360,400]);
     const cor = pct*n/100;
     if(cor!==Math.floor(cor)) return Generators.pct_of();
     const w1=cor+n/10, w2=Math.max(1,cor-n/10), w3=Math.round(cor*2);
@@ -728,8 +750,8 @@ const Generators={
   },
 
   pct_increase:()=>{
-    const pct=pickA([10,20,25,50,15,30]);
-    const orig=pickA([40,60,80,100,120,150,200,240,300]);
+    const pct=pickA([10,12,15,20,24,25,30,35,40,45,50]);
+    const orig=pickA([40,60,75,80,95,100,120,140,150,175,180,200,240,275,300,360]);
     const inc=pct*orig/100;
     if(inc!==Math.floor(inc)) return Generators.pct_increase();
     const cor=orig+inc;
@@ -745,8 +767,8 @@ const Generators={
   },
 
   pct_decrease:()=>{
-    const pct=pickA([10,20,25,15,30,50]);
-    const orig=pickA([40,60,80,100,120,160,200,240,300]);
+    const pct=pickA([10,12,15,18,20,24,25,30,35,40,45,50]);
+    const orig=pickA([40,60,75,80,95,100,120,140,150,160,180,200,225,240,275,300,360]);
     const dec=pct*orig/100;
     if(dec!==Math.floor(dec)) return Generators.pct_decrease();
     const cor=orig-dec;
@@ -783,8 +805,8 @@ const Generators={
   // CHAPTER 6 — Ratio & Proportion
   // ══════════════════════════════════════════════════════════
   ratio_simplify:()=>{
-    const k=pickA([2,3,4,5,6,8]);
-    const a=ri(2,6), b=ri(2,6);
+    const k=pickA([2,3,4,5,6,7,8,9]);
+    const a=ri(2,9), b=ri(2,9);
     if(a===b||gcd2(a,b)!==1) return Generators.ratio_simplify();
     const ra=a*k, rb=b*k;
     const cor=`${a}:${b}`;
@@ -801,9 +823,9 @@ const Generators={
   },
 
   ratio_share:()=>{
-    const a=ri(2,5), b=ri(2,5);
+    const a=ri(2,7), b=ri(2,7);
     if(a===b) return Generators.ratio_share();
-    const part=ri(5,15);
+    const part=pickA([5,7,8,9,11,12,13,15,18,20,25,30]);
     const total=part*(a+b);
     const corA=part*a, corB=part*b;
     const which=pickA(['A','B']);
@@ -824,8 +846,8 @@ const Generators={
 
   prop_missing:()=>{
     // a:b = c:?
-    const a=ri(2,6), m=ri(2,6);
-    const b=a*ri(2,5);
+    const a=ri(2,9), m=ri(2,8);
+    const b=a*ri(2,6);
     const c=a*m;
     const cor=b*m;
     const w1=cor+m, w2=cor-m, w3=b+m;
@@ -845,8 +867,8 @@ const Generators={
       {en:'apples',id:'apel',unitE:'apples',unitI:'apel'},
       {en:'eggs',id:'telur',unitE:'eggs',unitI:'telur'}
     ]);
-    const n1=ri(2,5), price=ri(2,8);
-    const n2=n1*ri(2,6);
+    const n1=ri(2,7), price=ri(3,15);
+    const n2=n1*ri(2,7);
     const cor=price*n2/n1;
     const w1=cor+price, w2=cor-price, w3=Math.round(cor*1.5);
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -860,8 +882,8 @@ const Generators={
   },
 
   scale:()=>{
-    const scale=pickA([100,200,500,1000,2500]);
-    const mapCm=pickA([2,3,4,5,6,8,10]);
+    const scale=pickA([100,200,250,500,750,1000,1500,2000,2500,5000]);
+    const mapCm=pickA([2,3,4,5,6,7,8,9,10,12,15]);
     const realCm=mapCm*scale;
     const realM=realCm/100;
     const cor=realM;
@@ -880,7 +902,7 @@ const Generators={
   // CHAPTER 7 — Negative Numbers
   // ══════════════════════════════════════════════════════════
   neg_add_sub:()=>{
-    const a=ri(-15,15), b=ri(-15,15);
+    const a=ri(-25,25), b=ri(-25,25);
     if(a===0||b===0) return Generators.neg_add_sub();
     const op=pickA(['+','−']);
     const cor = op==='+' ? a+b : a-b;
@@ -928,8 +950,8 @@ const Generators={
     const v=pickA([0,1]);
     if(v===0){
       // temperature change
-      const start=ri(-10,-1);
-      const change=ri(3,15);
+      const start=ri(-18,-1);
+      const change=ri(3,22);
       const cor=start+change;
       const w1=cor-1, w2=start-change, w3=cor+1;
       const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -940,7 +962,7 @@ const Generators={
         concept:{en:'Temperature rising = add. Temperature falling = subtract.',
                  id:'Suhu naik = tambah. Suhu turun = kurang.'}};
     } else {
-      const debt=ri(20,80);
+      const debt=ri(25,120);
       const pay=ri(10,debt-5);
       const cor=-debt+pay; // still negative
       const w1=cor+pay, w2=-cor, w3=cor-1;
@@ -955,8 +977,8 @@ const Generators={
   },
 
   neg_number_line:()=>{
-    const start=ri(-8,8);
-    const step=ri(3,12);
+    const start=ri(-12,12);
+    const step=ri(3,18);
     const dir=pickA(['right','left']);
     const cor = dir==='right' ? start+step : start-step;
     const w1=cor+1, w2=cor-1, w3=start;
@@ -974,7 +996,7 @@ const Generators={
   // CHAPTER 8 — Algebra & Sequences
   // ══════════════════════════════════════════════════════════
   solve_simple:()=>{
-    const a=ri(2,8), x=ri(2,10), b=ri(1,15);
+    const a=ri(2,12), x=ri(2,15), b=ri(1,25);
     const op=pickA(['+','−']);
     const rhs = op==='+' ? a*x+b : a*x-b;
     if(rhs<=0) return Generators.solve_simple();
@@ -992,7 +1014,7 @@ const Generators={
   },
 
   substitute:()=>{
-    const a=ri(2,8), b=ri(1,9), x=ri(2,9);
+    const a=ri(2,12), b=ri(1,15), x=ri(2,12);
     const formulas=[
       {en:`<b>${a}x + ${b}</b>`,id:`<b>${a}x + ${b}</b>`,calc:a*x+b},
       {en:`<b>${a}x − ${b}</b>`,id:`<b>${a}x − ${b}</b>`,calc:a*x-b},
@@ -1014,7 +1036,7 @@ const Generators={
 
   sequence_next:()=>{
     const v=pickA([0,1]);
-    const a=ri(2,8), d=ri(2,7);
+    const a=ri(2,12), d=ri(2,11);
     let terms,cor,stepEn,stepId;
     if(v===0){ // arithmetic
       terms=[a,a+d,a+2*d,a+3*d];
@@ -1039,8 +1061,8 @@ const Generators={
 
   sequence_nth:()=>{
     // n-th term of an+b
-    const a=ri(2,6), b=ri(1,8);
-    const n=ri(5,10);
+    const a=ri(2,9), b=ri(1,12);
+    const n=ri(5,15);
     const cor=a*n+b;
     const terms=[a*1+b,a*2+b,a*3+b,a*4+b];
     const w1=cor+a, w2=cor-a, w3=a*(n-1)+b;
@@ -1059,11 +1081,11 @@ const Generators={
   // ══════════════════════════════════════════════════════════
   triangle_angle:()=>{
     // angles sum to 180
-    const a=ri(30,80);
-    const b=ri(30,80);
-    if(a+b>=170) return Generators.triangle_angle();
+    const a=ri(23,89);
+    const b=ri(23,89);
+    if(a+b>=170||a+b<35) return Generators.triangle_angle();
     const cor=180-a-b;
-    const w1=cor+10, w2=cor-10, w3=180-cor;
+    const w1=cor+7, w2=cor-7>0?cor-7:cor+13, w3=180-cor;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
     return{text:{en:`Two angles of a triangle are <b>${a}°</b> and <b>${b}°</b>. What is the third angle?`,
                  id:`Dua sudut sebuah segitiga adalah <b>${a}°</b> dan <b>${b}°</b>. Berapa sudut ketiganya?`},
@@ -1075,11 +1097,11 @@ const Generators={
   },
 
   quad_angle:()=>{
-    const a=ri(60,120), b=ri(60,120), c=ri(60,120);
+    const a=ri(47,143), b=ri(47,143), c=ri(47,143);
     if(a+b+c>=350) return Generators.quad_angle();
     const cor=360-a-b-c;
     if(cor<=20||cor>=170) return Generators.quad_angle();
-    const w1=cor+10, w2=cor-10, w3=180-cor;
+    const w1=cor+7, w2=cor-7>0?cor-7:cor+13, w3=180-cor;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
     return{text:{en:`Three angles of a quadrilateral are <b>${a}°</b>, <b>${b}°</b>, and <b>${c}°</b>. What is the fourth angle?`,
                  id:`Tiga sudut segiempat: <b>${a}°</b>, <b>${b}°</b>, dan <b>${c}°</b>. Berapa sudut keempat?`},
@@ -1091,7 +1113,7 @@ const Generators={
   },
 
   angle_straight:()=>{
-    const a=ri(30,150);
+    const a=ri(23,157);
     const cor=180-a;
     const w1=cor+10, w2=cor-10, w3=360-a;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -1105,9 +1127,9 @@ const Generators={
   },
 
   vert_opp:()=>{
-    const a=ri(30,150);
+    const a=ri(23,157);
     const cor=a; // vertically opposite = equal
-    const w1=180-a, w2=360-a, w3=a+10;
+    const w1=180-a, w2=360-a, w3=a+7;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
     return{text:{en:`Two lines cross. One angle is <b>${a}°</b>. What is the <b>vertically opposite</b> angle?`,
                  id:`Dua garis berpotongan. Salah satu sudut <b>${a}°</b>. Berapa sudut <b>vertikal yang berlawanan</b>?`},
@@ -1143,18 +1165,18 @@ const Generators={
   // CHAPTER 10 — Coordinates & Transformations (with SVG)
   // ══════════════════════════════════════════════════════════
   coord_4quad:()=>{
-    const x=ri(-5,5), y=ri(-5,5);
+    const x=ri(-9,9), y=ri(-9,9);
     if(x===0||y===0) return Generators.coord_4quad();
     // SVG grid
-    const S=20, W=240, H=240, CX=W/2, CY=H/2;
+    const S=13, W=280, H=280, CX=W/2, CY=H/2;
     let grid='';
-    for(let i=-6;i<=6;i++){
+    for(let i=-10;i<=10;i++){
       grid+=`<line x1="${CX+i*S}" y1="0" x2="${CX+i*S}" y2="${H}" stroke="${i===0?'#333':'#dde6ff'}" stroke-width="${i===0?1.5:0.6}"/>`;
       grid+=`<line x1="0" y1="${CY+i*S}" x2="${W}" y2="${CY+i*S}" stroke="${i===0?'#333':'#dde6ff'}" stroke-width="${i===0?1.5:0.6}"/>`;
     }
     // axis labels
     let labs='';
-    for(let i=-5;i<=5;i++){
+    for(let i=-9;i<=9;i++){
       if(i!==0){
         labs+=`<text x="${CX+i*S}" y="${CY+12}" text-anchor="middle" font-size="9" fill="#666">${i}</text>`;
         labs+=`<text x="${CX-7}" y="${CY-i*S+3}" text-anchor="end" font-size="9" fill="#666">${i}</text>`;
@@ -1177,8 +1199,8 @@ const Generators={
   },
 
   translate:()=>{
-    const x=ri(-3,3), y=ri(-3,3);
-    const dx=ri(-4,4), dy=ri(-4,4);
+    const x=ri(-7,7), y=ri(-7,7);
+    const dx=ri(-6,6), dy=ri(-6,6);
     if(dx===0&&dy===0) return Generators.translate();
     const cor=`(${x+dx}, ${y+dy})`;
     const w1=`(${x-dx}, ${y-dy})`;
@@ -1262,7 +1284,7 @@ const Generators={
   // CHAPTER 11 — Area, Perimeter, Volume
   // ══════════════════════════════════════════════════════════
   area_parallelogram:()=>{
-    const base=ri(4,15), h=ri(3,12);
+    const base=ri(5,18), h=ri(3,14);
     const cor=base*h;
     const w1=base+h, w2=2*(base+h), w3=Math.round(base*h/2);
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -1284,8 +1306,8 @@ const Generators={
   },
 
   area_triangle:()=>{
-    const base=pickA([4,6,8,10,12,14,16]);
-    const h=pickA([3,5,6,8,9,10]);
+    const base=pickA([4,5,6,7,8,9,10,11,12,13,14,15,16,18]);
+    const h=pickA([3,4,5,6,7,8,9,10,11,12]);
     const cor=base*h/2;
     if(cor!==Math.floor(cor)) return Generators.area_triangle();
     const w1=base*h, w2=base+h, w3=cor+5;
@@ -1308,10 +1330,10 @@ const Generators={
 
   area_compound:()=>{
     // L-shape: big rectangle - small cutout
-    const W1=ri(8,14), H1=ri(5,9);
+    const W1=ri(8,17), H1=ri(5,12);
     const W2=ri(2,W1-3), H2=ri(2,H1-2);
     const cor=W1*H1-W2*H2;
-    const w1=W1*H1, w2=W1*H1+W2*H2, w3=cor+10;
+    const w1=W1*H1, w2=W1*H1+W2*H2, w3=cor+7;
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
     // SVG
     const sc=14, off=14;
@@ -1338,7 +1360,7 @@ const Generators={
   },
 
   perim_compound:()=>{
-    const W1=ri(6,12), H1=ri(4,8);
+    const W1=ri(6,15), H1=ri(4,11);
     const W2=ri(2,W1-2), H2=ri(2,H1-2);
     // L-shape perimeter = 2(W1 + H1)
     const cor=2*(W1+H1);
@@ -1354,7 +1376,7 @@ const Generators={
   },
 
   vol_cuboid:()=>{
-    const l=ri(3,10), w=ri(3,10), h=ri(2,8);
+    const l=ri(3,14), w=ri(3,12), h=ri(2,11);
     const cor=l*w*h;
     const w1=l*w+h, w2=l+w+h, w3=2*(l*w+l*h+w*h);
     const{opts,ans}=mkOpts(String(cor),[String(w1),String(w2),String(w3)]);
@@ -1371,13 +1393,13 @@ const Generators={
   // CHAPTER 12 — Statistics & Probability
   // ══════════════════════════════════════════════════════════
   mean:()=>{
-    const n=pickA([4,5,6]);
-    const mean=ri(5,12);
+    const n=pickA([4,5,6,7]);
+    const mean=ri(6,18);
     const vals=[];
     let sum=0;
-    for(let i=0;i<n-1;i++){const v=ri(mean-3,mean+3); vals.push(v); sum+=v;}
+    for(let i=0;i<n-1;i++){const v=ri(mean-5,mean+5); vals.push(v); sum+=v;}
     vals.push(mean*n-sum);
-    if(vals[n-1]<=0||vals[n-1]>30) return Generators.mean();
+    if(vals[n-1]<=0||vals[n-1]>40) return Generators.mean();
     shuffA(vals);
     const cor=mean;
     const w1=cor+1, w2=cor-1, w3=Math.max(...vals);
@@ -1392,9 +1414,9 @@ const Generators={
   },
 
   median_g6:()=>{
-    const n=pickA([5,7]);
+    const n=pickA([5,7,9]);
     const vals=[];
-    for(let i=0;i<n;i++) vals.push(ri(3,30));
+    for(let i=0;i<n;i++) vals.push(ri(3,45));
     const sorted=[...vals].sort((a,b)=>a-b);
     const cor=sorted[Math.floor(n/2)];
     const w1=sorted[0], w2=sorted[n-1], w3=Math.round(vals.reduce((a,b)=>a+b,0)/n);
@@ -1411,11 +1433,11 @@ const Generators={
   mode_range:()=>{
     const v=pickA([0,1]);
     // build data with a clear mode
-    const modeVal=ri(3,12);
+    const modeVal=ri(3,18);
     const vals=[modeVal,modeVal,modeVal];
     for(let i=0;i<4;i++){
       let x;
-      do{ x=ri(1,15); }while(x===modeVal);
+      do{ x=ri(1,25); }while(x===modeVal);
       vals.push(x);
     }
     shuffA(vals);
@@ -1525,7 +1547,7 @@ const Generators={
                  id:'Peluang = (hasil yang diinginkan) / (total hasil mungkin).'}};
     } else if(v===1){
       // marbles
-      const red=ri(2,6), blue=ri(2,6), green=ri(1,4);
+      const red=ri(2,9), blue=ri(2,9), green=ri(1,7);
       const total=red+blue+green;
       const which=pickA([
         {en:'red',id:'merah',c:red},
@@ -1907,21 +1929,51 @@ function getActiveParts(){
   return ch?Parts.filter(p=>p.ch===ch):Parts;
 }
 
+// Anti-clustering: swap any two adjacent items that share the same topic
+function antiCluster(arr){
+  for(let pass=0; pass<3; pass++){
+    let swapped=false;
+    for(let i=0;i<arr.length-1;i++){
+      if(arr[i].topic===arr[i+1].topic){
+        // find a non-adjacent partner with a different topic
+        for(let j=i+2;j<arr.length;j++){
+          if(arr[j].topic!==arr[i].topic && (j+1>=arr.length || arr[j+1].topic!==arr[i].topic)){
+            [arr[i+1],arr[j]]=[arr[j],arr[i+1]];
+            swapped=true;
+            break;
+          }
+        }
+      }
+    }
+    if(!swapped) break;
+  }
+  return arr;
+}
+
 function buildInitialQueue(){
   let qNum=1;
-  const result=getActiveParts().flatMap(part=>{
-    const picked=part.topics.map(topic=>{
-      const q=Generators[topic]();
-      q.topic=topic;
-      return q;
+  const activeParts=getActiveParts();
+  // In single-chapter mode (not exam), generate 2 questions per topic for more practice + variety
+  const singleChapter = !isExam && activeParts.length===1;
+  const copies = singleChapter ? 2 : 1;
+  const result=activeParts.flatMap(part=>{
+    const picked=[];
+    part.topics.forEach(topic=>{
+      for(let c=0;c<copies;c++){
+        const q=Generators[topic]();
+        q.topic=topic;
+        picked.push(q);
+      }
     });
     shuffle(picked);
+    antiCluster(picked);
     picked[0].section=part.section;
     picked.forEach(q=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
     return picked;
   });
   if(isExam){
     shuffle(result);
+    antiCluster(result);
     const tot=result.length;
     result.forEach((q,i)=>{ q.tag={en:`Q${i+1} of ${tot}`,id:`S${i+1} dari ${tot}`}; });
   }
@@ -1946,6 +1998,7 @@ function buildAdaptiveQueue(){
       }
     });
     shuffle(partQs);
+    antiCluster(partQs);
     if(partQs.length) partQs[0].section=part.section;
     newQueue.push(...partQs);
   });
