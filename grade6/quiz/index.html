@@ -1977,19 +1977,20 @@ const Generators={
     // like: count on in 0.05s → __, 0, __, 0.1, __, 0.2
     const [si,k0,hid]=uniqueGen('dt_count_on_step',()=>[ri(0,6),ri(-4,2),ri(0,1)]);
     const s=[0.05,0.02,0.25,0.1,0.5,0.2,0.01][si];
-    const dp=s>=0.1?(s===0.25?2:1):2;
-    const fmt=x=>{const v=+x.toFixed(4); if(v===0)return'0'; let o=v.toFixed(dp); if(o.includes('.'))o=o.replace(/0+$/,'').replace(/\.$/,''); return o;};
+    // format exactly, never "-0" and never a rounded-away digit
+    const fmt=x=>{const v=+(+x).toFixed(4); if(v===0)return'0'; return v.toFixed(4).replace(/0+$/,'').replace(/\.$/,'');};
     const vals=[0,1,2,3,4,5].map(i=>+((k0+i)*s).toFixed(4));
     const gone=hid?[1,3,5]:[0,2,4];
     const seq=vals.map((v,i)=>gone.includes(i)?`<span style="color:#0984e3">____</span>`:`<b>${fmt(v)}</b>`).join(' &nbsp;,&nbsp; ');
     const missing=gone.map(i=>fmt(vals[i]));
     const cor=missing.join(', ');
+    const hasNeg0=vals.some(v=>v<0);
     const wrongs=[
-      gone.map(i=>fmt(vals[i]*10)).join(', '),
+      gone.map(i=>fmt(vals[i]+s)).join(', '),          // off by one step
+      gone.map(i=>fmt(vals[i]-s)).join(', '),          // off by one step the other way
+      ...(hasNeg0?[gone.map(i=>fmt(-vals[i])).join(', ')]:[]),   // signs ignored
+      gone.map(i=>fmt(vals[i]*10)).join(', '),         // step size misread
       gone.map(i=>fmt(vals[i]/10)).join(', '),
-      gone.map(i=>fmt(Math.abs(vals[i])+(vals[i]<0?0.001:0))).join(', '),
-      gone.map(i=>fmt(vals[i]+s)).join(', '),
-      gone.map(i=>fmt(vals[i]-s)).join(', '),
     ];
     const{opts,ans}=mkOpts(cor,wrongs);
     const hasNeg=vals.some(v=>v<0);
