@@ -2276,6 +2276,10 @@ let isExam=_examParam!==null;
 
 let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false,selectedAnswer=null;
 let round=1, isAdaptive=false;
+// Session limits — a chapter never runs past MAX_CHAPTER_Q questions, however
+// low the SmartScore is, and the full exam samples EXAM_Q topics at random.
+const MAX_CHAPTER_Q=20;
+const EXAM_Q=30;
 let queue=[];
 let results=[];
 
@@ -2333,7 +2337,7 @@ function refillQueue(){
     return{tp,w:1+3*st.wrong+unattempted};
   });
   const totalW=weighted.reduce((s,x)=>s+x.w,0);
-  for(let i=0;i<5;i++){
+  for(let i=0;i<5 && queue.length<MAX_CHAPTER_Q;i++){
     let r=Math.random()*totalW,pick=weighted[0].tp;
     for(const w of weighted){r-=w.w;if(r<=0){pick=w.tp;break}}
     const q=Generators[pick]();
@@ -2346,7 +2350,7 @@ function refillQueue(){
 
 function render(){
   if(cur>=queue.length){
-    if(!isExam && score<100){
+    if(!isExam && score<100 && queue.length<MAX_CHAPTER_Q){
       refillQueue();
     } else {
       renderDone();
@@ -2565,9 +2569,16 @@ function buildInitialQueue(){
   });
   if(isExam){
     shuffle(result);
-    antiCluster(result);
-    const tot=result.length;
-    result.forEach((q,i)=>{ q.tag={en:`Q${i+1} of ${tot}`,id:`S${i+1} dari ${tot}`}; });
+    const sampled=result.slice(0,EXAM_Q);   // random topics — a different mix every sitting
+    antiCluster(sampled);
+    const tot=sampled.length;
+    sampled.forEach((q,i)=>{ q.tag={en:`Q${i+1} of ${tot}`,id:`S${i+1} dari ${tot}`}; });
+    return sampled;
+  }
+  if(result.length>MAX_CHAPTER_Q){
+    const trimmed=result.slice(0,MAX_CHAPTER_Q);
+    trimmed.forEach((q,i)=>{ q.tag={en:`Question ${i+1}`,id:`Soal ${i+1}`}; });
+    return trimmed;
   }
   return result;
 }
@@ -2594,8 +2605,16 @@ function buildAdaptiveQueue(){
     if(partQs.length) partQs[0].section=part.section;
     newQueue.push(...partQs);
   });
-  newQueue.forEach((q,i)=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
-  return{queue:newQueue};
+  let finalQueue=newQueue;
+  if(finalQueue.length>MAX_CHAPTER_Q){
+    // over the cap: keep the questions from the weakest topics
+    const errOf=q=>{const st=topicStats[q.topic]||{wrong:0,correct:0};const a=st.wrong+st.correct;return a?st.wrong/a:0;};
+    finalQueue=[...finalQueue].sort((a,b)=>errOf(b)-errOf(a)).slice(0,MAX_CHAPTER_Q);
+    shuffle(finalQueue);
+    antiCluster(finalQueue);
+  }
+  finalQueue.forEach(q=>{ q.tag={en:`Question ${qNum}`,id:`Soal ${qNum}`}; qNum++; });
+  return{queue:finalQueue};
 }
 
 function renderDone(){
