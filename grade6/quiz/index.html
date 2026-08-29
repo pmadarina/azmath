@@ -1849,7 +1849,8 @@ const Generators={
     const e3=`${T+jd} − (${dj*jd} ÷ ${dj})`;
     const delta=[-30,-20,-12,12,20,30][di];
     const g=ri(5,12), h=ri(5,12);
-    const e4=`(${g} × ${h}) − ${g*h-(T+delta)}`;
+    const tail=g*h-(T+delta);                       // render the sign properly — never "− -49"
+    const e4=tail===0?`(${g} × ${h})`:(tail>0?`(${g} × ${h}) − ${tail}`:`(${g} × ${h}) + ${-tail}`);
     const items=shuffA([{e:e1,ok:true},{e:e2,ok:true},{e:e3,ok:true},{e:e4,ok:false}]);
     const rom=['(i)','(ii)','(iii)','(iv)'];
     const oddIdx=items.findIndex(x=>!x.ok);
