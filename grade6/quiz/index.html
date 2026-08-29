@@ -265,13 +265,13 @@ const _recentVals={};
 function rememberValue(key,val){
   if(!_recentVals[key]) _recentVals[key]=[];
   _recentVals[key].unshift(val);
-  if(_recentVals[key].length>5) _recentVals[key].pop();
+  if(_recentVals[key].length>14) _recentVals[key].pop();
 }
 function seenValue(key,val){
   return _recentVals[key]&&_recentVals[key].includes(val);
 }
 function uniqueGen(key,paramGen,maxAttempts){
-  maxAttempts=maxAttempts||6;
+  maxAttempts=maxAttempts||16;
   let params,sig,attempts=0;
   do{
     params=paramGen();
@@ -1581,6 +1581,570 @@ const Generators={
     }
   },
 
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 13 — Daily Test A: Place Value & The Number System
+  // (mirrors the Azhari Daily Test Ch 1–2 paper — same number sizes)
+  // ══════════════════════════════════════════════════════════
+  dt_greatest_thousandths:()=>{
+    // e.g. -1.563, -2.482, 1.576, 2.482  → compare the 3rd decimal digit
+    const strs=uniqueGen('dt_greatest_thousandths',()=>{
+      const digs=shuffA([1,2,3,4,5,6,7,8,9]).slice(0,4);
+      return digs.map(d=>`${Math.random()<0.45?'-':''}${ri(1,9)}.${ri(0,9)}${ri(0,9)}${d}`);
+    });
+    const nums=strs.map(s=>({s,d:+s.slice(-1)}));
+    const best=nums.reduce((a,b)=>b.d>a.d?b:a);
+    const{opts,ans}=mkOpts(best.s,nums.filter(n=>n!==best).map(n=>n.s));
+    return{text:{en:`Which <b>digit</b> in the <b>thousandths place</b> has the greatest value?`,
+                 id:`<b>Angka</b> di <b>tempat perseribuan</b> manakah yang nilainya paling besar?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`The thousandths digit is the <b>3rd digit after the decimal point</b>.`,
+                 `Thousandths digits → ${nums.map(n=>n.s+' : '+n.d).join(' · ')}`,
+                 `The greatest is <b>${best.d}</b>, so the answer is <b>${best.s}</b>.`],
+             id:[`Angka perseribuan adalah <b>angka ke-3 setelah koma</b>.`,
+                 `Angka perseribuan → ${nums.map(n=>n.s+' : '+n.d).join(' · ')}`,
+                 `Terbesar adalah <b>${best.d}</b>, jadi jawabannya <b>${best.s}</b>.`]},
+      concept:{en:'Only the thousandths digit matters here — a minus sign does not change which digit sits in that place.',
+               id:'Yang dibandingkan hanya angka perseribuan — tanda minus tidak mengubah angka di tempat itu.'}};
+  },
+
+  dt_place_discs:()=>{
+    const [nT,nH,nTh]=uniqueGen('dt_place_discs',()=>{
+      let a,b,c;
+      do{ a=ri(0,4); b=ri(0,5); c=ri(1,7); } while(a+b+c<3);
+      return[a,b,c];
+    });
+    const ds=`${nT}${nH}${nTh}`;
+    const cor='0.'+ds;
+    const perms=[[0,2,1],[2,0,1],[2,1,0],[1,2,0],[1,0,2]];
+    const wrongs=[];
+    perms.forEach(p=>{
+      const s='0.'+p.map(i=>ds[i]).join('');
+      if(s!==cor && !wrongs.includes(s)) wrongs.push(s);
+    });
+    wrongs.push('0.0'+ds, ds[0]+'.'+ds.slice(1), '0.'+((+ds[0]+1)%10)+ds.slice(1), '0.'+ds.slice(0,2)+((+ds[2]+1)%10));
+    const{opts,ans}=mkOpts(cor,wrongs);
+    const disc=(v,cx,cy,col)=>`<circle cx="${cx}" cy="${cy}" r="17" fill="${col}" stroke="#fff" stroke-width="2"/><text x="${cx}" y="${cy+4}" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">${v}</text>`;
+    const cols=[{n:nT,v:'0.1',c:'#0984e3'},{n:nH,v:'0.01',c:'#6c5ce7'},{n:nTh,v:'0.001',c:'#00b894'}];
+    let g='',x=48;
+    cols.forEach(col=>{
+      for(let i=0;i<col.n;i++) g+=disc(col.v,x,32+i*40,col.c);
+      x+=78;
+    });
+    const maxN=Math.max(nT,nH,nTh);
+    const svg=`<svg width="240" height="${30+maxN*40}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:10px auto;max-width:100%;height:auto;background:#fafbff;border-radius:10px">${g}</svg>`;
+    return{text:{en:`Write the figure shown by the place value discs below.`,
+                 id:`Tulis bilangan yang ditunjukkan oleh keping nilai tempat di bawah ini.`},
+      math:svg,isWord:true,opts,ans,
+      steps:{en:[`${nT} disc${nT===1?'':'s'} of 0.1 → ${nT} tenths`,`${nH} disc${nH===1?'':'s'} of 0.01 → ${nH} hundredths`,`${nTh} disc${nTh===1?'':'s'} of 0.001 → ${nTh} thousandths`,`Put each count in its own place: <b>${cor}</b>`],
+             id:[`${nT} keping 0,1 → ${nT} persepuluhan`,`${nH} keping 0,01 → ${nH} perseratusan`,`${nTh} keping 0,001 → ${nTh} perseribuan`,`Tulis tiap jumlah di tempatnya: <b>${cor}</b>`]},
+      concept:{en:'Count the discs in each column, then write each count in its own place: tenths, hundredths, thousandths.',
+               id:'Hitung keping di tiap kolom, lalu tulis di tempatnya: persepuluhan, perseratusan, perseribuan.'}};
+  },
+
+  dt_missing_factor_pow10:()=>{
+    // like ___ × 10 = 19.29 , 1.37 × ___ = 137
+    const [p,whole,d1,d2,d3]=uniqueGen('dt_missing_factor_pow10',()=>[pickA([10,100,1000]),ri(1,99),ri(0,9),ri(1,9),pickA([0,ri(1,9)])]);
+    const start=+`${whole}.${d1}${d2}${d3}`;
+    const res=+(start*p).toFixed(6);
+    const resS=String(+res.toFixed(4));
+    const cor=String(start);
+    const wrongs=[String(+(start*10).toFixed(4)),String(+(start/10).toFixed(5)),String(+(res/(p*10)).toFixed(5)),String(+(start*100).toFixed(3))];
+    const{opts,ans}=mkOpts(cor,wrongs);
+    return{text:{en:`Fill in the blank.`,id:`Isi titik-titik.`},
+      math:`<b>____</b> × ${p} = <b>${resS}</b>`,
+      opts,ans,
+      steps:{en:[`To undo <b>× ${p}</b>, do <b>÷ ${p}</b>.`,`${resS} ÷ ${p} = <b>${cor}</b>`,`Check: ${cor} × ${p} = ${resS} ✓`],
+             id:[`Kebalikan dari <b>× ${p}</b> adalah <b>÷ ${p}</b>.`,`${resS} ÷ ${p} = <b>${cor}</b>`,`Cek: ${cor} × ${p} = ${resS} ✓`]},
+      concept:{en:'Multiplying by 10/100/1000 moves every digit 1/2/3 places LEFT. To find the missing factor, divide.',
+               id:'Dikali 10/100/1000 menggeser setiap angka 1/2/3 tempat ke KIRI. Untuk mencari faktor yang hilang, bagi.'}};
+  },
+
+  dt_expanded_decimal:()=>{
+    // like 45 + 0.04 + 0.006
+    const [w,t,h,th]=uniqueGen('dt_expanded_decimal',()=>[ri(11,89),pickA([0,0,ri(1,9)]),ri(1,9),ri(1,9)]);
+    const parts=[String(w)];
+    if(t) parts.push((t/10).toFixed(1));
+    parts.push((h/100).toFixed(2));
+    parts.push((th/1000).toFixed(3));
+    const corS=(w+t/10+h/100+th/1000).toFixed(3);
+    const wrongs=[
+      `${w}.${t||''}${h}${th}`,                                  // digits jammed together
+      (w+t/10+h/100+th/100).toFixed(3),                          // thousandths read as hundredths
+      (w+t/10+h/1000+th/1000).toFixed(4),                        // hundredths read as thousandths
+      (w+t/10+h/10+th/1000).toFixed(3),
+    ];
+    const{opts,ans}=mkOpts(corS,wrongs);
+    return{text:{en:`What is the value of <b>${parts.join(' + ')}</b>?`,
+                 id:`Berapa nilai dari <b>${parts.join(' + ')}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Line the numbers up by place value — do not just push the digits together.`,
+                 `${w} → ones · ${t?(t/10).toFixed(1)+' → tenths':'0 tenths'} · ${(h/100).toFixed(2)} → hundredths · ${(th/1000).toFixed(3)} → thousandths`,
+                 `Total = <b>${corS}</b>`],
+             id:[`Susun sesuai nilai tempat — jangan hanya menempelkan angkanya.`,
+                 `${w} → satuan · ${t?(t/10).toFixed(1)+' → persepuluhan':'0 persepuluhan'} · ${(h/100).toFixed(2)} → perseratusan · ${(th/1000).toFixed(3)} → perseribuan`,
+                 `Jumlah = <b>${corS}</b>`]},
+      concept:{en:'Expanded form: an empty place (like 0 tenths) still needs a 0 to hold the place.',
+               id:'Bentuk panjang: tempat yang kosong (misal 0 persepuluhan) tetap ditulis 0 sebagai pengisi.'}};
+  },
+
+  dt_regroup_wrong:()=>{
+    // like 5.382 = 5 + 0.38 + 0.002 ... one of four is wrong
+    const [w,a,b,c]=uniqueGen('dt_regroup_wrong',()=>{
+      let x,y,z;
+      do{ x=ri(1,9); y=ri(1,9); z=ri(1,9); } while(11*x===10*y+z);  // keeps the decoy's value different
+      return[ri(2,9),x,y,z];
+    });
+    const num=(w+a/10+b/100+c/1000).toFixed(3);
+    const f=x=>String(+x.toFixed(3));
+    const good=[
+      `${w} + ${f(a/10+b/100)} + ${f(c/1000)}`,
+      `${f(w+c/1000)} + ${f(a/10)} + ${f(b/100)}`,
+      `${f(w+a/10)} + ${f(b/100)} + ${f(c/1000)}`,
+    ];
+    // decoy: the same three digits, but shuffled into the wrong places
+    const bad=`${f(w+c/100)} + ${f(b/10)} + ${f(a/1000)}`;
+    const all=shuffA([...good,bad]);
+    const L=['A','B','C','D'];
+    let ansL='';
+    const opts=all.map((v,i)=>{ if(v===bad) ansL=L[i]; return{l:L[i],v}; });
+    return{text:{en:`The number <b>${num}</b> is regrouped in four ways. <b>One of them is wrong.</b> Which is it?`,
+                 id:`Bilangan <b>${num}</b> diuraikan dengan empat cara. <b>Salah satunya salah.</b> Yang mana?`},
+      math:null,isWord:true,opts,ans:ansL,
+      steps:{en:[`Add up each option and compare it with ${num}.`,
+                 `Three of them add to exactly ${num}.`,
+                 `<b>${bad}</b> does not — those digits sit in the wrong places.`],
+             id:[`Jumlahkan tiap pilihan lalu bandingkan dengan ${num}.`,
+                 `Tiga di antaranya berjumlah tepat ${num}.`,
+                 `<b>${bad}</b> tidak — angkanya berada di tempat yang salah.`]},
+      concept:{en:'A regrouping is only correct if the parts add back to the original number.',
+               id:'Penguraian benar hanya jika bagian-bagiannya dijumlah kembali menjadi bilangan semula.'}};
+  },
+
+  dt_digit_in_place:()=>{
+    // like: which number has the digit 2 in the thousandths place?
+    const [D,pi]=uniqueGen('dt_digit_in_place',()=>[ri(1,9),pickA([1,2,3])]);
+    const P=[{en:'tenths',id:'persepuluhan',i:1},{en:'hundredths',id:'perseratusan',i:2},{en:'thousandths',id:'perseribuan',i:3}].find(p=>p.i===pi);
+    const other=()=>{ let d; do{ d=ri(0,9); }while(d===D); return d; };
+    const build=(hit)=>{
+      const w=pickA([ri(1,9),ri(10,99),0]);
+      const dg=[0,other(),other(),other()];
+      if(hit) dg[P.i]=D;
+      else { const j=pickA([1,2,3].filter(x=>x!==P.i)); dg[j]=D; } // decoy has the digit in a DIFFERENT place
+      return `${w}.${dg[1]}${dg[2]}${dg[3]}`;
+    };
+    const cor=build(true);
+    const{opts,ans}=mkOpts(cor,[build(false),build(false),build(false),build(false)]);
+    return{text:{en:`Choose the number which has the digit <b>${D}</b> in the <b>${P.en} place</b>.`,
+                 id:`Pilih bilangan yang memiliki angka <b>${D}</b> di tempat <b>${P.id}</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`After the decimal point: 1st = tenths, 2nd = hundredths, 3rd = thousandths.`,
+                 `Count ${P.i} place${P.i>1?'s':''} to the right of the point in each option.`,
+                 `Only <b>${cor}</b> has ${D} in the ${P.en} place.`],
+             id:[`Setelah koma: ke-1 = persepuluhan, ke-2 = perseratusan, ke-3 = perseribuan.`,
+                 `Hitung ${P.i} tempat ke kanan dari koma pada tiap pilihan.`,
+                 `Hanya <b>${cor}</b> yang punya ${D} di tempat ${P.id}.`]},
+      concept:{en:'Do not just look for the digit — check WHICH place it is sitting in.',
+               id:'Jangan hanya mencari angkanya — periksa DI TEMPAT MANA angka itu berada.'}};
+  },
+
+  dt_round_riddle:()=>{
+    // like: rounds to 10 to the nearest tenth AND the nearest whole number
+    const [N,sgn,off]=uniqueGen('dt_round_riddle',()=>[ri(3,79),pickA([-1,1]),ri(1,4)]);
+    const r1=x=>Math.round(x*10)/10;
+    const cor=+(N+sgn*0.01*off).toFixed(2);
+    const wrongs=[+(N-0.44).toFixed(2),+(N+0.45).toFixed(2),+(N+0.55).toFixed(2),+(N-0.51).toFixed(2)]
+      .filter(x=>Math.abs(r1(x)-N)>1e-9||Math.abs(Math.round(x)-N)>1e-9)
+      .map(x=>x.toFixed(2));
+    const{opts,ans}=mkOpts(cor.toFixed(2),wrongs);
+    return{text:{en:`Eddy is thinking of a number. Its value is <b>${N}</b> when rounded to the nearest <b>tenth</b> <u>and</u> when rounded to the nearest <b>whole number</b>. What number is Eddy thinking of?`,
+                 id:`Eddy memikirkan sebuah bilangan. Nilainya <b>${N}</b> jika dibulatkan ke <b>persepuluhan terdekat</b> <u>dan</u> ke <b>bilangan bulat terdekat</b>. Bilangan apa yang dipikirkan Eddy?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Every option must pass <b>both</b> tests.`,
+                 `${cor.toFixed(2)} → nearest tenth = ${r1(cor).toFixed(1)} ✓ · nearest whole = ${Math.round(cor)} ✓`,
+                 `${wrongs[0]} → nearest tenth = ${r1(+wrongs[0]).toFixed(1)} ✗`,
+                 `Answer: <b>${cor.toFixed(2)}</b>`],
+             id:[`Setiap pilihan harus lolos <b>kedua</b> uji.`,
+                 `${cor.toFixed(2)} → persepuluhan = ${r1(cor).toFixed(1)} ✓ · bilangan bulat = ${Math.round(cor)} ✓`,
+                 `${wrongs[0]} → persepuluhan = ${r1(+wrongs[0]).toFixed(1)} ✗`,
+                 `Jawaban: <b>${cor.toFixed(2)}</b>`]},
+      concept:{en:'Two conditions means you must check both. A number can round correctly to the whole but wrongly to the tenth.',
+               id:'Dua syarat berarti keduanya harus dicek. Sebuah bilangan bisa benar ke bilangan bulat tetapi salah ke persepuluhan.'}};
+  },
+
+  dt_round_target:()=>{
+    // like: which number becomes 10.6 when rounded to the nearest tenth?
+    const [wh,tn,offi]=uniqueGen('dt_round_target',()=>[ri(2,79),ri(1,9),ri(0,5)]);
+    const T=+`${wh}.${tn}`;
+    const r1=x=>Math.round(x*10)/10;
+    const cor=+(T+[-0.04,-0.03,-0.02,0.02,0.03,0.04][offi]).toFixed(2);
+    const wrongs=[+(T-0.06).toFixed(2),+(T+0.08).toFixed(2),+(T-0.11).toFixed(2),+(T+0.12).toFixed(2)]
+      .filter(x=>Math.abs(r1(x)-T)>1e-9).map(x=>x.toFixed(2));
+    const{opts,ans}=mkOpts(cor.toFixed(2),wrongs);
+    return{text:{en:`Choose the number that becomes <b>${T.toFixed(1)}</b> when rounded to the <b>nearest tenth</b>.`,
+                 id:`Pilih bilangan yang menjadi <b>${T.toFixed(1)}</b> jika dibulatkan ke <b>persepuluhan terdekat</b>.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`To round to the nearest tenth, look at the <b>hundredths</b> digit.`,
+                 `${cor.toFixed(2)} → rounds to <b>${T.toFixed(1)}</b> ✓`,
+                 `The others land on ${wrongs.map(x=>r1(+x).toFixed(1)).join(', ')}.`],
+             id:[`Untuk membulatkan ke persepuluhan, lihat angka <b>perseratusan</b>.`,
+                 `${cor.toFixed(2)} → dibulatkan jadi <b>${T.toFixed(1)}</b> ✓`,
+                 `Yang lain jatuh ke ${wrongs.map(x=>r1(+x).toFixed(1)).join(', ')}.`]},
+      concept:{en:'Rounding to the tenth: the hundredths digit decides. ≥ 5 up, < 5 down.',
+               id:'Membulatkan ke persepuluhan: angka perseratusan yang menentukan. ≥ 5 ke atas, < 5 ke bawah.'}};
+  },
+
+  dt_div_pow10:()=>{
+    // like 330 ÷ 100
+    const [p,n]=uniqueGen('dt_div_pow10',()=>[pickA([10,100,1000]),ri(11,999)*pickA([1,1,10])]);
+    const cor=String(+(n/p).toFixed(4));
+    const wrongs=[String(+(n/(p*10)).toFixed(5)),String(+(n/(p/10||1)).toFixed(4)),String(n),String(+(n/(p*100)).toFixed(6))];
+    const{opts,ans}=mkOpts(cor,wrongs);
+    return{text:{en:`Divide.`,id:`Bagilah.`},
+      math:`${n} ÷ ${p} = <b>____</b>`,
+      opts,ans,
+      steps:{en:[`Dividing by ${p} moves every digit <b>${String(p).length-1} place${p>10?'s':''} to the RIGHT</b>.`,
+                 `${n} ÷ ${p} = <b>${cor}</b>`],
+             id:[`Dibagi ${p} menggeser setiap angka <b>${String(p).length-1} tempat ke KANAN</b>.`,
+                 `${n} ÷ ${p} = <b>${cor}</b>`]},
+      concept:{en:'÷10 → 1 place right, ÷100 → 2 places right, ÷1000 → 3 places right.',
+               id:'÷10 → 1 tempat ke kanan, ÷100 → 2 tempat, ÷1000 → 3 tempat.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 14 — Daily Test B: Order of Operations & Number Laws
+  // ══════════════════════════════════════════════════════════
+  dt_order_ops:()=>{
+    const form=ri(1,3);
+    let expr,cor,lr,note;
+    if(form===1){                                   // like 10 + 5 × 28 × 2
+      const [a,b,c,d]=uniqueGen('dt_order_ops1',()=>[ri(5,20),ri(2,9),ri(11,30),pickA([2,3,4])]);
+      expr=`${a} + ${b} × ${c} × ${d}`; cor=a+b*c*d; lr=(a+b)*c*d;
+      note={en:'Multiplication is done before addition.',id:'Perkalian dikerjakan sebelum penjumlahan.'};
+    } else if(form===2){                            // like 16 × 5 − 60
+      const [a,b,c]=uniqueGen('dt_order_ops2',()=>[ri(11,26),ri(3,9),ri(20,90)]);
+      expr=`${a} × ${b} − ${c}`; cor=a*b-c; lr=a*(b-c);
+      note={en:'Multiply first, then subtract.',id:'Kalikan dulu, baru kurangkan.'};
+    } else {                                        // like 25 × 5 × 4 + 60
+      const [a,b,c,d]=uniqueGen('dt_order_ops3',()=>[ri(15,30),ri(3,7),pickA([2,4,5]),ri(20,90)]);
+      expr=`${a} × ${b} × ${c} + ${d}`; cor=a*b*c+d; lr=a*b*(c+d);
+      note={en:'All the multiplying happens before the adding.',id:'Semua perkalian dikerjakan sebelum penjumlahan.'};
+    }
+    const{opts,ans}=mkOpts(String(cor),[String(lr),String(cor+10),String(cor-10),String(cor*2)]);
+    return{text:{en:`What is the value of the expression?`,id:`Berapa nilai dari bentuk berikut?`},
+      math:`${expr} = <b>____</b>`,
+      opts,ans,
+      steps:{en:[`Order of operations: <b>Brackets → × ÷ → + −</b>.`,note.en,`${expr} = <b>${cor}</b>`],
+             id:[`Urutan operasi: <b>Kurung → × ÷ → + −</b>.`,note.id,`${expr} = <b>${cor}</b>`]},
+      concept:{en:'Never just work left to right. Do × and ÷ before + and −.',
+               id:'Jangan langsung kerjakan dari kiri ke kanan. Kerjakan × dan ÷ sebelum + dan −.'}};
+  },
+
+  dt_equiv_expr:()=>{
+    // like (i) 2 × (35 + 15) + 20 ... choose the three that give the same answer
+    const [a,b,c,pq,jd,dj,di]=uniqueGen('dt_equiv_expr',()=>[ri(10,40),ri(5,30),ri(10,60),ri(2,5),ri(2,12),ri(2,6),ri(0,5)]);
+    const T=2*(a+b)+c;
+    const p=pq, q=Math.min(pq+2,9);
+    const e1=`2 × (${a} + ${b}) + ${c}`;
+    const e2=`(${p} × ${q}) + ${T-p*q}`;
+    const e3=`${T+jd} − (${dj*jd} ÷ ${dj})`;
+    const delta=[-30,-20,-12,12,20,30][di];
+    const g=ri(5,12), h=ri(5,12);
+    const e4=`(${g} × ${h}) − ${g*h-(T+delta)}`;
+    const items=shuffA([{e:e1,ok:true},{e:e2,ok:true},{e:e3,ok:true},{e:e4,ok:false}]);
+    const rom=['(i)','(ii)','(iii)','(iv)'];
+    const oddIdx=items.findIndex(x=>!x.ok);
+    const list=items.map((x,i)=>`${rom[i]} &nbsp; ${x.e}`).join('<br>');
+    const triples=[[0,1,2],[0,1,3],[0,2,3],[1,2,3]];
+    const L=['A','B','C','D'];
+    let ansL='';
+    const opts=triples.map((tri,i)=>{
+      if(!tri.includes(oddIdx)) ansL=L[i];
+      return{l:L[i],v:{en:`${rom[tri[0]]}, ${rom[tri[1]]} and ${rom[tri[2]]}`,id:`${rom[tri[0]]}, ${rom[tri[1]]} dan ${rom[tri[2]]}`}};
+    });
+    return{text:{en:`Choose the equations that give the <b>same answer</b>.`,
+                 id:`Pilih persamaan-persamaan yang hasilnya <b>sama</b>.`},
+      math:`<div style="font-size:1.02rem;line-height:2">${list}</div>`,
+      opts,ans:ansL,
+      steps:{en:[`Work out each one using the order of operations.`,
+                 `Three of them equal <b>${T}</b>.`,
+                 `${rom[oddIdx]} = ${T+delta}, so it is the odd one out.`],
+             id:[`Hitung tiap bentuk dengan urutan operasi.`,
+                 `Tiga di antaranya bernilai <b>${T}</b>.`,
+                 `${rom[oddIdx]} = ${T+delta}, jadi itu yang berbeda.`]},
+      concept:{en:'Evaluate every expression fully before comparing: brackets, then × ÷, then + −.',
+               id:'Hitung tuntas tiap bentuk sebelum membandingkan: kurung, lalu × ÷, lalu + −.'}};
+  },
+
+  dt_brackets:()=>{
+    // like: put brackets to make 3 × 4 − 2 + 8 ÷ 2 = 10 true
+    // e, b, c and d are all kept as multiples of e so every bracket placement stays a whole number
+    let forms=null;
+    for(let attempt=0; attempt<120 && !forms; attempt++){
+      const e=pickA([2,3,4]);
+      const a=ri(2,9), b=e*ri(2,4), c=e*ri(1,Math.max(1,Math.floor(6/e))), d=e*ri(2,8);
+      if(b-c<1) continue;
+      const f=[
+        {s:`${a} × (${b} − ${c}) + ${d} ÷ ${e}`, v:a*(b-c)+d/e},
+        {s:`(${a} × ${b} − ${c}) + ${d} ÷ ${e}`, v:(a*b-c)+d/e},
+        {s:`${a} × (${b} − ${c} + ${d}) ÷ ${e}`, v:a*(b-c+d)/e},
+        {s:`${a} × ${b} − (${c} + ${d}) ÷ ${e}`, v:a*b-(c+d)/e},
+      ];
+      if(f.some(x=>!Number.isInteger(x.v)||x.v<=0)) continue;
+      if(new Set(f.map(x=>x.v)).size<4) continue;
+      const sig=`${a},${b},${c},${d},${e}`;
+      if(seenValue('dt_brackets',sig) && attempt<100) continue;
+      rememberValue('dt_brackets',sig);
+      forms=[f,a,b,c,d,e];
+    }
+    if(!forms) return Generators.dt_order_ops();
+    const [f,a,b,c,d,e]=forms;
+    const target=pickA(f);
+    const L=['A','B','C','D'];
+    let ansL='';
+    const opts=shuffA(f).map((x,i)=>{ if(x===target) ansL=L[i]; return{l:L[i],v:`${x.s} = ${target.v}`}; });
+    return{text:{en:`Put brackets in the right place to make the statement true.`,
+                 id:`Letakkan tanda kurung di tempat yang benar agar pernyataan menjadi benar.`},
+      math:`${a} × ${b} − ${c} + ${d} ÷ ${e} = <b>${target.v}</b>`,
+      opts,ans:ansL,
+      steps:{en:[`Try each bracket placement and work it out.`,
+                 `${target.s} = <b>${target.v}</b> ✓`,
+                 `The other placements give ${f.filter(x=>x!==target).map(x=>x.v).join(', ')}.`],
+             id:[`Coba tiap penempatan kurung lalu hitung.`,
+                 `${target.s} = <b>${target.v}</b> ✓`,
+                 `Penempatan lain menghasilkan ${f.filter(x=>x!==target).map(x=>x.v).join(', ')}.`]},
+      concept:{en:'Brackets beat the normal order — whatever is inside them is calculated first.',
+               id:'Tanda kurung mengalahkan urutan biasa — isi kurung dihitung lebih dulu.'}};
+  },
+
+  dt_distributive:()=>{
+    // like 26 × 59 − 26 × 58
+    const mode=pickA(['diff','sum']);
+    // dedup on exactly the numbers the pupil sees, so no version comes back too soon
+    let n,k,j,sig,att=0;
+    do{
+      n=ri(12,49); k=ri(20,79); j=ri(2,9);
+      sig = mode==='diff' ? `d,${n},${k}` : `s,${n},${k},${j}`;
+      att++;
+    } while(seenValue('dt_distributive',sig) && att<16);
+    rememberValue('dt_distributive',sig);
+    let expr,cor,se,si;
+    if(mode==='diff'){
+      expr=`${n} × ${k+1} − ${n} × ${k}`;
+      cor=n;
+      se=[`Both terms share the factor <b>${n}</b>.`,`${n} × ${k+1} − ${n} × ${k} = ${n} × (${k+1} − ${k})`,`= ${n} × 1 = <b>${n}</b>`];
+      si=[`Kedua suku punya faktor sama <b>${n}</b>.`,`${n} × ${k+1} − ${n} × ${k} = ${n} × (${k+1} − ${k})`,`= ${n} × 1 = <b>${n}</b>`];
+    } else {
+      expr=`${n} × ${k} + ${n} × ${j}`;
+      cor=n*(k+j);
+      se=[`Both terms share the factor <b>${n}</b>.`,`= ${n} × (${k} + ${j}) = ${n} × ${k+j}`,`= <b>${cor}</b>`];
+      si=[`Kedua suku punya faktor sama <b>${n}</b>.`,`= ${n} × (${k} + ${j}) = ${n} × ${k+j}`,`= <b>${cor}</b>`];
+    }
+    const{opts,ans}=mkOpts(String(cor),[String(cor+1),String(cor*2),String(1),String(cor-1)]);
+    return{text:{en:`Calculate. <i>(Look for a common factor — you should not need long multiplication.)</i>`,
+                 id:`Hitunglah. <i>(Cari faktor yang sama — tidak perlu perkalian panjang.)</i>`},
+      math:`${expr} = <b>____</b>`,
+      opts,ans,
+      steps:{en:se,id:si},
+      concept:{en:'Distributive law: a × b ± a × c = a × (b ± c). It turns a hard calculation into an easy one.',
+               id:'Sifat distributif: a × b ± a × c = a × (b ± c). Perhitungan sulit jadi mudah.'}};
+  },
+
+  dt_choose_equation:()=>{
+    // like: 38 blue + 22 green pens into 2 drawers → (38 + 22) ÷ 2
+    const [gi,xm,ym,ni]=uniqueGen('dt_choose_equation',()=>[pickA([2,3,4]),ri(7,30),ri(4,20),ri(0,2)]);
+    const g=gi, x=xm*g, y=ym*g;
+    const N=[{who:{en:'Mel',id:'Mel'},a:{en:'blue pens',id:'pulpen biru'},b:{en:'green pens',id:'pulpen hijau'},box:{en:'drawer',id:'laci'}},
+             {who:{en:'Rafi',id:'Rafi'},a:{en:'red marbles',id:'kelereng merah'},b:{en:'yellow marbles',id:'kelereng kuning'},box:{en:'jar',id:'toples'}},
+             {who:{en:'Sita',id:'Sita'},a:{en:'apples',id:'apel'},b:{en:'oranges',id:'jeruk'},box:{en:'basket',id:'keranjang'}}][ni];
+    const cor=`(${x} + ${y}) ÷ ${g}`;
+    const wrongs=[`${x} + ${y} ÷ ${g}`,`${x} + ${y} × ${g}`,`${x} + (${y} ÷ ${g})`,`(${x} − ${y}) ÷ ${g}`];
+    const{opts,ans}=mkOpts(cor,wrongs);
+    return{text:{en:`${N.who.en} has <b>${x} ${N.a.en}</b> and <b>${y} ${N.b.en}</b>, and puts <b>all</b> of them equally into <b>${g} ${N.box.en}s</b>. Choose the correct equation for how many are in each ${N.box.en}.`,
+                 id:`${N.who.id} punya <b>${x} ${N.a.id}</b> dan <b>${y} ${N.b.id}</b>, lalu memasukkan <b>semuanya</b> sama banyak ke <b>${g} ${N.box.id}</b>. Pilih persamaan yang benar untuk isi tiap ${N.box.id}.`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Find the total first: ${x} + ${y} = ${x+y}.`,
+                 `Then share the <b>total</b> into ${g} — the sum must be inside brackets: <b>(${x} + ${y}) ÷ ${g}</b>`,
+                 `Without brackets only ${y} gets divided. Each ${N.box.en} gets ${(x+y)/g}.`],
+             id:[`Cari total dulu: ${x} + ${y} = ${x+y}.`,
+                 `Lalu bagi <b>total</b> ke ${g} — penjumlahan harus di dalam kurung: <b>(${x} + ${y}) ÷ ${g}</b>`,
+                 `Tanpa kurung, hanya ${y} yang dibagi. Tiap ${N.box.id} berisi ${(x+y)/g}.`]},
+      concept:{en:'"All of them, shared equally" means add first — so the sum needs brackets around it.',
+               id:'"Semuanya dibagi rata" berarti jumlahkan dulu — jadi penjumlahan perlu tanda kurung.'}};
+  },
+
+  dt_count_on_step:()=>{
+    // like: count on in 0.05s → __, 0, __, 0.1, __, 0.2
+    const [si,k0,hid]=uniqueGen('dt_count_on_step',()=>[ri(0,6),ri(-4,2),ri(0,1)]);
+    const s=[0.05,0.02,0.25,0.1,0.5,0.2,0.01][si];
+    const dp=s>=0.1?(s===0.25?2:1):2;
+    const fmt=x=>{const v=+x.toFixed(4); if(v===0)return'0'; let o=v.toFixed(dp); if(o.includes('.'))o=o.replace(/0+$/,'').replace(/\.$/,''); return o;};
+    const vals=[0,1,2,3,4,5].map(i=>+((k0+i)*s).toFixed(4));
+    const gone=hid?[1,3,5]:[0,2,4];
+    const seq=vals.map((v,i)=>gone.includes(i)?`<span style="color:#0984e3">____</span>`:`<b>${fmt(v)}</b>`).join(' &nbsp;,&nbsp; ');
+    const missing=gone.map(i=>fmt(vals[i]));
+    const cor=missing.join(', ');
+    const wrongs=[
+      gone.map(i=>fmt(vals[i]*10)).join(', '),
+      gone.map(i=>fmt(vals[i]/10)).join(', '),
+      gone.map(i=>fmt(Math.abs(vals[i])+(vals[i]<0?0.001:0))).join(', '),
+      gone.map(i=>fmt(vals[i]+s)).join(', '),
+      gone.map(i=>fmt(vals[i]-s)).join(', '),
+    ];
+    const{opts,ans}=mkOpts(cor,wrongs);
+    const hasNeg=vals.some(v=>v<0);
+    return{text:{en:`Count on in <b>${fmt(s)}</b>s. What are the missing numbers?`,
+                 id:`Menghitung maju dengan langkah <b>${fmt(s)}</b>. Bilangan mana yang hilang?`},
+      math:`<div style="font-size:1.12rem">${seq}</div>`,
+      opts,ans,
+      steps:{en:[`The step is <b>${fmt(s)}</b> — each box is ${fmt(s)} more than the one before it.`,
+                 hasNeg?`The sequence starts below zero, so the first missing number is <b>${missing[0]}</b>.`:`Start from the first given number and count back one step: <b>${missing[0]}</b>.`,
+                 `Missing: <b>${cor}</b>`],
+             id:[`Langkahnya <b>${fmt(s)}</b> — tiap kotak ${fmt(s)} lebih besar dari sebelumnya.`,
+                 hasNeg?`Barisan ini dimulai di bawah nol, jadi bilangan hilang pertama adalah <b>${missing[0]}</b>.`:`Mulai dari bilangan yang diketahui lalu mundur satu langkah: <b>${missing[0]}</b>.`,
+                 `Yang hilang: <b>${cor}</b>`]},
+      concept:{en:'Counting back past 0 gives negative decimals. The step size must stay exactly the same.',
+               id:'Menghitung mundur melewati 0 menghasilkan desimal negatif. Besar langkah harus tetap sama.'}};
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // CHAPTER 15 — Daily Test C: Word Problems (Show the Process)
+  // ══════════════════════════════════════════════════════════
+  dt_count_fraction:()=>{
+    // like: Phil counts on from 1/6 in steps of 1/6 — how many more to the first mixed number?
+    const [d,st,goal,ni]=uniqueGen('dt_count_fraction',()=>{
+      const dd=ri(3,12);
+      return[dd,ri(1,dd-1),pickA(['mixed','whole']),ri(0,2)];
+    });
+    const N=[{en:'Phil',id:'Phil'},{en:'Sena',id:'Sena'},{en:'Umar',id:'Umar'}][ni];
+    const targetN = goal==='mixed' ? d+1 : d;
+    const cor = targetN - st;
+    const goalTxt = goal==='mixed'
+      ? {en:'first <b>mixed number</b>',id:'<b>pecahan campuran</b> pertama'}
+      : {en:'first <b>whole number</b>',id:'<b>bilangan bulat</b> pertama'};
+    const{opts,ans}=mkOpts(String(cor),[String(cor-1),String(cor+1),String(cor+2),String(d)]);
+    const seq=[st,st+1,st+2].map(k=>frac(k,d)).join(', ');
+    return{text:{en:`${N.en} counts on from ${frac(st,d)} in steps of ${frac(1,d)} : &nbsp;${seq}, …<br>How many <b>more times</b> must ${N.en} count on to reach the ${goalTxt.en}?`,
+                 id:`${N.id} menghitung maju dari ${frac(st,d)} dengan langkah ${frac(1,d)} : &nbsp;${seq}, …<br>Berapa kali <b>lagi</b> ${N.id} harus menghitung untuk mencapai ${goalTxt.id}?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[
+          goal==='mixed'
+            ? `The first mixed number is 1${frac(1,d)} = ${frac(d+1,d)}.`
+            : `The first whole number is 1 = ${frac(d,d)}.`,
+          `Now at ${frac(st,d)}, needs to reach ${frac(targetN,d)}.`,
+          `${targetN} − ${st} = <b>${cor}</b> steps of ${frac(1,d)}.`,
+          goal==='mixed'
+            ? `Careful: ${frac(d,d)} = 1 is a <b>whole</b> number, so counting stops one step later.`
+            : `Careful: ${frac(d,d)} counts as 1 — that is where the counting stops.`],
+        id:[
+          goal==='mixed'
+            ? `Pecahan campuran pertama adalah 1${frac(1,d)} = ${frac(d+1,d)}.`
+            : `Bilangan bulat pertama adalah 1 = ${frac(d,d)}.`,
+          `Sekarang di ${frac(st,d)}, harus sampai ${frac(targetN,d)}.`,
+          `${targetN} − ${st} = <b>${cor}</b> langkah ${frac(1,d)}.`,
+          goal==='mixed'
+            ? `Hati-hati: ${frac(d,d)} = 1 adalah bilangan <b>bulat</b>, jadi hitungan berhenti satu langkah setelahnya.`
+            : `Hati-hati: ${frac(d,d)} bernilai 1 — di situlah hitungan berhenti.`]},
+      concept:{en:'A mixed number needs a whole part AND a fraction part, so d/d = 1 is not one yet. Count the steps as a subtraction of numerators.',
+               id:'Pecahan campuran harus punya bagian bulat DAN pecahan, jadi d/d = 1 belum termasuk. Hitung langkahnya sebagai pengurangan pembilang.'}};
+  },
+
+  dt_money_days:()=>{
+    // like: $2.20 in the coin box, spends 40 cents a day — which day is he short?
+    const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    const daysID=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+    const[spend,mult,rem]=uniqueGen('dt_money_days',()=>{
+      const sp=pickA([20,25,30,40,50]);
+      return[sp,ri(2,5),ri(5,sp-5)];   // 2–5 full days → he runs short Thursday…Sunday
+    });
+    const start=spend*mult+Math.max(5,rem);
+    let left=start,short=-1;
+    for(let i=1;i<=6;i++){ if(left<spend){ short=i; break; } left-=spend; }
+    if(short===-1) short=6;
+    const full=Math.floor(start/spend);
+    const cor=days[short];
+    const corID=daysID[short];
+    // options: Thursday–Sunday, as on the paper — bilingual so ID mode shows Indonesian day names
+    const L=['A','B','C','D'];
+    let ans='';
+    const opts=shuffA([3,4,5,6]).map((di,i)=>{ if(di===short) ans=L[i]; return{l:L[i],v:{en:days[di],id:daysID[di]}}; });
+    return{text:{en:`Mike has <b>$${(start/100).toFixed(2)}</b> in his coin box on <b>Monday</b>. He uses <b>${spend} cents</b> each day starting from the next day. On which day will he be <b>short of money</b>? <i>($1 = 100 cents)</i>`,
+                 id:`Mike punya <b>$${(start/100).toFixed(2)}</b> di kotak koinnya pada hari <b>Senin</b>. Ia memakai <b>${spend} sen</b> setiap hari mulai keesokan harinya. Pada hari apa uangnya <b>tidak cukup</b>? <i>($1 = 100 sen)</i>`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Change dollars to cents: $${(start/100).toFixed(2)} = ${start} cents.`,
+                 `${start} ÷ ${spend} = ${full} full days, remainder ${start%spend} cents.`,
+                 `Spending starts on Tuesday, so ${full} full days end on ${days[full]}.`,
+                 `The next day is <b>${cor}</b> — only ${start-full*spend} cents left, not enough for ${spend}.`],
+             id:[`Ubah dolar ke sen: $${(start/100).toFixed(2)} = ${start} sen.`,
+                 `${start} ÷ ${spend} = ${full} hari penuh, sisa ${start%spend} sen.`,
+                 `Pengeluaran mulai Selasa, jadi ${full} hari penuh berakhir ${daysID[full]}.`,
+                 `Hari berikutnya <b>${corID}</b> — sisa ${start-full*spend} sen saja, kurang dari ${spend}.`]},
+      concept:{en:'Convert to the same unit first, then divide. The remainder shows the day the money runs short.',
+               id:'Samakan satuan dulu, lalu bagi. Sisanya menunjukkan hari saat uangnya kurang.'}};
+  },
+
+  dt_mass_scale:()=>{
+    // like: one ball is 4.38 g — what is the mass of 1000 balls?
+    const [p,cents,ii]=uniqueGen('dt_mass_scale',()=>[pickA([100,1000]),ri(105,995),ri(0,3)]);
+    const one=+(cents/100).toFixed(2);
+    const cor=String(+(one*p).toFixed(2));
+    const it=[{en:'balls',id:'bola'},{en:'marbles',id:'kelereng'},{en:'beads',id:'manik-manik'},{en:'screws',id:'sekrup'}][ii];
+    const wrongs=[String(+(one*p/10).toFixed(3)),String(+(one*p*10).toFixed(1)),String(+(one*p/100).toFixed(4)),String(one)];
+    const{opts,ans}=mkOpts(cor,wrongs);
+    return{text:{en:`One ${it.en.replace(/s$/,'')} has a mass of <b>${one.toFixed(2)} g</b>. What is the total mass of <b>${p.toLocaleString('en-US')} ${it.en}</b>?`,
+                 id:`Satu ${it.id} bermassa <b>${one.toFixed(2)} g</b>. Berapa total massa <b>${p.toLocaleString('id-ID').replace(/,/g,'.')} ${it.id}</b>?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Total = mass of one × how many.`,
+                 `${one.toFixed(2)} × ${p} — multiplying by ${p} moves each digit ${String(p).length-1} places LEFT.`,
+                 `= <b>${cor} g</b>`],
+             id:[`Total = massa satu × banyaknya.`,
+                 `${one.toFixed(2)} × ${p} — dikali ${p} menggeser setiap angka ${String(p).length-1} tempat ke KIRI.`,
+                 `= <b>${cor} g</b>`]},
+      concept:{en:'× 100 shifts 2 places left, × 1000 shifts 3 places left. Count the zeros.',
+               id:'× 100 geser 2 tempat ke kiri, × 1000 geser 3 tempat ke kiri. Hitung nolnya.'}};
+  },
+
+  dt_earnings:()=>{
+    // like: $15/hour, 8 hours a day, weekdays only, 10 weeks, plus $150
+    const [rate,hrs,wks,bonus,ni]=uniqueGen('dt_earnings',()=>[pickA([12,15,18,20,25]),pickA([6,7,8]),pickA([4,6,8,10]),pickA([100,150,200,250]),ri(0,2)]);
+    const N=[{en:'Indra',id:'Indra'},{en:'Dewi',id:'Dewi'},{en:'Bayu',id:'Bayu'}][ni];
+    const perDay=rate*hrs, perWeek=perDay*5, base=perWeek*wks, cor=base+bonus;
+    const wrongs=[String(base),String(rate*hrs*wks+bonus),String(perDay*7*wks+bonus),String(perWeek*wks-bonus)];
+    const{opts,ans}=mkOpts(String(cor),wrongs);
+    return{text:{en:`${N.en} earns <b>$${rate}</b> every hour and works only on <b>weekdays</b> for <b>${hrs} hours</b> a day. After working for <b>${wks} weeks</b> ${N.en} also receives an additional payment of <b>$${bonus}</b>. How much is earned in ${wks} weeks?`,
+                 id:`${N.id} mendapat <b>$${rate}</b> setiap jam dan bekerja hanya pada <b>hari kerja</b> selama <b>${hrs} jam</b> sehari. Setelah bekerja <b>${wks} minggu</b>, ${N.id} juga menerima tambahan <b>$${bonus}</b>. Berapa penghasilannya dalam ${wks} minggu?`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Per day: $${rate} × ${hrs} = $${perDay}`,
+                 `Weekdays = 5 days → per week: $${perDay} × 5 = $${perWeek}`,
+                 `In ${wks} weeks: $${perWeek} × ${wks} = $${base}`,
+                 `Add the extra payment: $${base} + $${bonus} = <b>$${cor}</b>`],
+             id:[`Per hari: $${rate} × ${hrs} = $${perDay}`,
+                 `Hari kerja = 5 hari → per minggu: $${perDay} × 5 = $${perWeek}`,
+                 `Dalam ${wks} minggu: $${perWeek} × ${wks} = $${base}`,
+                 `Tambahkan bonus: $${base} + $${bonus} = <b>$${cor}</b>`]},
+      concept:{en:'Multi-step: hour → day → week → total, then add the one-off amount at the end.',
+               id:'Bertingkat: jam → hari → minggu → total, lalu tambahkan bonus di akhir.'}};
+  },
+
+  dt_commutative:()=>{
+    // like: 5 boxes of strawberries, 9 left — use the commutative & associative laws
+    const [boxes,rows,per,left,ni]=uniqueGen('dt_commutative',()=>[pickA([4,5,6,8]),pickA([3,4,5]),pickA([4,5,8,10]),ri(3,15),ri(0,2)]);
+    const N=[{en:'Aini',id:'Aini'},{en:'Nara',id:'Nara'},{en:'Fikri',id:'Fikri'}][ni];
+    const total=boxes*rows*per, cor=total-left;
+    const wrongs=[String(total),String(total+left),String(boxes*rows+per-left),String(total-left*2)];
+    const{opts,ans}=mkOpts(String(cor),wrongs);
+    return{text:{en:`${N.en} bought <b>${boxes} boxes</b> of strawberries for a party. Each box holds <b>${rows} rows</b> of <b>${per} strawberries</b>. <b>${left} strawberries</b> were left after the party. How many were eaten? <i>(Use the commutative and associative laws of multiplication.)</i>`,
+                 id:`${N.id} membeli <b>${boxes} kotak</b> stroberi untuk pesta. Tiap kotak berisi <b>${rows} baris</b> dengan <b>${per} stroberi</b>. Setelah pesta tersisa <b>${left} stroberi</b>. Berapa yang dimakan? <i>(Gunakan sifat komutatif dan asosiatif perkalian.)</i>`},
+      math:null,isWord:true,opts,ans,
+      steps:{en:[`Total = ${boxes} × ${rows} × ${per}`,
+                 `Regroup to make it easy: ${boxes} × ${rows} × ${per} = ${rows} × ${per} × ${boxes} = ${rows*per} × ${boxes} = ${total}`,
+                 `Eaten = total − left over = ${total} − ${left} = <b>${cor}</b>`],
+             id:[`Total = ${boxes} × ${rows} × ${per}`,
+                 `Kelompokkan ulang agar mudah: ${boxes} × ${rows} × ${per} = ${rows} × ${per} × ${boxes} = ${rows*per} × ${boxes} = ${total}`,
+                 `Dimakan = total − sisa = ${total} − ${left} = <b>${cor}</b>`]},
+      concept:{en:'Commutative: the order can change. Associative: the grouping can change. Use both to pick the easiest pair to multiply first.',
+               id:'Komutatif: urutan boleh ditukar. Asosiatif: pengelompokan boleh diubah. Pakai keduanya untuk memilih pasangan termudah.'}};
+  },
+
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -1611,6 +2175,12 @@ const Parts=[
     topics:['area_parallelogram','area_triangle','area_compound','perim_compound','vol_cuboid'] },
   { ch:12, section:{en:'Chapter 12 — Statistics & Probability',id:'Bab 12 — Statistika & Peluang'},
     topics:['mean','median_g6','mode_range','pie_chart','prob_basic'] },
+  { ch:13, section:{en:'Chapter 13 — Daily Test A: Place Value & The Number System',id:'Bab 13 — Ulangan Harian A: Nilai Tempat & Sistem Bilangan'},
+    topics:['dt_greatest_thousandths','dt_place_discs','dt_missing_factor_pow10','dt_expanded_decimal','dt_regroup_wrong','dt_digit_in_place','dt_round_riddle','dt_round_target','dt_div_pow10'] },
+  { ch:14, section:{en:'Chapter 14 — Daily Test B: Order of Operations & Number Laws',id:'Bab 14 — Ulangan Harian B: Urutan Operasi & Sifat Bilangan'},
+    topics:['dt_order_ops','dt_equiv_expr','dt_brackets','dt_distributive','dt_choose_equation','dt_count_on_step'] },
+  { ch:15, section:{en:'Chapter 15 — Daily Test C: Word Problems (Show the Process)',id:'Bab 15 — Ulangan Harian C: Soal Cerita (Tulis Caranya)'},
+    topics:['dt_count_fraction','dt_money_days','dt_mass_scale','dt_earnings','dt_commutative'] },
 ];
 
 // Topic display names
@@ -1671,6 +2241,26 @@ const topicNames={
   mode_range:{en:'Mode & Range',id:'Modus & Jangkauan'},
   pie_chart:{en:'Read Pie Chart',id:'Baca Diagram Lingkaran'},
   prob_basic:{en:'Basic Probability',id:'Peluang Dasar'},
+  dt_greatest_thousandths:{en:'Greatest Thousandths Digit',id:'Angka Perseribuan Terbesar'},
+  dt_place_discs:{en:'Place Value Discs',id:'Keping Nilai Tempat'},
+  dt_missing_factor_pow10:{en:'Missing Factor (× 10/100/1000)',id:'Faktor Hilang (× 10/100/1000)'},
+  dt_expanded_decimal:{en:'Expanded Form of Decimals',id:'Bentuk Panjang Desimal'},
+  dt_regroup_wrong:{en:'Spot the Wrong Regrouping',id:'Cari Penguraian yang Salah'},
+  dt_digit_in_place:{en:'Digit in a Given Place',id:'Angka di Tempat Tertentu'},
+  dt_round_riddle:{en:'Rounding Riddle (Two Rules)',id:'Teka-teki Pembulatan (Dua Aturan)'},
+  dt_round_target:{en:'Which Number Rounds to This?',id:'Bilangan Mana yang Dibulatkan Jadi Ini?'},
+  dt_div_pow10:{en:'Divide by 10/100/1000',id:'Bagi 10/100/1000'},
+  dt_order_ops:{en:'Order of Operations',id:'Urutan Operasi'},
+  dt_equiv_expr:{en:'Equations with the Same Answer',id:'Persamaan Berhasil Sama'},
+  dt_brackets:{en:'Put the Brackets In',id:'Letakkan Tanda Kurung'},
+  dt_distributive:{en:'Distributive Law Shortcut',id:'Jalan Pintas Sifat Distributif'},
+  dt_choose_equation:{en:'Choose the Correct Equation',id:'Pilih Persamaan yang Benar'},
+  dt_count_on_step:{en:'Count On in Decimal Steps',id:'Menghitung Maju Desimal'},
+  dt_count_fraction:{en:'Counting On in Fractions',id:'Menghitung Maju Pecahan'},
+  dt_money_days:{en:'Money Across the Week',id:'Uang Sepanjang Minggu'},
+  dt_mass_scale:{en:'Mass × 100 / × 1000',id:'Massa × 100 / × 1000'},
+  dt_earnings:{en:'Multi-Step Earnings',id:'Penghasilan Bertingkat'},
+  dt_commutative:{en:'Commutative & Associative Laws',id:'Sifat Komutatif & Asosiatif'},
 };
 
 // ─────────────────────────────────────────────────────────────
