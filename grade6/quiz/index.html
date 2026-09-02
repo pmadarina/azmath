@@ -214,6 +214,11 @@ function mixed(w,n,d){return`${w}${frac(n,d)}`}
 let lang='en';
 function t(obj){ return typeof obj==='string'?obj:(obj[lang]||obj.en) }
 function updateChapterHeader(){
+  if(fromExamPractice){
+    document.getElementById('hTitle').textContent=lang==='en'?'Practice Weak Areas':'Latih Area Lemah';
+    document.getElementById('hSub').textContent=lang==='en'?'From your exam · Grade 6 · Mathematics · Hints on':'Dari ujianmu · Kelas 6 · Matematika · Ada petunjuk';
+    return;
+  }
   if(isExam){
     document.getElementById('hTitle').textContent=lang==='en'?'Full Exam — Grade 6':'Ujian Lengkap — Kelas 6';
     document.getElementById('hSub').textContent=lang==='en'?'All Chapters · Grade 6 · Mathematics · No Hints':'Semua Bab · Kelas 6 · Matematika · Tanpa Petunjuk';
@@ -2276,6 +2281,7 @@ let isExam=_examParam!==null;
 
 let score=0,nCorrect=0,nWrong=0,cur=0,answered=false,streak=0,hintUsed=false,selectedAnswer=null;
 let round=1, isAdaptive=false;
+let fromExamPractice=false;   // true once the exam hands over to a weak-areas practice round
 // Session limits — a chapter never runs past MAX_CHAPTER_Q questions, however
 // low the SmartScore is, and the full exam samples EXAM_Q topics at random.
 const MAX_CHAPTER_Q=20;
@@ -2586,13 +2592,16 @@ function buildInitialQueue(){
 function buildAdaptiveQueue(){
   let qNum=1;
   const newQueue=[];
+  const examSourced=isExam;   // read before startAdaptive() flips the flag
   getActiveParts().forEach(part=>{
     const partQs=[];
     part.topics.forEach(topic=>{
       const s=topicStats[topic]||{wrong:0,correct:0};
       const att=s.wrong+s.correct;
       const err=att>0?s.wrong/att:0;
-      const copies=err>0.66?3:err>0.33?2:1;
+      // after an exam every topic is seen once, so "wrong" is the only signal that matters
+      if(examSourced && s.wrong===0) return;
+      const copies=examSourced?2:(err>0.66?3:err>0.33?2:1);
       for(let i=0;i<copies;i++){
         const q=Generators[topic]();
         q.topic=topic;
@@ -2602,7 +2611,8 @@ function buildAdaptiveQueue(){
     });
     shuffle(partQs);
     antiCluster(partQs);
-    if(partQs.length) partQs[0].section=part.section;
+    // no chapter banners in the post-exam round — it draws from many chapters at once
+    if(partQs.length && !examSourced) partQs[0].section=part.section;
     newQueue.push(...partQs);
   });
   let finalQueue=newQueue;
@@ -2663,9 +2673,10 @@ function renderDone(){
       <h3>📊 ${lang==='en'?'Performance by Topic':'Performa per Topik'}</h3>
       ${weakRowsHtml}
     </div>`:'';
-  const adaptiveBtn=(!isExam && hasWeakness)?`
+  const weakCount=topicScores.filter(x=>x.s.wrong>0).length;
+  const adaptiveBtn=hasWeakness?`
     <button class="practice-btn" onclick="startAdaptive()">
-      🎯 ${lang==='en'?'Practice Weak Areas':'Latih Area Lemah'}
+      🎯 ${lang==='en'?'Practice Weak Areas':'Latih Area Lemah'}${isExam?` (${weakCount} ${lang==='en'?(weakCount===1?'topic':'topics'):'topik'})`:''}
     </button>`:'';
 
   document.getElementById('qArea').innerHTML=`
@@ -2688,7 +2699,17 @@ function renderDone(){
 }
 
 function startAdaptive(){
+  const wasExam=isExam;
   const {queue:newQ}=buildAdaptiveQueue();
+  if(!newQ.length) return;
+  if(wasExam){
+    // leave exam rules behind: hints, instant feedback and SmartScore come back
+    isExam=false; fromExamPractice=true; score=0;
+    ['ssVal','barPct'].forEach(id=>document.getElementById(id).textContent='0');
+    document.getElementById('barFill').style.width='0%';
+    document.getElementById('ringFill').style.strokeDashoffset='175.9';
+    updateChapterHeader();
+  }
   queue=newQ;
   cur=0;
   results=new Array(queue.length).fill(null);
@@ -2701,6 +2722,8 @@ function startAdaptive(){
 
 function restart(){
   Object.keys(topicStats).forEach(k=>{ topicStats[k]={wrong:0,correct:0}; });
+  isExam=_examParam!==null; fromExamPractice=false;   // back to whatever the URL asked for
+  updateChapterHeader();
   score=0;nCorrect=0;nWrong=0;cur=0;streak=0;round=1;isAdaptive=false;
   queue=buildInitialQueue();
   results=new Array(queue.length).fill(null);
